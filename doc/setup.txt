@@ -1,0 +1,24 @@
+git on nas
+==========
+git init --bare velocorner.git
+git clone ssh://nas/volume1/gitrepo/velocorner.git
+
+IP
+==
+46.163.78.35
+AHost ip address
+MX Record velocorner.com
+CName www @
+
+Analytics 
+=========
+tracking id: UA-573257-3
+
+Server
+======
+mkdir /var/www/velocorner.com
+add a plain static page
+
+Apache
+======
+add VirtualHost in httpd.conf
