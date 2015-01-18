@@ -1,38 +1,124 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="cache-control" content="no-cache" />
-    <meta http-equiv="expires" content="0" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta name="description" content="Velocorner Landing Page" />
-    <meta name="author" content="Levente Fall" />
-    <meta name="keywords" content="velocorner,scala,cycling,mtb,trails" />
-    <meta name="publisher" content="www.velocorner.com" />
-    <meta name="language" content="en" />
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
+<head>
     <title>Velocorner</title>
-  </head>
-  <body bgcolor="#FFFFFF">
-    <center>
-      
-    <br />
-    <br />
 
-    <h1>Welcome to Velocorner!</h1>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <br />
-    <div class="info">feel free to contact <a href="mailto:velocorner.com@gmail.com">here</a></div>
-    </center>
+    <!-- CSS Global Compulsory-->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/headers/header1.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="shortcut icon" href="favicon.ico">        
+    <!-- CSS Implementing Plugins -->    
+    <link rel="stylesheet" href="assets/plugins/css/animate.css">
+    <link rel="stylesheet" href="assets/plugins/line-icons/line-icons.css">
+    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/plugins/countdown/css/countdown.css">
+    <!-- CSS Page Style -->    
+    <link rel="stylesheet" href="assets/css/pages/page_coming_soon.css">    
+    <!-- CSS Theme -->    
+    <link rel="stylesheet" href="assets/css/theme-colors/default.css">
+    
+    <link rel="stylesheet" href="assets/css/themes/headers/default.css" id="style_color-header-1">    
+</head> 
 
-    <!-- track with google analytics-->
-    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-    </script>
-    <script type="text/javascript">
-    //<![CDATA[
-      _uacct = "UA-573257-3";
-      urchinTracker();
-    //]]>
-    </script>
-  </body>
-</html>
+<body class="coming-soon-page">    
+    
+<div class="coming-soon-border"></div>
+
+<!--=== Content Part ===-->    
+<div class="container">
+    <!-- Coming Soon Content -->
+    <div class="row">
+        <div class="col-md-12 coming-soon">
+            <h1>Welcome to Velocorner!</h1>
+            <p>Stay tuned, opening soon...</p><br>
+        </div>
+    </div>
+
+    <!-- Coming Soon Plugn -->
+    <div class="coming-soon-plugin">
+        <div id="defaultCountdown"></div>
+    </div>
+
+    <!-- Coming Soon Footer -->
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
+            <div class="coming-soon-copyright">
+                <p>2015 © Velocorner</p>
+            </div>
+        </div>
+    </div>
+
+
+</div><!--/container-->
+<!--=== End Content Part ===-->
+
+<!-- JS Global Compulsory -->           
+<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+<!-- JS Implementing Plugins -->           
+<script type="text/javascript" src="assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="assets/plugins/countdown/jquery.countdown.js"></script>
+<script type="text/javascript" src="assets/plugins/backstretch/jquery.backstretch.min.js"></script>
+<!-- JS Customization -->
+<script type="text/javascript" src="assets/js/custom.js"></script>
+<!-- JS Page Level -->           
+<script type="text/javascript" src="assets/js/app.js"></script>
+
+<script>
+    $.backstretch([
+      "assets/img/bg/1.jpg",
+      "assets/img/bg/3.jpg",
+      "assets/img/bg/2.jpg"
+      ], {
+        fade: 1000,
+        duration: 7000
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        var austDay = new Date();
+        austDay = new Date(austDay.getFullYear(), 2, 11);
+        $('#defaultCountdown').countdown({until: austDay});
+        $('#year').text(austDay.getFullYear());
+    });
+</script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();      
+    });
+</script>
+<!--[if lt IE 9]>
+    <script src="assets/plugins/respond.js"></script>
+    <script src="assets/plugins/html5shiv.js"></script>
+    <script src="assets/js/plugins/placeholder-IE-fixes.js"></script>
+<![endif]-->
+
+
+<!-- track with google analytics-->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+//<![CDATA[
+  _uacct = "UA-573257-3";
+  urchinTracker();
+//]]>
+</script>
+
+
+</body>
+</html> 
