@@ -32,11 +32,19 @@ object build extends Build {
     scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8")
   )
 
-  lazy val common = Project(
+  lazy val dataFeed = Project(
     id = "data-feed",
     base = file("data-feed"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.spark
     )
+  )
+
+  // top level aggregate
+  lazy val root = Project(
+    id = "velocorner",
+    base = file("."),
+    settings = buildSettings,
+    aggregate = Seq(dataFeed)
   )
 }
