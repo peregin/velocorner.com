@@ -1,5 +1,7 @@
 import sbt._
 import Keys._
+import play.Play.autoImport._
+import PlayKeys._
 
 
 object dependency {
@@ -39,6 +41,11 @@ object build extends Build {
       libraryDependencies ++= dependencies.spark
     )
   )
+
+  lazy val webApp = Project(
+    id = "web-app",
+    base = file("web-app")
+  ).enablePlugins(play.PlayScala)
 
   // top level aggregate
   lazy val root = Project(
