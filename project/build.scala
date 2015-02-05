@@ -33,9 +33,9 @@ object build extends Build {
     scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8")
   )
 
-  lazy val dataFeed = Project(
-    id = "data-feed",
-    base = file("data-feed"),
+  lazy val dataCruncher = Project(
+    id = "data-cruncher",
+    base = file("data-cruncher"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.spark
     )
@@ -53,6 +53,6 @@ object build extends Build {
     id = "velocorner",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(dataFeed, webApp)
+    aggregate = Seq(dataCruncher, webApp)
   )
 }
