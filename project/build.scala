@@ -37,16 +37,18 @@ object build extends Build {
     id = "data-cruncher",
     base = file("data-cruncher"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark
+      libraryDependencies ++= dependencies.spark ++ Seq(dependencies.couchbaseClient)
     )
   )
 
   lazy val webApp = Project(
     id = "web-app",
     base = file("web-app")
-  ).enablePlugins(play.PlayScala).settings(
-    libraryDependencies ++= Seq(dependencies.couchbaseClient)
-  )
+  ).enablePlugins(play.PlayScala)
+    .dependsOn(dataCruncher)
+    .settings(
+      libraryDependencies ++= Seq()
+    )
 
   // top level aggregate
   lazy val root = Project(
