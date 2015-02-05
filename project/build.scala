@@ -4,9 +4,11 @@ import play.Play.autoImport._
 import PlayKeys._
 
 
-object dependency {
+object dependencies {
 
   val SparkVersion = "1.2.0"
+
+  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.7"
 
   val sparkCore = "org.apache.spark" %% "spark-core" % SparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % SparkVersion
@@ -14,10 +16,7 @@ object dependency {
 
   val scalaTest = "org.scalatest" %% "scalatest" % "2.1.4" % "test"
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-}
 
-object dependencies {
-  import dependency._
 
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, scalaTest, scalaCheck)
 }
@@ -45,13 +44,15 @@ object build extends Build {
   lazy val webApp = Project(
     id = "web-app",
     base = file("web-app")
-  ).enablePlugins(play.PlayScala)
+  ).enablePlugins(play.PlayScala).settings(
+    libraryDependencies ++= Seq(dependencies.couchbaseClient)
+  )
 
   // top level aggregate
   lazy val root = Project(
     id = "velocorner",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(dataFeed)
+    aggregate = Seq(dataFeed, webApp)
   )
 }
