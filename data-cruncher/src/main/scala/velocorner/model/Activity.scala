@@ -1,13 +1,18 @@
 package velocorner.model
 
+import org.joda.time.DateTime
+
 /**
  *
  * Activity list:
 
  [{"id":244993130,"resource_state":2,"external_id":"garmin_push_680641525","upload_id":277374426,
  "athlete":{"id":432909,"resource_state":1},
- "name":"Stallikon Ride","distance":23216.8,"moving_time":4906,"elapsed_time":4906,
- "total_elevation_gain":541.0,"type":"Ride","start_date":"2015-01-23T16:18:17Z","start_date_local":"2015-01-23T17:18:17Z",
+ "name":"Stallikon Ride",
+ "distance":23216.8,"moving_time":4906,"elapsed_time":4906,
+ "total_elevation_gain":541.0,"type":"Ride",
+ "start_date":"2015-01-23T16:18:17Z",
+ "start_date_local":"2015-01-23T17:18:17Z",
  "timezone":"(GMT+01:00) Europe/Zurich",
  "start_latlng":[47.37,8.52],"end_latlng":[47.31,8.52],
  "location_city":"Zurich","location_state":"Canton of Zurich","location_country":"Switzerland",
@@ -33,7 +38,7 @@ case class Activity(
   elapsed_time: Int,
   total_elevation_gain: Float,
   `type`: String,
-  start_date: String,
-  start_date_local: String,
+  start_date: DateTime,
+  start_date_local: DateTime,
   timezone: String
 )

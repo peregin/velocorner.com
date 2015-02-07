@@ -2,6 +2,7 @@ package velocorner.spark
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import velocorner.util.Metrics
 
 // Implicit conversions, such as methods defined in
 // org.apache.spark.rdd.PairRDDFunctions
@@ -14,17 +15,7 @@ import org.apache.spark.SparkContext._
  *
  * Created by levi on 02/02/15.
  */
-object WordCount extends App {
-
-  def timed[T](text: => String)(body: => T): T = {
-    val mark = System.currentTimeMillis()
-    try {
-      body
-    } finally {
-      val elapsed = System.currentTimeMillis() - mark
-      println(s"$text took $elapsed millis")
-    }
-  }
+object WordCount extends App with Metrics {
 
   val sc = new SparkContext("local", "Word Count (2)")
   try {
