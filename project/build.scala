@@ -10,6 +10,8 @@ object dependencies {
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.7"
 
+  val json = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
+
   val sparkCore = "org.apache.spark" %% "spark-core" % SparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % SparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % SparkVersion
@@ -37,7 +39,9 @@ object build extends Build {
     id = "data-cruncher",
     base = file("data-cruncher"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark ++ Seq(dependencies.couchbaseClient)
+      libraryDependencies ++= dependencies.spark ++ Seq(
+        dependencies.couchbaseClient, dependencies.json
+      )
     )
   )
 

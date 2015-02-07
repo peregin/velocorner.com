@@ -1,6 +1,6 @@
 import play.Logger
 import play.api.{Application, GlobalSettings}
-import storage.Couchbase
+import velocorner.storage.Couchbase
 
 
 object Global extends GlobalSettings {

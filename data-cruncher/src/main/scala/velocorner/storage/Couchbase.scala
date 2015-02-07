@@ -1,4 +1,4 @@
-package storage
+package velocorner.storage
 
 import java.net.URI
 import java.util.concurrent.TimeUnit
