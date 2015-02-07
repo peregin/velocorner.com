@@ -34,7 +34,7 @@ object WordCount extends App {
   }
 
   def spark(sc: SparkContext) {
-    val rdd: RDD[String] = sc.textFile("common/src/test/resources/data/kipling.the.book.txt")
+    val rdd: RDD[String] = sc.textFile("common/src/test/resources/data/book/kipling.txt")
     println(s"lines: ${rdd.count()}")
 
     // convert each line to lower case, creating an RDD.
