@@ -14,7 +14,7 @@ object Couchbase {
 
   def logStats() = {
       client.getStats.map { case (address, map) =>
-        s"$address => ${map.filterKeys(_.startsWith("ep_")).mkString("\n")}"
+        s"$address => ${map.filterKeys(_.startsWith("ep_db")).mkString("\n")}"
       }
   }
 
