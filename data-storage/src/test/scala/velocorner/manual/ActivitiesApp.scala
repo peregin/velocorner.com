@@ -2,34 +2,17 @@ package velocorner.manual
 
 import java.time.LocalDate
 
-import org.joda.time.DateTime
-import play.api.libs.json._
 import velocorner.model.Activity
-import velocorner.util.Metrics
-
-import scala.io.Source
+import velocorner.util.{JsonIo, Metrics}
 
 
 object ActivitiesApp extends App with Metrics {
 
   println("reading files...")
 
-  val dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-  implicit val dateTimeFormat = Format[DateTime](Reads.jodaDateReads(dateTimePattern), Writes.jodaDateWrites(dateTimePattern))
-  implicit val activityReads = Format[Activity](Json.reads[Activity], Json.writes[Activity])
-
-  def read(file: String): List[Activity] = {
-    val json = Source.fromFile(file).mkString
-    val jsonValue = Json.parse(json)
-    jsonValue.validate[List[Activity]] match {
-      case JsSuccess(list, _) => list
-      case JsError(errors) => sys.error(s"unable to parse file because $errors")
-    }
-  }
-
   // read the 3 dump files and merge it into one single list
   val activities = timed("reading files") {
-    (1 to 3).map(i => s"/Users/levi/Downloads/strava/dump$i.txt").map(read).foldLeft(List[Activity]())(_ ++ _)
+    (1 to 3).map(i => s"/Users/levi/Downloads/strava/dump$i.txt").map(JsonIo.readFromFile[List[Activity]]).foldLeft(List[Activity]())(_ ++ _)
   }
   println(s"read ${activities.size} activities")
   val activityTypes = activities.map(_.`type`).distinct
@@ -37,12 +20,12 @@ object ActivitiesApp extends App with Metrics {
   val cyclingActivities = activities.filter(_.`type` == "Ride")
   println(s"cycling activities ${cyclingActivities.size}")
 
-  def print(list: List[Activity]) {
+  def print(from: List[Activity]) {
     // group by year
-    val byYear = list.groupBy(_.start_date_local.year().get())
+    val byYear = from.groupBy(_.start_date_local.year().get())
     // total km in each year
     val yearWithDistance = byYear.map { case (year, list) => (year, list.map(_.distance).sum / 1000) }.toList.sortBy(_._1)
-    yearWithDistance.foreach(e => println(f"year ${e._1} -> ${e._2}%.2f"))
+    yearWithDistance.foreach(e => println(f"year ${e._1} -> ${e._2}%.2f km"))
   }
 
   println("Total")
@@ -63,4 +46,6 @@ object ActivitiesApp extends App with Metrics {
 
   println("Until this day")
   print(cyclingActivitiesUntilThisDay)
+
+  println("done...")
 }

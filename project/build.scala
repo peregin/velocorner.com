@@ -16,11 +16,11 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % SparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % SparkVersion
 
-  val scalaTest = "org.scalatest" %% "scalatest" % "2.1.4" % "test"
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
 
 
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, scalaTest, scalaCheck)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
 }
 
 object build extends Build {
@@ -39,7 +39,7 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.json
+        dependencies.couchbaseClient, dependencies.json, dependencies.scalaSpec
       )
     )
   )
