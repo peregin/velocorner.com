@@ -14,14 +14,24 @@ class JsonIoSpec extends Specification {
 
   "converter" should {
 
+    val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.txt")).mkString
+
     "read Strava activity" in {
-      val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.txt")).mkString
-      val list = JsonIo.readFromText[List[Activity]](json)
+      val list = JsonIo.read[List[Activity]](json)
       list must haveSize(30)
 
       val first = list.head
       first.name === "Stallikon Ride"
       first.distance === 23216.8f
+    }
+
+    "read and write" in {
+      val list = JsonIo.read[List[Activity]](json)
+      val activity = list.head
+
+      val jsonText = JsonIo.write(activity)
+      val otherActivity = JsonIo.read[Activity](jsonText)
+      activity === otherActivity
     }
   }
 

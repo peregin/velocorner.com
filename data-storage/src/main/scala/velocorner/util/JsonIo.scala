@@ -1,6 +1,6 @@
 package velocorner.util
 
-import play.api.libs.json.{Reads, JsError, JsSuccess, Json}
+import play.api.libs.json._
 
 import scala.io.Source
 
@@ -11,14 +11,19 @@ object JsonIo {
 
   def readFromFile[T](fileName: String)(implicit fjs: Reads[T]): T = {
     val json = Source.fromFile(fileName).mkString
-    readFromText(json)
+    read(json)
   }
   
-  def readFromText[T](json: String)(implicit fjs: Reads[T]): T = {
+  def read[T](json: String)(implicit fjs: Reads[T]): T = {
     val jsonValue = Json.parse(json)
     jsonValue.validate[T] match {
       case JsSuccess(list, _) => list
       case JsError(errors) => sys.error(s"unable to parse file because $errors")
     }
+  }
+
+  def write[T](obj: T)(implicit fjs: Writes[T]): String = {
+    val json = Json.toJson(obj)
+    Json.prettyPrint(json)
   }
 }
