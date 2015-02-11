@@ -67,10 +67,229 @@
                 </div>
             </div>
             <!-- End Topbar -->
+
+            <!-- Navbar -->
+            <div class="navbar navbar-default mega-menu" role="navigation">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="fa fa-bars"></span>
+                        </button>
+                        <a class="navbar-brand" href="index.html">
+                            <img id="logo-header" src="@routes.Assets.at("images/logo50.png")" alt="Logo">
+                        </a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse navbar-responsive-collapse">
+                        <ul class="nav navbar-nav">
+                            <!-- Home -->
+                            <li class="dropdown active">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                                    Home
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="index.html">Option 1: Default Page</a></li>
+
+                                    <!-- One Page -->
+                                    <li class="dropdown-submenu">
+                                        <a href="javascript:void(0);">Option 2: One Page</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a target="_blank" href="One-Page/index.html">- One Page Template</a></li>
+                                            <li><a target="_blank" href="One-Page/dark-page-example.html">- One Page Dark Theme</a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- End One Page -->
+
+                                    <li><a href="page_home8.html">Option 4: Home Discover</a></li>
+                                    <li><a href="page_home9.html">Option 5: Home Creative</a></li>
+                                    <li><a href="page_home10.html">Option 6: Home Inspire</a></li>
+                                </ul>
+                            </li>
+                            <!-- End Home -->
+
+                            <!-- Blog -->
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                                    Blog
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="blog_page.html">Blog Page</a></li>
+                                    <li><a href="blog_large.html">Blog Large</a></li>
+                                    <li><a href="blog_medium.html">Blog Medium</a></li>
+                                    <li><a href="blog_full_width.html">Blog Full Width</a></li>
+                                    <li><a href="blog_timeline.html">Blog Timeline</a></li>
+                                </ul>
+                            </li>
+                            <!-- End Blog -->
+
+                            <!-- Contacts -->
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                                    Contacts
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="page_contact1.html">Contacts Default</a></li>
+                                    <li><a href="page_contact_advanced.php">Contacts Advanced</a></li>
+                                    <li><a href="page_contact2.html">Contacts Option 1</a></li>
+                                    <li><a href="page_contact3.html">Contacts Option 2</a></li>
+                                    <li><a href="page_contact4.html">Contacts Option 3</a></li>
+                                </ul>
+                            </li>
+                            <!-- End Contacts -->
+
+                            <!-- Search Block -->
+                            <li>
+                                <i class="search fa fa-search search-btn"></i>
+                                <div class="search-open">
+                                    <div class="input-group animated fadeInDown">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <span class="input-group-btn">
+                                            <button class="btn-u" type="button">Go</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- End Search Block -->
+                        </ul>
+                    </div><!--/navbar-collapse-->
+                </div>
+            </div>
+            <!-- End Navbar -->
+
         </div>
+        <!--=== End Header ===-->
+
+
+        <!--=== Slider ===-->
+        <div id="layerslider" style="width: 100%; height: 500px; margin: 0px auto;">
+            <!-- First slide -->
+            <div class="ls-slide" data-ls="slidedelay:4500;transition2d:25;">
+                <img src="@routes.Assets.at("images/background/stelvio2.jpg")" class="ls-bg" alt="Slide background"/>
+
+                <img class="ls-l" src="@routes.Assets.at("images/logo50.png")" style="top: 85%; left: 44%;"
+                data-ls="offsetxin:left; durationin:1500; delayin:900; fadein:false; offsetxout:left; durationout:1000; fadeout:false;" />
+
+                <img src="@routes.Assets.at("images/logo50.png")" alt="Slider image" class="ls-s-1" style=" top:62px; left: 29%;"
+                data-ls="offsetxin:left; durationin:1500; delayin:1500; fadein:false; offsetxout:left; durationout:1000; fadeout:false;">
+
+                <span class="ls-s-1" style=" text-transform: uppercase; line-height: 45px; font-size:35px; color:#fff; top:200px; left: 590px; slidedirection : top; slideoutdirection : bottom; durationin : 3500; durationout : 3500; delayin : 1000;">
+                    Fully Responsive <br> Bootstrap 3 Template
+                </span>
+
+                <a class="btn-u btn-u-orange ls-s-1" href="#" style=" padding: 9px 20px; font-size:25px; top:340px; left: 590px; slidedirection : bottom; slideoutdirection : top; durationin : 3500; durationout : 2500; delayin : 1000; ">
+                    Download Now
+                </a>
+            </div>
+
+            <!--Second Slide-->
+            <div class="ls-slide" data-ls="transition2d:93;">
+                <img src="@routes.Assets.at("images/background/lenzerheide.jpg")" class="ls-bg" alt="Slide background">
+
+                <i class="fa fa-chevron-circle-right ls-s-1" style=" color: #fff; font-size: 24px; top:70px; left: 40px; slidedirection : left; slideoutdirection : top; durationin : 1500; durationout : 500; "></i>
+
+                <span class="ls-s-2" style=" color: #fff; font-weight: 200; font-size: 22px; top:70px; left: 70px; slidedirection : top; slideoutdirection : bottom; durationin : 1500; durationout : 500; ">
+                    Fully Responsive and Easy to Customize
+                </span>
+
+                <i class="fa fa-chevron-circle-right ls-s-1" style=" color: #fff; font-size: 24px; top:120px; left: 40px; slidedirection : left; slideoutdirection : top; durationin : 2500; durationout : 1500; "></i>
+
+                <span class="ls-s-2" style=" color: #fff; font-weight: 200; font-size: 22px; top:120px; left: 70px; slidedirection : top; slideoutdirection : bottom; durationin : 2500; durationout : 1500; ">
+                    Revolution and Layer Slider Included
+                </span>
+
+                <i class="fa fa-chevron-circle-right ls-s-1" style=" color: #fff; font-size: 24px; top:170px; left: 40px; slidedirection : left; slideoutdirection : top; durationin : 3500; durationout : 3500; "></i>
+
+                <span class="ls-s-2" style=" color: #fff; font-weight: 200; font-size: 22px; top:170px; left: 70px; slidedirection : top; slideoutdirection : bottom; durationin : 3500; durationout : 2500; ">
+                    1000+ Glyphicons Pro and Font Awesome Icons
+                </span>
+
+                <i class="fa fa-chevron-circle-right ls-s-1" style=" color: #fff; font-size: 24px; top:220px; left: 40px; slidedirection : left; slideoutdirection : top; durationin : 4500; durationout : 3500; "></i>
+
+                <span class="ls-s-2" style=" color: #fff; font-weight: 200; font-size: 22px; top:220px; left: 70px; slidedirection : top; slideoutdirection : bottom; durationin : 4500; durationout : 3500; ">
+                    Revolution and Layer Slider Included
+                </span>
+
+                <i class="fa fa-chevron-circle-right ls-s-1" style=" color: #fff; font-size: 24px; top:270px; left: 40px; slidedirection : left; slideoutdirection : top; durationin : 5500; durationout : 4500; "></i>
+
+                <span class="ls-s-2" style=" color: #fff; font-weight: 200; font-size: 22px; top:270px; left: 70px; slidedirection : top; slideoutdirection : bottom; durationin : 5500; durationout : 4500; ">
+                    60+ Template Pages and 20+ Plugins Included
+                </span>
+
+                <a class="btn-u btn-u-blue ls-s1" href="#" style=" padding: 9px 20px; font-size:25px; top:340px; left: 40px; slidedirection : bottom; slideoutdirection : bottom; durationin : 6500; durationout : 3500; ">
+                    Twitter Bootstrap 3
+                </a>
+
+                <img src="@routes.Assets.at("images/logo50.png")" alt="Slider Image" class="ls-s-1" style=" top:30px; left: 650px; slidedirection : right; slideoutdirection : bottom; durationin : 1500; durationout : 1500; ">
+            </div>
+
+            <!--Third Slide-->
+            <div class="ls-slide" style="slidedirection: right; transition2d: 92,93,105; ">
+                <img src="@routes.Assets.at("images/background/surenenpass3.jpg")" class="ls-bg" alt="Slide background">
+
+                <span class="ls-s-1" style=" color: #777; line-height:45px; font-weight: 200; font-size: 35px; top:100px; left: 50px; slidedirection : top; slideoutdirection : bottom; durationin : 1000; durationout : 1000; ">
+                    Unify is Fully Responsive <br> Twitter Bootstrap 3 Template
+                </span>
+
+                <a class="btn-u btn-u-green ls-s-1" href="#" style=" padding: 9px 20px; font-size:25px; top:220px; left: 50px; slidedirection : bottom; slideoutdirection : bottom; durationin : 2000; durationout : 2000; ">
+                    Find Out More
+                </a>
+
+                <img src="@routes.Assets.at("images/logo50.png")" alt="Slider Image" class="ls-s-1" style=" top:30px; left: 670px; slidedirection : right; slideoutdirection : bottom; durationin : 3000; durationout : 3000; ">
+            </div>
+            <!--End Third Slide-->
+
+            <!--Fourth Slide-->
+            <div class="ls-slide" style="slidedirection: right; transition2d: 92,93,105; ">
+                <img src="@routes.Assets.at("images/background/sustenpass.jpg")" class="ls-bg" alt="Slide background">
+            </div>
+            <!--End Fourth Slide-->
+
+            <!--Fifth Slide-->
+            <div class="ls-slide" style="slidedirection: right; transition2d: 92,93,105; ">
+                <img src="@routes.Assets.at("images/background/zurichsee.jpg")" class="ls-bg" alt="Slide background">
+            </div>
+            <!--End Fifth Slide-->
+        </div><!--/layer_slider-->
+        <!--=== End Slider ===-->
+
 
 
         @content
     </div>
+
+    <!-- JS Global Compulsory -->
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/jquery/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/jquery/jquery-migrate.min.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/bootstrap/js/bootstrap.min.js")"></script>
+    <!-- JS Implementing Plugins -->
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/back-to-top.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/flexslider/jquery.flexslider-min.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/owl-carousel/owl-carousel/owl.carousel.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/layer-slider/layerslider/js/greensock.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/layer-slider/layerslider/js/layerslider.transitions.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/layer-slider/layerslider/js/layerslider.kreaturamedia.jquery.js")"></script>
+    <!-- JS Customization -->
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/js/custom.js")"></script>
+    <!-- JS Page Level -->
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/js/app.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/js/plugins/layer-slider.js")"></script>
+    <script type="text/javascript" src="@routes.LocalBootstrapAssets.at("static/bs/assets/js/plugins/owl-recent-works.js")"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            App.init();
+            App.initSliders();
+            LayerSlider.initLayerSlider();
+            OwlRecentWorks.initOwlRecentWorksV2();
+        });
+    </script>
+    <!--[if lt IE 9]>
+    <script src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/respond.js")"></script>
+    <script src="@routes.LocalBootstrapAssets.at("static/bs/assets/plugins/html5shiv.js")"></script>
+    <script src="@routes.LocalBootstrapAssets.at("static/bs/assets/js/plugins/placeholder-IE-fixes.js")"></script>
+    <![endif]-->
+
     </body>
 </html>

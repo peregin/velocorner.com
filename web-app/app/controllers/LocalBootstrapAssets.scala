@@ -21,7 +21,7 @@ object LocalBootstrapAssets extends Controller {
    */
   def at(rootPath: String, file: String): Action[AnyContent] = {
 
-    val fileName = file.stripPrefix("static/bs")
+    val fileName = file.stripPrefix("static/bs") // extract to config or from routes
     ExternalAssets.at(rootPath, fileName)
   }
 }
