@@ -9,4 +9,4 @@ GET     /                           controllers.Application.index
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Reroute only in dev mode, otherwise the static path is served by the reverse proxy
-GET     /static/bs/*file            controllers.LocalAssets.at(rootPath="/Users/levi/data/project/peregin/code/web-bootstrap-unify/HTML", file)
+GET     /static/bs/*file            controllers.LocalBootstrapAssets.at(rootPath="/Users/levi/data/project/peregin/code/web-bootstrap-unify/HTML", file)
