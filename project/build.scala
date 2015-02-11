@@ -31,7 +31,8 @@ object build extends Build {
     scalaVersion := "2.10.4",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
-    scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8")
+    scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
   )
 
   lazy val dataStorage = Project(
@@ -56,6 +57,7 @@ object build extends Build {
   lazy val webApp = Project(
     id = "web-app",
     base = file("web-app"),
+    settings = buildSettings,
     dependencies = Seq(dataStorage)
   ).enablePlugins(play.PlayScala)
 
