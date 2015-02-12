@@ -1,7 +1,6 @@
 package velocorner.manual
 
-import java.time.LocalDate
-
+import org.joda.time.LocalDate
 import velocorner.model.Activity
 import velocorner.util.{JsonIo, Metrics}
 
@@ -34,7 +33,7 @@ object ActivitiesApp extends App with Metrics {
 
   // each until current day
   val now = LocalDate.now()
-  val mn = now.getMonthValue
+  val mn = now.monthOfYear().get()
   val dn = now.getDayOfMonth
   val cyclingActivitiesUntilThisDay = cyclingActivities.filter{a =>
     val m = a.start_date_local.monthOfYear().get()
