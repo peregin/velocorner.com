@@ -11,13 +11,13 @@ object dependencies {
 
   val json = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
 
-  val SparkVersion = "1.2.0"
+  val SparkVersion = "1.2.1"
   val sparkCore = "org.apache.spark" %% "spark-core" % SparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % SparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % SparkVersion
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-  val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % "2.4.16" % "test"
 
 
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
