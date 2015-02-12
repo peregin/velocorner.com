@@ -8,6 +8,7 @@ IP
 AHost to IP address
 MX Record velocorner.com
 CName www @
+CName dev @
 
 Analytics 
 =========
