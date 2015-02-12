@@ -18,7 +18,9 @@ Server
 ======
 mkdir /var/www/velocorner.com
 add a plain static page - coming soon page
+nohup ./web-app &
 
 Apache
 ======
 add VirtualHost in httpd.conf
+exclude proxy for static content
