@@ -17,7 +17,7 @@ object dependencies {
   val sparkSQL = "org.apache.spark" %% "spark-sql" % SparkVersion
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-  val scalaSpec = "org.specs2" %% "specs2" % "2.4.16" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
 
 
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
