@@ -1,4 +1,6 @@
 
+resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+
 // gen-idea plugin for IntelliJ
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
