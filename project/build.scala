@@ -28,7 +28,7 @@ object build extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.10.4",
+    scalaVersion := "2.11.5",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
     scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
