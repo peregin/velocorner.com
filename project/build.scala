@@ -31,7 +31,8 @@ object build extends Build {
     scalaVersion := "2.11.5",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
-    scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+    javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
+    scalacOptions := Seq("-target:jvm-1.7", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
     resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
   )
 
