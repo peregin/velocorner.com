@@ -2,12 +2,72 @@
 
 @main("Welcome to Velocorner") {
 
-    <div class="alert alert-warning fade in alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>Almost there!</strong> @message
+<div class="tag-box tag-box-v3">
+    <!-- Counters -->
+    <div class="main-counters margin-bottom-40">
+
+        <div class="headline"><h2>Club Activities</h2></div>
+
+        <div class="row margin-bottom-40">
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter">52147</span>
+                <h4>Code Lines</h4>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter">24583</span>
+                <h4>Projects</h4>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter">7349</span>
+                <h4>Working Hours</h4>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter">87904</span>
+                <h4>Job Offers</h4>
+            </div>
+        </div>
+
+        <div class="margin-bottom-50"><hr></div>
+
+        <div class="row">
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter-icon"><i class="fa fa-gift rounded"></i></span>
+                <span class="counter">3254</span>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter-icon"><i class="fa fa-coffee rounded"></i></span>
+                <span class="counter">7068</span>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter-icon"><i class="fa fa-thumbs-up rounded"></i></span>
+                <span class="counter">5389</span>
+            </div>
+            <div class="counters col-md-3 col-sm-3">
+                <span class="counter-icon"><i class="fa fa-comments rounded"></i></span>
+                <span class="counter">9172</span>
+            </div>
+        </div>
     </div>
+    <!-- End Counters -->
+
+    <div class="headline"><h2>Personal Activities</h2></div>
 
     <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
 
     @chart()
+
+</div>
 }
+
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="@routes.ExternalAssets.at("assets/plugins/counter/waypoints.min.js")"></script>
+<script type="text/javascript" src="@routes.ExternalAssets.at("assets/plugins/counter/jquery.counterup.min.js")"></script>
+<script type="text/javascript" src="@routes.ExternalAssets.at("assets/plugins/circles-master/circles.js")"></script>
+<!-- JS Page Level -->
+<!--<script type="text/javascript" src="@routes.ExternalAssets.at("assets/js/app.js")"></script>-->
+<script type="text/javascript" src="@routes.ExternalAssets.at("assets/js/plugins/circles-master.js")"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.initCounter();
+    });
+</script>
