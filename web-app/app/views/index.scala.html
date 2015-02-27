@@ -1,6 +1,6 @@
 @(message: String)
 
-@main("Welcome to Velocorner") {
+@common.main("Welcome to Velocorner") {
 
 <div class="tag-box tag-box-v3">
     <!-- Counters -->
@@ -47,9 +47,9 @@
 
     <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
 
-    @chart()
+    @widget.chart()
 
-    @calendar()
+    @widget.calendar()
 
 </div>
 }

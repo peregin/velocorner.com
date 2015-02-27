@@ -8,4 +8,8 @@ object Application extends Controller {
     Ok(views.html.index("Stay tuned, opening soon..."))
   }
 
+  def about = Action {
+    Ok(views.html.about())
+  }
+
 }
