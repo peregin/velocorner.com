@@ -9,11 +9,11 @@ object Global extends GlobalSettings {
     Logger.info("starting the application...")
 
     // check included configuration file
-    val appSecret = app.configuration.getString("application.secret").mkString
+    val appSecret = app.configuration.getString("application.secret")
     Logger.info(s"application.secret: $appSecret")
 
     // check main configuration file, must be provided separately with the token setups
-    val stravaAppToken = app.configuration.getString("strava.application.token").mkString
+    val stravaAppToken = app.configuration.getString("strava.application.token")
     Logger.info(s"strava.application.token: $stravaAppToken")
 
     //val stats = Couchbase.logStats()
