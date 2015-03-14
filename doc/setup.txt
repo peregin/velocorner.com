@@ -24,3 +24,17 @@ Apache
 ======
 add VirtualHost in httpd.conf
 exclude proxy for static content
+
+How to run the web application
+=============================
+prerequisites:
+ - Unify bootstrap template is not part of the distribution (because of the size and copyrights)
+ - The main configuration file is not part of the source code, should include the application.conf and
+   the private data, such as Strava API token
+
+sbt -Dconfig.file=/Users/levi/Downloads/strava/velocorner.conf 'project web-app' run
+
+Distribution
+============
+sbt dist
+run with nohup and start as a background process
