@@ -10,6 +10,7 @@ object dependencies {
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.7"
 
   val json = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
+  val ws = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
 
   val SparkVersion = "1.2.1"
   val sparkCore = "org.apache.spark" %% "spark-core" % SparkVersion
@@ -41,7 +42,7 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.json, dependencies.scalaSpec
+        dependencies.couchbaseClient, dependencies.json, dependencies.ws, dependencies.scalaSpec
       )
     )
   )

@@ -7,7 +7,7 @@ import com.couchbase.client.CouchbaseClient
 import collection.JavaConversions._
 
 
-object Couchbase {
+object CouchbaseStorage extends Storage {
 
   val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "default", "")

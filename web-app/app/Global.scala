@@ -1,6 +1,5 @@
 import play.Logger
 import play.api.{Application, GlobalSettings}
-import velocorner.storage.Couchbase
 
 
 object Global extends GlobalSettings {
@@ -16,12 +15,12 @@ object Global extends GlobalSettings {
     val stravaAppToken = app.configuration.getString("strava.application.token")
     Logger.info(s"strava.application.token: $stravaAppToken")
 
-    //val stats = Couchbase.logStats()
+    //val stats = CouchbaseStorage.logStats()
     //Logger.info(stats.mkString("\n"))
   }
 
   override def onStop(app: Application) {
     Logger.info("disconnecting from storage...")
-    //Couchbase.disconnect()
+    //CouchbaseStorage.disconnect()
   }
 }
