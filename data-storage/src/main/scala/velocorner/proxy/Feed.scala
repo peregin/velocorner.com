@@ -1,8 +1,13 @@
 package velocorner.proxy
 
-/**
- * Created by levi on 15/03/15.
- */
+import velocorner.model.Activity
+
+
 trait Feed {
 
+  def recentClubActivities(clubId: Long): List[Activity]
+
+  def recentAthleteActivities: List[Activity]
+
+  def listAthleteActivities: List[Activity]
 }

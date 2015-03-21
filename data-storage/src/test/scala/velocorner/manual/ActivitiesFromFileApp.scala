@@ -5,7 +5,7 @@ import velocorner.model.Activity
 import velocorner.util.{JsonIo, Metrics}
 
 
-object ActivitiesApp extends App with Metrics {
+object ActivitiesFromFileApp extends App with Metrics {
 
   println("reading files...")
 
