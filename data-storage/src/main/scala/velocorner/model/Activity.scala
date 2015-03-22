@@ -40,7 +40,7 @@ case class Activity(
   resource_state: Int,
   external_id: Option[String],
   upload_id: Option[Int],
-  athlete: Map[String, Int],
+  athlete: Athlete,
   name: String,
   distance: Float,
   moving_time: Int,
