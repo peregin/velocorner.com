@@ -25,6 +25,10 @@ Apache
 add VirtualHost in httpd.conf
 exclude proxy for static content
 
+Couchbase
+=========
+couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=200
+
 How to run the web application
 =============================
 prerequisites:
