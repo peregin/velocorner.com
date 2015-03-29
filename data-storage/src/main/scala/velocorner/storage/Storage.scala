@@ -7,9 +7,7 @@ import velocorner.model.Activity
  */
 trait Storage {
 
-  def storeClub(activities: List[Activity])
-
-  def storeAthlete(activities: List[Activity])
+  def store(activities: List[Activity])
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

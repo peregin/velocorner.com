@@ -14,14 +14,11 @@ class CouchbaseStorage(password: String) extends Storage {
   lazy val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
 
-  override def storeClub(activities: List[Activity]) {
+  override def store(activities: List[Activity]) {
     activities.foreach{a =>
       client.add(a.id.toString, 0, JsonIo.write(a))
     }
   }
-
-
-  override def storeAthlete(activities: List[Activity]): Unit = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
