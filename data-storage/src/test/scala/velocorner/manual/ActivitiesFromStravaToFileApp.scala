@@ -7,7 +7,7 @@ import velocorner.proxy.StravaFeed
 import velocorner.util.JsonIo
 
 
-object ActivitiesFromStravaApp extends App {
+object ActivitiesFromStravaToFileApp extends App {
 
   // the property file having the application secrets, strava token, bucket password, it is not part of the git project
   sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"

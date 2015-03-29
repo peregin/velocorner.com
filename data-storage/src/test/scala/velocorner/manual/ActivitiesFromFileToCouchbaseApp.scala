@@ -17,11 +17,11 @@ object ActivitiesFromFileToCouchbaseApp extends App {
   val password = SecretConfig.getBucketPassword
   println(s"connecting to couchbase bucket with password [$password]...")
 
-  val list = JsonIo.readFromFile[List[Activity]]("/Users/levi/Downloads/strava/club_test.json")
+  val list = JsonIo.readFromFile[List[Activity]]("/Users/levi/Downloads/strava/all.json")
   println(s"found ${list.size} activities")
 
   val storage = new CouchbaseStorage(password)
   storage.initialize()
-  storage.store(list.sortBy(_.id).slice(0, 1))
+  storage.store(list)
   storage.destroy()
 }
