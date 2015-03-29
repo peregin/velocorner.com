@@ -9,6 +9,6 @@ import velocorner.util.JsonIo
  */
 object JsonApp extends App {
 
-  val list = JsonIo.readFromFile[List[Activity]]("/Users/levi/Downloads/strava/test.json")
+  val list = JsonIo.readFromFile[List[Activity]]("/Users/levi/Downloads/strava/club_test.json")
   println(s"found ${list.size} activities")
 }

@@ -20,7 +20,7 @@ object Global extends GlobalSettings {
   }
 
   override def onStop(app: Application) {
-    Logger.info("disconnecting from storage...")
+    Logger.info("releasing from storage connections...")
     //CouchbaseStorage.disconnect()
   }
 }
