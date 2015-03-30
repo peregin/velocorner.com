@@ -10,9 +10,10 @@ object AggregateActivitiesFromFileApp extends App with Metrics {
   println("reading files...")
 
   // read the 3 dump files and merge it into one single list
-  val activities = timed("reading files") {
-    (1 to 3).map(i => s"/Users/levi/Downloads/strava/dump$i.txt").map(JsonIo.readFromFile[List[Activity]]).foldLeft(List[Activity]())(_ ++ _)
-  }
+  //val activities = timed("reading files") {
+  //  (1 to 3).map(i => s"/Users/levi/Downloads/strava/dump$i.txt").map(JsonIo.readFromFile[List[Activity]]).foldLeft(List[Activity]())(_ ++ _)
+  //}
+  val activities = JsonIo.readFromFile[List[Activity]]("/Users/levi/Downloads/strava/all.json")
   println(s"read ${activities.size} activities")
   val activityTypes = activities.map(_.`type`).distinct
   println(s"activity types ${activityTypes.mkString(", ")}")
