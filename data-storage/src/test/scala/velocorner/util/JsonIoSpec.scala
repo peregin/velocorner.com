@@ -1,7 +1,7 @@
 package velocorner.util
 
 import org.specs2.mutable.Specification
-import velocorner.model.Activity
+import velocorner.model.{Athlete, Activity}
 
 import scala.io.Source
 
@@ -41,6 +41,14 @@ class JsonIoSpec extends Specification {
     "read the json file" in {
       val list = JsonIo.read[List[Activity]](json)
       list must haveSize(1)
+    }
+  }
+
+  "writer for athlete" should {
+    "generate type field" in {
+      val a = Athlete(1, 2, Some("Levi"), None)
+      val json = JsonIo.write(a)
+      json must contain("type\" : \"Athlete")
     }
   }
 

@@ -1,14 +1,21 @@
 package velocorner.model
 
-import play.api.libs.json.{Json, Format}
-
+import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
 /**
  * Created by levi on 22/03/15.
  */
 
 object Athlete {
-  implicit val activityFormat = Format[Athlete](Json.reads[Athlete], Json.writes[Athlete]) //.addField("type", "Athlete")
+  val writes = new Writes[Athlete] {
+    override def writes(o: Athlete): JsValue = {
+      val baseJs: JsObject = Json.writes[Athlete].writes(o).as[JsObject]
+      val typeJs: JsString = Writes.StringWrites.writes("Athlete")
+      JsObject(baseJs.fields :+ ("type" -> typeJs))
+    }
+  }
+  implicit val activityFormat = Format[Athlete](Json.reads[Athlete], writes)
 }
 
 case class Athlete(
