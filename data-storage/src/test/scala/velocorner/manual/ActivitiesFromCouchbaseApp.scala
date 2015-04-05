@@ -20,7 +20,7 @@ object ActivitiesFromCouchbaseApp extends App with Logging with Metrics {
   storage.initialize()
 
   val list = timed("querying progress") {
-    storage.progress(true)
+    storage.dailyProgress
   }
   log.info(s"${list.take(10).mkString("\n\t", "\n\t", "\n")}")
 

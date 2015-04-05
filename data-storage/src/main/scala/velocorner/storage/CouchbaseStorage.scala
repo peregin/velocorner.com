@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
-import velocorner.model.{Progress, Activity}
+import velocorner.model.{DailyProgress, Progress, Activity}
 import velocorner.util.JsonIo
 
 import scala.collection.JavaConversions._
@@ -25,15 +25,18 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     }
   }
 
+  override def dailyProgress: List[DailyProgress] = progress(true, (entry) => DailyProgress.fromStorage(entry.getKey, entry.getValue))
+
+  override def overallProgress: List[Progress] = progress(false, (entry) => Progress.fromStorage(entry.getValue))
 
   // queries the daily or overall progress
-  override def progress(daily: Boolean): List[Progress] = {
+  private def progress[T](daily: Boolean, func: ViewRow => T): List[T] = {
     val view = client.getView(progressDesignName, byDayViewName)
     val query = new Query()
     query.setGroup(daily)
     query.setStale(Stale.FALSE)
     val response = client.query(view, query)
-    val progress = for (entry <- response) yield Progress.fromStorage(if (daily) Some(entry.getKey) else None, entry.getValue)
+    val progress = for (entry <- response) yield func(entry)
     progress.toList
   }
 

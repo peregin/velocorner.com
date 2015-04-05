@@ -9,6 +9,7 @@ import velocorner.util.JsonIo
 import scala.annotation.tailrec
 import scala.concurrent.{Await, Future, ExecutionContext}
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * Created by levi on 17/03/15.

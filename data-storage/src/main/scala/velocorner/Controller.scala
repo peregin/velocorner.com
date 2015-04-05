@@ -1,11 +1,17 @@
 package velocorner
 
+import velocorner.model.DailyProgress
 import velocorner.proxy.Feed
 import velocorner.storage.Storage
 
 /**
- * Stands for the data controller. Controls the access to the storage layer (Couchbase) and remote service (Strava).
+ * Stands for the data flow controller.
+ * Controls the access to the storage layer (Couchbase) and remote service (Strava).
+ * Also throttles the requests to Strava, since the API usage is limited on a per-application basis using a short term,
+ * 15 minute, limit and a long term, daily, limit.
+ * The default rate limit allows 600 requests every 15 minutes, with up to 30,000 requests per day
  */
 class Controller(feed: Feed, repo: Storage) {
 
+  def dailyProgress: List[DailyProgress] = repo.dailyProgress
 }
