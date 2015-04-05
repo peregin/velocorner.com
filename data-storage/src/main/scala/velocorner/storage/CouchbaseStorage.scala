@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
-import velocorner.model.Activity
+import velocorner.model.{Progress, Activity}
 import velocorner.util.JsonIo
 
 import scala.collection.JavaConversions._
@@ -27,14 +27,14 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
 
   // queries the daily or overall progress
-  override def progress(daily: Boolean) {
+  override def progress(daily: Boolean): List[Progress] = {
     val view = client.getView(progressDesignName, byDayViewName)
     val query = new Query()
     query.setGroup(daily)
     query.setStale(Stale.FALSE)
     val response = client.query(view, query)
-    log.info(s"rows = ${response.size()}")
-    log.info(s"first = ${response.iterator().next().getKey}")
+    val progress = for (entry <- response) yield Progress.fromStorage(if (daily) Some(entry.getKey) else None, entry.getValue)
+    progress.toList
   }
 
 
@@ -63,6 +63,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
         |             dist: 0,
         |             distmax: 0,
         |             elev: 0,
+        |             elevmax: 0,
         |             time: 0};
         |  for(i=0; i < values.length; i++) {
         |    if (rereduce) {
@@ -70,12 +71,14 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
         |      res.dist += values[i].dist;
         |      res.distmax = Math.max(res.distmax, values[i].dist);
         |      res.elev += values[i].elev;
+        |      res.elevmax = Math.max(res.elevmax, values[i].elev);
         |      res.time += values[i].time;
         |    } else {
         |      res.ride += 1;
         |      res.dist += values[i].distance;
         |      res.distmax = Math.max(res.distmax, values[i].distance);
         |      res.elev += values[i].elevation;
+        |      res.elevmax = Math.max(res.elevmax, values[i].elevation);
         |      res.time += values[i].time;
         |    }
         |  }

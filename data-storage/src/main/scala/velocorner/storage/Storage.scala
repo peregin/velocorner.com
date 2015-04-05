@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import velocorner.model.Activity
+import velocorner.model.{Progress, Activity}
 
 /**
  * Created by levi on 15/03/15.
@@ -11,7 +11,7 @@ trait Storage {
 
 
   // queries the daily or overall progress
-  def progress(daily: Boolean)
+  def progress(daily: Boolean): List[Progress]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

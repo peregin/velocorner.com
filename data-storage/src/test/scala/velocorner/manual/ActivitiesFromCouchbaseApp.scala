@@ -19,9 +19,10 @@ object ActivitiesFromCouchbaseApp extends App with Logging with Metrics {
   val storage = new CouchbaseStorage(password)
   storage.initialize()
 
-  timed("querying progress") {
+  val list = timed("querying progress") {
     storage.progress(true)
   }
+  log.info(s"${list.take(10).mkString("\n\t", "\n\t", "\n")}")
 
   storage.destroy()
 }
