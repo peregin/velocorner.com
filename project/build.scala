@@ -6,11 +6,13 @@ import PlayKeys._
 
 object dependencies {
 
-
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.7"
 
-  val json = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
-  val ws = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
+  val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
+  val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
+
+  val logback = "ch.qos.logback" % "logback-classic" % "1.1.1"
+  val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.10"
 
   val sparkVersion = "1.2.1"
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
@@ -21,6 +23,7 @@ object dependencies {
   val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
 
 
+  def logging = Seq(logback, slf4s)
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
 }
 
@@ -42,8 +45,8 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.json, dependencies.ws, dependencies.scalaSpec
-      )
+        dependencies.couchbaseClient, dependencies.playJson, dependencies.playWs, dependencies.scalaSpec
+      ) ++ dependencies.logging
     )
   )
 

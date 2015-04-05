@@ -9,6 +9,10 @@ trait Storage {
 
   def store(activities: List[Activity])
 
+
+  // queries the daily or overall progress
+  def progress(daily: Boolean)
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
 
