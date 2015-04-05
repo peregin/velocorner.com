@@ -9,6 +9,8 @@ object Global extends GlobalSettings {
 
   @volatile private var dataHandler: Option[Controller] = None
 
+  def getDataHandler = dataHandler.getOrElse(sys.error("data handler is not initialized"))
+
   override def onStart(app: Application) {
     Logger.info("starting the application...")
 

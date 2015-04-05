@@ -1,4 +1,4 @@
-@(message: String)
+@(message: String, progress: List[velocorner.model.Progress])
 
 @common.main("Welcome to Velocorner") {
 
@@ -47,7 +47,7 @@
 
     <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
 
-    @widget.chart()
+    @widget.chart(progress)
 
     <!-- @widget.calendar() -->
 
