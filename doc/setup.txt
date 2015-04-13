@@ -27,7 +27,9 @@ exclude proxy for static content
 
 Couchbase
 =========
+/opt/couchbase/bin/
 couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=200
+couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -p ****
 
 How to run the web application
 =============================
