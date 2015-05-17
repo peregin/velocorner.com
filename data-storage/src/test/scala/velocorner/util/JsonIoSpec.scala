@@ -14,7 +14,7 @@ class JsonIoSpec extends Specification {
 
   "converter for athlete activities" should {
 
-    val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.txt")).mkString
+    val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.json")).mkString
 
     "read Strava activity" in {
       val list = JsonIo.read[List[Activity]](json)
@@ -36,7 +36,7 @@ class JsonIoSpec extends Specification {
   }
 
   "converter for club activities" should {
-    val json = Source.fromURL(getClass.getResource("/data/strava/club_activity.txt")).mkString
+    val json = Source.fromURL(getClass.getResource("/data/strava/club_activity.json")).mkString
 
     "read the json file" in {
       val list = JsonIo.read[List[Activity]](json)
