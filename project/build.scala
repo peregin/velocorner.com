@@ -32,7 +32,7 @@ object build extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.11.5",
+    scalaVersion := "2.11.6",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
