@@ -22,7 +22,9 @@ import play.api.libs.json.{Writes, Reads, Json, Format}
  "map":{"id":"a244993130","summary_polyline":"qfb`Ha_`s@sMfRXpJ}@dB`BnM`KpQkJrN|Gza@jHfSbB?lLpXHnIzBbI}DtFgHhVqMtSoA|Of@nEeNh]KrLoCpRt@z]nEpUzFfKrJjEtKkMfNnB~GyHnHl@xImKrKy@pC_NwByGhAaE~HhApI}OvKmM~OsKlFkKlKyKpJyChc@q]vr@wJdk@uBjKtDdHoHnZmMpEbB`W``@zMpHdL~@`ViI`@ePcBgEqQzGzI{OkB{JO{O_DsH@{C|CeGzGyBzH{JvIoXlEiB|BqPhFl@jDoGU{AmHe@tCwLrFgFqHEcOpH_FmClB}@x@{JnEaF@yHbCXbBwF~GaHWwLzAiJg\\nIkKXsJnNs@|FwD~B}IgCcN`BeOcA",
  "resource_state":2},
  "trainer":false,"commute":false,"manual":false,"private":false,"flagged":false,"gear_id":"b1494155",
- "average_speed":4.732,"max_speed":13.6,"average_cadence":64.9,"average_temp":-1.0,"average_watts":172.1,"kilojoules":844.1,"device_watts":false,
+ "average_speed":4.732,
+ "max_speed":13.6,
+ "average_cadence":64.9,"average_temp":-1.0,"average_watts":172.1,"kilojoules":844.1,"device_watts":false,
  "truncated":1622,"has_kudoed":false}]
 
  *
@@ -49,5 +51,8 @@ case class Activity(
   `type`: String,
   start_date: DateTime,
   start_date_local: DateTime,
-  timezone: String
+  timezone: String,
+  average_speed: Option[Float],
+  max_speed: Option[Float],
+  average_cadence: Option[Float]
 )

@@ -33,6 +33,14 @@ class JsonIoSpec extends Specification {
       val otherActivity = JsonIo.read[Activity](jsonText)
       activity === otherActivity
     }
+
+    "read all the activity details" in {
+      val jsonSingle = Source.fromURL(getClass.getResource("/data/strava/single_activity.json")).mkString
+      val activity = JsonIo.read[Activity](jsonSingle)
+      activity.max_speed must beSome(13.6f)
+      activity.average_speed must beSome(4.732f)
+      activity.average_cadence must beSome(64.9f)
+    }
   }
 
   "converter for club activities" should {
