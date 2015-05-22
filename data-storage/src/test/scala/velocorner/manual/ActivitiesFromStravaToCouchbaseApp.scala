@@ -21,6 +21,7 @@ object ActivitiesFromStravaToCouchbaseApp extends App with Logging {
   val feed = new StravaFeed(token)
   val storage = new CouchbaseStorage(password)
   val activities = feed.recentAthleteActivities
+  //val activities = feed.listAthleteActivities
   storage.store(activities)
 
   log.info("done...")

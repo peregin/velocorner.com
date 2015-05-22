@@ -16,8 +16,12 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
   lazy val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
+
   val progressDesignName = "progress"
   val byDayViewName = "by_day"
+
+  val listDesignName = "list"
+  val activitiesViewName = "activities"
 
   override def store(activities: List[Activity]) {
     activities.foreach{a =>
@@ -40,6 +44,18 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     progress.toList
   }
 
+  override def listActivityIds: List[Int] = {
+    val view = client.getView(listDesignName, activitiesViewName)
+    val query = new Query()
+    query.setStale(Stale.FALSE)
+    val response = client.query(view, query)
+    val ids = for (entry <- response) yield entry.getId.toInt
+    ids.toList
+  }
+
+  override def deleteActivities(ids: Iterable[Int]) {
+    ids.map(_.toString).foreach(client.delete)
+  }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents
   override def initialize() {
@@ -48,7 +64,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     val mapProgress =
       """
         |function (doc, meta) {
-        |  if (doc.type == "Ride" && doc.start_date && doc.distance) {
+        |  if (doc.type && doc.type == "Ride" && doc.start_date && doc.distance) {
         |    var d = dateToArray(doc.start_date)
         |    emit([d[0], d[1], d[2]],
         |         {
@@ -91,6 +107,20 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     val byDayView = new ViewDesign(byDayViewName, mapProgress, reduceProgress)
     progressDesign.getViews().add(byDayView)
     client.createDesignDoc(progressDesign)
+
+    client.deleteDesignDoc(listDesignName)
+    val listDesign = new DesignDocument(listDesignName)
+    val mapActivities =
+      """
+        |function (doc, meta) {
+        |  if (doc.type && doc.type == "Ride") {
+        |    emit(meta.id, null);
+        |  }
+        |}
+      """.stripMargin
+    val activitiesView = new ViewDesign(activitiesViewName, mapActivities)
+    listDesign.getViews.add(activitiesView)
+    client.createDesignDoc(listDesign)
   }
 
   // releases any connections, resources used

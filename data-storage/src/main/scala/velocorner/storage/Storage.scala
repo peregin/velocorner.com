@@ -13,6 +13,10 @@ trait Storage {
   def dailyProgress: List[DailyProgress]
   def overallProgress: List[Progress]
 
+  def listActivityIds: List[Int]
+
+  def deleteActivities(ids: Iterable[Int])
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
 

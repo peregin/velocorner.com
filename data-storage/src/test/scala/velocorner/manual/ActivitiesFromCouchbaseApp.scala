@@ -24,5 +24,11 @@ object ActivitiesFromCouchbaseApp extends App with Logging with Metrics {
   }
   log.info(s"${list.take(10).mkString("\n\t", "\n\t", "\n")}")
 
+  val ids = storage.listActivityIds
+  log.info(s"got ${ids.size} ids")
+
+  //storage.deleteActivities(ids)
+  //log.info("deleted all rides from the storage...")
+
   storage.destroy()
 }
