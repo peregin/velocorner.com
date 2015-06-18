@@ -26,4 +26,5 @@ object ActivitiesFromStravaToCouchbaseApp extends App with Logging {
 
   log.info("done...")
   storage.destroy()
+  sys.exit(0)
 }

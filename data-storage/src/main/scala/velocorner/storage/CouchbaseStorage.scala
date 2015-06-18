@@ -125,6 +125,6 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
   // releases any connections, resources used
   override def destroy() {
-    client.shutdown(3, TimeUnit.SECONDS)
+    client.shutdown(1, TimeUnit.SECONDS)
   }
 }
