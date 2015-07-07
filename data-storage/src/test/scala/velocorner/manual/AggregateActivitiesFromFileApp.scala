@@ -5,7 +5,7 @@ import velocorner.model.Activity
 import velocorner.util.{JsonIo, Metrics}
 
 
-object AggregateActivitiesFromFileApp extends App with Metrics with Logging with AggregateActivities {
+object AggregateActivitiesFromFileApp extends App with Metrics with Logging {
 
   log.info("reading files...")
 
@@ -19,8 +19,6 @@ object AggregateActivitiesFromFileApp extends App with Metrics with Logging with
   log.info(s"activity types ${activityTypes.mkString(", ")}")
   val cyclingActivities = activities.filter(_.`type` == "Ride")
   log.info(s"cycling activities ${cyclingActivities.size}")
-
-  printAll(cyclingActivities)
 
   log.info("done...")
 }
