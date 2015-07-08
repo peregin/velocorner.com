@@ -1,4 +1,4 @@
-@(progress: List[velocorner.model.Progress])
+@(chartTitle: String, progress: List[velocorner.model.YearlyProgress])
 
 <script type="text/javascript" src="@routes.ExternalAssets.at("assets/plugins/jquery/jquery.min.js")"></script>
 
@@ -12,7 +12,7 @@ $(function () {
             type: 'spline'
         },
         title: {
-            text: 'Yearly Distance'
+            text: '@chartTitle'
         },
         subtitle: {
             text: ''
@@ -35,86 +35,24 @@ $(function () {
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} km'
         },
 
-        series: [{
-            name: '2012',
+        series: [
+        @for(p <- progress) {
+        {
+            name: '@p.year',
             // Define the data points. All series have a dummy year
             // of 1970/71 in order to be compared on the same x axis. Note
             // that in JavaScript, months start at 0 for January, 1 for February etc.
             data: [
-                [Date.UTC(2014,  0, 27), 34 ],
-                [Date.UTC(2014,  1, 10), 50 ],
-                [Date.UTC(2014,  1, 18), 80 ],
-                [Date.UTC(2014,  2,  2), 101],
-                [Date.UTC(2014,  2,  9), 123],
-                [Date.UTC(2014,  2, 16), 150],
-                [Date.UTC(2014,  2, 28), 175],
-                [Date.UTC(2014,  3,  1), 210],
-                [Date.UTC(2014,  3,  8), 244],
-                [Date.UTC(2014,  3, 12), 310],
-                [Date.UTC(2014,  3, 27), 323],
-                [Date.UTC(2014,  4, 10), 372],
-                [Date.UTC(2014,  5, 18), 422],
-                [Date.UTC(2014,  7,  4), 499],
-                [Date.UTC(2014,  7, 11), 512],
-                [Date.UTC(2014,  7, 24), 515],
-                [Date.UTC(2014,  8, 15), 519],
-                [Date.UTC(2014,  8, 25), 564],
-                [Date.UTC(2014,  9,  2), 628],
-                [Date.UTC(2014,  9,  6), 659],
-                [Date.UTC(2014, 10,  3), 752],
-                [Date.UTC(2014, 10, 13), 797],
-                [Date.UTC(2014, 11,  9), 889],
-                [Date.UTC(2014, 11, 12), 924],
-                [Date.UTC(2014, 11, 26), 972]
+            @for(d <- p.progress) {
+                [Date.UTC(2015, @d.getMonth, @d.getDay), @d.progress.distance ],
+            } // end of daily for
             ]
-        }, {
-            name: '2013',
-            data: [
-                [Date.UTC(2014,  0, 18), 82 ],
-                [Date.UTC(2014,  0, 26), 102],
-                [Date.UTC(2014,  1,  1), 138],
-                [Date.UTC(2014,  1, 11), 171],
-                [Date.UTC(2014,  1, 25), 201],
-                [Date.UTC(2014,  2,  8), 285],
-                [Date.UTC(2014,  2, 15), 290],
-                [Date.UTC(2014,  3,  1), 311],
-                [Date.UTC(2014,  3,  8), 325],
-                [Date.UTC(2014,  3, 21), 367],
-                [Date.UTC(2014,  4, 12), 399],
-                [Date.UTC(2014,  4, 25), 454],
-                [Date.UTC(2014,  7,  4), 528],
-                [Date.UTC(2014,  7,  9), 711],
-                [Date.UTC(2014,  7, 13), 899],
-                [Date.UTC(2014,  7, 19), 972],
-                [Date.UTC(2014,  8, 25), 1050],
-                [Date.UTC(2014, 10, 31), 1200],
-                [Date.UTC(2014, 11,  7), 1216]
-            ]
-        }, {
-            name: '2014',
-            data: [
-                [Date.UTC(2014,  0,  9), 25 ],
-                [Date.UTC(2014,  1, 14), 59 ],
-                [Date.UTC(2014,  2, 28), 110],
-                [Date.UTC(2014,  3, 12), 188],
-                [Date.UTC(2014,  4,  1), 265],
-                [Date.UTC(2014,  4, 24), 312],
-                [Date.UTC(2014,  6,  1), 432],
-                [Date.UTC(2014,  6,  7), 588],
-                [Date.UTC(2014,  6, 23), 789],
-                [Date.UTC(2014,  7,  8), 899],
-                [Date.UTC(2014,  7, 14), 1042],
-                [Date.UTC(2014,  7, 24), 1289],
-                [Date.UTC(2014,  8,  4), 1486],
-                [Date.UTC(2014,  8, 18), 1612],
-                [Date.UTC(2014,  8, 24), 1710],
-                [Date.UTC(2014, 10, 16), 1954],
-                [Date.UTC(2014, 11, 21), 2010]
-            ]
-        }]
+        },
+        } // end of for yearly for
+        ]
 
     });
 });

@@ -19,6 +19,8 @@ object Progress {
     val longestElevation = (jsPath \ "elevmax").as[Double]
     Progress(rides, distance, longestDistance, movingTime, averageSpeed, elevation, longestElevation)
   }
+
+  def zero = Progress(0, 0d, 0d, 0, 0d, 0d, 0d)
 }
 
 /**
@@ -32,4 +34,15 @@ object Progress {
 case class Progress(rides: Int,
                     distance: Double, longestDistance: Double, movingTime: Long,
                     averageSpeed: Double,
-                    elevation: Double, longestElevation: Double)
+                    elevation: Double, longestElevation: Double) {
+
+  def +(that: Progress) = Progress(
+    this.rides + that.rides,
+    this.distance + that.distance,
+    this.longestDistance.max(that.longestDistance),
+    this.movingTime + that.movingTime,
+    this.averageSpeed.max(that.averageSpeed),
+    this.elevation + that.elevation,
+    this.longestElevation.max(that.longestElevation)
+  )
+}

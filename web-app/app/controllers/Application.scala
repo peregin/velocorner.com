@@ -1,12 +1,14 @@
 package controllers
 
 import play.api.mvc._
+import velocorner.util.Metrics
 
-object Application extends Controller {
+object Application extends Controller with Metrics {
 
   def index = Action {
 
-    Ok(views.html.index("Stay tuned, opening soon...", List.empty))
+    val progress = timed("getting yearly progress")(Global.getDataHandler.yearlyProgress)
+    Ok(views.html.index("Stay tuned, opening soon...", progress))
   }
 
   def about = Action {

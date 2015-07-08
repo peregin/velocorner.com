@@ -1,6 +1,6 @@
 package velocorner
 
-import velocorner.model.DailyProgress
+import velocorner.model.{YearlyProgress, DailyProgress}
 import velocorner.proxy.Feed
 import velocorner.storage.Storage
 
@@ -14,4 +14,6 @@ import velocorner.storage.Storage
 class Controller(feed: Feed, val repo: Storage) {
 
   def dailyProgress: List[DailyProgress] = repo.dailyProgress
+
+  def yearlyProgress: List[YearlyProgress] = YearlyProgress.from(dailyProgress)
 }

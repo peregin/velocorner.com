@@ -14,4 +14,8 @@ object DailyProgress {
 }
 
 
-case class DailyProgress(day: LocalDate, progress: Progress)
+case class DailyProgress(day: LocalDate, progress: Progress) {
+
+  def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
+  def getDay = day.getDayOfMonth
+}

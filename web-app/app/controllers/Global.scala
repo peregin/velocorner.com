@@ -1,3 +1,5 @@
+package controllers
+
 import play.Logger
 import play.api.{Application, GlobalSettings}
 import velocorner.Controller
