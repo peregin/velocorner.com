@@ -1,5 +1,6 @@
 package velocorner.model
 
+import org.joda.time.LocalDate
 
 case class YearlyProgress(year: Int, progress: List[DailyProgress])
 
@@ -11,7 +12,9 @@ object YearlyProgress {
     byYear.map { case (year, list) => YearlyProgress(year, list)}.toList.sortBy(_.year)
   }
 
-//  def sum(progress: List[YearlyProgress]): List[YearlyProgress] = {
-//    progress.map(yp => yp.copy(progress = yp.progress.scanLeft(Progress.zero)( (accu, i) => accu + i.progress))))
-//  }
+  def aggregate(progress: List[YearlyProgress]): List[YearlyProgress] = {
+    progress.map(yp => yp.copy(
+      progress = yp.progress.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) => DailyProgress(i.day, accu.progress + i.progress)).tail )
+    )
+  }
 }

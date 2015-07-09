@@ -36,6 +36,7 @@ case class Progress(rides: Int,
                     averageSpeed: Double,
                     elevation: Double, longestElevation: Double) {
 
+  // aggregate
   def +(that: Progress) = Progress(
     this.rides + that.rides,
     this.distance + that.distance,
