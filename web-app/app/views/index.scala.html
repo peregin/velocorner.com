@@ -1,4 +1,5 @@
-@(message: String, progress: List[velocorner.model.YearlyProgress])
+@import velocorner.model.YearlyProgress
+@(message: String, progress: List[YearlyProgress])
 
 @common.main("Welcome to Velocorner") {
 
@@ -47,9 +48,10 @@
 
     <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
 
-    @widget.chart("Yearly Activities", progress)
+    @widget.chart("yearlyChart", "Yearly Heatmap", progress)
 
-    <!-- @widget.calendar() -->
+    @widget.chart("yearlyProgress", "Yearly Progress", YearlyProgress.aggregate(progress))
+
 
 </div>
 }

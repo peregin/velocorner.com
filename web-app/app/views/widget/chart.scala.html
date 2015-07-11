@@ -1,4 +1,4 @@
-@(chartTitle: String, progress: List[velocorner.model.YearlyProgress])
+@(chartId: String, chartTitle: String, progress: List[velocorner.model.YearlyProgress])
 
 <script type="text/javascript" src="@routes.ExternalAssets.at("assets/plugins/jquery/jquery.min.js")"></script>
 
@@ -8,7 +8,7 @@ $(function () {
     var chart;
     chart = new Highcharts.Chart({
         chart: {
-            renderTo: 'chart_container',
+            renderTo: '@chartId',
             type: 'spline'
         },
         title: {
@@ -65,5 +65,5 @@ $(function () {
 <script type="text/javascript" src="@routes.Assets.at("javascripts/highcharts/modules/exporting.js")"></script>
 
 
-<div id="chart_container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="@chartId" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
