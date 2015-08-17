@@ -10,7 +10,7 @@ import velocorner.model.{DailyProgress, YearlyProgress}
 trait AggregateActivities extends Logging {
 
   def printAllProgress(cyclingActivities: List[DailyProgress]) {
-    log.info("Total")
+    log.info("TOTAL")
     printProgress(cyclingActivities)
 
     // each until current day
@@ -25,7 +25,7 @@ trait AggregateActivities extends Logging {
       else false
     }
 
-    log.info("Until this day")
+    log.info("UNTIL THIS DAY")
     printProgress(cyclingActivitiesUntilThisDay)
   }
 
