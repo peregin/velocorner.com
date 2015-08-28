@@ -13,7 +13,7 @@ object ActivitiesFromStravaToFileApp extends App with Logging {
   // the property file having the application secrets, strava token, bucket password, it is not part of the git project
   sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"
 
-  val token = SecretConfig.getApplicationToken
+  val token = SecretConfig.load().getApplicationToken
   log.info(s"connecting to strava with token [$token]...")
 
   val feed = new StravaFeed(token)

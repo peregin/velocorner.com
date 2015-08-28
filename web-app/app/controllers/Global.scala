@@ -2,7 +2,7 @@ package controllers
 
 import play.Logger
 import play.api.{Application, GlobalSettings}
-import velocorner.Controller
+import velocorner.{SecretConfig, Controller}
 import velocorner.proxy.StravaFeed
 import velocorner.storage.CouchbaseStorage
 
@@ -10,23 +10,22 @@ import velocorner.storage.CouchbaseStorage
 object Global extends GlobalSettings {
 
   @volatile private var dataHandler: Option[Controller] = None
+  @volatile private var secretConfig: Option[SecretConfig] = None
 
   def getDataHandler = dataHandler.getOrElse(sys.error("data handler is not initialized"))
+
+  def getSecretConfig = secretConfig.getOrElse(sys.error("secret configuration is not initialized"))
 
   override def onStart(app: Application) {
     Logger.info("starting the application...")
 
     // check included configuration file
+    secretConfig = Some(SecretConfig(app.configuration.underlying))
     val appSecret = app.configuration.getString("application.secret")
-    Logger.info(s"application.secret: ${appSecret.mkString}")
+    Logger.info(s"secret config: ${secretConfig.mkString}")
 
-    // check main configuration file, must be provided separately with the token setups
-    val stravaAppToken = app.configuration.getString("strava.application.token").getOrElse("strava application token is missing")
-    Logger.info(s"strava.application.token: $stravaAppToken")
-    val couchbaseBucketPassword = app.configuration.getString("couchbase.bucket.password").getOrElse("couchbase bucket password is missing")
-
-    val feed = new StravaFeed(stravaAppToken)
-    val storage = new CouchbaseStorage(couchbaseBucketPassword)
+    val feed = new StravaFeed(getSecretConfig.getApplicationToken)
+    val storage = new CouchbaseStorage(getSecretConfig.getBucketPassword)
     storage.initialize()
     dataHandler = Some(new Controller(feed, storage))
     Logger.info("ready...")
