@@ -40,7 +40,10 @@ prerequisites:
 
 sbt -Dconfig.file=/Users/levi/Downloads/strava/velocorner.conf 'project web-app' run
 
+
 Distribution
 ============
 sbt dist
 run with nohup and start as a background process
+
+nohup bin/web-app -Dconfig.file=../velocorner.conf &
