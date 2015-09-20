@@ -8,7 +8,7 @@ object Application extends Controller with Metrics {
   def index = Action {
 
     val progress = timed("getting yearly progress")(Global.getDataHandler.yearlyProgress)
-    Ok(views.html.index("Stay tuned, opening soon...", progress))
+    Ok(views.html.index(progress))
   }
 
   def about = Action {
