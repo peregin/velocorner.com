@@ -22,7 +22,7 @@ object Global extends GlobalSettings {
     // check included configuration file
     secretConfig = Some(SecretConfig(app.configuration.underlying))
     val appSecret = app.configuration.getString("application.secret")
-    Logger.info(s"secret config: ${secretConfig.mkString}")
+    Logger.info(s"app secret: ${appSecret.mkString}")
 
     val feed = new StravaFeed(getSecretConfig.getApplicationToken)
     val storage = new CouchbaseStorage(getSecretConfig.getBucketPassword)
