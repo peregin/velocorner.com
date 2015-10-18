@@ -2,14 +2,14 @@ package controllers
 
 import play.Logger
 import play.api.{Application, GlobalSettings}
-import velocorner.{SecretConfig, Controller}
+import velocorner.{SecretConfig, DataHandler}
 import velocorner.proxy.StravaFeed
 import velocorner.storage.CouchbaseStorage
 
 
 object Global extends GlobalSettings {
 
-  @volatile private var dataHandler: Option[Controller] = None
+  @volatile private var dataHandler: Option[DataHandler] = None
   @volatile private var secretConfig: Option[SecretConfig] = None
 
   def getDataHandler = dataHandler.getOrElse(sys.error("data handler is not initialized"))
@@ -27,7 +27,7 @@ object Global extends GlobalSettings {
     val feed = new StravaFeed(getSecretConfig.getApplicationToken)
     val storage = new CouchbaseStorage(getSecretConfig.getBucketPassword)
     storage.initialize()
-    dataHandler = Some(new Controller(feed, storage))
+    dataHandler = Some(new DataHandler(feed, storage))
     Logger.info("ready...")
   }
 
