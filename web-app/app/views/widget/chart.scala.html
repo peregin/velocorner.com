@@ -26,6 +26,9 @@ $(function () {
             },
             enabled: false
         },
+        credits: {
+            enabled: false
+        },
         xAxis: {
             type: 'datetime',
             dateTimeLabelFormats: { // don't display the dummy year
@@ -46,7 +49,6 @@ $(function () {
             headerFormat: '<b>{series.name}</b><br>',
             pointFormat: '{point.x:%e. %b}: {point.y:.2f} km'
         },
-
         series: [
         @for(p <- progress) {
         {
