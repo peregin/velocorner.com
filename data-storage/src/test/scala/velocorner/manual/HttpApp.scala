@@ -3,7 +3,7 @@ package velocorner.manual
 import com.ning.http.client.AsyncHttpClientConfig
 import org.slf4s.Logging
 import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
-import play.api.libs.ws.{DefaultWSClientConfig, WSResponse, WS}
+import play.api.libs.ws.{WSResponse, WS}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,7 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
  */
 object HttpApp extends App with Logging {
 
-  val config = new NingAsyncHttpClientConfigBuilder(DefaultWSClientConfig()).build()
+  val config = new NingAsyncHttpClientConfigBuilder().build()
   val builder = new AsyncHttpClientConfig.Builder(config)
   implicit val wsClient = new NingWSClient(builder.build())
   implicit val executionContext = ExecutionContext.Implicits.global
@@ -25,4 +25,5 @@ object HttpApp extends App with Logging {
       log.info(reply.body.size.toString)
       log.info(reply.statusText)
   }
+  response.onComplete(_ => wsClient.close())
 }

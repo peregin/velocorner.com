@@ -17,5 +17,5 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.1")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.8")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.3")
 

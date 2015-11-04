@@ -1,7 +1,7 @@
 package velocorner.proxy
 
 import com.ning.http.client.AsyncHttpClientConfig
-import play.api.libs.ws.{WS, WSResponse, DefaultWSClientConfig}
+import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
 import velocorner.model.Activity
 import velocorner.util.JsonIo
@@ -21,7 +21,7 @@ class StravaFeed(token: String) extends Feed {
   val baseUrl = "https://www.strava.com"
   val maxItemsPerPage = 200 // limitation from strava
 
-  val config = new NingAsyncHttpClientConfigBuilder(DefaultWSClientConfig()).build()
+  val config = new NingAsyncHttpClientConfigBuilder().build()
   val builder = new AsyncHttpClientConfig.Builder(config)
   implicit val wsClient = new NingWSClient(builder.build())
   implicit val executionContext = ExecutionContext.Implicits.global
