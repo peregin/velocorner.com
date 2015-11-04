@@ -10,9 +10,16 @@ class AthleteSpec extends Specification {
 
   "model" should {
     "add type to the json" in {
-      val athlete = Athlete(10, 1, Some("levi"), Some("colnago"))
+      val athlete = Athlete(10, 1, Some("levi"), Some("rider"))
       val json = JsonIo.write(athlete)
-      json === "{\n  \"id\" : 10,\n  \"resource_state\" : 1,\n  \"firstname\" : \"levi\",\n  \"lastname\" : \"colnago\",\n  \"type\" : \"Athlete\"\n}"
+      json ===
+        """{
+          |  "id" : 10,
+          |  "resource_state" : 1,
+          |  "firstname" : "levi",
+          |  "lastname" : "rider",
+          |  "type" : "Athlete"
+          |}""".stripMargin
     }
   }
 }
