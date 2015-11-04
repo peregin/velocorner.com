@@ -6,7 +6,7 @@ import PlayKeys._
 
 object dependencies {
 
-  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.7"
+  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.10"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
