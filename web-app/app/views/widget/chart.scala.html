@@ -9,7 +9,8 @@ $(function () {
     chart = new Highcharts.Chart({
         chart: {
             renderTo: '@chartId',
-            type: 'spline'
+            type: 'spline',
+            zoomType: 'x'
         },
         title: {
             text: '@chartTitle'
