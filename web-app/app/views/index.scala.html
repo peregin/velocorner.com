@@ -1,5 +1,5 @@
 @import velocorner.model.YearlyProgress
-@(context: PageContext, progress: List[YearlyProgress])(implicit request: play.api.mvc.Request[Any])
+@(context: LandingPageContext)(implicit request: play.api.mvc.Request[Any])
 
 @common.main("Welcome to Velocorner") {
 
@@ -12,33 +12,33 @@
         <div class="row">
             <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-bicycle rounded"></i></span>
-                <span class="counter">26</span>
+                <span class="counter">@context.statistics.rides</span>
                 <h4>Rides</h4>
             </div>
             <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-globe rounded"></i></span>
-                <span class="counter">1523</span>km
+                <span class="counter">@context.statistics.distance.toInt</span>km
                 <h4>Distance</h4>
             </div>
             <div class="counters col-md-2 col-sm-2">
-                <span class="counter-icon"><i class="fa fa-clock-o rounded"></i></span>
-                <span class="counter">32</span>h
-                <h4>Hours</h4>
-            </div>
-            <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-rocket rounded"></i></span>
-                <span class="counter">4367</span>m
+                <span class="counter">@context.statistics.elevation.toInt</span>m
                 <h4>Elevation</h4>
             </div>
             <div class="counters col-md-2 col-sm-2">
+                <span class="counter-icon"><i class="fa fa-clock-o rounded"></i></span>
+                <span class="counter">@{context.statistics.movingTime/3600}</span>h
+                <h4>Hours</h4>
+            </div>
+            <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-tachometer rounded"></i></span>
-                <span class="counter">26.2</span>kph
-                <h4>Speed</h4>
+                <span class="counter">@context.statistics.longestElevation.toInt</span>m
+                <h4>Longest Elevation</h4>
             </div>
             <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-bolt rounded"></i></span>
-                <span class="counter">161</span>km
-                <h4>Longest</h4>
+                <span class="counter">@context.statistics.longestDistance.toInt</span>km
+                <h4>Longest Distance</h4>
             </div>
         </div>
     </div>
@@ -50,9 +50,9 @@
         <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
     </a>
 
-    @widget.chart("yearlyChart", "Yearly Heatmap", progress)
+    @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyProgress)
 
-    @widget.chart("yearlyProgress", "Yearly Progress", YearlyProgress.aggregate(progress))
+    @widget.chart("yearlyProgress", "Yearly Progress", context.aggregatedYearlyProgress)
 
 
 </div>
