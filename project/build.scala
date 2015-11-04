@@ -14,7 +14,7 @@ object dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % "1.1.1"
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.10"
 
-  val sparkVersion = "1.2.1"
+  val sparkVersion = "1.5.1"
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
