@@ -11,7 +11,7 @@ object dependencies {
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
 
-  val logback = "ch.qos.logback" % "logback-classic" % "1.1.1"
+  val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.10"
 
   val sparkVersion = "1.5.1"
