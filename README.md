@@ -1,4 +1,4 @@
-![Build Status](https://travis-ci.org/peregin/velocorner.com.svg?branch=master)
+![<img src="https://img.shields.io/travis/peregin/velocorner.com.svg"/>](https://travis-ci.org/peregin/velocorner.com)
 
 # velocorner.com
 The cycling platform.
