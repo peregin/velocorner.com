@@ -13,17 +13,21 @@ object Application extends Controller with Metrics {
 
   def index = Action { implicit request =>
     Logger.info("rendering landing page...")
+
     val context = timed("building page context") {
       val currentYear = LocalDate.now().getYear
       val yearlyProgress = Global.getDataHandler.yearlyProgress
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
+      val currentYearStatistics = aggregatedYearlyProgress.filter(_.year == currentYear).headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
+
       LandingPageContext(
         Global.getSecretConfig.getApplicationId,
-        aggregatedYearlyProgress.filter(_.year == currentYear).headOption.map(_.progress.last.progress).getOrElse(Progress.zero),
+        currentYearStatistics,
         yearlyProgress,
         aggregatedYearlyProgress
       )
     }
+
     Ok(views.html.index(context))
   }
 
