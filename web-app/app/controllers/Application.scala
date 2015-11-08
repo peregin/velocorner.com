@@ -35,4 +35,9 @@ object Application extends Controller with Metrics {
     Ok(views.html.about())
   }
 
+  // TODO: get the code (and the state if is needed)
+  def authCallback = Action {
+    Redirect("/")
+  }
+
 }
