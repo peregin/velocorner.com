@@ -36,7 +36,7 @@ object Application extends Controller with Metrics {
   }
 
   // TODO: get the code (and the state if is needed)
-  def authCallback = Action {
+  def oauthCallback = Action {
     Redirect("/")
   }
 
