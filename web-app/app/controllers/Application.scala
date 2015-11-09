@@ -35,8 +35,8 @@ object Application extends Controller with Metrics {
     Ok(views.html.about())
   }
 
-  // TODO: get the code (and the state if is needed)
-  def oauthCallback = Action {
+  def oauthCallback(maybeCode: Option[String], maybeState: Option[String]) = Action {
+    log.debug(s"access token $maybeCode")
     Redirect("/")
   }
 
