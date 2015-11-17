@@ -12,13 +12,14 @@ object ActivitiesFromStravaToCouchbaseApp extends App with Logging {
 
   // the property file having the application secrets, strava token, bucket password, it is not part of the git project
   sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"
-
-  val token = SecretConfig.load().getApplicationToken
-  log.info(s"connecting to strava with token [$token]...")
-  val password = SecretConfig.load().getBucketPassword
+  private val config = SecretConfig.load()
+  val token = config.getApplicationToken
+  val clientId = config.getApplicationId
+  log.info(s"connecting to strava with token [$token] and clientId[$clientId]...")
+  val password = config.getBucketPassword
   log.info(s"connecting to couchbase bucket with password [$password]...")
 
-  val feed = new StravaFeed(token)
+  val feed = new StravaFeed(token, clientId)
   val storage = new CouchbaseStorage(password)
   val activities = feed.recentAthleteActivities
   //val activities = feed.listAthleteActivities

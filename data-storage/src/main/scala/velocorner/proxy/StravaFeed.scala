@@ -14,7 +14,7 @@ import scala.language.postfixOps
 /**
  * Created by levi on 17/03/15.
  */
-class StravaFeed(token: String) extends Feed {
+class StravaFeed(token: String, clientId: String) extends Feed {
 
   val authHeader = "Bearer " + token
   val timeout = 10 seconds
@@ -25,6 +25,12 @@ class StravaFeed(token: String) extends Feed {
   val builder = new AsyncHttpClientConfig.Builder(config)
   implicit val wsClient = new NingWSClient(builder.build())
   implicit val executionContext = ExecutionContext.Implicits.global
+
+  override def getOAuth2Url(redirectUri: String): String = {
+    s"$baseUrl/oauth/authorize?client_id=@$clientId&response_type=code&redirect_uri=http://$redirectUri/oauth/callback&state=mystate&approval_prompt=force"
+  }
+
+  override def getOAuth2Token(code: String): Authentication = ???
 
   override def recentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"$baseUrl/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()

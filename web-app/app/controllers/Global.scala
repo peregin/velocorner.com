@@ -24,7 +24,7 @@ object Global extends GlobalSettings {
     val appSecret = app.configuration.getString("application.secret")
     Logger.info(s"app secret: ${appSecret.mkString}")
 
-    val feed = new StravaFeed(getSecretConfig.getApplicationToken)
+    val feed = new StravaFeed(getSecretConfig.getApplicationToken, getSecretConfig.getApplicationId)
     val storage = new CouchbaseStorage(getSecretConfig.getBucketPassword)
     storage.initialize()
     dataHandler = Some(new DataHandler(feed, storage))
