@@ -17,13 +17,14 @@ object Application extends Controller with Metrics {
     val context = timed("building page context") {
       val currentYear = LocalDate.now().getYear
       val yearlyProgress = Global.getDataHandler.yearlyProgress
+      val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.filter(_.year == currentYear).headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
 
       LandingPageContext(
         Global.getSecretConfig.getApplicationId,
         currentYearStatistics,
-        yearlyProgress,
+        flattenedYearlyProgress,
         aggregatedYearlyProgress
       )
     }
