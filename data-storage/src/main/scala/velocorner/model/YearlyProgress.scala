@@ -8,7 +8,7 @@ case class YearlyProgress(year: Int, progress: List[DailyProgress]) {
     val day2Progress = progress.map(p => (p.day, p)).toMap
     val firstDate = new LocalDate(year, 1, 1)
     val lastDate = new LocalDate(year, 12, 31)
-    val daysBetween = Days.daysBetween(firstDate, firstDate).getDays()
+    val daysBetween = Days.daysBetween(firstDate, lastDate).getDays
     val days = for (f <- 0 to daysBetween) yield firstDate.plusDays(f)
     val newProgress = days.map(d => day2Progress.getOrElse(d, DailyProgress(d, Progress.zero)))
     YearlyProgress(year, newProgress.toList)
