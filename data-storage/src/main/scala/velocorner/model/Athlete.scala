@@ -22,4 +22,6 @@ case class Athlete(
   id:	Int,
   resource_state:	Int,
   firstname: Option[String],
-  lastname: Option[String])
+  lastname: Option[String],
+  profile_medium: Option[String] // URL to a 62x62 pixel profile picture
+)
