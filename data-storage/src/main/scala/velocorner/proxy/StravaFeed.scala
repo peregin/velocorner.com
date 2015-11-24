@@ -3,7 +3,7 @@ package velocorner.proxy
 import com.ning.http.client.AsyncHttpClientConfig
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
-import velocorner.model.Activity
+import velocorner.model.{Authentication, Activity}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
@@ -30,7 +30,16 @@ class StravaFeed(token: String, clientId: String) extends Feed {
     s"$baseUrl/oauth/authorize?client_id=@$clientId&response_type=code&redirect_uri=http://$redirectUri/oauth/callback&state=mystate&approval_prompt=force"
   }
 
-  override def getOAuth2Token(code: String): Authentication = ???
+  override def getOAuth2Token(code: String, clientSecret: String): Authentication = {
+    val response = WS.clientUrl(s"$baseUrl/oauth/token")
+      .withQueryString(
+        ("client_id", clientId),
+        ("client_secret", clientSecret),
+        ("code", code)
+      ).get()
+    val json = Await.result(response, timeout).body
+    JsonIo.read[Authentication](json)
+  }
 
   override def recentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"$baseUrl/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()

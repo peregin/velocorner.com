@@ -1,6 +1,6 @@
 package velocorner.proxy
 
-import velocorner.model.Activity
+import velocorner.model.{Authentication, Activity}
 
 
 trait Feed {
@@ -8,7 +8,7 @@ trait Feed {
   // authentication
   def getOAuth2Url(redirectUrl: String): String
 
-  def getOAuth2Token(code: String): Authentication
+  def getOAuth2Token(code: String, clientSecret: String): Authentication
 
 
   // club
