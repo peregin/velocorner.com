@@ -11,7 +11,7 @@ import velocorner.storage.Storage
  * 15 minute, limit and a long term, daily, limit.
  * The default rate limit allows 600 requests every 15 minutes, with up to 30,000 requests per day
  */
-class DataHandler(feed: Feed, val repo: Storage) {
+class DataHandler(val feed: Feed, val repo: Storage) {
 
   def dailyProgress: List[DailyProgress] = repo.dailyProgress
 

@@ -26,8 +26,8 @@ class StravaFeed(token: String, clientId: String) extends Feed {
   implicit val wsClient = new NingWSClient(builder.build())
   implicit val executionContext = ExecutionContext.Implicits.global
 
-  override def getOAuth2Url(redirectUri: String): String = {
-    s"$baseUrl/oauth/authorize?client_id=@$clientId&response_type=code&redirect_uri=http://$redirectUri/oauth/callback&state=mystate&approval_prompt=force"
+  override def getOAuth2Url(redirectHost: String): String = {
+    s"$baseUrl/oauth/authorize?client_id=$clientId&response_type=code&redirect_uri=http://$redirectHost/oauth/callback&state=mystate&approval_prompt=force"
   }
 
   override def getOAuth2Token(code: String, clientSecret: String): Authentication = {

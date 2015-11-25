@@ -6,7 +6,7 @@ import velocorner.model.{Authentication, Activity}
 trait Feed {
 
   // authentication
-  def getOAuth2Url(redirectUrl: String): String
+  def getOAuth2Url(redirectHost: String): String
 
   def getOAuth2Token(code: String, clientSecret: String): Authentication
 

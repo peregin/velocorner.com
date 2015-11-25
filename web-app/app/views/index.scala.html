@@ -1,5 +1,4 @@
-@import velocorner.model.YearlyProgress
-@(context: LandingPageContext)(implicit request: play.api.mvc.Request[Any])
+@(context: LandingPageContext)
 
 @common.main("Welcome to Velocorner") {
 
@@ -46,7 +45,7 @@
 
     <div class="headline"><h2>Personal Activities</h2></div>
 
-    <a href="https://www.strava.com/oauth/authorize?client_id=@context.applicationId&response_type=code&redirect_uri=http://@request.host/oauth/callback&state=mystate&approval_prompt=force">
+    <a href="@context.callbackUrl">
         <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
     </a>
 

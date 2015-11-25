@@ -15,17 +15,19 @@ object Application extends Controller with Metrics {
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {
+      val dataHandler = Global.getDataHandler
       val currentYear = LocalDate.now().getYear
-      val yearlyProgress = Global.getDataHandler.yearlyProgress
+
+      val yearlyProgress = dataHandler.yearlyProgress
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.filter(_.year == currentYear).headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
 
       LandingPageContext(
-        Global.getSecretConfig.getApplicationId,
         currentYearStatistics,
         flattenedYearlyProgress,
-        aggregatedYearlyProgress
+        aggregatedYearlyProgress,
+        dataHandler.feed.getOAuth2Url(request.host)
       )
     }
 
@@ -37,8 +39,15 @@ object Application extends Controller with Metrics {
   }
 
   def oauthCallback(maybeCode: Option[String], maybeState: Option[String]) = Action {
-    log.debug(s"access token $maybeCode")
-    Redirect("/")
+    log.info(s"access token $maybeCode")
+    maybeCode match {
+      case Some(code) =>
+        // token exchange
+        //Global.getDataHandler.feed.getOAuth2Token(code, )
+        Redirect("/")
+      case _ =>
+        BadRequest("Unable to authorize")
+    }
   }
 
 }
