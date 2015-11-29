@@ -17,7 +17,7 @@ object JsonIo {
   def read[T](json: String)(implicit fjs: Reads[T]): T = {
     val jsonValue = Json.parse(json)
     jsonValue.validate[T] match {
-      case JsSuccess(list, _) => list
+      case JsSuccess(that, _) => that
       case JsError(errors) => sys.error(s"unable to parse file because $errors")
     }
   }

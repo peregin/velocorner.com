@@ -21,7 +21,7 @@ object Application extends Controller with Metrics {
       val yearlyProgress = dataHandler.yearlyProgress
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-      val currentYearStatistics = aggregatedYearlyProgress.filter(_.year == currentYear).headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
+      val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
       LandingPageContext(
         currentYearStatistics,
@@ -43,7 +43,7 @@ object Application extends Controller with Metrics {
     maybeCode match {
       case Some(code) =>
         // token exchange
-        val auth = Global.getDataHandler.feed.getOAuth2Token(code, Global.getSecretConfig.getApplicationToken)
+        val auth = Global.getDataHandler.feed.getOAuth2Token(code, Global.getSecretConfig.getApplicationSecret)
         log.info(s"logged in with token[${auth.access_token}] and athlete ${auth.athlete}")
         Redirect("/")
       case _ =>

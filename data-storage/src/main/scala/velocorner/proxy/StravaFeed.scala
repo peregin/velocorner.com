@@ -2,10 +2,11 @@ package velocorner.proxy
 
 import com.ning.http.client.AsyncHttpClientConfig
 import org.slf4s.Logging
+import play.api.http.{MimeTypes, HeaderNames}
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
 import play.api.mvc.Results
-import velocorner.model.{Authentication, Activity}
+import velocorner.model.{Athlete, Authentication, Activity}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
@@ -35,15 +36,17 @@ class StravaFeed(token: String, clientId: String) extends Feed with Logging {
   override def getOAuth2Token(code: String, clientSecret: String): Authentication = {
     val response = WS.clientUrl(s"$baseUrl/oauth/token")
       .withQueryString(
-        ("client_id", clientId),
-        ("client_secret", clientSecret),
-        ("code", code)
-      ).post(Results.EmptyContent())
+        "client_id" -> clientId,
+        "client_secret" -> clientSecret,
+        "code" -> code
+      )
+      .withHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+      .post(Results.EmptyContent())
     val result = Await.result(response, timeout)
     log.info(s"authentication reply ${result.statusText}")
-    val json = result.body
-    log.info(s"authentication result: $json")
-    JsonIo.read[Authentication](json)
+    val access_token = (result.json \ "access_token").as[String]
+    val athlete = (result.json \ "athlete").as[Athlete]
+    Authentication(access_token, athlete)
   }
 
   override def recentClubActivities(clubId: Long): List[Activity] = {
