@@ -6,10 +6,7 @@ import velocorner.storage.CouchbaseStorage
 import velocorner.util.Metrics
 
 
-object AggregateActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities {
-
-  // the property file having the application secrets, strava token, bucket password, it is not part of the git project
-  sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"
+object AggregateActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
   val password = SecretConfig.load().getBucketPassword
   log.info(s"connecting to couchbase bucket with password [$password]...")

@@ -8,10 +8,8 @@ import velocorner.proxy.StravaFeed
 import velocorner.util.JsonIo
 
 
-object ActivitiesFromStravaToFileApp extends App with Logging {
+object ActivitiesFromStravaToFileApp extends App with Logging with MyMacConfig {
 
-  // the property file having the application secrets, strava token, bucket password, it is not part of the git project
-  sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"
   private val config = SecretConfig.load()
   val token = config.getApplicationToken
   val clientId = config.getApplicationId

@@ -8,10 +8,7 @@ import velocorner.util.Metrics
 /**
  * Created by levi on 04/04/15.
  */
-object ActivitiesFromCouchbaseApp extends App with Logging with Metrics {
-
-  // the property file having the application secrets, strava token, bucket password, it is not part of the git project
-  sys.props += "config.file" -> "/Users/levi/Downloads/strava/velocorner.conf"
+object ActivitiesFromCouchbaseApp extends App with Logging with Metrics with MyMacConfig {
 
   val password = SecretConfig.load().getBucketPassword
   log.info(s"connecting to couchbase bucket with password [$password]...")
