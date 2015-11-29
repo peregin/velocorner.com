@@ -38,12 +38,13 @@ object Application extends Controller with Metrics {
     Ok(views.html.about())
   }
 
-  def oauthCallback(maybeCode: Option[String], maybeState: Option[String]) = Action {
+  def oauthCallback(maybeState: Option[String], maybeCode: Option[String]) = Action {
     log.info(s"access token $maybeCode")
     maybeCode match {
       case Some(code) =>
         // token exchange
-        //Global.getDataHandler.feed.getOAuth2Token(code, )
+        val auth = Global.getDataHandler.feed.getOAuth2Token(code, Global.getSecretConfig.getApplicationToken)
+        log.info(s"logged in with token[${auth.access_token}] and athlete ${auth.athlete}")
         Redirect("/")
       case _ =>
         BadRequest("Unable to authorize")

@@ -1,8 +1,10 @@
 package velocorner.proxy
 
 import com.ning.http.client.AsyncHttpClientConfig
+import org.slf4s.Logging
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
+import play.api.mvc.Results
 import velocorner.model.{Authentication, Activity}
 import velocorner.util.JsonIo
 
@@ -14,7 +16,7 @@ import scala.language.postfixOps
 /**
  * Created by levi on 17/03/15.
  */
-class StravaFeed(token: String, clientId: String) extends Feed {
+class StravaFeed(token: String, clientId: String) extends Feed with Logging {
 
   val authHeader = "Bearer " + token
   val timeout = 10 seconds
@@ -36,8 +38,11 @@ class StravaFeed(token: String, clientId: String) extends Feed {
         ("client_id", clientId),
         ("client_secret", clientSecret),
         ("code", code)
-      ).get()
-    val json = Await.result(response, timeout).body
+      ).post(Results.EmptyContent())
+    val result = Await.result(response, timeout)
+    log.info(s"authentication reply ${result.statusText}")
+    val json = result.body
+    log.info(s"authentication result: $json")
     JsonIo.read[Authentication](json)
   }
 
