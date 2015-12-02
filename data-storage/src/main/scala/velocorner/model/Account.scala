@@ -15,4 +15,7 @@ object Account {
 
 case class Account(
   athleteId: Long,
-  accessToken: String)
+  name: String,
+  avatarUrl: String,
+  accessToken: String
+)
