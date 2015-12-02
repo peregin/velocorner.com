@@ -1,6 +1,7 @@
 package velocorner
 
 import com.typesafe.config.{Config, ConfigFactory}
+import net.ceedubs.ficus.Ficus._
 
 /**
  * Created by levi on 29/03/15.
@@ -19,4 +20,9 @@ case class SecretConfig(config: Config) {
   def getApplicationSecret = config.getString("strava.application.secret")
 
   def getBucketPassword = config.getString("couchbase.bucket.password")
+
+  def getProxyHost: Option[String] = config.getAs[String]("proxy.host")
+  def getProxyPort: Option[Int] = config.getAs[Int]("proxy.port")
+  def getProxyUser: Option[String] = config.getAs[String]("proxy.user")
+  def getProxyPassword: Option[String] = config.getAs[String]("proxy.password")
 }

@@ -12,6 +12,7 @@ object AggregateActivitiesFromCouchbaseApp extends App with Metrics with Logging
   log.info(s"connecting to couchbase bucket with password [$password]...")
 
   val storage = new CouchbaseStorage(password)
+  storage.initialize()
   val progress = storage.dailyProgress
 
   printAllProgress(progress)

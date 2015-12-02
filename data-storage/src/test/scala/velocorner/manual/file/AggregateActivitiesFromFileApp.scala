@@ -1,4 +1,4 @@
-package velocorner.manual
+package velocorner.manual.file
 
 import org.slf4s.Logging
 import velocorner.model.Activity

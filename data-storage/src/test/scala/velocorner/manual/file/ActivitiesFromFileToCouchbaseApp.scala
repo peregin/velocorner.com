@@ -1,7 +1,8 @@
-package velocorner.manual
+package velocorner.manual.file
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
+import velocorner.manual.MyMacConfig
 import velocorner.model.Activity
 import velocorner.storage.CouchbaseStorage
 import velocorner.util.JsonIo

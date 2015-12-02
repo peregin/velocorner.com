@@ -23,6 +23,8 @@ object dependencies {
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
 
+  val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
+
 
   def logging = Seq(logback, slf4s)
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
@@ -46,7 +48,7 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.playJson, dependencies.playWs, dependencies.scalaSpec
+        dependencies.couchbaseClient, dependencies.playJson, dependencies.playWs, dependencies.scalaSpec, dependencies.ficus
       ) ++ dependencies.logging
     )
   )

@@ -23,6 +23,7 @@ object YearlyProgress {
     byYear.map { case (year, list) => YearlyProgress(year, list)}.toList.sortBy(_.year)
   }
 
+  // each daily progress will be summed up with the previously aggregated progress
   def aggregate(progress: List[YearlyProgress]): List[YearlyProgress] = {
     progress.map(yp => yp.copy(
       progress = yp.progress.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) => DailyProgress(i.day, accu.progress + i.progress)).tail )

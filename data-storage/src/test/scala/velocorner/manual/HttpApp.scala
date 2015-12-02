@@ -2,8 +2,8 @@ package velocorner.manual
 
 import com.ning.http.client.AsyncHttpClientConfig
 import org.slf4s.Logging
-import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
-import play.api.libs.ws.{WSResponse, WS}
+import play.api.libs.ws.ning.{NingAsyncHttpClientConfigBuilder, NingWSClient}
+import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -22,7 +22,7 @@ object HttpApp extends App with Logging {
   log.info("retrieving...")
   response.onSuccess{
     case reply =>
-      log.info(reply.body.size.toString)
+      log.info(reply.body.length.toString)
       log.info(reply.statusText)
   }
   response.onComplete(_ => wsClient.close())
