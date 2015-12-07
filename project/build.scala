@@ -6,16 +6,19 @@ import PlayKeys._
 
 object dependencies {
 
+  val sparkVersion = "1.5.1"
+  val playAuthVersion = "0.14.1"
+
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.10"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
-  val playAuth = "jp.t2v" %% "play2-auth" % "0.14.1"
+  val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
+  val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
 
   val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.12"
 
-  val sparkVersion = "1.5.1"
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
@@ -28,6 +31,7 @@ object dependencies {
 
   def logging = Seq(logback, slf4s)
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
+  def auth = Seq(playAuth, playAuthSocial)
 }
 
 object build extends Build {
@@ -66,7 +70,7 @@ object build extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= Seq(dependencies.playAuth)
+      libraryDependencies ++= dependencies.auth
     ),
     dependencies = Seq(dataStorage)
   ).enablePlugins(play.PlayScala)

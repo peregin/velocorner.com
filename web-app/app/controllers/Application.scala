@@ -1,5 +1,6 @@
 package controllers
 
+import jp.t2v.lab.play2.auth.OptionalAuthElement
 import org.joda.time.LocalDate
 import org.slf4s
 import play.Logger
@@ -7,11 +8,11 @@ import play.api.mvc._
 import velocorner.model.{Progress, YearlyProgress}
 import velocorner.util.Metrics
 
-object Application extends Controller with Metrics {
+object Application extends Controller with OptionalAuthElement with AuthConfigSupport with Metrics {
 
   override val log = new slf4s.Logger(Logger.underlying())
 
-  def index = Action { implicit request =>
+  def index = StackAction { implicit request =>
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {

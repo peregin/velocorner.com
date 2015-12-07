@@ -18,6 +18,12 @@ import scala.language.postfixOps
 /**
  * Created by levi on 17/03/15.
  */
+object StravaFeed {
+  val baseUrl = "https://www.strava.com"
+  val accessTokenUrl = s"${StravaFeed.baseUrl}/oauth/token"
+  val authorizationUrl = s"${StravaFeed.baseUrl}/oauth/authorize"
+}
+
 class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed with Logging {
 
   val token = maybeToken.getOrElse(config.getApplicationToken) // dedicated token after authentication or application generic
@@ -26,7 +32,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
 
   val authHeader = s"Bearer $token"
   val timeout = 10 seconds
-  val baseUrl = "https://www.strava.com"
+
   val maxItemsPerPage = 200 // limitation from strava
 
   val ningConfig = new NingAsyncHttpClientConfigBuilder().build()
@@ -45,11 +51,11 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   implicit val executionContext = ExecutionContext.Implicits.global
   
   override def getOAuth2Url(redirectHost: String): String = {
-    s"$baseUrl/oauth/authorize?client_id=$clientId&response_type=code&redirect_uri=http://$redirectHost/oauth/callback&state=mystate&approval_prompt=force"
+    s"${StravaFeed.authorizationUrl}?client_id=$clientId&response_type=code&redirect_uri=http://$redirectHost/oauth/callback&state=mystate&approval_prompt=force"
   }
 
   override def getOAuth2Token(code: String, clientSecret: String): Authentication = {
-    val response = WS.clientUrl(s"$baseUrl/oauth/token")
+    val response = WS.clientUrl(StravaFeed.accessTokenUrl)
       .withQueryString(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,
@@ -65,7 +71,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   }
 
   override def recentClubActivities(clubId: Long): List[Activity] = {
-    val response = WS.clientUrl(s"$baseUrl/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
+    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
     extractActivities(response)
   }
 
@@ -82,7 +88,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   }
 
   private def athleteActivities(page: Int): List[Activity] = {
-    val response = WS.clientUrl(s"$baseUrl/api/v3/athlete/activities")
+    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
       .withHeaders(("Authorization", authHeader))
       .withQueryString(("page", page.toString), ("per_page", maxItemsPerPage.toString))
       .get()
