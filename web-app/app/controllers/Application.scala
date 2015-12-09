@@ -1,6 +1,6 @@
 package controllers
 
-import jp.t2v.lab.play2.auth.OptionalAuthElement
+import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.joda.time.LocalDate
 import org.slf4s
 import play.Logger
@@ -8,7 +8,9 @@ import play.api.mvc._
 import velocorner.model.{Progress, YearlyProgress}
 import velocorner.util.Metrics
 
-object Application extends Controller with OptionalAuthElement with AuthConfigSupport with Metrics {
+object Application extends Controller with OptionalAuthElement with AuthConfigSupport with Logout with Metrics {
+
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   override val log = new slf4s.Logger(Logger.underlying())
 
@@ -37,6 +39,10 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
 
   def about = Action {
     Ok(views.html.about())
+  }
+
+  def logout = Action.async { implicit request =>
+    gotoLogoutSucceeded
   }
 
   def oauthCallback(maybeState: Option[String], maybeCode: Option[String]) = Action {
