@@ -21,15 +21,14 @@ class StravaAuthenticator extends OAuth2Authenticator {
   override val accessTokenUrl: String = StravaFeed.accessTokenUrl
   override val providerName: String = "strava"
   override val clientId: String = Global.getSecretConfig.getApplicationId
-  // TODO: into config
-  override val callbackUrl: String = "http://localhost:9000/callback/strava"
+  override val callbackUrl: String = Global.getSecretConfig.getApplicationCallbackUrl
 
   override def getAuthorizationUrl(scope: String, state: String): String = {
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     val encodedRedirectUri = URLEncoder.encode(callbackUrl, "utf-8")
     val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
-    s"${authorizationUrl}?client_id=${encodedClientId}&redirect_uri=${encodedRedirectUri}&state=${encodedState}&response_type=code&approval_prompt=force&scope=public"
+    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
   }
 
   override def parseAccessTokenResponse(response: WSResponse): String = ???
