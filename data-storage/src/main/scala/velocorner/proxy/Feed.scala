@@ -1,6 +1,6 @@
 package velocorner.proxy
 
-import velocorner.model.{Authentication, Activity}
+import velocorner.model.{Athlete, Authentication, Activity}
 
 
 trait Feed {
@@ -15,8 +15,11 @@ trait Feed {
   def recentClubActivities(clubId: Long): List[Activity]
 
 
-  // athlete
+  // activities
   def recentAthleteActivities: List[Activity]
 
   def listAthleteActivities: List[Activity]
+
+  // athlete
+  def getAthlete: Athlete
 }

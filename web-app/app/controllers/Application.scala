@@ -18,10 +18,10 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {
-      val dataHandler = Global.getDataHandler
+      val storage = Global.getStorage
       val currentYear = LocalDate.now().getYear
 
-      val yearlyProgress = dataHandler.yearlyProgress
+      val yearlyProgress = YearlyProgress.from(storage.dailyProgress)
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
@@ -29,8 +29,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       LandingPageContext(
         currentYearStatistics,
         flattenedYearlyProgress,
-        aggregatedYearlyProgress,
-        dataHandler.feed.getOAuth2Url(request.host)
+        aggregatedYearlyProgress
       )
     }
 
@@ -44,18 +43,4 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
   def logout = Action.async { implicit request =>
     gotoLogoutSucceeded
   }
-
-  def oauthCallback(maybeState: Option[String], maybeCode: Option[String]) = Action {
-    log.info(s"access token $maybeCode")
-    maybeCode match {
-      case Some(code) =>
-        // token exchange
-        val auth = Global.getDataHandler.feed.getOAuth2Token(code, Global.getSecretConfig.getApplicationSecret)
-        log.info(s"logged in with token[${auth.access_token}] and athlete ${auth.athlete}")
-        Redirect("/")
-      case _ =>
-        BadRequest("Unable to authorize")
-    }
-  }
-
 }

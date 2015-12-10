@@ -13,6 +13,7 @@ object dependencies {
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
+  val playCache = "com.typesafe.play" %% "play-cache" % play.core.PlayVersion.current
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
 
@@ -70,10 +71,10 @@ object build extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth
+      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache)
     ),
     dependencies = Seq(dataStorage)
-  ).enablePlugins(play.PlayScala)
+  ).enablePlugins(play.sbt.PlayScala)
 
 
   // top level aggregate

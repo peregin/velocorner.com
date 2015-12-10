@@ -8,7 +8,7 @@ GET     /about                      controllers.Application.about
 GET     /logout                     controllers.Application.logout
 
 GET     /login/strava               controllers.StravaAuthController.login(scope: String)
-GET     /callback/strava            controllers.StravaAuthController.callback(scope: Option[String])
+GET     /link/strava                controllers.StravaAuthController.link(scope: String)
 GET     /authorize/strava           controllers.StravaAuthController.authorize
 
 # Map static resources from the /public folder to the /assets URL path

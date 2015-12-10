@@ -99,4 +99,12 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
     val json = Await.result(response, timeout).body
     JsonIo.read[List[Activity]](json)
   }
+
+  // athlete
+  override def getAthlete: Athlete = {
+    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete")
+      .withHeaders(("Authorization", authHeader))
+      .get()
+    Await.result(response, timeout).json.as[Athlete]
+  }
 }
