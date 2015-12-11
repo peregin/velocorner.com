@@ -2,6 +2,12 @@
 
 @common.main("Welcome to Velocorner") {
 
+@context.account.map { user =>
+<h2><img src="@user.avatarUrl"> Welcome @user.name</h2>
+}.getOrElse {
+<h2>Login</h2>
+}
+
 <div class="tag-box tag-box-v3">
     <!-- Counters -->
     <div class="main-counters margin-bottom-20">
@@ -43,11 +49,11 @@
     </div>
     <!-- End Counters -->
 
-    <div class="headline"><h2>Personal Activities</h2></div>
-
     <a href="@routes.AuthController.login("user")">
         <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
     </a>
+
+    <div class="headline"><h2>Personal Activities</h2></div>
 
     @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyProgress)
 
