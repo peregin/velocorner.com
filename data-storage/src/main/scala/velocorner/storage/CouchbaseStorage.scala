@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
-import velocorner.model.{DailyProgress, Progress, Activity}
+import velocorner.model.{Account, DailyProgress, Progress, Activity}
 import velocorner.util.JsonIo
 
 import scala.collection.JavaConversions._
@@ -23,6 +23,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
   val listDesignName = "list"
   val activitiesViewName = "activities"
 
+
+  // activities
   override def store(activities: List[Activity]) {
     activities.foreach{a =>
       client.set(a.id.toString, 0, JsonIo.write(a))
@@ -55,6 +57,16 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
   override def deleteActivities(ids: Iterable[Int]) {
     ids.map(_.toString).foreach(client.delete)
+  }
+
+
+  // accounts
+  override def store(account: Account) {
+    client.set(s"account_${account.athleteId.toString}", 0, JsonIo.write(account))
+  }
+
+  override def getAccount(id: Long): Option[Account] = {
+    Option(client.get(s"account_$id")).map(_.asInstanceOf[Account])
   }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents
