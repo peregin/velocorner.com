@@ -13,7 +13,7 @@ object Account {
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
   def from(token: String, athlete: Athlete): Account = {
-    new Account(athlete.id, athlete.lastname.getOrElse(""), athlete.profile_medium.getOrElse(""), token)
+    new Account(athlete.id, athlete.firstname.orElse(athlete.lastname).getOrElse(""), athlete.profile_medium.getOrElse(""), token)
   }
 }
 

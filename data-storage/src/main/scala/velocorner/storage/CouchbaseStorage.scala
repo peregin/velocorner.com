@@ -66,7 +66,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
   }
 
   override def getAccount(id: Long): Option[Account] = {
-    Option(client.get(s"account_$id")).map(_.asInstanceOf[Account])
+    Option(client.get(s"account_$id")).map(json => JsonIo.read[Account](json.toString))
   }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents

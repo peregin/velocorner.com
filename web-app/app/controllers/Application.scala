@@ -18,6 +18,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {
+      val account = loggedIn
+      Logger.info(s"account $account")
       val storage = Global.getStorage
       val currentYear = LocalDate.now().getYear
 
@@ -27,6 +29,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
       LandingPageContext(
+        account,
         currentYearStatistics,
         flattenedYearlyProgress,
         aggregatedYearlyProgress
