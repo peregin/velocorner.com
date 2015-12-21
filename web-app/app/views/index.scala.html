@@ -12,9 +12,25 @@
     <!-- Counters -->
     <div class="main-counters margin-bottom-20">
 
-        <div class="headline"><h2>Club Activities</h2></div>
+        <div class="headline"><h2>Athlete Profile</h2></div>
 
         <div class="row">
+
+            <div class="col-sm-4 col-md-4 sm-margin-bottom-40">
+                <div class="funny-boxes funny-boxes-top-red">
+                    <div class="row">
+                        <div class="col-md-12 funny-boxes-img">
+                            <h2><a href="#">Praesentium Voluptatum</a></h2>
+                            <img class="img-responsive" src="assets/img/main/img12.jpg" alt="">
+                            <ul class="list-unstyled">
+                                <li><i class="fa-fw fa fa-briefcase"></i> Dell, Google</li>
+                                <li><i class="fa-fw fa fa-map-marker"></i> New York, US</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="counters col-md-2 col-sm-2">
                 <span class="counter-icon"><i class="fa fa-bicycle rounded"></i></span>
                 <span class="counter">@context.statistics.rides</span>
@@ -53,7 +69,7 @@
         <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
     </a>
 
-    <div class="headline"><h2>Personal Activities</h2></div>
+    <div class="headline"><h2>Yearly Activities</h2></div>
 
     @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyProgress)
 
