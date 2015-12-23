@@ -19,3 +19,6 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.1")
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.3")
 
+// code coverage
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
+
