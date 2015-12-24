@@ -17,6 +17,6 @@ trait StravaProviderUserSupport extends OAuthProviderUserSupport {
   override def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     val token = accessToken.toString
     val athlete = Global.getFeed(token).getAthlete
-    Future.successful(Account.from(token, athlete))
+    Future.successful(Account.from(athlete, token, None))
   }
 }

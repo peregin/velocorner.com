@@ -54,7 +54,7 @@ class JsonIoSpec extends Specification {
 
   "writer for athlete" should {
     "generate type field" in {
-      val a = Athlete(1, 2, Some("Levi"), None, None)
+      val a = Athlete(1, 2, Some("Levi"), None, None, Some("city"), Some("country"))
       val json = JsonIo.write(a)
       json must contain("type\" : \"Athlete")
     }

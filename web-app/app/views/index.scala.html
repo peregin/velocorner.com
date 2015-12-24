@@ -3,7 +3,7 @@
 @common.main("Welcome to Velocorner") {
 
 @context.account.map { user =>
-<h2><img src="@user.avatarUrl"> Welcome @user.name</h2>
+<h2><img src="@user.avatarUrl"> Hello, @user.displayName</h2>
 }.getOrElse {
 <h2>Login</h2>
 }

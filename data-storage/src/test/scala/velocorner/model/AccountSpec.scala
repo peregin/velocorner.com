@@ -10,12 +10,13 @@ class AccountSpec extends Specification {
 
   "model" should {
     "add type to the json" in {
-      val account = Account(1, "name", "profile url", "token")
+      val account = Account(1, "display name", "display location", "profile url", "token", None)
       val json = JsonIo.write(account)
       json ===
         """{
           |  "athleteId" : 1,
-          |  "name" : "name",
+          |  "displayName" : "display name",
+          |  "displayLocation" : "display location",
           |  "avatarUrl" : "profile url",
           |  "accessToken" : "token",
           |  "type" : "Account"

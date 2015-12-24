@@ -1,5 +1,6 @@
 package velocorner.model
 
+import org.joda.time.DateTime
 import play.api.libs.json._
 
 object Account {
@@ -10,16 +11,25 @@ object Account {
       JsObject(baseJs.fields :+ ("type" -> typeJs))
     }
   }
+
+  implicit val dateTimeFormat = Format[DateTime](Reads.jodaDateReads(DateTimePattern.format), Writes.jodaDateWrites(DateTimePattern.format))
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
-  def from(token: String, athlete: Athlete): Account = {
-    new Account(athlete.id, athlete.firstname.orElse(athlete.lastname).getOrElse(""), athlete.profile_medium.getOrElse(""), token)
-  }
+  def from(athlete: Athlete, token: String, lastUpdate: Option[DateTime]) = new Account(
+    athlete.id,
+    athlete.firstname.orElse(athlete.lastname).getOrElse(""),
+    s"${athlete.city.mkString}, ${athlete.country.mkString}",
+    athlete.profile_medium.getOrElse(""),
+    token,
+    lastUpdate
+  )
 }
 
 case class Account(
   athleteId: Long,
-  name: String,
+  displayName: String,
+  displayLocation: String,
   avatarUrl: String,
-  accessToken: String
+  accessToken: String,
+  lastUpdate: Option[DateTime]
 )
