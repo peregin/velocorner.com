@@ -2,9 +2,6 @@ package velocorner.storage
 
 import velocorner.model.{Account, DailyProgress, Progress, Activity}
 
-/**
- * Created by levi on 15/03/15.
- */
 trait Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -19,6 +16,7 @@ trait Storage {
   // accounts
   def store(account: Account)
   def getAccount(id: Long): Option[Account]
+  def listAccountIds: List[String]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

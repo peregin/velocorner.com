@@ -1,10 +1,11 @@
 package controllers
 
+import controllers.auth.Permission
 import jp.t2v.lab.play2.auth.AuthConfig
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
-import velocorner.model.{Account, Permission}
+import velocorner.model.Account
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._

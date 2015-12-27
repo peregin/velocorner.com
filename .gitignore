@@ -14,7 +14,7 @@ target/
 gen/
 out/
 build/
-*.iml
+logs/
 *.tmp
 *.bak
 *.swp

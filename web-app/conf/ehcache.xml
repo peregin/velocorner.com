@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <diskStore path="web-app/logs/"/>
+
+    <defaultCache
+        diskPersistent="true"
+        maxEntriesLocalHeap="1000"
+    />
+
+</ehcache>

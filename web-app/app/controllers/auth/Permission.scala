@@ -1,4 +1,4 @@
-package velocorner.model
+package controllers.auth
 
 /**
   * Created by levi on 05/12/15.
