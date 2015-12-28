@@ -1,0 +1,62 @@
+@(account: velocorner.model.Account, statistics: velocorner.model.Progress)
+
+<!-- Profile and Counters -->
+<div class="main-counters margin-bottom-20">
+
+    <div class="headline"><h2>Athlete Profile</h2></div>
+
+    <div class="row">
+
+        <div class="col-sm-4 col-mprepare refresh amd d-4 sm-margin-bottom-40">
+            <div class="funny-boxes funny-boxes-top-red">
+                <div class="row">
+                    <div class="col-md-8 funny-boxes-img">
+                        <h2>Hello, @account.displayName</h2>
+                        <img class="img-responsive" src="@account.avatarUrl" alt="">
+                        <ul class="list-unstyled">
+                            <li><i class="fa-fw fa fa-map-marker"></i> @account.displayLocation</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <p>
+                            <button class="btn-u btn-block btn-u-orange" type="button"><i class="fa fa-refresh"></i> Refresh</button>
+                            <button class="btn-u btn-block btn-u-orange" type="button"><i class="fa fa-sign-out"></i> Logout</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="counters col-md-2 col-sm-2">
+            <span class="counter-icon"><i class="fa fa-bicycle rounded"></i></span>
+            <span class="counter">@statistics.rides</span>
+            <h4>Rides</h4>
+        </div>
+        <div class="counters col-md-2 col-sm-2">
+            <span class="counter-icon"><i class="fa fa-globe rounded"></i></span>
+            <span class="counter">@statistics.distance.toInt</span>km
+            <h4>Distance</h4>
+        </div>
+        <div class="counters col-md-2 col-sm-2">
+            <span class="counter-icon"><i class="fa fa-rocket rounded"></i></span>
+            <span class="counter">@statistics.elevation.toInt</span>m
+            <h4>Elevation</h4>
+        </div>
+        <div class="counters col-md-2 col-sm-2">
+            <span class="counter-icon"><i class="fa fa-clock-o rounded"></i></span>
+            <span class="counter">@{statistics.movingTime/3600}</span>h
+            <h4>Hours</h4>
+        </div>
+        <!--<div class="counters col-md-2 col-sm-2">-->
+        <!--<span class="counter-icon"><i class="fa fa-tachometer rounded"></i></span>-->
+        <!--<span class="counter">@statistics.longestElevation.toInt</span>m-->
+        <!--<h4>Longest Elevation</h4>-->
+        <!--</div>-->
+        <!--<div class="counters col-md-2 col-sm-2">-->
+        <!--<span class="counter-icon"><i class="fa fa-bolt rounded"></i></span>-->
+        <!--<span class="counter">@statistics.longestDistance.toInt</span>km-->
+        <!--<h4>Longest Distance</h4>-->
+        <!--</div>-->
+    </div>
+</div>
+<!-- End Counters -->
