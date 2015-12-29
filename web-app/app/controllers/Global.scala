@@ -1,10 +1,14 @@
 package controllers
 
 import play.Logger
+import play.api.mvc.{Result, RequestHeader}
 import play.api.{Application, GlobalSettings}
+import play.api.mvc.Results._
 import velocorner.SecretConfig
 import velocorner.proxy.StravaFeed
 import velocorner.storage.{CouchbaseStorage, Storage}
+
+import scala.concurrent.Future
 
 
 object Global extends GlobalSettings {
@@ -38,5 +42,9 @@ object Global extends GlobalSettings {
     Logger.info("releasing storage connections...")
     storage.foreach(_.destroy)
     Logger.info("stopped...")
+  }
+
+  override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
+    Future.successful((NotFound(views.html.notFound())))
   }
 }
