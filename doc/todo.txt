@@ -1,0 +1,6 @@
+TO DO
+=====
+
+- asynchronous refresh - websocket/comet library
+- AngularJS
+- ElasticSearch for querying statistics
