@@ -22,6 +22,7 @@ object StravaFeed {
   val baseUrl = "https://www.strava.com"
   val accessTokenUrl = s"${StravaFeed.baseUrl}/oauth/token"
   val authorizationUrl = s"${StravaFeed.baseUrl}/oauth/authorize"
+  val maxItemsPerPage = 200 // limitation from Strava
 }
 
 class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed with Logging {
@@ -32,8 +33,6 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
 
   val authHeader = s"Bearer $token"
   val timeout = 10 seconds
-
-  val maxItemsPerPage = 200 // limitation from strava
 
   val ningConfig = new NingAsyncHttpClientConfigBuilder().build()
   val httpConfigBuilder = new AsyncHttpClientConfig.Builder(ningConfig)
@@ -81,7 +80,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
     @tailrec
     def list(page: Int, accu: List[Activity]): List[Activity] = {
       val activities = athleteActivities(page)
-      if (activities.size < maxItemsPerPage) activities ++ accu
+      if (activities.size < StravaFeed.maxItemsPerPage) activities ++ accu
       else list(page + 1, activities ++ accu)
     }
     list(1, List.empty)
@@ -90,7 +89,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   private def athleteActivities(page: Int): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
       .withHeaders(("Authorization", authHeader))
-      .withQueryString(("page", page.toString), ("per_page", maxItemsPerPage.toString))
+      .withQueryString(("page", page.toString), ("per_page", StravaFeed.maxItemsPerPage.toString))
       .get()
     extractActivities(response)
   }
