@@ -31,6 +31,15 @@ Couchbase
 couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=200
 couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -p ****
 
+Elastic Search
+==============
+ES as service
+couchbase-capi-server
+elasticsearch-transport-couchbase-2.2.1
+user/pwd for transport
+curl -XPUT http://localhost:9200/_template/couchbase -d @plugins/transport-couchbase/couchbase_template.json => install an index template that sets up some good defaults when working with Couchbase
+curl -XPUT http://localhost:9200/velocorner => index in ES
+
 How to run the web application
 =============================
 prerequisites:
