@@ -12,11 +12,11 @@ trait Feed {
 
 
   // club
-  def recentClubActivities(clubId: Long): List[Activity]
+  def listRecentClubActivities(clubId: Long): List[Activity]
 
 
   // activities
-  def recentAthleteActivities: List[Activity]
+  def listRecentAthleteActivities: List[Activity]
 
   def listAthleteActivities: List[Activity]
 

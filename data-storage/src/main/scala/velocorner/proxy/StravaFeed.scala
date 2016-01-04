@@ -69,12 +69,12 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
     Authentication(access_token, athlete)
   }
 
-  override def recentClubActivities(clubId: Long): List[Activity] = {
+  override def listRecentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
     extractActivities(response)
   }
 
-  override def recentAthleteActivities: List[Activity] = athleteActivities(1)
+  override def listRecentAthleteActivities: List[Activity] = athleteActivities(1)
 
   override def listAthleteActivities: List[Activity] = {
     @tailrec
