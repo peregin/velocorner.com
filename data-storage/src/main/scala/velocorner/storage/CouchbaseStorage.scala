@@ -32,6 +32,9 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     }
   }
 
+  // TODO: multiple keys
+  // emit([year, month, day], {'key': myKey, 'value': 1});
+
   override def dailyProgress: List[DailyProgress] = progress(daily = true, (entry) => DailyProgress.fromStorage(entry.getKey, entry.getValue))
 
   override def overallProgress: List[Progress] = progress(daily = false, (entry) => Progress.fromStorage(entry.getValue))
