@@ -17,7 +17,7 @@ object ActivitiesFromStravaToCouchbaseApp extends App with Logging with MyMacCon
   log.info("connecting to couchbase bucket...")
   val storage = new CouchbaseStorage(config.getBucketPassword)
   storage.initialize()
-  val activities = feed.listRecentAthleteActivities
+  val activities = feed.listRecentAthleteActivities // 432909
   //val activities = feed.listAthleteActivities
   storage.store(activities)
 
