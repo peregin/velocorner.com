@@ -13,7 +13,7 @@ object AggregateActivitiesFromCouchbaseApp extends App with Metrics with Logging
 
   val storage = new CouchbaseStorage(password)
   storage.initialize()
-  val progress = timed("aggregation")(storage.dailyProgress)
+  val progress = timed("aggregation")(storage.dailyProgress(432909))
 
   printAllProgress(progress)
 

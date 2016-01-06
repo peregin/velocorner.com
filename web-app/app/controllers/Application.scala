@@ -20,18 +20,18 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {
-      val account = loggedIn
-      Logger.info(s"account $account")
+      val maybeAccount = loggedIn
+      Logger.info(s"account $maybeAccount")
       val storage = Global.getStorage
       val currentYear = LocalDate.now().getYear
 
-      val yearlyProgress = YearlyProgress.from(storage.dailyProgress)
+      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgress(account.athleteId))).getOrElse(List.empty)
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
       LandingPageContext(
-        account,
+        maybeAccount,
         currentYearStatistics,
         flattenedYearlyProgress,
         aggregatedYearlyProgress

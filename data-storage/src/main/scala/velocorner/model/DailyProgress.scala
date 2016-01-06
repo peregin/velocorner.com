@@ -5,10 +5,11 @@ import org.joda.time.LocalDate
 
 object DailyProgress {
 
-  // key format: [2012,4,30]
+  // key format: [athleteId, [2012,4,30]]
   def fromStorage(key: String, value: String) = {
-    val date = key.stripPrefix("[").stripSuffix("]").split(',').map(_.toInt)
-    val day = LocalDate.parse(f"${date(0)}%4d-${date(1)}%02d-${date(2)}%02d")
+    val rawDate = key.dropWhile((c) => c != ',').trim.stripPrefix(",").stripSuffix("]")
+    val dateArray = rawDate.stripPrefix("[").stripSuffix("]").split(',').map(_.toInt)
+    val day = LocalDate.parse(f"${dateArray(0)}%4d-${dateArray(1)}%02d-${dateArray(2)}%02d")
     DailyProgress(day, Progress.fromStorage(value))
   }
 }

@@ -1,14 +1,13 @@
 package velocorner.storage
 
-import velocorner.model.{Account, DailyProgress, Progress, Activity}
+import velocorner.model.{Account, DailyProgress, Activity}
 
 trait Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
   def store(activities: List[Activity])
 
-  def dailyProgress: List[DailyProgress]
-  def overallProgress: List[Progress]
+  def dailyProgress(athleteId: Int): List[DailyProgress]
   def listActivityIds: List[Int]
 
   def deleteActivities(ids: Iterable[Int])

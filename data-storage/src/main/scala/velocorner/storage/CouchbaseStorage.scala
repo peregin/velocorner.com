@@ -32,21 +32,15 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     }
   }
 
-  // TODO: multiple keys
-  // emit([year, month, day], {'key': myKey, 'value': 1});
-
-  override def dailyProgress: List[DailyProgress] = progress(daily = true, (entry) => DailyProgress.fromStorage(entry.getKey, entry.getValue))
-
-  override def overallProgress: List[Progress] = progress(daily = false, (entry) => Progress.fromStorage(entry.getValue))
-
-  // queries the daily or overall progress
-  private def progress[T](daily: Boolean, func: ViewRow => T): List[T] = {
+  override def dailyProgress(athleteId: Int): List[DailyProgress] = {
     val view = client.getView(progressDesignName, byDayViewName)
     val query = new Query()
-    query.setGroup(daily)
+    query.setGroup(true)
     query.setStale(Stale.FALSE)
+    query.setInclusiveEnd(true)
+    query.setRange(s"[$athleteId, [2000, 1, 1]]", s"[$athleteId, [3000, 12, 31]]")
     val response = client.query(view, query)
-    val progress = for (entry <- response) yield func(entry)
+    val progress = for (entry <- response) yield DailyProgress.fromStorage(entry.getKey, entry.getValue)
     progress.toList
   }
 
@@ -83,9 +77,9 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     val mapProgress =
       """
         |function (doc, meta) {
-        |  if (doc.type && doc.type == "Ride" && doc.start_date && doc.distance) {
+        |  if (doc.type && doc.type == "Ride" && doc.start_date && doc.athlete && doc.distance) {
         |    var d = dateToArray(doc.start_date)
-        |    emit([d[0], d[1], d[2]],
+        |    emit([doc.athlete.id, [d[0], d[1], d[2]]],
         |         {
         |           distance: doc.distance,
         |           elevation: doc.total_elevation_gain,

@@ -26,7 +26,7 @@ object Account {
 }
 
 case class Account(
-  athleteId: Long,
+  athleteId: Int,
   displayName: String,
   displayLocation: String,
   avatarUrl: String,
