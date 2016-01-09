@@ -34,11 +34,19 @@ couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -
 Elastic Search
 ==============
 ES as service
+- https://gist.github.com/scalabl3/8046965
+- https://github.com/couchbaselabs/elasticsearch-transport-couchbase
+- http://blog.couchbase.com/couchbase-and-full-text-search-couchbase-transport-elasticsearch
 couchbase-capi-server
 elasticsearch-transport-couchbase-2.2.1
 user/pwd for transport
 curl -XPUT http://localhost:9200/_template/couchbase -d @plugins/transport-couchbase/couchbase_template.json => install an index template that sets up some good defaults when working with Couchbase
 curl -XPUT http://localhost:9200/velocorner => index in ES
+
+Kibana
+======
+template * -> cb-*
+curl -XDELETE http://localhost:9200/.kibana
 
 How to run the web application
 =============================
