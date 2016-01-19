@@ -15,10 +15,8 @@ trait Feed {
   def listRecentClubActivities(clubId: Long): List[Activity]
 
 
-  // activities
-  def listRecentAthleteActivities: List[Activity]
-
-  def listAthleteActivities: List[Activity]
+  // // activities - page starts from 1 and pageSize cannot be greater than StravaFeed.maxItemsPerPage
+  def listAthleteActivities(page: Int, pageSize: Int): List[Activity]
 
   // athlete
   def getAthlete: Athlete

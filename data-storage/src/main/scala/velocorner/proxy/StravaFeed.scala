@@ -22,7 +22,20 @@ object StravaFeed {
   val baseUrl = "https://www.strava.com"
   val accessTokenUrl = s"${StravaFeed.baseUrl}/oauth/token"
   val authorizationUrl = s"${StravaFeed.baseUrl}/oauth/authorize"
+
   val maxItemsPerPage = 200 // limitation from Strava
+
+  def listRecentAthleteActivities(implicit feed: StravaFeed): List[Activity] = feed.listAthleteActivities(1, StravaFeed.maxItemsPerPage)
+
+  def listAllAthleteActivities(implicit feed: StravaFeed): List[Activity] = {
+    @tailrec
+    def list(page: Int, accu: List[Activity]): List[Activity] = {
+      val activities = feed.listAthleteActivities(page, StravaFeed.maxItemsPerPage)
+      if (activities.size < StravaFeed.maxItemsPerPage) activities ++ accu
+      else list(page + 1, activities ++ accu)
+    }
+    list(1, List.empty)
+  }
 }
 
 class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed with Logging {
@@ -69,27 +82,17 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
     Authentication(access_token, athlete)
   }
 
+
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
     extractActivities(response)
   }
 
-  override def listRecentAthleteActivities: List[Activity] = athleteActivities(1)
 
-  override def listAthleteActivities: List[Activity] = {
-    @tailrec
-    def list(page: Int, accu: List[Activity]): List[Activity] = {
-      val activities = athleteActivities(page)
-      if (activities.size < StravaFeed.maxItemsPerPage) activities ++ accu
-      else list(page + 1, activities ++ accu)
-    }
-    list(1, List.empty)
-  }
-
-  private def athleteActivities(page: Int): List[Activity] = {
+  override def listAthleteActivities(page: Int, pageSize: Int = StravaFeed.maxItemsPerPage): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
       .withHeaders(("Authorization", authHeader))
-      .withQueryString(("page", page.toString), ("per_page", StravaFeed.maxItemsPerPage.toString))
+      .withQueryString(("page", page.toString), ("per_page", pageSize.toString))
       .get()
     extractActivities(response)
   }

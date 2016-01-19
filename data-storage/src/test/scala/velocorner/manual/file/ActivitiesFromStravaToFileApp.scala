@@ -11,9 +11,9 @@ import velocorner.util.JsonIo
 
 object ActivitiesFromStravaToFileApp extends App with Logging with MyMacConfig {
 
-  val feed = new StravaFeed(None, SecretConfig.load())
+  implicit val feed = new StravaFeed(None, SecretConfig.load())
   //val activities = feed.recentClubActivities(Club.Velocorner)
-  val activities = feed.listAthleteActivities
+  val activities = StravaFeed.listRecentAthleteActivities
   log.info(s"got ${activities.size} athlete activities")
 
   val json = JsonIo.write(activities)
