@@ -9,7 +9,7 @@ object dependencies {
   val sparkVersion = "1.6.0"
   val playAuthVersion = "0.14.1"
 
-  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.10"
+  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.11"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
