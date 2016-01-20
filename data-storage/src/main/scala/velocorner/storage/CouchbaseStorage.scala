@@ -26,13 +26,13 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
 
   // activities
-  override def store(activities: List[Activity]) {
+  override def store(activities: Iterable[Activity]) {
     activities.foreach{a =>
       client.set(a.id.toString, 0, JsonIo.write(a))
     }
   }
 
-  override def dailyProgress(athleteId: Int): List[DailyProgress] = {
+  override def dailyProgress(athleteId: Int): Iterable[DailyProgress] = {
     val view = client.getView(progressDesignName, byDayViewName)
     val query = new Query()
     query.setGroup(true)
@@ -44,7 +44,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     progress.toList
   }
 
-  override def listActivityIds: List[Int] = queryForIds(client.getView(listDesignName, activitiesViewName)).map(_.toInt)
+  override def listActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, activitiesViewName)).map(_.toInt)
 
   override def deleteActivities(ids: Iterable[Int]) {
     ids.map(_.toString).foreach(client.delete)
@@ -60,7 +60,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     Option(client.get(s"account_$id")).map(json => JsonIo.read[Account](json.toString))
   }
 
-  override def listAccountIds: List[String] = queryForIds(client.getView(listDesignName, accountsViewName))
+  override def listAccountIds(): Iterable[String] = queryForIds(client.getView(listDesignName, accountsViewName))
 
   private def queryForIds(view: View): List[String] = {
     val query = new Query()

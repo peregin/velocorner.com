@@ -2,7 +2,7 @@ package velocorner.model
 
 import org.joda.time.{Days, LocalDate}
 
-case class YearlyProgress(year: Int, progress: List[DailyProgress]) {
+case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
 
   def zeroOnMissingDate: YearlyProgress = {
     val day2Progress = progress.map(p => (p.day, p)).toMap
@@ -17,21 +17,21 @@ case class YearlyProgress(year: Int, progress: List[DailyProgress]) {
 
 object YearlyProgress {
 
-  def from(progress: List[DailyProgress]): List[YearlyProgress] = {
+  def from(progress: Iterable[DailyProgress]): Iterable[YearlyProgress] = {
     // group by year
     val byYear = progress.groupBy(_.day.year().get())
     byYear.map { case (year, list) => YearlyProgress(year, list)}.toList.sortBy(_.year)
   }
 
   // each daily progress will be summed up with the previously aggregated progress
-  def aggregate(progress: List[YearlyProgress]): List[YearlyProgress] = {
+  def aggregate(progress: Iterable[YearlyProgress]): Iterable[YearlyProgress] = {
     progress.map(yp => yp.copy(
       progress = yp.progress.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) => DailyProgress(i.day, accu.progress + i.progress)).tail )
     )
   }
 
   // maps empty dates with zero, looks better on the spline spline chart
-  def zeroOnMissingDate(progress: List[YearlyProgress]): List[YearlyProgress] = {
+  def zeroOnMissingDate(progress: Iterable[YearlyProgress]): Iterable[YearlyProgress] = {
     progress.map(_.zeroOnMissingDate)
   }
 }

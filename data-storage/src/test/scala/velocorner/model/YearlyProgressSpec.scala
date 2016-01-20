@@ -20,11 +20,11 @@ class YearlyProgressSpec extends Specification {
       ))
       val ap = YearlyProgress.aggregate(List(yp))
       ap must haveSize(1)
-      val adp = ap(0).progress
+      val adp = ap.head.progress
       adp must haveSize(3)
-      adp(0).progress.rides === 1
-      adp(1).progress.rides === 2
-      adp(2).progress.rides === 3
+      adp.head.progress.rides === 1
+      adp.drop(1).head.progress.rides === 2
+      adp.drop(2).head.progress.rides === 3
     }
   }
 }

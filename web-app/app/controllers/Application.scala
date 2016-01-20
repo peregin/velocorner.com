@@ -25,7 +25,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val storage = Global.getStorage
       val currentYear = LocalDate.now().getYear
 
-      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgress(account.athleteId))).getOrElse(List.empty)
+      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgress(account.athleteId))).getOrElse(Iterable.empty)
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
