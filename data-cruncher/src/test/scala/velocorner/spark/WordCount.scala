@@ -1,13 +1,8 @@
 package velocorner.spark
 
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import velocorner.util.Metrics
-
-// Implicit conversions, such as methods defined in
-// org.apache.spark.rdd.PairRDDFunctions
-// (http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.rdd.PairRDDFunctions)
-import org.apache.spark.SparkContext._
 
 
 /**
@@ -17,7 +12,8 @@ import org.apache.spark.SparkContext._
  */
 object WordCount extends App with Metrics {
 
-  val sc = new SparkContext("local", "Word Count (2)")
+  val scConf = new SparkConf().setAppName("Wourd Count")
+  val sc = new SparkContext(scConf)
   try {
     spark(sc)
   } finally {
@@ -41,7 +37,7 @@ object WordCount extends App with Metrics {
       input
         .flatMap(line => line.split( """\W+"""))
         .map(word => (word, 1))
-        .reduceByKey((count1, count2) => count1 + count2)
+        .reduceByKey(_ + _)
     }
 
     println(s"entries: ${wc.count()}")

@@ -6,7 +6,7 @@ import PlayKeys._
 
 object dependencies {
 
-  val sparkVersion = "1.5.1"
+  val sparkVersion = "1.6.0"
   val playAuthVersion = "0.14.1"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.10"
