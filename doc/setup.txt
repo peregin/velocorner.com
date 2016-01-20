@@ -27,6 +27,7 @@ exclude proxy for static content
 
 Couchbase
 =========
+sudo rpm --install couchbase-server-enterprise-3.0.2-centos6.x86_64.rpm
 /opt/couchbase/bin/
 couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=200
 couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -p ****
