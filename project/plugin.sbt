@@ -5,20 +5,20 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
 // eclipse support
-addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "3.0.0")
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "4.0.0")
 
 // to generate dependency graph of the libraries
-addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.5")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.1")
 
 // check latest updates form maven
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9")
 
 // generates build information, timestamp
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.1")
+addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.5.0")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.3")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.6")
 
 // code coverage
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
 
