@@ -12,7 +12,7 @@ object AccountsFromCouchbaseApp extends App with Logging with Metrics with MyMac
   val storage = new CouchbaseStorage(SecretConfig.load().getBucketPassword)
   storage.initialize()
 
-  val ids = storage.listAccountIds
+  val ids = storage.listAllAccountIds
   log.info(s"accounts $ids")
 
   storage.destroy()

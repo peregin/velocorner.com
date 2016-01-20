@@ -18,33 +18,49 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
 
   val progressDesignName = "progress"
-  val byDayViewName = "by_day"
+  val progressByDayViewName = "by_day"
 
   val listDesignName = "list"
-  val activitiesViewName = "activities"
-  val accountsViewName = "accounts"
+  val allActivitiesViewName = "all_activities"
+  val activitiesByDateViewName = "activities_by_date"
+  val allAccountsViewName = "all_accounts"
 
 
   // activities
   override def store(activities: Iterable[Activity]) {
+    // TODO: bulk store
     activities.foreach{a =>
       client.set(a.id.toString, 0, JsonIo.write(a))
     }
   }
 
   override def dailyProgress(athleteId: Int): Iterable[DailyProgress] = {
-    val view = client.getView(progressDesignName, byDayViewName)
+    val view = client.getView(progressDesignName, progressByDayViewName)
     val query = new Query()
     query.setGroup(true)
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setRange(s"[$athleteId, [2000, 1, 1]]", s"[$athleteId, [3000, 12, 31]]")
     val response = client.query(view, query)
-    val progress = for (entry <- response) yield DailyProgress.fromStorage(entry.getKey, entry.getValue)
-    progress.toList
+    for (entry <- response) yield DailyProgress.fromStorage(entry.getKey, entry.getValue)
   }
 
-  override def listActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, activitiesViewName)).map(_.toInt)
+  override def listAllActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, allActivitiesViewName)).map(_.toInt)
+
+  override def listRecentActivities(athleteId: Option[Int], limit: Int): Iterable[Activity] = {
+    val view = client.getView(listDesignName, activitiesByDateViewName)
+    val query = new Query()
+    query.setStale(Stale.FALSE)
+    query.setInclusiveEnd(true)
+    query.setDescending(true)
+    query.setLimit(limit)
+    val (dateFrom, dateTo) = ("[3000, 1, 1]", "[2000, 12, 31]")
+    val (rangeFrom, rangeTo) = athleteId.map(aid => (s"[$dateFrom, $aid]", s"[$dateTo, $aid]")).getOrElse((s"[$dateFrom, 1]", s"[$dateTo, ${Int.MaxValue}]"))
+    query.setRange(rangeFrom, rangeTo)
+    query.setIncludeDocs(true)
+    val response = client.query(view, query)
+    for (entry <- response) yield JsonIo.read[Activity](entry.getDocument.toString)
+  }
 
   override def deleteActivities(ids: Iterable[Int]) {
     ids.map(_.toString).foreach(client.delete)
@@ -60,14 +76,13 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     Option(client.get(s"account_$id")).map(json => JsonIo.read[Account](json.toString))
   }
 
-  override def listAccountIds(): Iterable[String] = queryForIds(client.getView(listDesignName, accountsViewName))
+  override def listAllAccountIds(): Iterable[String] = queryForIds(client.getView(listDesignName, allAccountsViewName))
 
-  private def queryForIds(view: View): List[String] = {
+  private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
     val response = client.query(view, query)
-    val ids = for (entry <- response) yield entry.getId
-    ids.toList
+    for (entry <- response) yield entry.getId
   }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents
@@ -117,14 +132,24 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
         |  return res;
         |}
       """.stripMargin
-    val byDayView = new ViewDesign(byDayViewName, mapProgress, reduceProgress)
+    val byDayView = new ViewDesign(progressByDayViewName, mapProgress, reduceProgress)
     progressDesign.getViews.add(byDayView)
     client.createDesignDoc(progressDesign)
 
     client.deleteDesignDoc(listDesignName)
     val listDesign = new DesignDocument(listDesignName)
-    listDesign.getViews.add(new ViewDesign(activitiesViewName, mapFunctionForType("Ride")))
-    listDesign.getViews.add(new ViewDesign(accountsViewName, mapFunctionForType("Account")))
+    listDesign.getViews.add(new ViewDesign(allActivitiesViewName, mapForAllIdsFor("Ride")))
+    listDesign.getViews.add(new ViewDesign(allAccountsViewName, mapForAllIdsFor("Account")))
+    val mapAccountsByDate =
+      """
+        |function (doc, meta) {
+        |  if (doc.type && doc.type == "Ride") {
+        |    var d = dateToArray(doc.start_date)
+        |    emit([[d[0], d[1], d[2]], doc.athlete.id], doc.id);
+        |  }
+        |}
+      """.stripMargin
+    listDesign.getViews.add(new ViewDesign(activitiesByDateViewName, mapAccountsByDate))
     client.createDesignDoc(listDesign)
   }
 
@@ -133,7 +158,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     client.shutdown(1, TimeUnit.SECONDS)
   }
 
-  private def mapFunctionForType(docType: String) = {
+  private def mapForAllIdsFor(docType: String) = {
     s"""
       |function (doc, meta) {
       |  if (doc.type && doc.type == "$docType") {

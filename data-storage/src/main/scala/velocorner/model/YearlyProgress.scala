@@ -11,7 +11,7 @@ case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
     val daysBetween = Days.daysBetween(firstDate, lastDate).getDays
     val days = for (f <- 0 to daysBetween) yield firstDate.plusDays(f)
     val newProgress = days.map(d => day2Progress.getOrElse(d, DailyProgress(d, Progress.zero)))
-    YearlyProgress(year, newProgress.toList)
+    YearlyProgress(year, newProgress)
   }
 }
 
