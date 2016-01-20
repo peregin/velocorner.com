@@ -18,14 +18,14 @@ object dependencies {
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
 
   val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
-  val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.12"
+  val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
 
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-  val scalaSpec = "org.specs2" %% "specs2" % "2.4.2" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 

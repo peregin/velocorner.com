@@ -10,7 +10,7 @@ import scala.io.Source
  */
 class JsonIoSpec extends Specification {
 
-  addArguments(stopOnFail)
+  stopOnFail
 
   "converter for athlete activities" should {
 
