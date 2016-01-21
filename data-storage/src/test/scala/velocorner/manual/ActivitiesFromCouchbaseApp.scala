@@ -14,7 +14,7 @@ object ActivitiesFromCouchbaseApp extends App with Logging with Metrics with MyM
   val ids = storage.listAllActivityIds
   log.info(s"got ${ids.size} ids")
 
-  val recent = storage.listRecentActivities(None, 10)
+  val recent = storage.listRecentActivities(432909, 20)
   recent foreach println
 
   storage.destroy()

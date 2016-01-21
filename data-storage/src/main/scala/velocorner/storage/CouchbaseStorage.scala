@@ -7,12 +7,12 @@ import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
 import velocorner.model.{Account, DailyProgress, Progress, Activity}
-import velocorner.util.JsonIo
+import velocorner.util.{Metrics, JsonIo}
 
 import scala.collection.JavaConversions._
 
 
-class CouchbaseStorage(password: String) extends Storage with Logging {
+class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
 
   lazy val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
@@ -22,7 +22,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
   val listDesignName = "list"
   val allActivitiesViewName = "all_activities"
-  val activitiesByDateViewName = "activities_by_date"
+  val allActivitiesByDateViewName = "all_activities_by_date"
+  val athleteActivitiesByDateViewName = "athlete_activities_by_date"
   val allAccountsViewName = "all_accounts"
 
 
@@ -47,20 +48,28 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
 
   override def listAllActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, allActivitiesViewName)).map(_.toInt)
 
-  override def listRecentActivities(athleteId: Option[Int], limit: Int): Iterable[Activity] = {
-    val view = client.getView(listDesignName, activitiesByDateViewName)
+  override def listRecentActivities(limit: Int): Iterable[Activity] = {
+    val view = client.getView(listDesignName, allActivitiesByDateViewName)
+    orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
+  }
+
+  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+    val view = client.getView(listDesignName, athleteActivitiesByDateViewName)
+    orderedActivitiesInRange(view, s"[$athleteId, [3000, 1, 1]]", s"[$athleteId, [2000, 12, 31]]", limit)
+  }
+
+  private def orderedActivitiesInRange(view: View, rangeFrom: String, rangeTo: String, limit: Int): Iterable[Activity] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setDescending(true)
     query.setLimit(limit)
-    val (dateFrom, dateTo) = ("[3000, 1, 1]", "[2000, 12, 31]")
-    val (rangeFrom, rangeTo) = athleteId.map(aid => (s"[$dateFrom, $aid]", s"[$dateTo, $aid]")).getOrElse((s"[$dateFrom, 1]", s"[$dateTo, ${Int.MaxValue}]"))
     query.setRange(rangeFrom, rangeTo)
     query.setIncludeDocs(true)
     val response = client.query(view, query)
     for (entry <- response) yield JsonIo.read[Activity](entry.getDocument.toString)
   }
+
 
   override def deleteActivities(ids: Iterable[Int]) {
     ids.map(_.toString).foreach(client.delete)
@@ -86,7 +95,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
   }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents
-  override def initialize() {
+  override def initialize() = timed("init") {
     client.deleteDesignDoc(progressDesignName)
     val progressDesign = new DesignDocument(progressDesignName)
     val mapProgress =
@@ -140,16 +149,26 @@ class CouchbaseStorage(password: String) extends Storage with Logging {
     val listDesign = new DesignDocument(listDesignName)
     listDesign.getViews.add(new ViewDesign(allActivitiesViewName, mapForAllIdsFor("Ride")))
     listDesign.getViews.add(new ViewDesign(allAccountsViewName, mapForAllIdsFor("Account")))
-    val mapAccountsByDate =
+    val mapAllActivitiesByDate =
       """
         |function (doc, meta) {
         |  if (doc.type && doc.type == "Ride") {
         |    var d = dateToArray(doc.start_date)
-        |    emit([[d[0], d[1], d[2]], doc.athlete.id], doc.id);
+        |    emit([d[0], d[1], d[2]], doc.id);
         |  }
         |}
       """.stripMargin
-    listDesign.getViews.add(new ViewDesign(activitiesByDateViewName, mapAccountsByDate))
+    listDesign.getViews.add(new ViewDesign(allActivitiesByDateViewName, mapAllActivitiesByDate))
+    val mapAthleteActivitiesByDate =
+      """
+        |function (doc, meta) {
+        |  if (doc.type && doc.type == "Ride") {
+        |    var d = dateToArray(doc.start_date)
+        |    emit([doc.athlete.id, [d[0], d[1], d[2]]], doc.id);
+        |  }
+        |}
+      """.stripMargin
+    listDesign.getViews.add(new ViewDesign(athleteActivitiesByDateViewName, mapAthleteActivitiesByDate))
     client.createDesignDoc(listDesign)
   }
 

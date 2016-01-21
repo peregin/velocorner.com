@@ -8,7 +8,8 @@ trait Storage {
   def store(activities: Iterable[Activity])
   def dailyProgress(athleteId: Int): Iterable[DailyProgress]
   def listAllActivityIds(): Iterable[Int]
-  def listRecentActivities(athleteId: Option[Int], limit: Int): Iterable[Activity]
+  def listRecentActivities(limit: Int): Iterable[Activity]
+  def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity]
   def deleteActivities(ids: Iterable[Int])
 
   // accounts
