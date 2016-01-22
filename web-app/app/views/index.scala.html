@@ -2,29 +2,25 @@
 
 @common.main("Welcome to Velocorner") {
 
-    @if(context.account.isEmpty) {
-        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-            <a href="@routes.AuthController.login("user")">
-                <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
-            </a>
-            Login with your Strava account, you will be able to see your yearly progress and various statistics.
+    @context.account.map { user =>
+        <div class="tag-box">
+            @widget.profile(user, context.statistics)
+
+            <div class="headline"><h2>Yearly Activities</h2></div>
+            @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyProgress)
+            @widget.chart("yearlyProgress", "Yearly Progress", context.aggregatedYearlyProgress)
         </div>
     }
 
-    <div class="tag-box">
-
-        @context.account.map{ user =>
-            @widget.profile(user, context.statistics)
-        }
-
-        <div class="headline"><h2>Yearly Activities</h2></div>
-
-        @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyProgress)
-
-        @widget.chart("yearlyProgress", "Yearly Progress", context.aggregatedYearlyProgress)
-
-
-    </div>
+    @if(context.account.isEmpty) {
+        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+            <a href="@routes.AuthController.login("user")">
+            <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+            </a>
+            Login with your Strava account, you will be able to see your yearly progress and various statistics.
+            <img src="@routes.Assets.at("images/yearly-heatmap200.png")" alt="Heatmap">
+        </div>
+    }
 }
 <!-- end of common main section -->
 
