@@ -43,6 +43,7 @@ elasticsearch-transport-couchbase-2.2.1
 user/pwd for transport
 curl -XPUT http://localhost:9200/_template/couchbase -d @plugins/transport-couchbase/couchbase_template.json => install an index template that sets up some good defaults when working with Couchbase
 curl -XPUT http://localhost:9200/velocorner => index in ES
+/usr/local/Cellar/elasticsearch/2.1.1/bin/elasticsearch
 
 Kibana
 ======
