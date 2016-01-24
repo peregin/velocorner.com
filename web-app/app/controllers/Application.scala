@@ -1,6 +1,5 @@
 package controllers
 
-import java.util.concurrent.TimeUnit
 
 import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.joda.time.{DateTime, LocalDate}

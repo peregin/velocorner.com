@@ -1,18 +1,16 @@
 package velocorner.proxy
 
-import com.ning.http.client.{ProxyServer, AsyncHttpClientConfig}
+import com.ning.http.client.{AsyncHttpClientConfig, ProxyServer}
 import org.slf4s.Logging
-import play.api.http.{MimeTypes, HeaderNames}
+import play.api.libs.ws.ning.{NingAsyncHttpClientConfigBuilder, NingWSClient}
 import play.api.libs.ws.{WS, WSResponse}
-import play.api.libs.ws.ning.{NingWSClient, NingAsyncHttpClientConfigBuilder}
-import play.api.mvc.Results
 import velocorner.SecretConfig
-import velocorner.model.{Athlete, Authentication, Activity}
+import velocorner.model.{Activity, Athlete}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
-import scala.concurrent.{Await, Future, ExecutionContext}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.language.postfixOps
 
 /**
@@ -61,27 +59,6 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   implicit val wsClient = new NingWSClient(httpConfigBuilder.build())
 
   implicit val executionContext = ExecutionContext.Implicits.global
-  
-  override def getOAuth2Url(redirectHost: String): String = {
-    s"${StravaFeed.authorizationUrl}?client_id=$clientId&response_type=code&redirect_uri=http://$redirectHost/oauth/callback&state=mystate&approval_prompt=force"
-  }
-
-  override def getOAuth2Token(code: String, clientSecret: String): Authentication = {
-    val response = WS.clientUrl(StravaFeed.accessTokenUrl)
-      .withQueryString(
-        "client_id" -> clientId,
-        "client_secret" -> clientSecret,
-        "code" -> code
-      )
-      .withHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .post(Results.EmptyContent())
-    val result = Await.result(response, timeout)
-    log.info(s"authentication reply ${result.statusText}")
-    val access_token = (result.json \ "access_token").as[String]
-    val athlete = (result.json \ "athlete").as[Athlete]
-    Authentication(access_token, athlete)
-  }
-
 
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
