@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.auth.Permission
-import jp.t2v.lab.play2.auth.AuthConfig
+import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
@@ -23,6 +23,15 @@ trait AuthConfigSupport extends AuthConfig {
 
   val idTag: ClassTag[Id] = classTag[Id]
   val sessionTimeoutInSeconds: Int = 3600
+
+  override lazy val tokenAccessor = new CookieTokenAccessor(
+    cookieName = "PLAY2AUTH_SESS_ID",
+    cookieSecureOption = false,
+    cookieHttpOnlyOption = true,
+    cookieDomainOption = None,
+    cookiePathOption = "/",
+    cookieMaxAge = Some(sessionTimeoutInSeconds)
+  )
 
   override def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
     Logger.info(s"resolving user[$id]")
