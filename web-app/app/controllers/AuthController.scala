@@ -7,7 +7,6 @@ import play.api.Logger
 import play.api.mvc.{RequestHeader, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NonFatal
 
 
 object AuthController extends AuthConfigSupport with OAuth2Controller
@@ -26,17 +25,7 @@ object AuthController extends AuthConfigSupport with OAuth2Controller
 
   override def onOAuthLoginSucceeded(token: AccessToken)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     Logger.info(s"oauth login succeeded with token[$token]")
-    val maybeUser = try {
-      retrieveProviderUser(token)
-    } catch {
-      case NonFatal(t) =>
-        Logger.error("failed to get user", t)
-        Future.failed(t)
-    }
-    maybeUser.onFailure {
-      case t =>  Logger.error("failed to get user", t)
-    }
-    maybeUser.flatMap { providerUser =>
+    retrieveProviderUser(token).flatMap { providerUser =>
       val storage = Global.getStorage
       val maybeAccount = storage.getAccount(providerUser.athleteId)
       if (maybeAccount.isEmpty) storage.store(providerUser)
