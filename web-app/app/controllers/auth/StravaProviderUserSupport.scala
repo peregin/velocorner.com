@@ -19,6 +19,7 @@ trait StravaProviderUserSupport extends OAuthProviderUserSupport {
     val token = accessToken.toString
     Logger.info(s"retrieve user for $token")
     val athlete = Global.getFeed(token).getAthlete
+    Logger.info(s"got athlete for user $athlete")
     Future.successful(Account.from(athlete, token, None))
   }
 }
