@@ -7,7 +7,7 @@ import velocorner.storage.CouchbaseStorage
 import velocorner.util.Metrics
 
 
-object NukeALlFromCouchbaseApp extends App with Logging with Metrics with MyMacConfig {
+object NukeAllFromCouchbaseApp extends App with Logging with Metrics with MyMacConfig {
 
   log.info("connecting to couchbase bucket...")
   val storage = new CouchbaseStorage(SecretConfig.load().getBucketPassword)
