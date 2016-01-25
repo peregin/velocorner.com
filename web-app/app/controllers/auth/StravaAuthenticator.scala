@@ -1,6 +1,6 @@
 package controllers.auth
 
-import java.net.URLEncoder
+import java.net.{URI, URLEncoder}
 
 import controllers.Global
 import jp.t2v.lab.play2.auth.social.core.{AccessTokenRetrievalFailedException, OAuth2Authenticator}
@@ -29,8 +29,12 @@ class StravaAuthenticator extends OAuth2Authenticator {
   override val callbackUrl: String = Global.getSecretConfig.getApplicationCallbackUrl
 
   override def getAuthorizationUrl(scope: String, state: String): String = {
+    Logger.info(s"authorization url for scope[$scope]")
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
-    val encodedRedirectUri = URLEncoder.encode(callbackUrl, "utf-8")
+    // scope is the host name localhost:9000 or www.velocorner.com
+    val uri = new URI(callbackUrl)
+    val adjustedCallbackUrl = s"${uri.getScheme}://$scope${uri.getPath}"
+    val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
     val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
