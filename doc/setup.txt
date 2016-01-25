@@ -24,6 +24,7 @@ Apache
 ======
 add VirtualHost in httpd.conf
 exclude proxy for static content
+server alias for www
 
 Couchbase
 =========
