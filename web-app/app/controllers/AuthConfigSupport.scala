@@ -46,14 +46,13 @@ trait AuthConfigSupport extends AuthConfig {
     Future.successful(Redirect(routes.Application.index()))
   }
 
-  override def authorize(user: Account, authority: Permission)(implicit context: ExecutionContext): Future[Boolean] = {
-    Future.successful(true)
-  }
-
   override def authenticationFailed(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
     Future.successful(Redirect(routes.Application.index()))
   }
 
+  override def authorize(user: Account, authority: Permission)(implicit context: ExecutionContext): Future[Boolean] = {
+    Future.successful(true)
+  }
 
   override def authorizationFailed(request: RequestHeader, user: Account, authority: Option[Permission])(implicit context: ExecutionContext): Future[Result] = {
     Future.successful(Forbidden("no permission"))

@@ -4,3 +4,12 @@ TO DO
 - asynchronous refresh - websocket/comet library
 - AngularJS
 - ElasticSearch for querying statistics
+
+Content
+=======
+Rides
+  MTB
+  Road
+Videos
+Events
+  Calendar
