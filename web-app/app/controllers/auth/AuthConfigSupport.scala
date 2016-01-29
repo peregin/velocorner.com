@@ -1,7 +1,7 @@
-package controllers
+package controllers.auth
 
-import controllers.auth.Permission
-import jp.t2v.lab.play2.auth.{CookieTokenAccessor, AuthConfig}
+import controllers.{Global, routes}
+import jp.t2v.lab.play2.auth.{AuthConfig, CookieTokenAccessor}
 import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}

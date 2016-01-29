@@ -1,6 +1,7 @@
 package controllers
 
 
+import controllers.auth.AuthConfigSupport
 import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.joda.time.{DateTime, LocalDate}
 import org.slf4s

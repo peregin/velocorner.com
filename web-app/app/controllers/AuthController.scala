@@ -1,6 +1,6 @@
 package controllers
 
-import controllers.auth.{StravaAuthenticator, StravaProviderUserSupport}
+import controllers.auth.{AuthConfigSupport, StravaAuthenticator, StravaProviderUserSupport}
 import jp.t2v.lab.play2.auth.social.core.{OAuth2Authenticator, OAuth2Controller}
 import jp.t2v.lab.play2.auth.{Login, OptionalAuthElement}
 import play.api.Logger
