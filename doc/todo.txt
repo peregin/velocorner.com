@@ -5,6 +5,19 @@ TO DO
 - AngularJS
 - ElasticSearch for querying statistics
 
+Statistics
+==========
+Rides
+Distance
+Longest Distance
+Elevation
+Longest Elevation
+Hours
+Average Speed
+Max Speed
+Min Temperature
+Max Temperature
+
 Content
 =======
 Rides
