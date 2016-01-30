@@ -7,6 +7,9 @@ TO DO
 
 Statistics
 ==========
+YTD - year to date
+https://strava.zendesk.com/entries/61455120-Better-Year-to-Date-Mileage-Totals-and-Stats-in-Training-Calendar
+
 Rides
 Distance
 Longest Distance
@@ -18,6 +21,8 @@ Max Speed
 Min Temperature
 Max Temperature
 
+Gear Summary
+
 Content
 =======
 Rides
@@ -26,3 +31,6 @@ Rides
 Videos
 Events
   Calendar
+
+Withings
+========

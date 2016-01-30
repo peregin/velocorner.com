@@ -1,12 +1,13 @@
 package controllers
 
-import velocorner.model.{Account, Progress, YearlyProgress}
+import highcharts.DailySeries
+import velocorner.model.{Account, Progress}
 
 /**
   * Created by levi on 04/11/15.
   */
 case class LandingPageContext(account: Option[Account],
                               statistics: Progress,
-                              yearlyProgress: Iterable[YearlyProgress],
-                              aggregatedYearlyProgress: Iterable[YearlyProgress]
+                              yearlyProgress: Iterable[DailySeries],
+                              aggregatedYearlyProgress: Iterable[DailySeries]
                               )

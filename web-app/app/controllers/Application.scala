@@ -34,11 +34,13 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
+      import highcharts._
+
       LandingPageContext(
         maybeAccount,
         currentYearStatistics,
-        flattenedYearlyProgress,
-        aggregatedYearlyProgress
+        toDistanceSeries(flattenedYearlyProgress),
+        toDistanceSeries(aggregatedYearlyProgress)
       )
     }
 

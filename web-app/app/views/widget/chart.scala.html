@@ -1,4 +1,4 @@
-@(chartId: String, chartTitle: String, progress: Iterable[velocorner.model.YearlyProgress])
+@(chartId: String, chartTitle: String, progress: Iterable[highcharts.DailySeries])
 
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/jquery/jquery.min.js")"></script>
 
@@ -53,13 +53,13 @@ $(function () {
         series: [
         @for(p <- progress) {
         {
-            name: '@p.year',
+            name: '@p.name',
             // Define the data points. All series have a dummy year
             // of 1970/71 in order to be compared on the same x axis. Note
             // that in JavaScript, months start at 0 for January, 1 for February etc.
             data: [
-            @for(d <- p.progress) {
-                [Date.UTC(2015, @d.getMonth, @d.getDay), @d.progress.distance ],
+            @for(point <- p.series) {
+                [Date.UTC(2015, @point.getMonth, @point.getDay), @point.value ],
             } // end of daily for
             ]
         },
