@@ -1,5 +1,5 @@
 import org.joda.time.LocalDate
-import velocorner.model.{Progress, YearlyProgress}
+import velocorner.model.{AthleteDailyProgress, Progress, YearlyProgress}
 
 /**
   * Created by levi on 29/01/16.
@@ -19,4 +19,8 @@ package object highcharts {
 
   def toDistanceSeries(items: Iterable[YearlyProgress]): Iterable[DailySeries] = toSeries(items, _.distance)
 
+  def toAthleteDistanceSeries(items: Iterable[AthleteDailyProgress]): Iterable[DailySeries] = {
+    // TODO: from here
+    Iterable.empty
+  }
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
-import velocorner.model.{Account, DailyProgress, Progress, Activity}
+import velocorner.model._
 import velocorner.util.{Metrics, JsonIo}
 
 import scala.collection.JavaConversions._
@@ -18,7 +18,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
 
   val progressDesignName = "progress"
-  val progressByDayViewName = "by_day"
+  val athleteProgressByDayViewName = "athlete_by_day"
+  val allProgressByDayViewName = "all_by_day"
 
   val listDesignName = "list"
   val allActivitiesViewName = "all_activities"
@@ -35,15 +36,27 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     }
   }
 
-  override def dailyProgress(athleteId: Int): Iterable[DailyProgress] = {
-    val view = client.getView(progressDesignName, progressByDayViewName)
+  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+    val view = client.getView(progressDesignName, athleteProgressByDayViewName)
     val query = new Query()
     query.setGroup(true)
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setRange(s"[$athleteId, [2000, 1, 1]]", s"[$athleteId, [3000, 12, 31]]")
     val response = client.query(view, query)
-    for (entry <- response) yield DailyProgress.fromStorage(entry.getKey, entry.getValue)
+    for (entry <- response) yield DailyProgress.fromStorageByIdDay(entry.getKey, entry.getValue)
+  }
+
+  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
+    val view = client.getView(progressDesignName, allProgressByDayViewName)
+    val query = new Query()
+    query.setGroup(true)
+    query.setStale(Stale.FALSE)
+    query.setInclusiveEnd(true)
+    query.setLimit(limit)
+    query.setDescending(true)
+    val response = client.query(view, query)
+    for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
   }
 
   override def listAllActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, allActivitiesViewName)).map(_.toInt)
@@ -98,12 +111,26 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   override def initialize() = timed("init") {
     client.deleteDesignDoc(progressDesignName)
     val progressDesign = new DesignDocument(progressDesignName)
-    val mapProgress =
+    val mapAthleteDateProgress =
       """
         |function (doc, meta) {
         |  if (doc.type && doc.type == "Ride" && doc.start_date && doc.athlete && doc.distance) {
         |    var d = dateToArray(doc.start_date)
         |    emit([doc.athlete.id, [d[0], d[1], d[2]]],
+        |         {
+        |           distance: doc.distance,
+        |           elevation: doc.total_elevation_gain,
+        |           time: doc.moving_time
+        |         });
+        |  }
+        |}
+      """.stripMargin
+    val mapAllDateProgress =
+      """
+        |function (doc, meta) {
+        |  if (doc.type && doc.type == "Ride" && doc.start_date && doc.athlete && doc.distance) {
+        |    var d = dateToArray(doc.start_date)
+        |    emit([[d[0], d[1], d[2]], doc.athlete.id],
         |         {
         |           distance: doc.distance,
         |           elevation: doc.total_elevation_gain,
@@ -141,8 +168,10 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
         |  return res;
         |}
       """.stripMargin
-    val byDayView = new ViewDesign(progressByDayViewName, mapProgress, reduceProgress)
-    progressDesign.getViews.add(byDayView)
+    val athleteByDayView = new ViewDesign(athleteProgressByDayViewName, mapAthleteDateProgress, reduceProgress)
+    progressDesign.getViews.add(athleteByDayView)
+    val allByDayView = new ViewDesign(allProgressByDayViewName, mapAllDateProgress, reduceProgress)
+    progressDesign.getViews.add(allByDayView)
     client.createDesignDoc(progressDesign)
 
     client.deleteDesignDoc(listDesignName)

@@ -1,7 +1,8 @@
-package velocorner.manual
+package velocorner.manual.club
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
+import velocorner.manual.MyMacConfig
 import velocorner.model.Club
 import velocorner.proxy.StravaFeed
 import velocorner.storage.CouchbaseStorage

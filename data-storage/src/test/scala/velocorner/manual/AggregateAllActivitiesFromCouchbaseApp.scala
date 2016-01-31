@@ -6,16 +6,16 @@ import velocorner.storage.CouchbaseStorage
 import velocorner.util.Metrics
 
 
-object AggregateActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
+object AggregateAllActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
   val password = SecretConfig.load().getBucketPassword
   log.info(s"connecting to couchbase bucket with password [$password]...")
 
   val storage = new CouchbaseStorage(password)
   storage.initialize()
-  val progress = timed("aggregation")(storage.dailyProgress(432909))
+  val progress = timed("aggregation")(storage.dailyProgressForAll(5))
 
-  printAllProgress(progress)
+  progress foreach println
 
   log.info("done...")
   storage.destroy()
