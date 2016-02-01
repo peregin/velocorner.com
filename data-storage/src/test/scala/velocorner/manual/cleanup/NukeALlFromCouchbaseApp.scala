@@ -13,12 +13,7 @@ object NukeAllFromCouchbaseApp extends App with Logging with Metrics with MyMacC
   val storage = new CouchbaseStorage(SecretConfig.load().getBucketPassword)
   storage.initialize()
 
-  val ids = storage.listAllAccountIds
-  log.info(s"accounts ${ids.size}")
-
-  val accs = storage.listAllActivityIds
-  log.info(s"activities ${accs.size}")
-  storage.deleteActivities(accs)
+  val future = storage.client.flush()
 
   storage.destroy()
 }

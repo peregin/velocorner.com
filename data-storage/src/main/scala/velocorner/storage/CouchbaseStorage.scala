@@ -22,10 +22,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   val allProgressByDayViewName = "all_by_day"
 
   val listDesignName = "list"
-  val allActivitiesViewName = "all_activities"
   val allActivitiesByDateViewName = "all_activities_by_date"
   val athleteActivitiesByDateViewName = "athlete_activities_by_date"
-  val allAccountsViewName = "all_accounts"
 
 
   // activities
@@ -59,8 +57,6 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
   }
 
-  override def listAllActivityIds(): Iterable[Int] = queryForIds(client.getView(listDesignName, allActivitiesViewName)).map(_.toInt)
-
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
     val view = client.getView(listDesignName, allActivitiesByDateViewName)
     orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
@@ -83,12 +79,6 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     for (entry <- response) yield JsonIo.read[Activity](entry.getDocument.toString)
   }
 
-
-  override def deleteActivities(ids: Iterable[Int]) {
-    ids.map(_.toString).foreach(client.delete)
-  }
-
-
   // accounts
   override def store(account: Account) {
     client.set(s"account_${account.athleteId.toString}", 0, JsonIo.write(account))
@@ -97,8 +87,6 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   override def getAccount(id: Long): Option[Account] = {
     Option(client.get(s"account_$id")).map(json => JsonIo.read[Account](json.toString))
   }
-
-  override def listAllAccountIds(): Iterable[String] = queryForIds(client.getView(listDesignName, allAccountsViewName))
 
   private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()
@@ -176,8 +164,6 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
 
     client.deleteDesignDoc(listDesignName)
     val listDesign = new DesignDocument(listDesignName)
-    listDesign.getViews.add(new ViewDesign(allActivitiesViewName, mapForAllIdsFor("Ride")))
-    listDesign.getViews.add(new ViewDesign(allAccountsViewName, mapForAllIdsFor("Account")))
     val mapAllActivitiesByDate =
       """
         |function (doc, meta) {
@@ -204,15 +190,5 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   // releases any connections, resources used
   override def destroy() {
     client.shutdown(1, TimeUnit.SECONDS)
-  }
-
-  private def mapForAllIdsFor(docType: String) = {
-    s"""
-      |function (doc, meta) {
-      |  if (doc.type && doc.type == "$docType") {
-      |    emit(meta.id, null);
-      |  }
-      |}
-    """.stripMargin
   }
 }
