@@ -21,6 +21,12 @@
             <img src="@routes.Assets.at("images/yearly-heatmap200.png")" alt="Heatmap">
         </div>
     }
+
+    <div class="tag-box">
+        <div class="headline"><h2>Recent Progress</h2></div>
+        @widget.chart("recentProgress", "Recent Progress", context.recentProgress)
+    </div>
+
 }
 <!-- end of common main section -->
 

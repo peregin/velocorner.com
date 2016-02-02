@@ -20,7 +20,8 @@ package object highcharts {
   def toDistanceSeries(items: Iterable[YearlyProgress]): Iterable[DailySeries] = toSeries(items, _.distance)
 
   def toAthleteDistanceSeries(items: Iterable[AthleteDailyProgress]): Iterable[DailySeries] = {
-    // TODO: from here
-    Iterable.empty
+    items.groupBy(_.athleteId).map{case (athleteId, list) =>
+      DailySeries(athleteId.toString, list.map(e => DailyPoint(e.dailyProgress.day, e.dailyProgress.progress.distance)))
+    }
   }
 }
