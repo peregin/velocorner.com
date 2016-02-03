@@ -13,15 +13,20 @@ package object highcharts {
 
   case class DailySeries(name: String, series: Iterable[DailyPoint])
 
-  def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
+  def toDistanceSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.distance)
+
+  private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
     items.map(yp => DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
   }
 
-  def toDistanceSeries(items: Iterable[YearlyProgress]): Iterable[DailySeries] = toSeries(items, _.distance)
 
-  def toAthleteDistanceSeries(items: Iterable[AthleteDailyProgress]): Iterable[DailySeries] = {
+  def toAthleteDistanceSeries(items: Iterable[AthleteDailyProgress]) = toAthleteSeries(items, _.distance)
+
+  def toAthleteElevationSeries(items: Iterable[AthleteDailyProgress]) = toAthleteSeries(items, _.elevation)
+
+  private def toAthleteSeries(items: Iterable[AthleteDailyProgress], fun: Progress => Double): Iterable[DailySeries] = {
     items.groupBy(_.athleteId).map{case (athleteId, list) =>
-      DailySeries(athleteId.toString, list.map(e => DailyPoint(e.dailyProgress.day, e.dailyProgress.progress.distance)))
+      DailySeries(athleteId.toString, list.map(e => DailyPoint(e.dailyProgress.day, fun(e.dailyProgress.progress))))
     }
   }
 }

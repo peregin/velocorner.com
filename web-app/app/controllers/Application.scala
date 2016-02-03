@@ -44,7 +44,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
         currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
         toDistanceSeries(aggregatedYearlyProgress),
-        toAthleteDistanceSeries(mostRecentAthleteProgress)
+        toAthleteDistanceSeries(mostRecentAthleteProgress),
+        toAthleteElevationSeries(mostRecentAthleteProgress)
       )
     }
 

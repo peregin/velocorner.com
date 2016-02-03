@@ -25,9 +25,7 @@ object YearlyProgress {
 
   // each daily progress will be summed up with the previously aggregated progress
   def aggregate(progress: Iterable[YearlyProgress]): Iterable[YearlyProgress] = {
-    progress.map(yp => yp.copy(
-      progress = yp.progress.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) => DailyProgress(i.day, accu.progress + i.progress)).tail )
-    )
+    progress.map(yp => yp.copy(progress = DailyProgress.aggregate(yp.progress)))
   }
 
   // maps empty dates with zero, looks better on the spline spline chart

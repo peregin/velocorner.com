@@ -10,5 +10,6 @@ case class LandingPageContext(account: Option[Account],
                               statistics: Progress,
                               yearlyProgress: Iterable[DailySeries],
                               aggregatedYearlyProgress: Iterable[DailySeries],
-                              recentProgress: Iterable[DailySeries]
+                              recentDistance: Iterable[DailySeries],
+                              recentElevation: Iterable[DailySeries]
                               )

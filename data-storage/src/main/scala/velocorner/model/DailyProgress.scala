@@ -17,6 +17,11 @@ object DailyProgress {
     val dateArray = text.stripPrefix("[").stripSuffix("]").split(',').map(_.toInt)
     LocalDate.parse(f"${dateArray(0)}%4d-${dateArray(1)}%02d-${dateArray(2)}%02d")
   }
+
+  def aggregate(list: Iterable[DailyProgress]): Iterable[DailyProgress] = {
+    list.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) =>
+      DailyProgress(i.day, accu.progress + i.progress)).tail
+  }
 }
 
 

@@ -24,7 +24,14 @@
 
     <div class="tag-box">
         <div class="headline"><h2>Recent Progress</h2></div>
-        @widget.chart("recentProgress", "Recent Progress", context.recentProgress)
+        <div class="row">
+            <div class="col-md-6 md-margin-bottom-50">
+            @widget.chart("recentProgressDistance", "Distance", context.recentDistance)
+            </div>
+            <div class="col-md-6 md-margin-bottom-50">
+                @widget.chart("recentProgressElevation", "Elevation", context.recentElevation)
+            </div>
+        </div>
     </div>
 
 }
