@@ -38,6 +38,19 @@ object AthleteDailyProgress {
     val day = DailyProgress.parseDate(rawDate)
     AthleteDailyProgress(athleteId, DailyProgress(day, Progress.fromStorage(value)))
   }
+
+  // keep only for the current year
+  def keepMostRecentDays(list: Iterable[AthleteDailyProgress], days: Int): Iterable[AthleteDailyProgress] = {
+    if (list.isEmpty) list
+    else {
+      implicit val cmp = new Ordering[LocalDate] {
+        override def compare(x: LocalDate, y: LocalDate): Int = x.compareTo(y)
+      }
+      val mostRecentDay = list.map(_.dailyProgress.day).max
+      val lastDayToKeep = mostRecentDay.minusDays(days)
+      list.filter(_.dailyProgress.day.isAfter(lastDayToKeep)).filter(_.dailyProgress.day.getYear == mostRecentDay.getYear)
+    }
+  }
 }
 
 case class AthleteDailyProgress(athleteId: Int, dailyProgress: DailyProgress)

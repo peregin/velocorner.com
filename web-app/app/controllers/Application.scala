@@ -7,7 +7,7 @@ import org.joda.time.{DateTime, LocalDate}
 import org.slf4s
 import play.Logger
 import play.api.mvc._
-import velocorner.model.{Activity, Progress, YearlyProgress}
+import velocorner.model.{AthleteDailyProgress, Activity, Progress, YearlyProgress}
 import velocorner.proxy.StravaFeed
 import velocorner.util.Metrics
 
@@ -35,6 +35,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
       val dailyAthleteProgress = storage.dailyProgressForAll(200)
+      val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
 
       import highcharts._
 
@@ -43,7 +44,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
         currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
         toDistanceSeries(aggregatedYearlyProgress),
-        toAthleteDistanceSeries(dailyAthleteProgress)
+        toAthleteDistanceSeries(mostRecentAthleteProgress)
       )
     }
 
