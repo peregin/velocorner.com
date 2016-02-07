@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import velocorner.model.{AthleteDailyProgress, Account, DailyProgress, Activity}
+import velocorner.model._
 
 trait Storage {
 
@@ -16,6 +16,10 @@ trait Storage {
   // accounts
   def store(account: Account)
   def getAccount(id: Long): Option[Account]
+
+  // athletes
+  def store(athlete: Athlete)
+  def getAthlete(id: Long): Option[Athlete]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
