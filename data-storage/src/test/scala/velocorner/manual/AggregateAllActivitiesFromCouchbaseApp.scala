@@ -9,7 +9,7 @@ import velocorner.util.Metrics
 object AggregateAllActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
   val password = SecretConfig.load().getBucketPassword
-  log.info(s"connecting to couchbase bucket with password [$password]...")
+  log.info("connecting to the couchbase bucket...")
 
   val storage = new CouchbaseStorage(password)
   storage.initialize()
