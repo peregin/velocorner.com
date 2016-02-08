@@ -1,6 +1,6 @@
 package velocorner.proxy
 
-import com.ning.http.client.{AsyncHttpClientConfig, ProxyServer}
+import com.ning.http.client.{AsyncHttpClientConfigBean, AsyncHttpClientConfig, ProxyServer}
 import org.slf4s.Logging
 import play.api.libs.ws.ning.{NingAsyncHttpClientConfigBuilder, NingWSClient}
 import play.api.libs.ws.{WS, WSResponse}
@@ -45,8 +45,8 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   val authHeader = s"Bearer $token"
   val timeout = 10 seconds
 
-  val ningConfig = new NingAsyncHttpClientConfigBuilder().build()
-  val httpConfigBuilder = new AsyncHttpClientConfig.Builder(ningConfig)
+  val httpConfigSetup = if (config.getProxyHost.isDefined) new AsyncHttpClientConfigBean() else new NingAsyncHttpClientConfigBuilder().build()
+  val httpConfigBuilder = new AsyncHttpClientConfig.Builder(httpConfigSetup)
 
   // setup secure proxy if it is configured w/o authentication
   for (proxyHost <- config.getProxyHost; proxyPort <- config.getProxyPort) {
