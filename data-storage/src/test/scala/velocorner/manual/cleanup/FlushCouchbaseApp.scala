@@ -9,6 +9,7 @@ import velocorner.storage.CouchbaseStorage
 import velocorner.util.Metrics
 
 
+// "Cannot flush buckets with outgoing XDCR"
 object FlushCouchbaseApp extends App with Logging with Metrics with MyMacConfig {
 
   log.info("connecting to couchbase bucket...")
@@ -16,7 +17,7 @@ object FlushCouchbaseApp extends App with Logging with Metrics with MyMacConfig 
   storage.initialize()
 
   val future = storage.client.flush()
-  val succeeded = future.get(10, TimeUnit.SECONDS)
+  val succeeded = future.get(5, TimeUnit.SECONDS)
   log.info(s"flush succeeded $succeeded")
 
   storage.destroy()
