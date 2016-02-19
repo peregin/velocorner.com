@@ -10,9 +10,9 @@ import velocorner.util.Metrics
  *
  * Created by levi on 02/02/15.
  */
-object WordCount extends App with Metrics {
+object WordCountApp extends App with Metrics {
 
-  val scConf = new SparkConf().setAppName("Wourd Count")
+  val scConf = new SparkConf().setAppName("Word Count")
   val sc = new SparkContext(scConf)
   try {
     spark(sc)

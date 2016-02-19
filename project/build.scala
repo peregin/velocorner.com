@@ -23,6 +23,7 @@ object dependencies {
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.1.0"
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
@@ -31,7 +32,7 @@ object dependencies {
 
 
   def logging = Seq(logback, slf4s)
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
 }
 
@@ -63,7 +64,11 @@ object build extends Build {
     base = file("data-cruncher"),
     dependencies = Seq(dataStorage % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark
+      libraryDependencies ++= dependencies.spark,
+      dependencyOverrides ++= Set(
+        "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4",
+        "com.google.guava" % "guava" % "18.0"
+      )
     )
   )
 
