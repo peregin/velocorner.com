@@ -19,7 +19,7 @@ object SparkCouchbaseApp extends App with MyMacConfig {
   val sc = new SparkContext(scConf)
 
   import com.couchbase.spark._
-  sc.couchbaseGet[JsonDocument](Seq("a1", "a2"))
+  sc.couchbaseGet[JsonDocument](Seq("244993130", "225250663"))
     .collect()
     .foreach(println)
 
