@@ -12,7 +12,9 @@ import velocorner.util.Metrics
  */
 object WordCountApp extends App with Metrics {
 
-  val scConf = new SparkConf().setAppName("Word Count")
+  val scConf = new SparkConf()
+    .setAppName("Word Count")
+    .setMaster("local[*]") // set the master to local
   val sc = new SparkContext(scConf)
   try {
     spark(sc)
@@ -21,7 +23,7 @@ object WordCountApp extends App with Metrics {
   }
 
   def spark(sc: SparkContext) {
-    val rdd: RDD[String] = sc.textFile("common/src/test/resources/data/book/kipling.txt")
+    val rdd: RDD[String] = sc.textFile("data-cruncher/src/test/resources/data/book/kipling.txt")
     println(s"lines: ${rdd.count()}")
 
     // convert each line to lower case, creating an RDD.

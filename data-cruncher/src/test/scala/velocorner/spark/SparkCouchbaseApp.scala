@@ -1,6 +1,7 @@
 package velocorner.spark
 
 import com.couchbase.client.java.document.JsonDocument
+import com.couchbase.client.java.view.ViewQuery
 import org.apache.spark.{SparkContext, SparkConf}
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
@@ -19,7 +20,12 @@ object SparkCouchbaseApp extends App with MyMacConfig {
   val sc = new SparkContext(scConf)
 
   import com.couchbase.spark._
-  sc.couchbaseGet[JsonDocument](Seq("a1", "a2"))
+  sc.couchbaseGet[JsonDocument](Seq("244993130", "225250663"))
+    .collect()
+    .foreach(println)
+
+  sc.couchbaseView(ViewQuery.from("list", "all_activities_by_date").limit(10))
+    .map(_.value)
     .collect()
     .foreach(println)
 

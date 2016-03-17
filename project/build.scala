@@ -46,7 +46,10 @@ object build extends Build {
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
     scalacOptions := Seq("-target:jvm-1.7", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
-    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+    dependencyOverrides ++= Set(
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4" // because of spark and couchbase connector
+    )
   )
 
   lazy val dataStorage = Project(
@@ -64,11 +67,8 @@ object build extends Build {
     base = file("data-cruncher"),
     dependencies = Seq(dataStorage % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark,
-      dependencyOverrides ++= Set(
-        "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4",
-        "com.google.guava" % "guava" % "18.0"
-      )
+      libraryDependencies ++= dependencies.spark
+
     )
   )
 
