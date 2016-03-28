@@ -16,13 +16,15 @@ object WordCountApp extends App with Metrics {
     .setAppName("Word Count")
     .setMaster("local[*]") // set the master to local
   val sc = new SparkContext(scConf)
-  try {
+  val resulted = try {
     spark(sc)
   } finally {
     sc.stop()
   }
 
-  def spark(sc: SparkContext) {
+  println(s"resulted: $resulted")
+
+  def spark(sc: SparkContext) = {
     val rdd: RDD[String] = sc.textFile("data-cruncher/src/test/resources/data/book/kipling.txt")
     println(s"lines: ${rdd.count()}")
 
@@ -42,11 +44,10 @@ object WordCountApp extends App with Metrics {
         .reduceByKey(_ + _)
     }
 
-    println(s"entries: ${wc.count()}")
-
     // eventually save the results
     //println(s"Writing output to: $out")
     //wc.saveAsTextFile(out)
+    wc.count()
   }
 }
 

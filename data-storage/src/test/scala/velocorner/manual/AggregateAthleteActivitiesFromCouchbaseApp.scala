@@ -14,7 +14,6 @@ object AggregateAthleteActivitiesFromCouchbaseApp extends App with Metrics with 
   val storage = new CouchbaseStorage(password)
   storage.initialize()
   val progress = timed("aggregation")(storage.dailyProgressForAthlete(432909))
-
   printAllProgress(progress)
 
   log.info("done...")
