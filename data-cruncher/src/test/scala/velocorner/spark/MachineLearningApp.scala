@@ -17,6 +17,7 @@ object MachineLearningApp extends App with Logging with Metrics with MyMacConfig
 
   val activities = timed("getting activities") {
     log.info("connecting to couchbase bucket...")
+    // TODO: use CouchbaseConnector
     val storage = new CouchbaseStorage(SecretConfig.load().getBucketPassword)
     storage.initialize()
     val recent = storage.listRecentActivities(432909, 600)
