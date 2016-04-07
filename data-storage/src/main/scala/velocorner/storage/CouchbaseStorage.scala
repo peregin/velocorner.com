@@ -17,14 +17,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   lazy val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
 
-  val progressDesignName = "progress"
-  val athleteProgressByDayViewName = "athlete_by_day"
-  val allProgressByDayViewName = "all_by_day"
-
-  val listDesignName = "list"
-  val allActivitiesByDateViewName = "all_activities_by_date"
-  val athleteActivitiesByDateViewName = "athlete_activities_by_date"
-
+  import CouchbaseStorage._
 
   // activities
   override def store(activities: Iterable[Activity]) {
@@ -200,4 +193,16 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   override def destroy() {
     client.shutdown(1, TimeUnit.SECONDS)
   }
+}
+
+
+object CouchbaseStorage {
+
+  val progressDesignName = "progress"
+  val athleteProgressByDayViewName = "athlete_by_day"
+  val allProgressByDayViewName = "all_by_day"
+
+  val listDesignName = "list"
+  val allActivitiesByDateViewName = "all_activities_by_date"
+  val athleteActivitiesByDateViewName = "athlete_activities_by_date"
 }

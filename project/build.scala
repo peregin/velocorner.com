@@ -23,6 +23,7 @@ object dependencies {
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
+  val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
   val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.1.0"
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
@@ -32,7 +33,7 @@ object dependencies {
 
 
   def logging = Seq(logback, slf4s)
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, couchbaseSpark)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
 }
 
