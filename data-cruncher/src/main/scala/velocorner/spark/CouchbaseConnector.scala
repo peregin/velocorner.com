@@ -21,14 +21,14 @@ case class CouchbaseConnector(config: SecretConfig) {
 
   def list(ids: Seq[String]) = sc.couchbaseGet[JsonDocument](ids)
 
-  def dailyProgressForAthlete(athleteId: Int, limit: Int) = sc.couchbaseView(
-    ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.allActivitiesByDateViewName)
-      .limit(limit)
-      .descending()
-      .inclusiveEnd(true)
-      //.startKey(s"[$athleteId, [3000, 1, 1]]")
-      //.endKey(s"[$athleteId, [2000, 12, 31]]")
-  )
+//  def dailyProgressForAthlete(athleteId: Int, limit: Int) = sc.couchbaseView(
+//    ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.allActivitiesByDateViewName)
+//      .limit(limit)
+//      .descending()
+//      .inclusiveEnd(true)
+//      //.startKey(s"[$athleteId, [3000, 1, 1]]")
+//      //.endKey(s"[$athleteId, [2000, 12, 31]]")
+//  )
 
   def dailyProgressForAll(limit: Int) = sc.couchbaseView(ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.athleteActivitiesByDateViewName)
     .limit(limit)
