@@ -1,7 +1,7 @@
 package velocorner.spark
 
 import com.couchbase.client.java.document.JsonDocument
-import com.couchbase.client.java.view.ViewQuery
+import com.couchbase.client.java.view.{Stale, ViewQuery}
 import org.apache.spark.{SparkConf, SparkContext}
 import velocorner.SecretConfig
 import velocorner.storage.CouchbaseStorage
@@ -21,16 +21,17 @@ case class CouchbaseConnector(config: SecretConfig) {
 
   def list(ids: Seq[String]) = sc.couchbaseGet[JsonDocument](ids)
 
-//  def dailyProgressForAthlete(athleteId: Int, limit: Int) = sc.couchbaseView(
-//    ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.allActivitiesByDateViewName)
-//      .limit(limit)
-//      .descending()
-//      .inclusiveEnd(true)
-//      //.startKey(s"[$athleteId, [3000, 1, 1]]")
-//      //.endKey(s"[$athleteId, [2000, 12, 31]]")
-//  )
+  def dailyProgressForAthlete(athleteId: Int, limit: Int) = sc.couchbaseView(
+    ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.athleteActivitiesByDateViewName)
+      .limit(limit)
+      .descending()
+      .inclusiveEnd(true)
+      .endKey(s"[$athleteId, [2000, 12, 31]]")
+      //.startKey(s"[$athleteId, [3000, 1, 1]]")
+      .stale(Stale.TRUE)
+  )
 
-  def dailyProgressForAll(limit: Int) = sc.couchbaseView(ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.athleteActivitiesByDateViewName)
+  def dailyProgressForAll(limit: Int) = sc.couchbaseView(ViewQuery.from(CouchbaseStorage.listDesignName, CouchbaseStorage.allActivitiesByDateViewName)
     .limit(limit)
     .descending()
     .inclusiveEnd(true)
