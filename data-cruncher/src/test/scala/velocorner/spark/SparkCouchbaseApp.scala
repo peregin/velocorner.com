@@ -9,17 +9,13 @@ import velocorner.manual.MyMacConfig
 object SparkCouchbaseApp extends App with MyMacConfig {
 
   val conn = CouchbaseConnector(SecretConfig.load())
-  conn.list(Seq("244993130", "225250663"))
-    .collect()
-    .foreach(println)
+  //conn.list(Seq("244993130", "225250663")).collect()
 
-  conn.dailyProgressForAll(10)
-    .collect()
-    .foreach(println)
-
-  conn.dailyProgressForAthlete(432909, 10)
-    .collect()
-    .foreach(println)
+  val list = conn.dailyProgressForAthlete(432909, 10).collect()
+  //val list = conn.dailyProgressForAll(10).collect()
 
   conn.stop
+
+  println("--------- by athlete -------------")
+  list foreach println
 }
