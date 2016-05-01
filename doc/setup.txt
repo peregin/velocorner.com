@@ -28,9 +28,13 @@ server alias for www
 
 Couchbase
 =========
+sudo rpm --install couchbase-server-enterprise-4.1.0-centos6.x86_64.rpm   version details: 4.1.0-5005
 sudo rpm --install couchbase-server-enterprise-3.0.2-centos6.x86_64.rpm
-/opt/couchbase/bin/
-couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=200
+
+Mac OS X: /Applications/Couchbase Server.app/Contents/Resources/couchbase-core/bin
+Linux:  /opt/couchbase/bin/
+cbreset_password
+couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --bucket-password=**** --bucket-type=couchbase --bucket-ramsize=250
 couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -p ****
 
 Elastic Search
