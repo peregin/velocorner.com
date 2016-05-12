@@ -7,7 +7,6 @@ import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
 import velocorner.model.Activity
-import velocorner.storage.CouchbaseStorage
 import velocorner.util.Metrics
 
 /**
@@ -15,18 +14,14 @@ import velocorner.util.Metrics
   */
 object MachineLearningApp extends App with Logging with Metrics with MyMacConfig {
 
-  val activities = timed("getting activities") {
     log.info("connecting to couchbase bucket...")
-    // TODO: use CouchbaseConnector
-    val storage = new CouchbaseStorage(SecretConfig.load().getBucketPassword)
-    storage.initialize()
-    val recent = storage.listRecentActivities(432909, 600)
-    storage.destroy()
-    recent
-  }
-  log.info(s"got ${activities.size} activities")
-  val data2015 = activities.filter(_.start_date.getYear == 2015)
-  log.info(s"got ${data2015.size} activities from 2015")
+    val conn = CouchbaseConnector(SecretConfig.load())
+    val activities = conn.dailyProgressForAthlete(432909, 10)
+
+
+  log.info(s"got ${activities.count()} activities")
+  //val data2015 = activities.filter(_.start_date.getYear == 2015)
+  //log.info(s"got ${data2015.count()} activities from 2015")
 
   implicit class FeatureExtractor(activity: Activity) {
 
@@ -49,4 +44,6 @@ object MachineLearningApp extends App with Logging with Metrics with MyMacConfig
   //val scaler = new StandardScaler(withMean = true, withStd = true).fit(parsedTrainData.map(x => x.features))
   //val scaledTrainData = parsedTrainData.map(x => LabeledPoint(x.label, scaler.transform(Vectors.dense(x.features.toArray))))
 
+
+  conn.stop
 }
