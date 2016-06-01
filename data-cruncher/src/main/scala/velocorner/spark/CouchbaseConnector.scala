@@ -18,12 +18,19 @@ case class CouchbaseConnector(config: SecretConfig) {
     .set("com.couchbase.bucket.velocorner", config.getBucketPassword) // open the bucket
   val sc = new SparkContext(scConf)
   val sql = new SQLContext(sc)
+  //sql.cacheTable("cc")
 
   import com.couchbase.spark._
+  import com.couchbase.spark.sql._
 
   def list(ids: Seq[String]) = sc.couchbaseGet[JsonDocument](ids)
 
-  def dailyProgressForAthlete(athleteId: Int, limit: Int) = sql.sql("select id from velocorner limit 10")
+  def dailyProgressForAthlete(athleteId: Int, limit: Int) = {
+    //sql.sql("SELECT * FROM `velocorner` LIMIT 10")
+    val activities = sql.read.couchbase().limit(limit)
+    //activities.printSchema()
+    // Create a DataFrame with Schema Inference
+  }
     //sc.couchbaseQuery(Query.simple(""))
     // filtering on the view is not working based on start/end key
     // key looks like athleteId, date: [432909,[2014,10,17]]

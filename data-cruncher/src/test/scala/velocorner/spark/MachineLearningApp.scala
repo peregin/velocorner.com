@@ -19,7 +19,7 @@ object MachineLearningApp extends App with Logging with Metrics with MyMacConfig
     val activities = conn.dailyProgressForAthlete(432909, 10)
 
 
-  log.info(s"got ${activities.count()} activities")
+  //log.info(s"got ${activities.count()} activities")
   //val data2015 = activities.filter(_.start_date.getYear == 2015)
   //log.info(s"got ${data2015.count()} activities from 2015")
 

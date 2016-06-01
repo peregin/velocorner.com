@@ -16,5 +16,5 @@ object SparkCouchbaseApp extends App with MyMacConfig {
   conn.stop
 
   println("--------- by athlete -------------")
-  list foreach println
+  //list foreach println
 }
