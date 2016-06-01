@@ -2,12 +2,13 @@ package controllers
 
 
 import controllers.auth.AuthConfigSupport
+import highcharts.DailySeries
 import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.joda.time.{DateTime, LocalDate}
 import org.slf4s
 import play.Logger
 import play.api.mvc._
-import velocorner.model.{AthleteDailyProgress, Activity, Progress, YearlyProgress}
+import velocorner.model._
 import velocorner.proxy.StravaFeed
 import velocorner.util.Metrics
 
@@ -20,6 +21,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
 
   override val log = new slf4s.Logger(Logger.underlying())
 
+  @volatile var lastRequestTs = 0L
+
   def index = StackAction{ implicit request =>
     Logger.info("rendering landing page...")
 
@@ -27,8 +30,23 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val maybeAccount = loggedIn
       Logger.info(s"rendering for $maybeAccount")
       val storage = Global.getStorage
-      val currentYear = LocalDate.now().getYear
 
+      val nowInMillis = DateTime.now().getMillis
+      val diffInMillis = nowInMillis - lastRequestTs
+      lastRequestTs = nowInMillis
+      if (diffInMillis > 1200000) {
+        Logger.info("refreshing club information from Stava")
+        // update from Strava
+        val feed = Global.getFeed
+        val clubActivities = feed.listRecentClubActivities(Club.Velocorner)
+        storage.store(clubActivities)
+        val clubAthletes = feed.listClubAthletes(Club.Velocorner)
+        clubAthletes.foreach(storage.store)
+        val club = Club(Club.Velocorner, clubAthletes.map(_.id))
+        storage.store(club)
+      }
+
+      val currentYear = LocalDate.now().getYear
       val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
@@ -37,6 +55,11 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val dailyAthleteProgress = storage.dailyProgressForAll(200)
       val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
 
+      val clubAthleteIds = storage.getClub(Club.Velocorner).map(_.memberIds).getOrElse(List.empty)
+      val clubAthletes = clubAthleteIds.flatMap(id => storage.getAthlete(id))
+      val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
+      val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
+
       import highcharts._
 
       LandingPageContext(
@@ -44,8 +67,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
         currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
         toDistanceSeries(aggregatedYearlyProgress),
-        toAthleteDistanceSeries(mostRecentAthleteProgress).map(_.aggregate),
-        toAthleteElevationSeries(mostRecentAthleteProgress).map(_.aggregate)
+        toAthleteDistanceSeries(mostRecentAthleteProgress).map(_.aggregate).map(seriesId2Name),
+        toAthleteElevationSeries(mostRecentAthleteProgress).map(_.aggregate).map(seriesId2Name)
       )
     }
 
@@ -63,7 +86,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       if (diffInMillis > 60000) {
         log.info(s"last update was $diffInMillis millis ago...")
         val storage = Global.getStorage
-        val feed = Global.getFeed
+        val feed = Global.getFeed(account.accessToken)
 
         val lastActivitiyIds = storage.listRecentActivities(account.athleteId, StravaFeed.maxItemsPerPage).map(_.id).toSet
 

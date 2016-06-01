@@ -90,6 +90,15 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     Option(client.get(id.toString)).map(json => JsonIo.read[Athlete](json.toString))
   }
 
+  // clubs
+  override def store(club: Club) {
+    client.set(s"club_${club.id.toString}", 0, JsonIo.write(club))
+  }
+
+  override def getClub(id: Long): Option[Club] = {
+    Option(client.get(s"club_$id")).map(json => JsonIo.read[Club](json.toString))
+  }
+
   private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
