@@ -7,9 +7,10 @@ import PlayKeys._
 object dependencies {
 
   val sparkVersion = "1.6.1"
-  val playAuthVersion = "0.14.1"
+  val playAuthVersion = "0.14.2"
+  val logbackVersion = "1.1.3"
 
-  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.11"
+  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -17,14 +18,14 @@ object dependencies {
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
 
-  val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
+  val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
 
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.1.0"
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.0"
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
@@ -42,7 +43,7 @@ object build extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.11.7",
+    scalaVersion := "2.11.8",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
