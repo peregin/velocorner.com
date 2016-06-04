@@ -14,6 +14,7 @@ Analytics
 =========
 tracking id: UA-573257-3
 
+
 Server
 ======
 mkdir /var/www/velocorner.com
