@@ -56,16 +56,24 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
     }
     httpConfigBuilder.setProxyServer(proxyServer)
   }
-  implicit val wsClient = new NingWSClient(httpConfigBuilder.build())
 
+  implicit val wsClient = new NingWSClient(httpConfigBuilder.build())
   implicit val executionContext = ExecutionContext.Implicits.global
 
+
+  // clubs
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
     extractActivities(response)
   }
 
+  override def listClubAthletes(clubId: Long): List[Athlete] = {
+    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/members").withHeaders(("Authorization", authHeader)).get()
+    val json = Await.result(response, timeout).body
+    JsonIo.read[List[Athlete]](json)
+  }
 
+  // activities
   override def listAthleteActivities(page: Int, pageSize: Int = StravaFeed.maxItemsPerPage): List[Activity] = {
     val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
       .withHeaders(("Authorization", authHeader))
@@ -81,9 +89,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
 
   // athlete
   override def getAthlete: Athlete = {
-    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete")
-      .withHeaders(("Authorization", authHeader))
-      .get()
+    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get()
     Await.result(response, timeout).json.as[Athlete]
   }
 }

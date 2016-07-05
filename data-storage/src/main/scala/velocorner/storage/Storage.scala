@@ -21,6 +21,10 @@ trait Storage {
   def store(athlete: Athlete)
   def getAthlete(id: Long): Option[Athlete]
 
+  // clubs
+  def store(club: Club)
+  def getClub(id: Long): Option[Club]
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
 
