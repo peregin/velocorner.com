@@ -9,6 +9,7 @@ object dependencies {
   val sparkVersion = "1.6.1"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.3"
+  val elasticVersion = "2.3.0"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
 
@@ -27,15 +28,19 @@ object dependencies {
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
   val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.0"
 
-  val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-  val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
-
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
+  val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
 
   def logging = Seq(logback, slf4s)
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
+  def elastic4s = Seq(
+    "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
+  )
 }
 
 object build extends Build {
@@ -59,8 +64,10 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.playJson, dependencies.playWs, dependencies.scalaSpec, dependencies.ficus
-      ) ++ dependencies.logging
+        dependencies.couchbaseClient,
+        dependencies.playJson, dependencies.playWs, dependencies.ficus,
+        dependencies.scalaSpec
+      ) ++ dependencies.logging ++ dependencies.elastic4s
     )
   )
 
