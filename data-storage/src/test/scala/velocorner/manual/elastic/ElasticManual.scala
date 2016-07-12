@@ -3,6 +3,8 @@ package velocorner.manual.elastic
 import java.util.concurrent.CountDownLatch
 
 import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.ElasticDsl._
+
 import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import velocorner.model.Activity
@@ -10,7 +12,6 @@ import velocorner.util.JsonIo
 
 import scala.io.Source
 
-case class ElasticDocument(id: Long, `type`: String, json: String)
 
 object ElasticManual extends App with Logging {
 
@@ -24,10 +25,20 @@ object ElasticManual extends App with Logging {
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.json")).mkString
   val activities = JsonIo.read[List[Activity]](json)
-  val docs = activities.map(a => ElasticDocument(a.id, a.`type`, JsonIo.write(a)))
 
-  log.info("indexing...")
+  log.info(s"indexing ${activities.size} documents ...")
+  val indices = activities.map(a => index into s"velocorner/${a.`type`}" fields("name" -> a.name) id a.id)
+  client.execute(bulk(indices)).await
 
-  val cl = new CountDownLatch(1)
-  cl.await()
+  log.info("searching...")
+  val res = client.execute(search in "velocorner"->"Ride" query "Uetli" limit 5).await
+  log.info(s"found $res")
+
+  log.info("counting...")
+  val cres = client.execute(count from "velocorner").await
+  log.info(s"found ${cres.getCount}")
+
+
+  //val cl = new CountDownLatch(1)
+  //cl.await()
 }
