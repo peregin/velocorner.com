@@ -41,6 +41,11 @@ couchbase-cli bucket-create -u admin -p **** -c localhost --bucket=velocorner --
 couchbase-cli bucket-delete -c localhost:8091 --bucket=beer-sample -u username -p ****
 ElasticSearch cluster on 127.0.0.1:9091 as Administrator
 
+Configure on bucket level:
+- cache metadata - full ejection
+- replicas - disable it
+- flush - enable it
+
 Elastic Search
 ==============
 ES as service
