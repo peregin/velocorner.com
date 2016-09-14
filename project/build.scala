@@ -12,6 +12,7 @@ object dependencies {
   val elasticVersion = "2.3.0"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
+  val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -64,7 +65,7 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient,
+        dependencies.couchbaseClient, dependencies.rethinkClient,
         dependencies.playJson, dependencies.playWs, dependencies.ficus,
         dependencies.scalaSpec
       ) ++ dependencies.logging ++ dependencies.elastic4s

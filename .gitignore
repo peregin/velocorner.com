@@ -20,4 +20,5 @@ logs/
 *.swp
 *.log
 RemoteSystemsTempFiles/
+rethinkdb_data/
 
