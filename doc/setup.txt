@@ -52,6 +52,10 @@ ES as service
 - https://gist.github.com/scalabl3/8046965
 - https://github.com/couchbaselabs/elasticsearch-transport-couchbase
 - http://blog.couchbase.com/couchbase-and-full-text-search-couchbase-transport-elasticsearch
+
+- libexec/bin/plugin install mobz/elasticsearch-head
+- libexec/bin/plugin install https://github.com/couchbaselabs/elasticsearch-transport-couchbase/releases/download/2.2.3.3/elasticsearch-transport-couchbase-2.2.2.3.zip
+
 couchbase-capi-server
 elasticsearch-transport-couchbase-2.2.1
 user/pwd for transport

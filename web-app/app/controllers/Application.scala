@@ -21,7 +21,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
 
   override val log = new slf4s.Logger(Logger.underlying())
 
-  @volatile var lastRequestTs = 0L
+  @volatile var lastClubUpdateTs = 0L
 
   def index = StackAction{ implicit request =>
     Logger.info("rendering landing page...")
@@ -32,8 +32,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val storage = Global.getStorage
 
       val nowInMillis = DateTime.now().getMillis
-      val diffInMillis = nowInMillis - lastRequestTs
-      lastRequestTs = nowInMillis
+      val diffInMillis = nowInMillis - lastClubUpdateTs
+      lastClubUpdateTs = nowInMillis
       if (diffInMillis > 1200000) {
         Logger.info("refreshing club information from Stava")
         // update from Strava
