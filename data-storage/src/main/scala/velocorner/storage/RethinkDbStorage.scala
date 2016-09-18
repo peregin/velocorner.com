@@ -4,6 +4,7 @@ import com.rethinkdb.net.Connection
 import org.slf4s.Logging
 import velocorner.model._
 import RethinkDbStorage._
+import velocorner.util.JsonIo
 
 import scala.language.implicitConversions
 
@@ -19,9 +20,12 @@ class RethinkDbStorage extends Storage with Logging {
   override def store(activities: Iterable[Activity]) {
     val tableNames: java.util.ArrayList[String] = client.tableList().run(maybeConn)
     if (!tableNames.contains(ACTIVITY_TABLE)) client.tableCreate(ACTIVITY_TABLE).run(maybeConn)
-    activities.foreach{a =>
-      client.table(ACTIVITY_TABLE).insert(a).run(maybeConn)
+    val dbArgs = activities.map{a =>
+      val json = JsonIo.write(a)
+      client.json(json)
     }
+    val result: java.util.HashMap[_, _] = client.table(ACTIVITY_TABLE).insert(dbArgs).run(maybeConn)
+    log.info(s"result $result")
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
