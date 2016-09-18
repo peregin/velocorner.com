@@ -1,5 +1,7 @@
 package velocorner.storage
 
+import org.slf4s.Logging
+import velocorner.SecretConfig
 import velocorner.model._
 
 trait Storage {
@@ -30,4 +32,21 @@ trait Storage {
 
   // releases any connections, resources used
   def destroy()
+}
+
+object Storage extends Logging {
+
+  def create(dbType: String): Storage = dbType.toLowerCase match {
+    case any if dbType.startsWith("co") =>
+      val password = SecretConfig.load().getBucketPassword
+      log.info(s"connecting to couchbase bucket...")
+      new CouchbaseStorage(password)
+
+    case any if dbType.startsWith("re") =>
+      log.info(s"connecting to rethink server...")
+      new RethinkDbStorage
+
+    case unknown =>
+      sys.error(s"unknown storage type $dbType")
+  }
 }

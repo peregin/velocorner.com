@@ -1,6 +1,6 @@
 package velocorner.storage
 import com.rethinkdb.RethinkDB
-import com.rethinkdb.net.Connection
+import com.rethinkdb.net.{Connection, Cursor}
 import org.slf4s.Logging
 import velocorner.model._
 import RethinkDbStorage._
@@ -18,9 +18,7 @@ class RethinkDbStorage extends Storage with Logging {
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
-    val tableNames: java.util.ArrayList[String] = client.tableList().run(maybeConn)
-    if (!tableNames.contains(ACTIVITY_TABLE)) client.tableCreate(ACTIVITY_TABLE).run(maybeConn)
-    val dbArgs = activities.map{a =>
+    val dbArgs = activities.map{ a =>
       val json = JsonIo.write(a)
       client.json(json)
     }
@@ -28,7 +26,11 @@ class RethinkDbStorage extends Storage with Logging {
     log.info(s"result $result")
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
+  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+    val result: Cursor[_] = client.table(ACTIVITY_TABLE).run(maybeConn)
+    log.info(s"result $result")
+    Seq.empty
+  }
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
 
@@ -56,9 +58,17 @@ class RethinkDbStorage extends Storage with Logging {
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     val conn = client.connection().hostname("localhost").port(28015).connect()
+
+    // create database if not present
     val dbNames: java.util.ArrayList[String] = client.dbList().run(conn)
     if (!dbNames.contains(DB_NAME)) client.dbCreate(DB_NAME).run(conn)
+
     conn.use(DB_NAME)
+
+    // create tables if not present
+    val tableNames: java.util.ArrayList[String] = client.tableList().run(conn)
+    if (!tableNames.contains(ACTIVITY_TABLE)) client.tableCreate(ACTIVITY_TABLE).run(conn)
+
     maybeConn = Some(conn)
     log.info(s"connected with $conn")
   }
