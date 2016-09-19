@@ -3,7 +3,7 @@ package velocorner.manual
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.proxy.StravaFeed
-import velocorner.storage.CouchbaseStorage
+import velocorner.storage.Storage
 import velocorner.util.Metrics
 
 /**
@@ -12,11 +12,9 @@ import velocorner.util.Metrics
 object ActivitiesFromStravaAndAggregateFromCouchbaseApp extends App with Logging with Metrics with AggregateActivities with MyMacConfig {
 
   private val config = SecretConfig.load()
-
   implicit val feed = new StravaFeed(None, config)
 
-  log.info("connecting to couchbase bucket...")
-  val storage = new CouchbaseStorage(config.getBucketPassword)
+  val storage = Storage.create("co")
   storage.initialize()
   val activities = StravaFeed.listRecentAthleteActivities
   storage.store(activities)

@@ -3,7 +3,7 @@ package velocorner.manual
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.proxy.StravaFeed
-import velocorner.storage.CouchbaseStorage
+import velocorner.storage.Storage
 
 /**
  * Created by levi on 13/04/15.
@@ -11,11 +11,9 @@ import velocorner.storage.CouchbaseStorage
 object ActivitiesFromStravaToCouchbaseApp extends App with Logging with MyMacConfig {
 
   private val config = SecretConfig.load()
-
   implicit val feed = new StravaFeed(None, config)
 
-  log.info("connecting to couchbase bucket...")
-  val storage = new CouchbaseStorage(config.getBucketPassword)
+  val storage = Storage.create("co")
   storage.initialize()
   //val activities = StravaFeed.listRecentAthleteActivities
   val activities = StravaFeed.listAllAthleteActivities
