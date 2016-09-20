@@ -4,14 +4,19 @@ import com.rethinkdb.net.{Connection, Cursor}
 import org.slf4s.Logging
 import velocorner.model._
 import RethinkDbStorage._
+import com.rethinkdb.gen.ast.Json
 import velocorner.util.JsonIo
 
 import collection.JavaConverters._
-
 import scala.language.implicitConversions
 
 /**
   * Created by levi on 14/09/16.
+  *
+  * From Data Explorer:
+  * <code>
+  *   r.db('velocorner').table('activity');
+  * </code>
   */
 class RethinkDbStorage extends Storage with Logging {
 
@@ -20,17 +25,19 @@ class RethinkDbStorage extends Storage with Logging {
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
-    val dbArgs = activities.map{ a =>
+    activities.map{ a =>
       val json = JsonIo.write(a)
       client.json(json)
+    }.foreach{json =>
+      // TODO: bulk store
+      val result: java.util.HashMap[String, String] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
+      log.debug(s"result $result")
     }
-    val result: java.util.HashMap[String, _] = client.table(ACTIVITY_TABLE).insert(dbArgs).run(maybeConn)
-    log.info(s"result $result")
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).run(maybeConn)
-    val list = result.toList.asScala.toList //asScala.flatMap(h => h.asScala.get("id"))
+    val list = result.toList.asScala.toList.map(new Json(_).toJsonString.toString).map(JsonIo.read[Activity] _) //asScala.flatMap(h => h.asScala.get("id"))
     log.info(s"result $list")
     //val activities = client.table(ACTIVITY_TABLE).getAll(list).run(maybeConn)
     //log.info(s"activities $activities")
