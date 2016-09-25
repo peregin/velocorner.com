@@ -46,6 +46,14 @@ Configure on bucket level:
 - replicas - disable it
 - flush - enable it
 
+RethinkDb
+=========
+sudo wget https://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo           -O /etc/yum.repos.d/rethinkdb.repo
+sudo yum install rethinkdb
+sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
+sudo /etc/init.d/rethinkdb restart
+rethinkdb: instance1: Starting instance. (logging to `/var/lib/rethinkdb/instance1/data/log_file')
+
 Elastic Search
 ==============
 ES as service
