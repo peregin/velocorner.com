@@ -1,5 +1,6 @@
 package velocorner.storage
 import com.rethinkdb.RethinkDB
+import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import org.json.simple.JSONObject
 import org.slf4s.Logging
@@ -36,7 +37,12 @@ class RethinkDbStorage extends Storage with Logging {
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
-    val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).run(maybeConn)
+    val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(new ReqlFunction1() {
+      override def apply(arg1: ReqlExpr): AnyRef = {
+        val field = arg1.getField("athlete").getField("id")
+        field.eq(athleteId)
+      }
+    }).run(maybeConn)
     val mapList = result.toList.asScala.toList
     val activities = mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
     log.debug(s"found activities ${activities.size}")

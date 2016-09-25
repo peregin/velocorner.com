@@ -22,6 +22,15 @@ object DailyProgress {
     list.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) =>
       DailyProgress(i.day, accu.progress + i.progress)).tail
   }
+
+  def from(activity: Activity): DailyProgress = {
+    val progress = new Progress(1,
+      activity.distance, activity.distance, activity.moving_time,
+      activity.average_speed.getOrElse(0f).toDouble,
+      activity.total_elevation_gain, activity.total_elevation_gain
+    )
+    DailyProgress(activity.start_date_local.toLocalDate, progress)
+  }
 }
 
 
