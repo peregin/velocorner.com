@@ -37,16 +37,14 @@ class RethinkDbStorage extends Storage with Logging {
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
-    val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(new ReqlFunction1() {
-      override def apply(arg1: ReqlExpr): AnyRef = {
+    val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
         val field = arg1.getField("athlete").getField("id")
         field.eq(athleteId)
-      }
     }).run(maybeConn)
     val mapList = result.toList.asScala.toList
     val activities = mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
     log.debug(s"found activities ${activities.size}")
-    Seq.empty
+    DailyProgress.from(activities)
   }
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
@@ -102,4 +100,8 @@ object RethinkDbStorage {
   val ACTIVITY_TABLE = "activity"
 
   implicit def convert(conn: Option[Connection]): Connection = conn.getOrElse(sys.error("connection is not initialized"))
+
+  implicit def reqlFunction1(fun: (ReqlExpr) => Object): ReqlFunction1 = new ReqlFunction1 {
+    override def apply(arg1: ReqlExpr): Object = fun(arg1)
+  }
 }

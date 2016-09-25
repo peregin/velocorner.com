@@ -31,6 +31,12 @@ object DailyProgress {
     )
     DailyProgress(activity.start_date_local.toLocalDate, progress)
   }
+
+  def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {
+    activities.map(from).groupBy(_.day).map{ case (day, progressPerDay) =>
+        DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
+    }
+  }
 }
 
 
