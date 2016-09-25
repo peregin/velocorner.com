@@ -59,6 +59,12 @@ object AthleteDailyProgress {
     AthleteDailyProgress(athleteId, DailyProgress(day, Progress.fromStorage(value)))
   }
 
+  def fromStorage(activities: Iterable[Activity]): Iterable[AthleteDailyProgress] = {
+    activities.groupBy(_.athlete.id).flatMap{ case (aid, acts) =>
+      DailyProgress.fromStorage(acts).map(AthleteDailyProgress(aid, _))
+    }
+  }
+
   // keep only for the current year
   def keepMostRecentDays(list: Iterable[AthleteDailyProgress], days: Int): Iterable[AthleteDailyProgress] = {
     if (list.isEmpty) list

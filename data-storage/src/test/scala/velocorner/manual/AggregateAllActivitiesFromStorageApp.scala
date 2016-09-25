@@ -5,9 +5,9 @@ import velocorner.storage.Storage
 import velocorner.util.Metrics
 
 
-object AggregateAllActivitiesFromCouchbaseApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
+object AggregateAllActivitiesFromStorageApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val storage = Storage.create("co")
+  val storage = Storage.create("re")
   storage.initialize()
 
   val progress = timed("aggregation")(storage.dailyProgressForAll(5))

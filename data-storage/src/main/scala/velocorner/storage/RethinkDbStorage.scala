@@ -38,38 +38,81 @@ class RethinkDbStorage extends Storage with Logging {
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
-        val field1 = arg1.getField("athlete").getField("id")
-        val field2 = arg1.getField("type")
-        field1.eq(athleteId).and(field2.eq("Ride"))
+      val field1 = arg1.getField("athlete").getField("id")
+      val field2 = arg1.getField("type")
+      field1.eq(athleteId).and(field2.eq("Ride"))
     }).run(maybeConn)
-    val mapList = result.toList.asScala.toList
-    val activities = mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
-    log.debug(s"found activities ${activities.size}")
+    val activities = result2Activity(result.toList.asScala.toList)
+    log.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
   }
 
-  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
+  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
+    val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
+      val field1 = arg1.getField("type")
+      field1.eq("Ride")
+    }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn)
+    val activities = result2Activity(result.asScala.toList)
+    log.debug(s"found activities ${activities.size}")
+    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
+  }
 
   // summary on the landing page
-  override def listRecentActivities(limit: Int): Iterable[Activity] = ???
+  override def listRecentActivities(limit: Int): Iterable[Activity] = {
+    val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
+      val field1 = arg1.getField("type")
+      field1.eq("Ride")
+    }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn)
+    val activities = result2Activity(result.asScala.toList)
+    log.debug(s"found recent activities ${activities.size}")
+    activities
+  }
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = ???
+  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+    val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
+      val field1 = arg1.getField("athlete").getField("id")
+      val field2 = arg1.getField("type")
+      field1.eq(athleteId).and(field2.eq("Ride"))
+    }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn)
+    val activities = result2Activity(result.asScala.toList)
+    log.debug(s"found recent activities ${activities.size} for $athleteId")
+    activities
+  }
+
+  private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] = {
+    val mapList = result//result.toList.asScala.toList
+    mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
+  }
+
+  private def store[T](jsText: T, table: String) {
+    val json = client.json(jsText)
+    val result: java.util.HashMap[String, String] = client.table(table).insert(json).optArg("conflict", "update").run(maybeConn)
+    log.debug(s"result $result")
+  }
+
+  private def getJsonById(id: Long, table: String): Option[String] = {
+    val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
+      val field1 = arg1.getField("id")
+      field1.eq(id)
+    }).run(maybeConn)
+    result.asScala.toList.map(JSONObject.toJSONString).headOption
+  }
 
   // accounts
-  override def store(account: Account): Unit = ???
+  override def store(account: Account) = store(JsonIo.write(account), ACCOUNT_TABLE)
 
-  override def getAccount(id: Long): Option[Account] = ???
+  override def getAccount(id: Long): Option[Account] = getJsonById(id, ACCOUNT_TABLE).map(JsonIo.read[Account])
 
   // athletes
-  override def store(athlete: Athlete): Unit = ???
+  override def store(athlete: Athlete) = store(JsonIo.write(athlete), ATHLETE_TABLE)
 
-  override def getAthlete(id: Long): Option[Athlete] = ???
+  override def getAthlete(id: Long): Option[Athlete] = getJsonById(id, ATHLETE_TABLE).map(JsonIo.read[Athlete])
 
   // clubs
-  override def store(club: Club): Unit = ???
+  override def store(club: Club) = store(JsonIo.write(club), CLUB_TABLE)
 
-  override def getClub(id: Long): Option[Club] = ???
+  override def getClub(id: Long): Option[Club] = getJsonById(id, CLUB_TABLE).map(JsonIo.read[Club])
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
@@ -82,8 +125,13 @@ class RethinkDbStorage extends Storage with Logging {
     conn.use(DB_NAME)
 
     // create tables if not present
-    val tableNames: java.util.ArrayList[String] = client.tableList().run(conn)
-    if (!tableNames.contains(ACTIVITY_TABLE)) client.tableCreate(ACTIVITY_TABLE).run(conn)
+    def createIfNotExists(tables: String*) {
+      val tableNames: java.util.ArrayList[String] = client.tableList().run(conn)
+      tables.foreach{ t =>
+        if (!tableNames.contains(t)) client.tableCreate(t).run(conn)
+      }
+    }
+    createIfNotExists(ACTIVITY_TABLE, ACCOUNT_TABLE, ATHLETE_TABLE, CLUB_TABLE)
 
     maybeConn = Some(conn)
     log.info(s"connected with $conn")
@@ -99,6 +147,9 @@ object RethinkDbStorage {
 
   val DB_NAME = "velocorner"
   val ACTIVITY_TABLE = "activity"
+  val ACCOUNT_TABLE = "account"
+  val CLUB_TABLE = "club"
+  val ATHLETE_TABLE = "athlete"
 
   implicit def convert(conn: Option[Connection]): Connection = conn.getOrElse(sys.error("connection is not initialized"))
 
