@@ -92,11 +92,11 @@ class RethinkDbStorage extends Storage with Logging {
   }
 
   private def getJsonById(id: Long, table: String): Option[String] = {
-    val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
+    val result: Cursor[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("id")
       field1.eq(id)
     }).run(maybeConn)
-    result.asScala.toList.map(JSONObject.toJSONString).headOption
+    result.toList.asScala.toList.map(JSONObject.toJSONString).headOption
   }
 
   // accounts

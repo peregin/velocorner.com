@@ -32,8 +32,9 @@ object Global extends GlobalSettings {
     val appSecret = app.configuration.getString("application.secret")
     Logger.info(s"application secret: ${appSecret.mkString}")
 
-    Logger.info("initializing storage...")
-    storage = Some(new CouchbaseStorage(getSecretConfig.getBucketPassword))
+    val storageType = app.configuration.getString("storage").getOrElse("re")
+    Logger.info(s"initializing storage $storageType ...")
+    storage = Some(Storage.create(storageType, getSecretConfig))
     storage.foreach(_.initialize)
     Logger.info("ready...")
   }

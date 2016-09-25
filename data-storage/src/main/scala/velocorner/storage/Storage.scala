@@ -36,9 +36,11 @@ trait Storage {
 
 object Storage extends Logging {
 
-  def create(dbType: String): Storage = dbType.toLowerCase match {
+  def create(dbType: String): Storage = create(dbType, SecretConfig.load())
+
+  def create(dbType: String, config: SecretConfig): Storage = dbType.toLowerCase match {
     case any if dbType.startsWith("co") =>
-      val password = SecretConfig.load().getBucketPassword
+      val password = config.getBucketPassword
       log.info(s"connecting to couchbase bucket...")
       new CouchbaseStorage(password)
 
