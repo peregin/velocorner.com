@@ -38,13 +38,14 @@ class RethinkDbStorage extends Storage with Logging {
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
-        val field = arg1.getField("athlete").getField("id")
-        field.eq(athleteId)
+        val field1 = arg1.getField("athlete").getField("id")
+        val field2 = arg1.getField("type")
+        field1.eq(athleteId).and(field2.eq("Ride"))
     }).run(maybeConn)
     val mapList = result.toList.asScala.toList
     val activities = mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
     log.debug(s"found activities ${activities.size}")
-    DailyProgress.from(activities)
+    DailyProgress.fromStorage(activities)
   }
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???

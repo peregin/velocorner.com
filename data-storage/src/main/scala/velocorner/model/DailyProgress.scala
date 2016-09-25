@@ -18,24 +18,24 @@ object DailyProgress {
     LocalDate.parse(f"${dateArray(0)}%4d-${dateArray(1)}%02d-${dateArray(2)}%02d")
   }
 
-  def aggregate(list: Iterable[DailyProgress]): Iterable[DailyProgress] = {
-    list.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) =>
-      DailyProgress(i.day, accu.progress + i.progress)).tail
-  }
-
-  def from(activity: Activity): DailyProgress = {
+  def fromStorage(activity: Activity): DailyProgress = {
     val progress = new Progress(1,
-      activity.distance, activity.distance, activity.moving_time,
+      activity.distance / 1000, activity.distance / 1000, activity.moving_time,
       activity.average_speed.getOrElse(0f).toDouble,
       activity.total_elevation_gain, activity.total_elevation_gain
     )
     DailyProgress(activity.start_date_local.toLocalDate, progress)
   }
 
-  def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {
-    activities.map(from).groupBy(_.day).map{ case (day, progressPerDay) =>
-        DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
+  def fromStorage(activities: Iterable[Activity]): Iterable[DailyProgress] = {
+    activities.map(fromStorage).groupBy(_.day).map{ case (day, progressPerDay) =>
+      DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
     }
+  }
+
+  def aggregate(list: Iterable[DailyProgress]): Iterable[DailyProgress] = {
+    list.scanLeft(DailyProgress(LocalDate.now, Progress.zero))((accu, i) =>
+      DailyProgress(i.day, accu.progress + i.progress)).tail
   }
 }
 
