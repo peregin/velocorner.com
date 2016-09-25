@@ -20,6 +20,15 @@ object Progress {
     Progress(rides, distance, longestDistance, movingTime, averageSpeed, elevation, longestElevation)
   }
 
+  def from(activity: Activity): DailyProgress = {
+    val progress = new Progress(1,
+      activity.distance, activity.distance, activity.moving_time,
+      activity.average_speed.getOrElse(0f).toDouble,
+      activity.total_elevation_gain, activity.total_elevation_gain
+    )
+    DailyProgress(activity.start_date_local.toLocalDate, progress)
+  }
+
   def zero = Progress(0, 0d, 0d, 0, 0d, 0d, 0d)
 }
 

@@ -1,13 +1,13 @@
 package velocorner.storage
 import com.rethinkdb.RethinkDB
 import com.rethinkdb.net.{Connection, Cursor}
+import org.json.simple.JSONObject
 import org.slf4s.Logging
 import velocorner.model._
-import RethinkDbStorage._
-import org.json.simple.JSONObject
+import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
 /**
@@ -39,7 +39,7 @@ class RethinkDbStorage extends Storage with Logging {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).run(maybeConn)
     val mapList = result.toList.asScala.toList
     val activities = mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
-    log.info(s"activities $activities")
+    log.debug(s"found activities ${activities.size}")
     Seq.empty
   }
 
