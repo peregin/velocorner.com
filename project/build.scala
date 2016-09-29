@@ -13,6 +13,7 @@ object dependencies {
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
+  val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -42,6 +43,7 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
+  def storage = Seq(couchbaseClient, rethinkClient, mongoClient)
 }
 
 object build extends Build {
@@ -65,10 +67,9 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.couchbaseClient, dependencies.rethinkClient,
         dependencies.playJson, dependencies.playWs, dependencies.ficus,
         dependencies.scalaSpec
-      ) ++ dependencies.logging ++ dependencies.elastic4s
+      ) ++ dependencies.logging ++ dependencies.elastic4s ++ dependencies.storage
     )
   )
 

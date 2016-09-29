@@ -8,8 +8,10 @@ trait Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
   def store(activities: Iterable[Activity])
+
   def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress]
   def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress]
+
   // summary on the landing page
   def listRecentActivities(limit: Int): Iterable[Activity]
   // to check how much needs to be imported from the feed
@@ -39,14 +41,19 @@ object Storage extends Logging {
   def create(dbType: String): Storage = create(dbType, SecretConfig.load())
 
   def create(dbType: String, config: SecretConfig): Storage = dbType.toLowerCase match {
+
     case any if dbType.startsWith("co") =>
       val password = config.getBucketPassword
-      log.info(s"connecting to couchbase bucket...")
+      log.info("connecting to couchbase bucket...")
       new CouchbaseStorage(password)
 
     case any if dbType.startsWith("re") =>
-      log.info(s"connecting to rethink server...")
+      log.info("connecting to rethink db server...")
       new RethinkDbStorage
+
+    case any if (dbType.startsWith("mo")) =>
+      log.info("connecting to mondo db server...")
+      new MongoDbStorage
 
     case unknown =>
       sys.error(s"unknown storage type $dbType")

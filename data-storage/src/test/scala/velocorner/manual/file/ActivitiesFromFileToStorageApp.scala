@@ -16,7 +16,7 @@ object ActivitiesFromFileToStorageApp extends App with Logging with MyMacConfig 
   val list = JsonIo.read[List[Activity]](json)
   log.info(s"found ${list.size} activities")
 
-  val storage = Storage.create("re") // re or co
+  val storage = Storage.create("mo") // re, co, mo
   storage.initialize()
   storage.store(list)
   storage.destroy()
