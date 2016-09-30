@@ -1,13 +1,16 @@
 package velocorner.storage
 
 import velocorner.model._
+import velocorner.util.JsonIo
 import MongoDbStorage._
+
 import com.mongodb.DBObject
 import com.mongodb.casbah.{MongoClient, MongoDB}
 import com.mongodb.util.JSON
-import velocorner.util.JsonIo
+import com.mongodb.casbah.query.Imports._
 
 import scala.language.implicitConversions
+import collection.JavaConverters._
 
 /**
   * Created by levi on 28/09/16.
@@ -26,7 +29,14 @@ class MongoDbStorage extends Storage {
     coll.insert(objs.toArray:_*)
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
+  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+    val coll = db.getCollection(ACTIVITY_TABLE)
+    val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
+    val results = coll.find(query)
+    val activities = results.toArray.asScala.map(JSON.serialize(_)).map(JsonIo.read[Activity])
+    DailyProgress.fromStorage(activities)
+  }
+
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
 
