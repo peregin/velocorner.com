@@ -1,7 +1,13 @@
 package velocorner.storage
-import velocorner.model._
 
-import com.mongodb.casbah.MongoClient
+import velocorner.model._
+import MongoDbStorage._
+import com.mongodb.DBObject
+import com.mongodb.casbah.{MongoClient, MongoDB}
+import com.mongodb.util.JSON
+import velocorner.util.JsonIo
+
+import scala.language.implicitConversions
 
 /**
   * Created by levi on 28/09/16.
@@ -9,10 +15,16 @@ import com.mongodb.casbah.MongoClient
   */
 class MongoDbStorage extends Storage {
 
-  lazy val mongoClient = MongoClient
+  lazy val client = MongoClient()
+  var db: Option[MongoDB] = None
+
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]): Unit = ???
+  override def store(activities: Iterable[Activity]) {
+    val objs = activities.map(a => JsonIo.write(a)).map(JSON.parse).map(_.asInstanceOf[DBObject])
+    val coll = db.getCollection(ACTIVITY_TABLE)
+    coll.insert(objs.toArray:_*)
+  }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
 
@@ -41,14 +53,19 @@ class MongoDbStorage extends Storage {
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
-    //val coll = db(DB_NAME)
+    db = Some(client.getDB(DB_NAME))
   }
 
   // releases any connections, resources used
-  override def destroy(): Unit = ???
+  override def destroy() {
+    client.close()
+  }
 }
 
 object MongoDbStorage {
 
   val DB_NAME = "velocorner"
+  val ACTIVITY_TABLE = "activity"
+
+  implicit def convert(db: Option[MongoDB]): MongoDB = db.getOrElse(sys.error("db is not initialized"))
 }
