@@ -15,7 +15,7 @@ object ActivitiesFromFileToStorageApp extends App with AggregateActivities with 
   val list = JsonIo.read[List[Activity]](json)
   log.info(s"found ${list.size} activities")
 
-  val storage = Storage.create("co") // re, co, mo
+  val storage = Storage.create("mo") // re, co, mo
   storage.initialize()
 
   storage.store(list)
