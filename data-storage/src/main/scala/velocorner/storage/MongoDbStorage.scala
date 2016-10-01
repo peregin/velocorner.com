@@ -72,20 +72,32 @@ class MongoDbStorage extends Storage with Logging {
     activities
   }
 
-  // accounts
-  override def store(account: Account): Unit = ???
+  private def upsert(json: String, id: Long, collName: String) {
+    val coll = db.getCollection(collName)
+    val upd = "id" $eq id
+    coll.update(upd, json, true, false)
+  }
 
-  override def getAccount(id: Long): Option[Account] = ???
+  private def getJsonById(id: Long, collName: String): Option[String] = {
+    val coll = db.getCollection(collName)
+    val query = "id" $eq id
+    coll.find(query).headOption
+  }
+
+  // accounts
+  override def store(account: Account) = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE)
+
+  override def getAccount(id: Long): Option[Account] = getJsonById(id, ACCOUNT_TABLE).map(JsonIo.read[Account])
 
   // athletes
-  override def store(athlete: Athlete): Unit = ???
+  override def store(athlete: Athlete) = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
 
-  override def getAthlete(id: Long): Option[Athlete] = ???
+  override def getAthlete(id: Long): Option[Athlete] = getJsonById(id, ATHLETE_TABLE).map(JsonIo.read[Athlete])
 
   // clubs
-  override def store(club: Club): Unit = ???
+  override def store(club: Club) = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
 
-  override def getClub(id: Long): Option[Club] = ???
+  override def getClub(id: Long): Option[Club] = getJsonById(id, CLUB_TABLE).map(JsonIo.read[Club])
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
