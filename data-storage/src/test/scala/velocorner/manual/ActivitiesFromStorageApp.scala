@@ -12,6 +12,7 @@ object ActivitiesFromStorageApp extends App with AggregateActivities with Loggin
 
   //val recent = storage.listRecentActivities(432909, 20)
   //recent foreach println
+
   val progress = timed("aggregation")(storage.dailyProgressForAthlete(432909))
   printAllProgress(progress)
 

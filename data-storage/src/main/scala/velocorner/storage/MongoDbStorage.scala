@@ -24,9 +24,13 @@ class MongoDbStorage extends Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
-    val objs = activities.map(a => JsonIo.write(a)).map(JSON.parse).map(_.asInstanceOf[DBObject])
     val coll = db.getCollection(ACTIVITY_TABLE)
-    coll.insert(objs.toArray:_*)
+    activities.foreach{ a =>
+      val json = JsonIo.write(a)
+      val dbo = JSON.parse(json).asInstanceOf[DBObject]
+      val upd = "id" $eq a.id
+      coll.update(upd, dbo, true, false)
+    }
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
@@ -64,6 +68,8 @@ class MongoDbStorage extends Storage {
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     db = Some(client.getDB(DB_NAME))
+    val coll = db.getCollection(ACTIVITY_TABLE)
+    coll.createIndex(JSON.parse("{id:1}").asInstanceOf[DBObject], "id", true)
   }
 
   // releases any connections, resources used
