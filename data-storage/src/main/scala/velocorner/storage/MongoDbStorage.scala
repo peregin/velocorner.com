@@ -48,7 +48,7 @@ class MongoDbStorage extends Storage with Logging {
     val results = coll.find(query).sort("{start_date:-1}").limit(limit)
     val activities = results.map(JsonIo.read[Activity])
     log.debug(s"found activities ${activities.size}")
-    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString)
+    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
   // summary on the landing page
