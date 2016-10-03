@@ -11,7 +11,7 @@ object ActivitiesFromStravaAndAggregateApp extends App with Logging with Metrics
   private val config = SecretConfig.load()
   implicit val feed = new StravaFeed(None, config)
 
-  val storage = Storage.create("co")
+  val storage = Storage.create("mo")
   storage.initialize()
   val activities = StravaFeed.listRecentAthleteActivities
   storage.store(activities)
