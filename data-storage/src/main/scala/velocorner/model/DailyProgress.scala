@@ -28,9 +28,11 @@ object DailyProgress {
   }
 
   def fromStorage(activities: Iterable[Activity]): Iterable[DailyProgress] = {
-    activities.map(fromStorage).groupBy(_.day).map{ case (day, progressPerDay) =>
-      DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
-    }
+    activities.map(fromStorage)
+      .groupBy(_.day)
+      .map{ case (day, progressPerDay) =>
+        DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
+      }.toSeq.sortBy(_.day.toString)
   }
 
   def aggregate(list: Iterable[DailyProgress]): Iterable[DailyProgress] = {
