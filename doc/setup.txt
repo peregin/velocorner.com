@@ -54,6 +54,11 @@ sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.
 sudo /etc/init.d/rethinkdb restart
 rethinkdb: instance1: Starting instance. (logging to `/var/lib/rethinkdb/instance1/data/log_file')
 
+MongoDB
+=======
+use velocorner
+db.dropDatabase();
+
 Elastic Search
 ==============
 ES as service

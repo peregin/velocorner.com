@@ -72,22 +72,22 @@ class MongoDbStorage extends Storage with Logging {
     activities
   }
 
-  private def upsert(json: String, id: Long, collName: String) {
+  private def upsert(json: String, id: Long, collName: String, idName: String = "id") {
     val coll = db.getCollection(collName)
-    val upd = "id" $eq id
+    val upd = idName $eq id
     coll.update(upd, json, true, false)
   }
 
-  private def getJsonById(id: Long, collName: String): Option[String] = {
+  private def getJsonById(id: Long, collName: String, idName: String = "id"): Option[String] = {
     val coll = db.getCollection(collName)
-    val query = "id" $eq id
+    val query = idName $eq id
     coll.find(query).headOption
   }
 
   // accounts
-  override def store(account: Account) = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE)
+  override def store(account: Account) = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
 
-  override def getAccount(id: Long): Option[Account] = getJsonById(id, ACCOUNT_TABLE).map(JsonIo.read[Account])
+  override def getAccount(id: Long): Option[Account] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(JsonIo.read[Account])
 
   // athletes
   override def store(athlete: Athlete) = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
@@ -103,7 +103,7 @@ class MongoDbStorage extends Storage with Logging {
   override def initialize() {
     db = Some(client.getDB(DB_NAME))
     db.getCollection(ACTIVITY_TABLE).createIndex("{id:1}", "id", true)
-    db.getCollection(ACCOUNT_TABLE).createIndex("{id:1}", "id", true)
+    db.getCollection(ACCOUNT_TABLE).createIndex("{athleteId:1}", "athleteId", true)
     db.getCollection(CLUB_TABLE).createIndex("{id:1}", "id", true)
     db.getCollection(ATHLETE_TABLE).createIndex("{id:1}", "id", true)
   }

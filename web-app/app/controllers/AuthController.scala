@@ -28,6 +28,7 @@ object AuthController extends AuthConfigSupport with OAuth2Controller
     retrieveProviderUser(token).flatMap { providerUser =>
       val storage = Global.getStorage
       val maybeAccount = storage.getAccount(providerUser.athleteId)
+      Logger.info(s"account for token[$token] is $maybeAccount")
       if (maybeAccount.isEmpty) storage.store(providerUser)
       gotoLoginSucceeded(providerUser.athleteId)
     }
