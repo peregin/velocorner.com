@@ -28,7 +28,7 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.0"
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.1"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
