@@ -6,7 +6,7 @@ import PlayKeys._
 
 object dependencies {
 
-  val sparkVersion = "1.6.1"
+  val sparkVersion = "2.0.0"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
   val elasticVersion = "2.3.1"
