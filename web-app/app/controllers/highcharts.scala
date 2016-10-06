@@ -7,6 +7,7 @@ import velocorner.model.{AthleteDailyProgress, Progress, YearlyProgress}
 package object highcharts {
 
   case class DailyPoint(day: LocalDate, value: Double) {
+
     def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
     def getDay = day.getDayOfMonth
   }
