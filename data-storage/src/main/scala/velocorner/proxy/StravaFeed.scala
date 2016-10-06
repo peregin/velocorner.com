@@ -1,20 +1,24 @@
 package velocorner.proxy
 
-import com.ning.http.client.{AsyncHttpClientConfigBean, AsyncHttpClientConfig, ProxyServer}
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import org.asynchttpclient.proxy.ProxyServer
+import org.asynchttpclient.{DefaultAsyncHttpClientConfig, Realm}
 import org.slf4s.Logging
-import play.api.libs.ws.ning.{NingAsyncHttpClientConfigBuilder, NingWSClient}
-import play.api.libs.ws.{WS, WSResponse}
+import play.api.libs.ws.WSResponse
+import play.api.libs.ws.ahc.AhcWSClient
 import velocorner.SecretConfig
 import velocorner.model.{Activity, Athlete}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 
 /**
- * Created by levi on 17/03/15.
+ * Implementation to connect with Strava REST API
  */
 object StravaFeed {
   val baseUrl = "https://www.strava.com"
@@ -45,37 +49,40 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
   val authHeader = s"Bearer $token"
   val timeout = 10 seconds
 
-  val httpConfigSetup = if (config.getProxyHost.isDefined) new AsyncHttpClientConfigBean() else new NingAsyncHttpClientConfigBuilder().build()
-  val httpConfigBuilder = new AsyncHttpClientConfig.Builder(httpConfigSetup)
+  val httpConfigBuilder = new DefaultAsyncHttpClientConfig.Builder()
 
   // setup secure proxy if it is configured w/o authentication
   for (proxyHost <- config.getProxyHost; proxyPort <- config.getProxyPort) {
     val proxyServer = (config.getProxyUser, config.getProxyPassword) match {
-      case (Some(proxyUser), Some(proxyPassword)) => new ProxyServer(ProxyServer.Protocol.HTTPS, proxyHost, proxyPort, proxyUser, proxyPassword)
-      case _ => new ProxyServer(ProxyServer.Protocol.HTTPS, proxyHost, proxyPort)
+      case (Some(proxyUser), Some(proxyPassword)) =>
+        val realm = new Realm.Builder(proxyUser, proxyPassword).build()
+        new ProxyServer(proxyHost, proxyPort, 443, realm, List.empty.asJava)
+      case _ =>
+        new ProxyServer(proxyHost, proxyPort, 443, null, List.empty.asJava)
     }
     httpConfigBuilder.setProxyServer(proxyServer)
   }
 
-  implicit val wsClient = new NingWSClient(httpConfigBuilder.build())
-  implicit val executionContext = ExecutionContext.Implicits.global
+  implicit val system = ActorSystem.create("ws")
+  implicit val materializer = ActorMaterializer()
+  val wsClient = new AhcWSClient(httpConfigBuilder.build())
 
 
   // clubs
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
-    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
+    val response = wsClient.url(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
     extractActivities(response)
   }
 
   override def listClubAthletes(clubId: Long): List[Athlete] = {
-    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/members").withHeaders(("Authorization", authHeader)).get()
+    val response = wsClient.url(s"${StravaFeed.baseUrl}/api/v3/clubs/$clubId/members").withHeaders(("Authorization", authHeader)).get()
     val json = Await.result(response, timeout).body
     JsonIo.read[List[Athlete]](json)
   }
 
   // activities
   override def listAthleteActivities(page: Int, pageSize: Int = StravaFeed.maxItemsPerPage): List[Activity] = {
-    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
+    val response = wsClient.url(s"${StravaFeed.baseUrl}/api/v3/athlete/activities")
       .withHeaders(("Authorization", authHeader))
       .withQueryString(("page", page.toString), ("per_page", pageSize.toString))
       .get()
@@ -89,7 +96,7 @@ class StravaFeed(maybeToken: Option[String], config: SecretConfig) extends Feed 
 
   // athlete
   override def getAthlete: Athlete = {
-    val response = WS.clientUrl(s"${StravaFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get()
+    val response = wsClient.url(s"${StravaFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get()
     Await.result(response, timeout).json.as[Athlete]
   }
 }

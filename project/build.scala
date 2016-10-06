@@ -1,7 +1,8 @@
 import sbt._
 import Keys._
-import play.Play.autoImport._
-import PlayKeys._
+import play.sbt._
+import Play.autoImport._
+import play.sbt.routes.RoutesCompiler.autoImport._
 
 
 object dependencies {
@@ -48,7 +49,6 @@ object dependencies {
 
 object build extends Build {
 
-
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
     scalaVersion := "2.11.8",
@@ -87,7 +87,8 @@ object build extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache)
+      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache),
+      routesGenerator := StaticRoutesGenerator
     ),
     dependencies = Seq(dataStorage)
   ).enablePlugins(play.sbt.PlayScala)
