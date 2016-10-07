@@ -1,15 +1,16 @@
 import sbt._
 import Keys._
-import play.Play.autoImport._
-import PlayKeys._
+import play.sbt._
+import Play.autoImport._
+import play.sbt.routes.RoutesCompiler.autoImport._
 
 
 object dependencies {
 
-  val sparkVersion = "1.6.1"
+  val sparkVersion = "2.0.0"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
-  val elasticVersion = "2.3.0"
+  val elasticVersion = "2.3.1"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -28,7 +29,7 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.0"
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.1"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
@@ -47,7 +48,6 @@ object dependencies {
 }
 
 object build extends Build {
-
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
@@ -87,7 +87,8 @@ object build extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache)
+      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache),
+      routesGenerator := StaticRoutesGenerator
     ),
     dependencies = Seq(dataStorage)
   ).enablePlugins(play.sbt.PlayScala)
