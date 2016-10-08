@@ -5,9 +5,8 @@ import java.net.{URI, URLEncoder}
 import controllers.Global
 import jp.t2v.lab.play2.auth.social.core.{AccessTokenRetrievalFailedException, OAuth2Authenticator}
 import play.api.Logger
-import play.api.Play.current
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.ws.{WS, WSResponse}
+import play.api.libs.ws.WSResponse
 import play.api.mvc.Results
 import velocorner.proxy.StravaFeed
 
@@ -35,14 +34,14 @@ class StravaAuthenticator extends OAuth2Authenticator {
     val uri = new URI(callbackUrl)
     val adjustedCallbackUrl = s"${uri.getScheme}://$scope${uri.getPath}"
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
-    val encodedScope = URLEncoder.encode(scope, "utf-8")
+    //val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
   }
 
   override def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
     Logger.info(s"retrieve token for code[$code]")
-    WS.url(accessTokenUrl)
+    Global.getFeed.wsClient.url(accessTokenUrl)
       .withQueryString(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,
