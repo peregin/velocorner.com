@@ -9,6 +9,10 @@ import velocorner.model.Account
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
+import concurrent.duration._
+
+import scala.language.postfixOps
+
 
 /**
   * Created by levi on 30/11/15.
@@ -22,7 +26,7 @@ trait AuthConfigSupport extends AuthConfig {
   type Authority = Permission
 
   val idTag: ClassTag[Id] = classTag[Id]
-  val sessionTimeoutInSeconds: Int = 3600
+  val sessionTimeoutInSeconds: Int = (1 day).toSeconds.toInt
 
   override lazy val tokenAccessor = new CookieTokenAccessor(
     cookieName = "PLAY2AUTH_SESS_ID",

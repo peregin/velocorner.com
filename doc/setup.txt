@@ -56,8 +56,14 @@ rethinkdb: instance1: Starting instance. (logging to `/var/lib/rethinkdb/instanc
 
 MongoDB
 =======
+drop db from console:
 use velocorner
 db.dropDatabase();
+
+mondod.conf:
+storage:
+   mmapv1:
+      smallFiles: true
 
 Elastic Search
 ==============
