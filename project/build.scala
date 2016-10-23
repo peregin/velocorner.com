@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import play.sbt._
 import Play.autoImport._
+import akka.util.Helpers.Requiring
 import play.sbt.routes.RoutesCompiler.autoImport._
 
 
@@ -15,6 +16,7 @@ object dependencies {
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
+  val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.10.5.1"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -44,7 +46,7 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
-  def storage = Seq(couchbaseClient, rethinkClient, mongoClient)
+  def storage = Seq(couchbaseClient, rethinkClient, mongoClient, dynamoClient)
 }
 
 object build extends Build {
@@ -56,7 +58,10 @@ object build extends Build {
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
     scalacOptions := Seq("-target:jvm-1.7", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
-    resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+    resolvers ++= Seq(
+      "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+      "Amazon Repository" at "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release"
+    ),
     dependencyOverrides ++= Set(
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4" // because of spark and couchbase connector
     )
