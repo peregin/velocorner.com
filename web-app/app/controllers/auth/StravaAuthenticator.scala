@@ -8,7 +8,7 @@ import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.ws.WSResponse
 import play.api.mvc.Results
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -20,12 +20,12 @@ class StravaAuthenticator extends OAuth2Authenticator {
 
   override type AccessToken = String
 
-  override val authorizationUrl: String = StravaFeed.authorizationUrl
-  override val clientSecret: String = Global.getSecretConfig.getApplicationSecret
-  override val accessTokenUrl: String = StravaFeed.accessTokenUrl
+  override val authorizationUrl: String = StravaActivityFeed.authorizationUrl
+  override val clientSecret: String = Global.getSecretConfig.getSecret("strava")
+  override val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
   override val providerName: String = "strava"
-  override val clientId: String = Global.getSecretConfig.getApplicationId
-  override val callbackUrl: String = Global.getSecretConfig.getApplicationCallbackUrl
+  override val clientId: String = Global.getSecretConfig.getId("strava")
+  override val callbackUrl: String = Global.getSecretConfig.getCallbackUrl("strava")
 
   override def getAuthorizationUrl(scope: String, state: String): String = {
     Logger.info(s"authorization url for scope[$scope]")

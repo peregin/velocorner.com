@@ -1,6 +1,7 @@
-package velocorner.manual
+package velocorner.manual.storage
 
 import org.slf4s.Logging
+import velocorner.manual.{AggregateActivities, MyMacConfig}
 import velocorner.storage.Storage
 import velocorner.util.Metrics
 

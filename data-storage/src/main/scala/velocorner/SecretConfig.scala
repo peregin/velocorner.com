@@ -15,10 +15,10 @@ object SecretConfig {
 
 case class SecretConfig(config: Config) {
 
-  def getApplicationId = config.getString("strava.application.id")
-  def getApplicationToken = config.getString("strava.application.token")
-  def getApplicationSecret = config.getString("strava.application.secret")
-  def getApplicationCallbackUrl = config.getString("strava.application.callback.url")
+  def getId(application: String) = config.getString(s"$application.application.id")
+  def getToken(application: String) = config.getString(s"$application.application.token")
+  def getSecret(application: String) = config.getString(s"$application.application.secret")
+  def getCallbackUrl(application: String) = config.getString(s"$application.application.callback.url")
 
   def getBucketPassword = config.getString("couchbase.bucket.password")
 

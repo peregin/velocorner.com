@@ -1,9 +1,9 @@
-package velocorner.proxy
+package velocorner.feed
 
 import velocorner.model.{Activity, Athlete}
 
 
-trait Feed {
+trait ActivityFeed {
 
   // club
   def listRecentClubActivities(clubId: Long): List[Activity]
