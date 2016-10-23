@@ -10,7 +10,7 @@ import velocorner.model.{AthleteDailyProgress, Club}
   */
 object RestController extends Controller {
 
-  def recentClubDistance = Action.apply {
+  def recentClubDistance = Action.apply { implicit request =>
     val storage = Global.getStorage
     val dailyAthleteProgress = storage.dailyProgressForAll(200)
     val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
