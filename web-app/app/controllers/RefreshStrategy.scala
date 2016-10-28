@@ -5,7 +5,7 @@ import org.slf4s
 import org.slf4s.Logging
 import play.Logger
 import velocorner.model.{Account, Activity, Club}
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 
 import scala.annotation.tailrec
 
@@ -45,19 +45,19 @@ object RefreshStrategy extends Logging {
 
       case None => // it was never synched, do a full update
         log.info(s"retrieving all activities for ${account.athleteId}")
-        val activities = StravaFeed.listAllAthleteActivities(feed)
+        val activities = StravaActivityFeed.listAllAthleteActivities(feed)
         log.info(s"found ${activities.size} activities")
         activities
 
       case Some(lastUpdateInMillis) if now.getMillis - lastUpdateInMillis > 60000 =>
         log.info(s"retrieving latest activities for ${account.athleteId}")
-        val lastActivityIds = storage.listRecentActivities(account.athleteId, StravaFeed.maxItemsPerPage).map(_.id).toSet
+        val lastActivityIds = storage.listRecentActivities(account.athleteId, StravaActivityFeed.maxItemsPerPage).map(_.id).toSet
 
         @tailrec
         def list(page: Int, accu: Iterable[Activity]): Iterable[Activity] = {
-          val activities = feed.listAthleteActivities(page, StravaFeed.maxItemsPerPage)
+          val activities = feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
           val activityIds = activities.map(_.id).toSet
-          if (activities.size < StravaFeed.maxItemsPerPage || activityIds.intersect(lastActivityIds).nonEmpty) activities.filter(a => !lastActivityIds.contains(a.id)) ++ accu
+          if (activities.size < StravaActivityFeed.maxItemsPerPage || activityIds.intersect(lastActivityIds).nonEmpty) activities.filter(a => !lastActivityIds.contains(a.id)) ++ accu
           else list(page + 1, activities ++ accu)
         }
         val newActivities = list(1, List.empty)

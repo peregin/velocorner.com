@@ -1,15 +1,25 @@
 import org.joda.time.LocalDate
-import velocorner.model.{AthleteDailyProgress, Progress, YearlyProgress}
+import play.api.libs.json.{Format, Json, Reads, Writes}
+import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, YearlyProgress}
 
 /**
   * Created by levi on 29/01/16.
   */
 package object highcharts {
 
-  case class DailyPoint(day: LocalDate, value: Double) {
+  object DailyPoint {
+    implicit val dateFormat = Format[LocalDate](Reads.jodaLocalDateReads(DateTimePattern.dateFormat), Writes.jodaLocalDateWrites(DateTimePattern.dateFormat))
+    implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
+  }
 
+  case class DailyPoint(day: LocalDate, value: Double) {
     def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
     def getDay = day.getDayOfMonth
+  }
+
+
+  object DailySeries {
+    implicit val seriesFormat = Format[DailySeries](Json.reads[DailySeries], Json.writes[DailySeries])
   }
 
   case class DailySeries(name: String, series: Iterable[DailyPoint]) {

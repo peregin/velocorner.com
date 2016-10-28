@@ -40,22 +40,16 @@ object Storage extends Logging {
 
   def create(dbType: String): Storage = create(dbType, SecretConfig.load())
 
-  def create(dbType: String, config: SecretConfig): Storage = dbType.toLowerCase match {
+  def create(dbType: String, config: SecretConfig): Storage = {
+    val storage = dbType.toLowerCase match {
+      case any if dbType.startsWith("co") => new CouchbaseStorage(config.getBucketPassword)
+      case any if dbType.startsWith("re") => new RethinkDbStorage
+      case any if dbType.startsWith("mo") => new MongoDbStorage
+      case any if dbType.startsWith("dy") => new DynamoDbStorage
+      case unknown => sys.error(s"unknown storage type $unknown")
+    }
 
-    case any if dbType.startsWith("co") =>
-      val password = config.getBucketPassword
-      log.info("connecting to couchbase bucket...")
-      new CouchbaseStorage(password)
-
-    case any if dbType.startsWith("re") =>
-      log.info("connecting to rethink db server...")
-      new RethinkDbStorage
-
-    case any if (dbType.startsWith("mo")) =>
-      log.info("connecting to mondo db server...")
-      new MongoDbStorage
-
-    case unknown =>
-      sys.error(s"unknown storage type $dbType")
+    log.info(s"connecting to ${storage.getClass.getSimpleName} storage...")
+    storage
   }
 }

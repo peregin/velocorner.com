@@ -4,11 +4,11 @@ import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
 import velocorner.model.Club
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 
 object ClubActivitiesFromStravaToConsoleApp extends App with Logging with MyMacConfig {
 
-  val feed = new StravaFeed(None, SecretConfig.load())
+  val feed = new StravaActivityFeed(None, SecretConfig.load())
   val activities = feed.listRecentClubActivities(Club.Velocorner)
 
   activities.foreach{a =>

@@ -4,7 +4,7 @@ import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
 import velocorner.model.Club
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 import velocorner.storage.Storage
 
 object ClubActivitiesFromStravaToStorageApp extends App with Logging with MyMacConfig {
@@ -12,7 +12,7 @@ object ClubActivitiesFromStravaToStorageApp extends App with Logging with MyMacC
 
   log.info("initializing...")
   private val config = SecretConfig.load()
-  val feed = new StravaFeed(None, config)
+  val feed = new StravaActivityFeed(None, config)
   val storage = Storage.create("co")
   storage.initialize()
 

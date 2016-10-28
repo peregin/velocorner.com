@@ -5,7 +5,7 @@ import play.api.mvc.{Result, RequestHeader}
 import play.api.{Application, GlobalSettings}
 import play.api.mvc.Results._
 import velocorner.SecretConfig
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 import velocorner.storage.{CouchbaseStorage, Storage}
 
 import scala.concurrent.Future
@@ -16,9 +16,9 @@ object Global extends GlobalSettings {
   @volatile private var storage: Option[Storage] = None
   @volatile private var secretConfig: Option[SecretConfig] = None
 
-  def getFeed = new StravaFeed(None, getSecretConfig)
+  def getFeed = new StravaActivityFeed(None, getSecretConfig)
 
-  def getFeed(token: String) = new StravaFeed(Some(token), getSecretConfig)
+  def getFeed(token: String) = new StravaActivityFeed(Some(token), getSecretConfig)
 
   def getStorage = storage.getOrElse(sys.error("storage is not initialized"))
 

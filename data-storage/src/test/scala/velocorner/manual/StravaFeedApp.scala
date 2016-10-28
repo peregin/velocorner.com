@@ -3,14 +3,14 @@ package velocorner.manual
 import org.slf4s.Logging
 import play.api.libs.ws.WSResponse
 import velocorner.SecretConfig
-import velocorner.proxy.StravaFeed
+import velocorner.feed.StravaActivityFeed
 
 import scala.concurrent.{ExecutionContext, Future}
 
 object StravaFeedApp extends App with Logging with MyMacConfig {
 
   val config = SecretConfig.load()
-  val feed = new StravaFeed(None, config)
+  val feed = new StravaActivityFeed(None, config)
   implicit val executionContext = ExecutionContext.global
 
 
