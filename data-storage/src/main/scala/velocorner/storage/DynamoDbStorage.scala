@@ -1,9 +1,14 @@
 package velocorner.storage
 
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.dynamodbv2.document.{DynamoDB, Item}
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
 import org.slf4s.Logging
 import velocorner.model._
+import velocorner.storage.DynamoDbStorage._
+import velocorner.util.JsonIo
 
 /**
   * Created by levi on 23.10.16.
@@ -13,7 +18,19 @@ class DynamoDbStorage extends Storage with Logging {
   var maybeServer: Option[DynamoDBProxyServer] = None
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]): Unit = ???
+  override def store(activities: Iterable[Activity]) {
+    val client = new AmazonDynamoDBClient(new BasicAWSCredentials("", ""))
+    client.setEndpoint("http://localhost:8000")
+    client.setSignerRegionOverride("local")
+
+    val db = new DynamoDB(client)
+    val table = db.getTable(ACTIVITY_TABLE)
+
+    activities.foreach{a =>
+      val item = new Item().withPrimaryKey("id", a.id).withJSON("doc", JsonIo.write(a))
+      table.putItem(item)
+    }
+  }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
 
@@ -42,7 +59,7 @@ class DynamoDbStorage extends Storage with Logging {
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
-    maybeServer = Some(ServerRunner.createServerFromCommandLineArgs(Array.empty))
+    maybeServer = Some(ServerRunner.createServerFromCommandLineArgs(Array("-inMemory")))
     maybeServer.foreach(_.start())
   }
 
@@ -51,4 +68,9 @@ class DynamoDbStorage extends Storage with Logging {
     maybeServer.foreach(_.stop())
   }
 
+}
+
+object DynamoDbStorage {
+
+  val ACTIVITY_TABLE = "activity"
 }
