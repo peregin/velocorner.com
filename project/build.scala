@@ -12,6 +12,7 @@ object dependencies {
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
   val elasticVersion = "2.3.1"
+  val specsVersion = "3.7"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -36,7 +37,7 @@ object dependencies {
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-  val scalaSpec = "org.specs2" %% "specs2" % "3.7" % "test"
+  val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 
   def logging = Seq(logback, slf4s)
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
