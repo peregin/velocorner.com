@@ -17,7 +17,7 @@ object dependencies {
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
-  val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.10.5.1"
+  val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1"
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
