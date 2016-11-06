@@ -8,7 +8,7 @@ import play.sbt.routes.RoutesCompiler.autoImport._
 
 object dependencies {
 
-  val sparkVersion = "2.0.0"
+  val sparkVersion = "2.0.1"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
   val elasticVersion = "2.3.1"
