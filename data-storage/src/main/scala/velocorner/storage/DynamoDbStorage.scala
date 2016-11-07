@@ -15,7 +15,7 @@ import velocorner.util.JsonIo
   */
 class DynamoDbStorage extends Storage with Logging {
 
-  var maybeServer: Option[DynamoDBProxyServer] = None
+  @volatile var maybeServer: Option[DynamoDBProxyServer] = None
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
