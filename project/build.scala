@@ -18,6 +18,7 @@ object dependencies {
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
   val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1"
+  val sqliteJava = "com.almworks.sqlite4java" % "sqlite4java" % "0.282" // needed for dynamoDb inMemory
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -47,7 +48,7 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
-  def storage = Seq(couchbaseClient, rethinkClient, mongoClient, dynamoClient)
+  def storage = Seq(couchbaseClient, rethinkClient, mongoClient, dynamoClient, sqliteJava)
 }
 
 object build extends Build {
