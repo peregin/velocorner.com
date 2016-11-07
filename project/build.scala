@@ -11,7 +11,7 @@ object dependencies {
   val sparkVersion = "2.0.1"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
-  val elasticVersion = "2.3.1"
+  val elasticVersion = "2.4.0"
   val specsVersion = "3.7"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
@@ -32,7 +32,7 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "1.2.1"
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.0.0"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
