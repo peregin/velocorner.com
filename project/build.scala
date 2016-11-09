@@ -13,12 +13,11 @@ object dependencies {
   val logbackVersion = "1.1.7"
   val elasticVersion = "2.4.0"
   val specsVersion = "3.7"
+  val orientDbVersion = "2.2.12"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
-  val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1"
-  val sqliteJava = "com.almworks.sqlite4java" % "sqlite4java" % "1.0.392" // needed for dynamoDb inMemory
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
@@ -48,7 +47,17 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
-  def storage = Seq(couchbaseClient, rethinkClient, mongoClient, dynamoClient, sqliteJava)
+  def dynamoDb = Seq(
+    "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1",
+    "com.almworks.sqlite4java" % "sqlite4java" % "1.0.392" // needed for dynamoDb inMemory
+  )
+
+  def orientDb = Seq(
+    "com.orientechnologies" % "orientdb-core" % orientDbVersion,
+    "com.orientechnologies" % "orientdb-client" % orientDbVersion,
+    "com.orientechnologies" % "orientdb-server" % orientDbVersion
+  )
+  def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ dynamoDb ++ orientDb
 }
 
 object build extends Build {
