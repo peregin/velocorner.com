@@ -18,7 +18,7 @@ object dependencies {
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
   val dynamoClient = "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1"
-  val sqliteJava = "com.almworks.sqlite4java" % "sqlite4java" % "0.282" // needed for dynamoDb inMemory
+  val sqliteJava = "com.almworks.sqlite4java" % "sqlite4java" % "1.0.392" // needed for dynamoDb inMemory
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
