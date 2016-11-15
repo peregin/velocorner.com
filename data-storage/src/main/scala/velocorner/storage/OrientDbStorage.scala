@@ -95,7 +95,8 @@ class OrientDbStorage extends Storage with Logging {
     oserver.startup(config).activate()
     server = Some(oserver)
 
-    val odb = new ODatabaseDocumentTx("remote:localhost/velocorner").open("guest", "guest")
+    val odb = new ODatabaseDocumentTx("plocal:localhost/velocorner")
+    odb.open("admin", "admin")
     db = Some(odb)
   }
 
