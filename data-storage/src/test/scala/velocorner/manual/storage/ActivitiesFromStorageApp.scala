@@ -8,7 +8,7 @@ import velocorner.util.Metrics
 
 object ActivitiesFromStorageApp extends App with AggregateActivities with Logging with Metrics with MyMacConfig {
 
-  val storage = Storage.create("mo")
+  val storage = Storage.create("or") // mo
   storage.initialize()
 
   //val recent = storage.listRecentActivities(432909, 20)

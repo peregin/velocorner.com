@@ -1,12 +1,15 @@
 package velocorner.storage
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx
+import com.orientechnologies.orient.core.record.impl.ODocument
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
 import velocorner.model._
-import OrientDbStorage._
-import com.orientechnologies.orient.core.record.impl.ODocument
+import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
+
+import collection.JavaConverters._
 
 /**
   * Created by levi on 14.11.16.
@@ -25,7 +28,16 @@ class OrientDbStorage extends Storage with Logging {
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = ???
+  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+    val results: java.util.List[ODocument] = db.query(
+      new OSQLSynchQuery[ODocument](
+        s"SELECT FROM Activity WHERE id = $athleteId"
+      )
+    )
+    val activities = results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
+    log.debug(s"found activities ${activities.size} for $athleteId")
+    DailyProgress.fromStorage(activities)
+  }
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
 
@@ -97,6 +109,7 @@ class OrientDbStorage extends Storage with Logging {
 
     val odb = new ODatabaseDocumentTx("plocal:localhost/velocorner")
     odb.open("admin", "admin")
+    odb.getMetadata().getSchema().createClass(classOf[Activity])
     db = Some(odb)
   }
 
