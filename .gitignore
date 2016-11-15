@@ -22,4 +22,5 @@ logs/
 RemoteSystemsTempFiles/
 rethinkdb_data/
 projectFilesBackup*/
+orientdb_data/
 
