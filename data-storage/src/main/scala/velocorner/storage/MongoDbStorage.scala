@@ -19,7 +19,7 @@ import collection.JavaConverters._
 class MongoDbStorage extends Storage with Logging {
 
   lazy val client = MongoClient()
-  var db: Option[MongoDB] = None
+  @volatile var db: Option[MongoDB] = None
 
 
   // insert all activities, new ones are added, previous ones are overridden

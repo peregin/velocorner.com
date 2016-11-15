@@ -22,7 +22,7 @@ import scala.language.implicitConversions
 class RethinkDbStorage extends Storage with Logging {
 
   lazy val client = RethinkDB.r
-  var maybeConn: Option[Connection] = None
+  @volatile var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
