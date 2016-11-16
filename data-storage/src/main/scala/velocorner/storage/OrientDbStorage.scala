@@ -21,7 +21,7 @@ class OrientDbStorage extends Storage with Logging {
   var server: Option[OServer] = None
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]) {
+  override def store(activities: Iterable[Activity]) = inTx {
     activities.foreach { a =>
       val doc = new ODocument(ACTIVITY_CLASS)
       doc.fromJSON(JsonIo.write(a))
@@ -29,7 +29,7 @@ class OrientDbStorage extends Storage with Logging {
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = inTx {
     val results: java.util.List[ODocument] = db.query(
       new OSQLSynchQuery[ODocument](
         s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId"
@@ -90,7 +90,7 @@ class OrientDbStorage extends Storage with Logging {
         |        </listeners>
         |    </network>
         |    <storages>
-        |        <storage name="velocorner" path="memory:velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
+        |        <storage name="velocorner" path="file:velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
         |    </storages>
         |    <users>
         |        <user name="admin" password="admin" resources="*"/>
@@ -109,15 +109,27 @@ class OrientDbStorage extends Storage with Logging {
     server = Some(oserver)
 
     val odb = new ODatabaseDocumentTx("plocal:localhost/velocorner")
-    odb.open("admin", "admin")
-    odb.getMetadata().getSchema().createClass(ACTIVITY_CLASS)
+    if (!odb.exists()) {
+      odb.create()
+      odb.close()
+    }
     db = Some(odb)
+
+    inTx {
+      val schema = odb.getMetadata.getSchema
+      if (!schema.existsClass(ACTIVITY_CLASS)) schema.createClass(ACTIVITY_CLASS)
+    }
   }
 
   // releases any connections, resources used
   override def destroy() {
-    db.foreach(_.close())
     server.foreach(_.shutdown())
+  }
+
+  def inTx[T](body: => T): T = {
+    db.open("admin", "admin")
+    import scala.util.control.Exception._
+    ultimately(db.close()).apply(body)
   }
 }
 

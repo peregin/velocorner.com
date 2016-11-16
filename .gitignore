@@ -23,4 +23,6 @@ RemoteSystemsTempFiles/
 rethinkdb_data/
 projectFilesBackup*/
 orientdb_data/
+localhost/
+plugins/
 
