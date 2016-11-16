@@ -8,12 +8,12 @@ import play.sbt.routes.RoutesCompiler.autoImport._
 
 object dependencies {
 
-  val sparkVersion = "2.0.1"
+  val sparkVersion = "2.0.2"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
   val elasticVersion = "2.4.0"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.12"
+  val orientDbVersion = "2.2.13"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"

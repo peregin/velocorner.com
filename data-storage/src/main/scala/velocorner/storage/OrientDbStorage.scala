@@ -10,6 +10,7 @@ import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
 
 import collection.JavaConverters._
+import scala.language.implicitConversions
 
 /**
   * Created by levi on 14.11.16.
@@ -22,7 +23,7 @@ class OrientDbStorage extends Storage with Logging {
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) {
     activities.foreach { a =>
-      val doc = new ODocument("Activity")
+      val doc = new ODocument(ACTIVITY_CLASS)
       doc.fromJSON(JsonIo.write(a))
       doc.save()
     }
@@ -31,7 +32,7 @@ class OrientDbStorage extends Storage with Logging {
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
     val results: java.util.List[ODocument] = db.query(
       new OSQLSynchQuery[ODocument](
-        s"SELECT FROM Activity WHERE id = $athleteId"
+        s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId"
       )
     )
     val activities = results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
@@ -109,7 +110,7 @@ class OrientDbStorage extends Storage with Logging {
 
     val odb = new ODatabaseDocumentTx("plocal:localhost/velocorner")
     odb.open("admin", "admin")
-    odb.getMetadata().getSchema().createClass(classOf[Activity])
+    odb.getMetadata().getSchema().createClass(ACTIVITY_CLASS)
     db = Some(odb)
   }
 
@@ -121,6 +122,8 @@ class OrientDbStorage extends Storage with Logging {
 }
 
 object OrientDbStorage {
+
+  val ACTIVITY_CLASS = "Activity"
 
   implicit def dbOrFail(db: Option[ODatabaseDocumentTx]): ODatabaseDocumentTx = db.getOrElse(sys.error("db is not initialized"))
 }
