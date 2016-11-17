@@ -2,7 +2,7 @@ package velocorner.spark
 
 import com.couchbase.client.java.document.JsonDocument
 import com.couchbase.client.java.view.ViewQuery
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import velocorner.SecretConfig
 import velocorner.storage.CouchbaseStorage
@@ -17,7 +17,7 @@ case class CouchbaseConnector(config: SecretConfig) {
     .setMaster("local[*]") // set the master to local
     .set("com.couchbase.bucket.velocorner", config.getBucketPassword) // open the bucket
   val sc = new SparkContext(scConf)
-  val sql = new SQLContext(sc)
+  val sql = SparkSession.builder().config(scConf).getOrCreate().sqlContext
   //sql.cacheTable("cc")
 
   import com.couchbase.spark._

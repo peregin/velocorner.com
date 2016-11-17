@@ -23,7 +23,7 @@ object ElasticManual extends App with Logging {
   val client = ElasticClient.local(settings.build)
 
   log.info("reading json entries...")
-  val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.json")).mkString
+  val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
   val activities = JsonIo.read[List[Activity]](json)
 
   log.info(s"indexing ${activities.size} documents ...")

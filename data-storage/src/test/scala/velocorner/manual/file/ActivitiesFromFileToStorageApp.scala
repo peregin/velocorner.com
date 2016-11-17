@@ -11,7 +11,7 @@ import scala.io.Source
 
 object ActivitiesFromFileToStorageApp extends App with AggregateActivities with Metrics with Logging with MyMacConfig {
 
-  val json = Source.fromURL(getClass.getResource("/data/strava/last10activities.json")).mkString
+  val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
   val list = JsonIo.read[List[Activity]](json)
   log.info(s"found ${list.size} activities")
 
