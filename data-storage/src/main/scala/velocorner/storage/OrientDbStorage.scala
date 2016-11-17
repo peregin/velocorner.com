@@ -1,6 +1,7 @@
 package velocorner.storage
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx
+import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import com.orientechnologies.orient.server.OServer
@@ -66,8 +67,10 @@ class OrientDbStorage extends Storage with Logging {
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
 
+    val rootDir = "orientdb_data"
+
     val config =
-      """
+      s"""
         |<orient-server>
         |    <handlers />
         |    <network>
@@ -98,7 +101,8 @@ class OrientDbStorage extends Storage with Logging {
         |        <user password="guest" name="guest" resources="connect,server.listDatabases,server.dblist"/>
         |    </users>
         |    <properties>
-        |        <entry name="server.database.path" value="orientdb_data"/>
+        |        <entry name="server.database.path" value="$rootDir/server"/>
+        |        <entry name="plugin.directory" value="$rootDir/plugins"/>
         |        <entry name="log.console.level" value="info"/>
         |    </properties>
         |</orient-server>
@@ -108,7 +112,7 @@ class OrientDbStorage extends Storage with Logging {
     oserver.startup(config).activate()
     server = Some(oserver)
 
-    val odb = new ODatabaseDocumentTx("plocal:localhost/velocorner")
+    val odb = new ODatabaseDocumentTx(s"plocal:$rootDir/velocorner")
     if (!odb.exists()) {
       odb.create()
       odb.close()
@@ -118,6 +122,9 @@ class OrientDbStorage extends Storage with Logging {
     inTx {
       val schema = odb.getMetadata.getSchema
       if (!schema.existsClass(ACTIVITY_CLASS)) schema.createClass(ACTIVITY_CLASS)
+      val clazz = schema.getClass(ACTIVITY_CLASS)
+      if (!clazz.existsProperty("id")) clazz.createProperty("id", OType.INTEGER)
+      if (!clazz.areIndexed("id")) clazz.createIndex("idActivity", OClass.INDEX_TYPE.UNIQUE, "id")
     }
   }
 

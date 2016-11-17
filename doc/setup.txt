@@ -65,6 +65,10 @@ storage:
    mmapv1:
       smallFiles: true
 
+DynamoDb
+========
+-sqlite4java needs to be added to the path
+
 Elastic Search
 ==============
 ES as service
