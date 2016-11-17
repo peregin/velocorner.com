@@ -21,11 +21,10 @@ class OrientDbStorage extends Storage with Logging {
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx {
-    activities.foreach { a =>
-      val results: java.util.List[ODocument] = db.query(
-        new OSQLSynchQuery[ODocument](s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}")
-      )
+    activities.foreach{ a =>
       // upsert
+      val sql = s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id} AND type = 'Ride'"
+      val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
       val doc = results.asScala.headOption.getOrElse(new ODocument(ACTIVITY_CLASS))
       doc.fromJSON(JsonIo.write(a))
       doc.save()
@@ -33,15 +32,20 @@ class OrientDbStorage extends Storage with Logging {
   }
 
   override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = inTx {
-    val results: java.util.List[ODocument] = db.query(
-      new OSQLSynchQuery[ODocument](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId")
-    )
+    val sql = s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"
+    val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     val activities = results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
     log.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
   }
 
-  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = ???
+  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = inTx {
+    val sql = s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit"
+    val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
+    val activities = results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
+    log.debug(s"found activities ${activities.size}")
+    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString)
+  }
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = ???
