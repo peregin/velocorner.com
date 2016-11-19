@@ -10,7 +10,7 @@ object ActivitiesFromStravaToStorageApp extends App with Logging with MyMacConfi
   private val config = SecretConfig.load()
   implicit val feed = new StravaActivityFeed(None, config)
 
-  val storage = Storage.create("mo")
+  val storage = Storage.create("or")
   storage.initialize()
   //val activities = StravaFeed.listRecentAthleteActivities
   val activities = StravaActivityFeed.listAllAthleteActivities

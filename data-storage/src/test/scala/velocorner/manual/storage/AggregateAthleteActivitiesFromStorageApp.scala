@@ -8,7 +8,7 @@ import velocorner.util.Metrics
 
 object AggregateAthleteActivitiesFromStorageApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val storage = Storage.create("co")
+  val storage = Storage.create("or")
   storage.initialize()
   val progress = timed("aggregation")(storage.dailyProgressForAthlete(432909))
   printAllProgress(progress)

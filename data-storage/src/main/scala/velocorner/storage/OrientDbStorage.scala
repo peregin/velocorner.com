@@ -4,10 +4,11 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
-import org.slf4s.Logging
 import velocorner.model._
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
+
+import org.slf4s.Logging
 
 import collection.JavaConverters._
 import scala.language.implicitConversions
