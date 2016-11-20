@@ -1,13 +1,12 @@
 package velocorner.storage
 
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx
+import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import velocorner.model._
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
-
 import org.slf4s.Logging
 
 import collection.JavaConverters._
@@ -18,7 +17,7 @@ import scala.language.implicitConversions
   */
 class OrientDbStorage extends Storage with Logging {
 
-  @volatile var db: Option[ODatabaseDocumentTx] = None
+  @volatile var db: Option[ODatabaseDocument] = None
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx {
@@ -138,5 +137,5 @@ object OrientDbStorage {
   val CLUB_CLASS = "Club"
   val ATHLETE_CLASS = "Athlete"
 
-  implicit def dbOrFail(db: Option[ODatabaseDocumentTx]): ODatabaseDocumentTx = db.getOrElse(sys.error("db is not initialized"))
+  implicit def dbOrFail(db: Option[ODatabaseDocument]): ODatabaseDocument = db.getOrElse(sys.error("db is not initialized"))
 }
