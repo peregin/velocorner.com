@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
+import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentPool, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
@@ -17,10 +17,8 @@ import scala.language.implicitConversions
   */
 class OrientDbStorage extends Storage with Logging {
 
-  @volatile var db: Option[ODatabaseDocument] = None
-
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]) = inTx {
+  override def store(activities: Iterable[Activity]) = inTx { db =>
     activities.foreach{ a =>
       // upsert
       val sql = s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}"
@@ -53,12 +51,12 @@ class OrientDbStorage extends Storage with Logging {
     activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
-  private def activitiesFor(sql: String): Seq[Activity] = inTx {
+  private def activitiesFor(sql: String): Seq[Activity] = inTx { db =>
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
   }
 
-  private def upsert(json: String, className: String, propertyName: String, propertyValue: Int) = inTx {
+  private def upsert(json: String, className: String, propertyName: String, propertyValue: Int) = inTx { db =>
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     val doc = results.asScala.headOption.getOrElse(new ODocument(className))
@@ -66,7 +64,7 @@ class OrientDbStorage extends Storage with Logging {
     doc.save()
   }
 
-  private def query(className: String, propertyName: String, propertyValue: Int): Option[String] = {
+  private def lookup(className: String, propertyName: String, propertyValue: Int): Option[String] = inTx { db =>
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     results.asScala.headOption.map(_.toJSON)
@@ -77,37 +75,35 @@ class OrientDbStorage extends Storage with Logging {
     upsert(JsonIo.write(account), ACTIVITY_CLASS, "athleteId", account.athleteId)
   }
 
-  override def getAccount(id: Long): Option[Account] = query(ACCOUNT_CLASS, "athleteId", id.toInt).map(JsonIo.read[Account])
+  override def getAccount(id: Long): Option[Account] = lookup(ACCOUNT_CLASS, "athleteId", id.toInt).map(JsonIo.read[Account])
 
   // athletes
   override def store(athlete: Athlete) {
     upsert(JsonIo.write(athlete), ATHLETE_CLASS, "id", athlete.id)
   }
 
-  override def getAthlete(id: Long): Option[Athlete] = query(ATHLETE_CLASS, "id", id.toInt).map(JsonIo.read[Athlete])
+  override def getAthlete(id: Long): Option[Athlete] = lookup(ATHLETE_CLASS, "id", id.toInt).map(JsonIo.read[Athlete])
 
   // clubs
   override def store(club: Club) {
     upsert(JsonIo.write(club), CLUB_CLASS, "id", club.id)
   }
 
-  override def getClub(id: Long): Option[Club] = query(CLUB_CLASS, "id", id.toInt).map(JsonIo.read[Club])
+  override def getClub(id: Long): Option[Club] = lookup(CLUB_CLASS, "id", id.toInt).map(JsonIo.read[Club])
 
+  // TODO: extract to config
+  val rootDir = "orientdb_data"
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
-    // TODO: extract to config
-    val rootDir = "orientdb_data"
-
     val odb = new ODatabaseDocumentTx(s"plocal:$rootDir/velocorner")
     if (!odb.exists()) {
       odb.create()
       odb.close()
     }
-    db = Some(odb)
 
-    inTx {
+    inTx { db =>
       def createIfNeeded(className: String, indexName: String, indexType: OType) {
-        val schema = odb.getMetadata.getSchema
+        val schema = db.getMetadata.getSchema
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
         if (!clazz.existsProperty(indexName)) clazz.createProperty(indexName, indexType)
@@ -123,10 +119,11 @@ class OrientDbStorage extends Storage with Logging {
   // releases any connections, resources used
   override def destroy() {}
 
-  def inTx[T](body: => T): T = {
-    db.open("admin", "admin")
+  def inTx[T](body:ODatabaseDocument => T): T = {
+    //db.open("admin", "admin")
     import scala.util.control.Exception._
-    ultimately(db.close()).apply(body)
+    val dbDoc = ODatabaseDocumentPool.global().acquire(s"plocal:$rootDir/velocorner", "admin", "admin")
+    ultimately(dbDoc.close()).apply(body(dbDoc))
   }
 }
 
@@ -137,5 +134,4 @@ object OrientDbStorage {
   val CLUB_CLASS = "Club"
   val ATHLETE_CLASS = "Athlete"
 
-  implicit def dbOrFail(db: Option[ODatabaseDocument]): ODatabaseDocument = db.getOrElse(sys.error("db is not initialized"))
 }

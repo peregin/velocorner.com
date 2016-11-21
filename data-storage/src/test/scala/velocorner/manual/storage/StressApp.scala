@@ -1,6 +1,6 @@
 package velocorner.manual.storage
 
-import java.util.concurrent.{CountDownLatch, Executors, TimeUnit}
+import java.util.concurrent.{CountDownLatch, Executors, ThreadFactory, TimeUnit}
 
 import org.slf4s.Logging
 import velocorner.manual.{AggregateActivities, MyMacConfig}
@@ -15,9 +15,15 @@ import scala.util.control.Exception._
   */
 object StressApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val par = 1
+  val par = 2
   val latch = new CountDownLatch(par)
-  implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par))
+  implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
+    override def newThread(r: Runnable): Thread = {
+      val t = new Thread(r, "worker")
+      t.setDaemon(true)
+      t
+    }
+  }))
 
   val storage = Storage.create("or") // mo
   storage.initialize()
