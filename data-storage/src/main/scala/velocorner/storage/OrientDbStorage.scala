@@ -38,7 +38,7 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
     val activities = activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
     log.debug(s"found activities ${activities.size}")
-    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString)
+    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
   // summary on the landing page

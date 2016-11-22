@@ -21,6 +21,7 @@ case class SecretConfig(config: Config) {
   def getCallbackUrl(application: String) = config.getString(s"$application.application.callback.url")
 
   def getBucketPassword = config.getString("couchbase.bucket.password")
+  def getOrientDbPath = config.getString("orientdb.path")
 
   def getProxyHost: Option[String] = config.getAs[String]("proxy.host")
   def getProxyPort: Option[Int] = config.getAs[Int]("proxy.port")
