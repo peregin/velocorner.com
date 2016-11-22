@@ -32,7 +32,7 @@ object Global extends GlobalSettings {
     val appSecret = app.configuration.getString("application.secret")
     Logger.info(s"application secret: ${appSecret.mkString}")
 
-    val storageType = app.configuration.getString("storage").getOrElse("mo")
+    val storageType = app.configuration.getString("storage").getOrElse("or")
     Logger.info(s"initializing storage $storageType ...")
     storage = Some(Storage.create(storageType, getSecretConfig))
     storage.foreach(_.initialize)

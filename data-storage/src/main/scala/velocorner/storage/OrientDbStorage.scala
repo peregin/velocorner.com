@@ -15,7 +15,7 @@ import scala.language.implicitConversions
 /**
   * Created by levi on 14.11.16.
   */
-class OrientDbStorage extends Storage with Logging {
+class OrientDbStorage(rootDir: String) extends Storage with Logging {
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx { db =>
@@ -91,8 +91,6 @@ class OrientDbStorage extends Storage with Logging {
 
   override def getClub(id: Long): Option[Club] = lookup(CLUB_CLASS, "id", id.toInt).map(JsonIo.read[Club])
 
-  // TODO: extract to config
-  val rootDir = "orientdb_data"
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     val odb = new ODatabaseDocumentTx(s"plocal:$rootDir/velocorner")
