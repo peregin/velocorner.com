@@ -4,10 +4,12 @@ import java.util.concurrent.{CountDownLatch, Executors, ThreadFactory, TimeUnit}
 
 import org.slf4s.Logging
 import velocorner.manual.{AggregateActivities, MyMacConfig}
+import velocorner.model.Activity
 import velocorner.storage.Storage
-import velocorner.util.Metrics
+import velocorner.util.{JsonIo, Metrics}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.io.Source
 import scala.util.control.Exception._
 
 /**
@@ -15,7 +17,7 @@ import scala.util.control.Exception._
   */
 object StressApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val par = 5
+  val par = 10
   val latch = new CountDownLatch(par)
   implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
     override def newThread(r: Runnable): Thread = {
@@ -25,15 +27,22 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
     }
   }))
 
+  val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
+  val activities = JsonIo.read[List[Activity]](json)
+
   val storage = Storage.create("or") // mo
   storage.initialize()
   ultimately(storage.destroy()) {
 
     1 to par foreach { i =>
       Future {
-        log.info(s"query[$i] starting...")
-        storage.dailyProgressForAll(100)
-        log.info(s"query[$i] ran...")
+        log.info(s"access[$i] starting...")
+        if (i % 2 == 0) {
+          storage.dailyProgressForAll(100)
+        } else {
+          storage.store(activities)
+        }
+        log.info(s"access[$i] ran...")
         latch.countDown()
       }
     }
