@@ -17,7 +17,7 @@ import scala.util.control.Exception._
   */
 object StressApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val par = 10
+  val par = 4
   val latch = new CountDownLatch(par)
   implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
     override def newThread(r: Runnable): Thread = {
@@ -36,13 +36,16 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
 
     1 to par foreach { i =>
       Future {
-        log.info(s"access[$i] starting...")
-        if (i % 2 == 0) {
+        val activity = if (i % 2 == 0) {
+          log.info(s"start[$i] query activity...")
           storage.dailyProgressForAll(100)
+          "query"
         } else {
+          log.info(s"start[$i] store activity...")
           storage.store(activities)
+          "store"
         }
-        log.info(s"access[$i] ran...")
+        log.info(s"done[$i] $activity activity...")
         latch.countDown()
       }
     }

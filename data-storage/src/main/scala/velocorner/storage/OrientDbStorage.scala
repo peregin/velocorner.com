@@ -17,6 +17,8 @@ import scala.language.implicitConversions
   */
 class OrientDbStorage(rootDir: String) extends Storage with Logging {
 
+  var database: Option[ODatabaseDocument] = None
+
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx { db =>
     activities.foreach{ a =>
@@ -98,30 +100,35 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
       odb.create()
       odb.close()
     }
+    odb.open("admin", "admin")
 
-    inTx { db =>
-      def createIfNeeded(className: String, indexName: String, indexType: OType) {
-        val schema = db.getMetadata.getSchema
-        if (!schema.existsClass(className)) schema.createClass(className)
-        val clazz = schema.getClass(className)
-        if (!clazz.existsProperty(indexName)) clazz.createProperty(indexName, indexType)
-        if (!clazz.areIndexed(indexName)) clazz.createIndex(s"$indexName$className", OClass.INDEX_TYPE.UNIQUE, indexName)
-      }
-      createIfNeeded(ACTIVITY_CLASS, "id", OType.INTEGER)
-      createIfNeeded(ACCOUNT_CLASS, "athleteId", OType.INTEGER)
-      createIfNeeded(CLUB_CLASS, "id", OType.INTEGER)
-      createIfNeeded(ATHLETE_CLASS, "id", OType.INTEGER)
+    def createIfNeeded(className: String, indexName: String, indexType: OType) {
+      val schema = odb.getMetadata.getSchema
+      if (!schema.existsClass(className)) schema.createClass(className)
+      val clazz = schema.getClass(className)
+      if (!clazz.existsProperty(indexName)) clazz.createProperty(indexName, indexType)
+      if (!clazz.areIndexed(indexName)) clazz.createIndex(s"$indexName$className", OClass.INDEX_TYPE.UNIQUE, indexName)
     }
+    createIfNeeded(ACTIVITY_CLASS, "id", OType.INTEGER)
+    createIfNeeded(ACCOUNT_CLASS, "athleteId", OType.INTEGER)
+    createIfNeeded(CLUB_CLASS, "id", OType.INTEGER)
+    createIfNeeded(ATHLETE_CLASS, "id", OType.INTEGER)
+
+    database = Some(odb)
   }
 
   // releases any connections, resources used
-  override def destroy() {}
+  override def destroy() {
+    database.foreach(_.close())
+    log.info("database has been closed...")
+  }
 
   def inTx[T](body:ODatabaseDocument => T): T = {
-    //db.open("admin", "admin")
     import scala.util.control.Exception._
-    val dbDoc = ODatabaseDocumentPool.global().acquire(s"plocal:$rootDir/velocorner", "admin", "admin")
-    ultimately(dbDoc.close()).apply(body(dbDoc))
+    val dbDoc = ODatabaseDocumentPool.global().acquire(s"remote:$rootDir/velocorner", "admin", "admin")
+    ultimately(dbDoc.close()).apply {
+      body(dbDoc)
+    }
   }
 }
 
