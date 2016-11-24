@@ -75,7 +75,7 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
 
   // accounts
   override def store(account: Account) {
-    upsert(JsonIo.write(account), ACTIVITY_CLASS, "athleteId", account.athleteId)
+    upsert(JsonIo.write(account), ACCOUNT_CLASS, "athleteId", account.athleteId)
   }
 
   override def getAccount(id: Long): Option[Account] = lookup(ACCOUNT_CLASS, "athleteId", id.toInt).map(JsonIo.read[Account])

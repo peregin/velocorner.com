@@ -11,7 +11,7 @@ object dependencies {
   val sparkVersion = "2.0.2"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.7"
-  val elasticVersion = "5.0.1"
+  val elasticVersion = "2.4.0"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.13"
 
@@ -45,8 +45,7 @@ object dependencies {
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
   def dynamoDb = Seq(
     "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1",

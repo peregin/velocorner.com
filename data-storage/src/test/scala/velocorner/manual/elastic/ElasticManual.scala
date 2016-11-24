@@ -2,8 +2,8 @@ package velocorner.manual.elastic
 
 import java.util.concurrent.CountDownLatch
 
+import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.embedded.LocalNode
 import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import velocorner.model.Activity
@@ -19,18 +19,14 @@ object ElasticManual extends App with Logging {
   val settings = Settings.builder()
     .put("http.enabled", true)
     .put("path.home", "c:/apps/elastic")
-    .put("path.data", "c:/apps/elastic/data")
-    .put("path.repo", "c:/apps/elastic/repo")
-    .put("cluster.name", "velocorner")
-  val node = LocalNode(settings.build())
-  val client = node.elastic4sclient()
+  val client = ElasticClient.local(settings.build)
 
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
   val activities = JsonIo.read[List[Activity]](json)
 
   log.info(s"indexing ${activities.size} documents ...")
-  val indices = activities.map(a => indexInto(s"velocorner/${a.`type`}").fields("name" -> a.name) id a.id)
+  val indices = activities.map(a => index into s"velocorner/${a.`type`}" fields("name" -> a.name) id a.id)
   client.execute(bulk(indices)).await
 
   log.info("searching...")
