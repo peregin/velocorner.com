@@ -17,7 +17,7 @@ import scala.util.control.Exception._
   */
 object StressApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
 
-  val par = 4
+  val par = 10
   val latch = new CountDownLatch(par)
   implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
     override def newThread(r: Runnable): Thread = {

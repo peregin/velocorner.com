@@ -4,6 +4,7 @@ import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODataba
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
+import com.orientechnologies.orient.server.OServer
 import velocorner.model._
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
@@ -17,7 +18,7 @@ import scala.language.implicitConversions
   */
 class OrientDbStorage(rootDir: String) extends Storage with Logging {
 
-  var database: Option[ODatabaseDocument] = None
+  var server: Option[OServer] = None
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx { db =>
@@ -95,37 +96,85 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
-    val odb = new ODatabaseDocumentTx(s"plocal:$rootDir/velocorner")
-    if (!odb.exists()) {
-      odb.create()
-      odb.close()
-    }
-    odb.open("admin", "admin")
+    val config =
+      s"""
+         |<orient-server>
+         |    <handlers />
+         |    <network>
+         |        <protocols>
+         |            <protocol name="http" implementation="com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpDb"/>
+         |            <protocol name="binary" implementation="com.orientechnologies.orient.server.network.protocol.binary.ONetworkProtocolBinary"/>
+         |        </protocols>
+         |        <listeners>
+         |            <listener ip-address="127.0.0.1" port-range="2480" protocol="http">
+         |                <commands>
+         |                    <command
+         |                        pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt"
+         |                        implementation="com.orientechnologies.orient.server.network.protocol.http.command.get.OServerCommandGetStaticContent">
+         |                        <parameters>
+         |                            <entry name="http.cache:*.htm *.html" value="Cache-Control: no-cache, no-store, max-age=0, must-revalidate\r\nPragma: no-cache" />
+         |                            <entry name="http.cache:default" value="Cache-Control: max-age=120" />
+         |                        </parameters>
+         |                    </command>
+         |                </commands>
+         |            </listener>
+         |            <listener ip-address="0.0.0.0" port-range="2424-2430" protocol="binary"/>
+         |        </listeners>
+         |    </network>
+         |    <storages>
+         |        <storage name="velocorner" path="plocal:velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
+         |    </storages>
+         |    <users>
+         |        <user name="admin" password="admin" resources="*"/>
+         |        <user name="root" password="root" resources="*"/>
+         |    </users>
+         |    <properties>
+         |        <entry name="server.database.path" value="$rootDir/server"/>
+         |        <entry name="plugin.directory" value="$rootDir/plugins"/>
+         |        <entry name="log.console.level" value="info"/>
+         |        <entry name="plugin.dynamic" value="false"/>
+         |        <entry name="server.cache.staticResources" value="false"/>
+         |    </properties>
+         |</orient-server>
+      """.stripMargin
 
-    def createIfNeeded(className: String, indexName: String, indexType: OType) {
-      val schema = odb.getMetadata.getSchema
-      if (!schema.existsClass(className)) schema.createClass(className)
-      val clazz = schema.getClass(className)
-      if (!clazz.existsProperty(indexName)) clazz.createProperty(indexName, indexType)
-      if (!clazz.areIndexed(indexName)) clazz.createIndex(s"$indexName$className", OClass.INDEX_TYPE.UNIQUE, indexName)
-    }
-    createIfNeeded(ACTIVITY_CLASS, "id", OType.INTEGER)
-    createIfNeeded(ACCOUNT_CLASS, "athleteId", OType.INTEGER)
-    createIfNeeded(CLUB_CLASS, "id", OType.INTEGER)
-    createIfNeeded(ATHLETE_CLASS, "id", OType.INTEGER)
+    val oserver = new OServer
+    oserver.startup(config).activate()
+    server = Some(oserver)
 
-    database = Some(odb)
+    inTx { odb =>
+      if (!odb.exists()) {
+        odb.create()
+        odb.close()
+      }
+
+      def createIfNeeded(className: String, indexName: String, indexType: OType) {
+        val schema = odb.getMetadata.getSchema
+        if (!schema.existsClass(className)) schema.createClass(className)
+        val clazz = schema.getClass(className)
+        if (!clazz.existsProperty(indexName)) clazz.createProperty(indexName, indexType)
+        if (!clazz.areIndexed(indexName)) clazz.createIndex(s"$indexName$className", OClass.INDEX_TYPE.UNIQUE, indexName)
+      }
+
+      createIfNeeded(ACTIVITY_CLASS, "id", OType.INTEGER)
+      createIfNeeded(ACCOUNT_CLASS, "athleteId", OType.INTEGER)
+      createIfNeeded(CLUB_CLASS, "id", OType.INTEGER)
+      createIfNeeded(ATHLETE_CLASS, "id", OType.INTEGER)
+    }
   }
 
   // releases any connections, resources used
   override def destroy() {
-    database.foreach(_.close())
+    server.foreach(_.shutdown())
+    server = None
     log.info("database has been closed...")
   }
 
   def inTx[T](body:ODatabaseDocument => T): T = {
     import scala.util.control.Exception._
-    val dbDoc = ODatabaseDocumentPool.global().acquire(s"remote:$rootDir/velocorner", "admin", "admin")
+    val dbDoc = new ODatabaseDocumentTx(s"remote:localhost/$rootDir/velocorner")
+    if (!dbDoc.isActiveOnCurrentThread) dbDoc.activateOnCurrentThread()
+    dbDoc.open("admin", "admin")
     ultimately(dbDoc.close()).apply {
       body(dbDoc)
     }
