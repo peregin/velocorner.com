@@ -122,7 +122,7 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
          |        </listeners>
          |    </network>
          |    <storages>
-         |        <storage name="velocorner" path="plocal:velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
+         |        <storage name="velocorner" path="plocal:$rootDir/velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
          |    </storages>
          |    <users>
          |        <user name="admin" password="admin" resources="*"/>
