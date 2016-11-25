@@ -48,19 +48,18 @@ class StravaAuthenticator extends OAuth2Authenticator {
         "code" -> code)
       .withHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
       .post(Results.EmptyContent())
-      .map { response =>
-        Logger.debug("retrieving access token from provider API: " + response.body)
-        parseAccessTokenResponse(response)
-      }
+      .map(parseAccessTokenResponse)
   }
 
   override def parseAccessTokenResponse(response: WSResponse): String = {
     Logger.info("parsing token")
     try {
-      (response.json \ "access_token").as[String]
+      val json = response.json
+      val athleteId = (json \ "athlete" \ "id").as[Int]
+      Logger.info(s"token for athlete $athleteId")
+      (json \ "access_token").as[String]
     } catch {
-      case NonFatal(e) =>
-        throw new AccessTokenRetrievalFailedException(s"Failed to parse access token: ${response.body}", e)
+      case NonFatal(e) => throw new AccessTokenRetrievalFailedException(s"Failed to parse access token: ${response.body}", e)
     }
   }
 }

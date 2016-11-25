@@ -18,7 +18,7 @@ object ElasticManual extends App with Logging {
 
   val settings = Settings.builder()
     .put("http.enabled", true)
-    .put("path.home", "c:/apps/elastic")
+    .put("path.home", "elastic")
   val client = ElasticClient.local(settings.build)
 
   log.info("reading json entries...")
