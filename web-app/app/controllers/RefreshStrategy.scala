@@ -23,7 +23,7 @@ object RefreshStrategy extends Logging {
     val diffInMillis = nowInMillis - lastClubUpdateTs
     lastClubUpdateTs = nowInMillis
     if (diffInMillis > 1200000) {
-      Logger.info("refreshing club information from Stava")
+      log.info("refreshing club information from Stava")
       // update from Strava
       val feed = Global.getFeed
       val storage = Global.getStorage
@@ -41,15 +41,17 @@ object RefreshStrategy extends Logging {
     val storage = Global.getStorage
     val feed = Global.getFeed(account.accessToken)
     val now = DateTime.now()
+    log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
+
     val newActivities = account.lastUpdate.map(_.getMillis) match {
 
       case None => // it was never synched, do a full update
         log.info(s"retrieving all activities for ${account.athleteId}")
         val activities = StravaActivityFeed.listAllAthleteActivities(feed)
-        log.info(s"found ${activities.size} activities")
+        log.info(s"found ${activities.size} overall activities")
         activities
 
-      case Some(lastUpdateInMillis) if now.getMillis - lastUpdateInMillis > 60000 =>
+      case Some(lastUpdateInMillis) if now.getMillis - lastUpdateInMillis > 60000 => // more than a minute
         log.info(s"retrieving latest activities for ${account.athleteId}")
         val lastActivityIds = storage.listRecentActivities(account.athleteId, StravaActivityFeed.maxItemsPerPage).map(_.id).toSet
 
