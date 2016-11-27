@@ -3,7 +3,7 @@ package velocorner.feed
 import org.slf4s.Logging
 import play.api.libs.ws.WSResponse
 import velocorner.SecretConfig
-import velocorner.model.{Activity, Athlete}
+import velocorner.model.{Activity, Athlete, Statistics}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
@@ -73,5 +73,12 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
   override def getAthlete: Athlete = {
     val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get()
     Await.result(response, timeout).json.as[Athlete]
+  }
+
+  // year to date and overall stats - must be the logged in athlete id
+  override def getStatistics(athleteId: Int): Statistics = {
+    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/athletes/$athleteId/stats").withHeaders(("Authorization", authHeader)).get()
+    val json = Await.result(response, timeout).body
+    JsonIo.read[Statistics](json)
   }
 }

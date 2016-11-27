@@ -1,6 +1,6 @@
 package velocorner.feed
 
-import velocorner.model.{Activity, Athlete}
+import velocorner.model.{Activity, Athlete, Statistics}
 
 
 trait ActivityFeed {
@@ -15,4 +15,7 @@ trait ActivityFeed {
 
   // athlete
   def getAthlete: Athlete
+
+  // year to date and overall stats
+  def getStatistics(athleteId: Int): Statistics
 }
