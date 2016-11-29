@@ -26,9 +26,6 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val maybeAccount = loggedIn
       Logger.info(s"rendering for $maybeAccount")
 
-      import RefreshStrategy._
-      refreshClubActivities() // if needed
-
       val storage = Global.getStorage
       val currentYear = LocalDate.now().getYear
       val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
@@ -36,22 +33,12 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
-      val dailyAthleteProgress = storage.dailyProgressForAll(200)
-      val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
-
-      val clubAthleteIds = storage.getClub(Club.Velocorner).map(_.memberIds).getOrElse(List.empty)
-      val clubAthletes = clubAthleteIds.flatMap(id => storage.getAthlete(id))
-      val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
-      val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
-
       import highcharts._
       LandingPageContext(
         maybeAccount,
         currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
-        toDistanceSeries(aggregatedYearlyProgress),
-        toAthleteDistanceSeries(mostRecentAthleteProgress).map(_.aggregate).map(seriesId2Name),
-        toAthleteElevationSeries(mostRecentAthleteProgress).map(_.aggregate).map(seriesId2Name)
+        toDistanceSeries(aggregatedYearlyProgress)
       )
     }
 

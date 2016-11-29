@@ -17,8 +17,9 @@ object RefreshStrategy extends Logging {
   override val log = new slf4s.Logger(Logger.underlying())
 
   @volatile var lastClubUpdateTs = 0L
+  private val clubLock = new Object
 
-  def refreshClubActivities() {
+  def refreshClubActivities() = clubLock.synchronized {
     val nowInMillis = DateTime.now().getMillis
     val diffInMillis = nowInMillis - lastClubUpdateTs
     lastClubUpdateTs = nowInMillis
