@@ -19,10 +19,13 @@ object RefreshStrategy extends Logging {
   @volatile var lastClubUpdateTs = 0L
   private val clubLock = new Object
 
-  def refreshClubActivities() = clubLock.synchronized {
-    val nowInMillis = DateTime.now().getMillis
-    val diffInMillis = nowInMillis - lastClubUpdateTs
-    lastClubUpdateTs = nowInMillis
+  def refreshClubActivities() {
+    val diffInMillis = clubLock.synchronized {
+      val nowInMillis = DateTime.now().getMillis
+      val diffInMillis = nowInMillis - lastClubUpdateTs
+      lastClubUpdateTs = nowInMillis
+      diffInMillis
+    }
     if (diffInMillis > 1200000) {
       log.info("refreshing club information from Stava")
       // update from Strava
