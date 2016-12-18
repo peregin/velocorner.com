@@ -59,7 +59,6 @@ MongoDB
 drop db from console:
 use velocorner
 db.dropDatabase();
-
 mondod.conf:
 storage:
    mmapv1:
@@ -69,27 +68,30 @@ DynamoDb
 ========
 -sqlite4java needs to be added to the path
 
-Elastic Search
-==============
-ES as service
+ElasticSearch & Couchbase
+=========================
 - https://gist.github.com/scalabl3/8046965
 - https://github.com/couchbaselabs/elasticsearch-transport-couchbase
 - http://blog.couchbase.com/couchbase-and-full-text-search-couchbase-transport-elasticsearch
-
 - libexec/bin/plugin install mobz/elasticsearch-head
 - libexec/bin/plugin install https://github.com/couchbaselabs/elasticsearch-transport-couchbase/releases/download/2.2.3.3/elasticsearch-transport-couchbase-2.2.2.3.zip
-
 couchbase-capi-server
 elasticsearch-transport-couchbase-2.2.1
 user/pwd for transport
 curl -XPUT http://localhost:9200/_template/couchbase -d @plugins/transport-couchbase/couchbase_template.json => install an index template that sets up some good defaults when working with Couchbase
 curl -XPUT http://localhost:9200/velocorner => index in ES
-/usr/local/Cellar/elasticsearch/2.1.1/bin/elasticsearch
 
 Kibana
 ======
 template * -> cb-*
 curl -XDELETE http://localhost:9200/.kibana
+
+Elastic Stack on the Mac (in /usr/local/Cellar/)
+========================
+brew install elasticsearch
+brew install kibana
+brew services start elasticsearch
+brew services start kibana
 
 How to run the web application
 =============================
