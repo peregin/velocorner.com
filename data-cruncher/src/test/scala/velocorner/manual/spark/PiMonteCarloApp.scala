@@ -1,4 +1,4 @@
-package velocorner.spark
+package velocorner.manual.spark
 
 import org.apache.spark.{SparkContext, SparkConf}
 import org.slf4s.Logging

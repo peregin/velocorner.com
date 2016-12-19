@@ -1,4 +1,4 @@
-package velocorner.spark
+package velocorner.manual.spark
 
 import org.apache.spark.mllib.feature.StandardScaler
 import org.apache.spark.mllib.linalg.Vectors
@@ -7,6 +7,7 @@ import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
 import velocorner.model.Activity
+import velocorner.spark.CouchbaseConnector
 import velocorner.util.Metrics
 
 /**

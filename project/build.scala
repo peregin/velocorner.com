@@ -11,7 +11,7 @@ object dependencies {
   val sparkVersion = "2.0.2"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.8"
-  val elasticVersion = "2.4.0"
+  val elasticVersion = "5.1.4"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.13"
 
@@ -28,11 +28,11 @@ object dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
 
-  val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
-  val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
-  val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
-  val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.0.0"
+  val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion exclude("org.slf4j", "slf4j-api")
+  val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion exclude("org.slf4j", "slf4j-api")
+  val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion exclude("org.slf4j", "slf4j-api")
+  val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion exclude("org.slf4j", "slf4j-api")
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.0.0" exclude("org.slf4j", "slf4j-api")
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
@@ -60,7 +60,7 @@ object dependencies {
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ dynamoDb ++ orientDb
 }
 
-object build extends Build {
+object sbuild extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
@@ -83,9 +83,8 @@ object build extends Build {
     base = file("data-storage"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWs, dependencies.ficus,
-        dependencies.scalaSpec
-      ) ++ dependencies.logging ++ dependencies.elastic4s ++ dependencies.storage
+        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.scalaSpec
+      ) ++ dependencies.logging ++ dependencies.storage
     )
   )
 
@@ -94,7 +93,7 @@ object build extends Build {
     base = file("data-cruncher"),
     dependencies = Seq(dataStorage % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark
+      libraryDependencies ++= dependencies.spark ++ dependencies.elastic4s
 
     )
   )

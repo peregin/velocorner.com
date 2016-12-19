@@ -1,9 +1,7 @@
 package velocorner.manual.elastic
 
-import java.util.concurrent.CountDownLatch
-
-import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri}
 import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri}
 import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import velocorner.model.Activity
@@ -20,7 +18,7 @@ object ElasticManual extends App with Logging {
     .put("http.enabled", true)
     .put("path.home", "elastic")
   //val client = ElasticClient.local(settings.build)
-  val remoteSettings = Settings.builder().put("cluster.name", "constructor")
+  val remoteSettings = Settings.builder().put("cluster.name", "peregin")
   val client = ElasticClient.transport(remoteSettings.build(), ElasticsearchClientUri("elasticsearch://localhost:9300"))
 
   log.info("reading json entries...")
@@ -49,8 +47,4 @@ object ElasticManual extends App with Logging {
   //log.info("counting...")
   //val cres = client.execute(search("velocorner").size(0)).await
   //log.info(s"found ${cres.totalHits}")
-
-
-  //val cl = new CountDownLatch(1)
-  //cl.await()
 }

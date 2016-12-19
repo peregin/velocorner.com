@@ -1,7 +1,8 @@
-package velocorner.spark
+package velocorner.manual.spark
 
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
+import velocorner.spark.CouchbaseConnector
 
 /**
   * Created by levi on 17/02/16.
