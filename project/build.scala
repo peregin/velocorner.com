@@ -10,7 +10,7 @@ object dependencies {
 
   val sparkVersion = "2.0.2"
   val playAuthVersion = "0.14.2"
-  val logbackVersion = "1.1.7"
+  val logbackVersion = "1.1.8"
   val elasticVersion = "2.4.0"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.13"
