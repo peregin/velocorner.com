@@ -28,18 +28,22 @@ object dependencies {
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
 
-  val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion exclude("org.slf4j", "slf4j-api")
-  val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion exclude("org.slf4j", "slf4j-api")
-  val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion exclude("org.slf4j", "slf4j-api")
-  val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion exclude("org.slf4j", "slf4j-api")
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.0.0" exclude("org.slf4j", "slf4j-api")
+  val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
+  val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
+  val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
+  val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
+  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.0.0"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 
-  def logging = Seq(logback, slf4s)
+  def logging = Seq(logback, slf4s,
+    "org.slf4j" % "slf4j-simple" % "1.7.21",
+    "org.apache.logging.log4j" % "log4j-api" % "2.6.2",
+    "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.6.2"
+  )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
   def elastic4s = Seq(
@@ -75,7 +79,15 @@ object sbuild extends Build {
     ),
     dependencyOverrides ++= Set(
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4" // because of spark and couchbase connector
-    )
+    ),
+    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
+    dependencyOverrides += "io.netty" % "netty-codec-http" % "4.0.41.Final", // because of ES 5
+    dependencyOverrides += "io.netty" % "netty-handler" % "4.0.41.Final",
+    dependencyOverrides += "io.netty" % "netty-codec" % "4.0.41.Final",
+    dependencyOverrides += "io.netty" % "netty-transport" % "4.0.41.Final",
+    dependencyOverrides += "io.netty" % "netty-buffer" % "4.0.41.Final",
+    dependencyOverrides += "io.netty" % "netty-common" % "4.0.41.Final",
+    dependencyOverrides += "io.netty" % "netty-transport-native-epoll" % "4.0.41.Final"
   )
 
   lazy val dataStorage = Project(

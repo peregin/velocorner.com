@@ -23,16 +23,20 @@ object ElasticManual extends App with Logging {
 
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
-  val activities = JsonIo.read[List[Activity]](json)
+  val activities1 = JsonIo.read[List[Activity]](json)
+  val activities = read("last30activities.json", "activity-805296924.json")
 
   log.info(s"indexing ${activities.size} documents ...")
   val indices = activities.map(a => index into s"velocorner/${a.`type`}"
     fields(
       "name" -> a.name,
       "start_date" -> a.start_date,
-      "distance" -> a.distance,
-      "average_speed" -> a.average_speed,
-      "max_speed" -> a.max_speed.getOrElse(0f)
+      "distance" -> a.distance / 1000,
+      "elevation" -> a.total_elevation_gain,
+      "average_speed" -> a.average_speed.getOrElse(0f),
+      "max_speed" -> a.max_speed.getOrElse(0f),
+      "average_temp" -> a.average_temp.getOrElse(0f),
+      "average_watts" -> a.average_watts.getOrElse(0f)
     ) id a.id)
   client.execute(bulk(indices)).await
 
@@ -43,8 +47,14 @@ object ElasticManual extends App with Logging {
     log.info(s"first entry: $first")
   }
 
-
   //log.info("counting...")
   //val cres = client.execute(search("velocorner").size(0)).await
   //log.info(s"found ${cres.totalHits}")
+
+  def read(name: String*): Seq[Activity] = {
+    name.map{ resourceName =>
+      val json = Source.fromURL(getClass.getResource(s"/data/strava/$resourceName")).mkString
+      JsonIo.read[List[Activity]](json)
+    }.flatten
+  }
 }
