@@ -51,6 +51,8 @@ object ElasticManual extends App with Logging {
   //val cres = client.execute(search("velocorner").size(0)).await
   //log.info(s"found ${cres.totalHits}")
 
+  //client.close()
+
   def read(name: String*): Seq[Activity] = {
     name.map{ resourceName =>
       val json = Source.fromURL(getClass.getResource(s"/data/strava/$resourceName")).mkString

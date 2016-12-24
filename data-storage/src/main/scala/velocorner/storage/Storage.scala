@@ -45,7 +45,6 @@ object Storage extends Logging {
       case any if dbType.startsWith("co") => new CouchbaseStorage(config.getBucketPassword)
       case any if dbType.startsWith("re") => new RethinkDbStorage
       case any if dbType.startsWith("mo") => new MongoDbStorage
-      case any if dbType.startsWith("dy") => new DynamoDbStorage
       case any if dbType.startsWith("or") => new OrientDbStorage(config.getOrientDbPath)
       case unknown => sys.error(s"unknown storage type $unknown")
     }

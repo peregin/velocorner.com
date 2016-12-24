@@ -40,7 +40,7 @@ object dependencies {
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 
   def logging = Seq(logback, slf4s,
-    "org.slf4j" % "slf4j-simple" % "1.7.21",
+    "org.slf4j" % "slf4j-simple" % "1.7.21", // needed because of the ES
     "org.apache.logging.log4j" % "log4j-api" % "2.6.2",
     "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.6.2"
   )
@@ -51,17 +51,12 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
   )
-  def dynamoDb = Seq(
-    "com.amazonaws" % "DynamoDBLocal" % "1.11.0.1",
-    "com.almworks.sqlite4java" % "sqlite4java" % "1.0.392" // needed for dynamoDb inMemory
-  )
-
   def orientDb = Seq(
     "com.orientechnologies" % "orientdb-core" % orientDbVersion,
     "com.orientechnologies" % "orientdb-client" % orientDbVersion,
     "com.orientechnologies" % "orientdb-server" % orientDbVersion
   )
-  def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ dynamoDb ++ orientDb
+  def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 }
 
 object sbuild extends Build {
