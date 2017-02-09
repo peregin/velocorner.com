@@ -8,7 +8,7 @@ import org.slf4s.Logging
   */
 object PiMonteCarloApp extends App with Logging {
 
-  val samples = 100000000
+  val samples = 10000000
 
   val scConf = new SparkConf()
     .setAppName("Pi Approximation")
@@ -23,5 +23,7 @@ object PiMonteCarloApp extends App with Logging {
   sc.stop()
 
   val pi = 4.0 * count / samples
+  log.info("-----------------------------")
   log.info(s"pi approximation is $pi")
+  log.info("-----------------------------")
 }

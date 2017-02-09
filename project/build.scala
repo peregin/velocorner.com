@@ -8,10 +8,10 @@ import play.sbt.routes.RoutesCompiler.autoImport._
 
 object dependencies {
 
-  val sparkVersion = "2.0.2"
+  val sparkVersion = "2.1.0"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.1.8"
-  val elasticVersion = "5.1.4"
+  val elasticVersion = "5.2.5"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.13"
 
@@ -73,7 +73,7 @@ object sbuild extends Build {
       "Amazon Repository" at "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release"
     ),
     dependencyOverrides ++= Set(
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.4" // because of spark and couchbase connector
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark and couchbase connector
     ),
     dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
     dependencyOverrides += "io.netty" % "netty-codec-http" % "4.0.41.Final", // because of ES 5
