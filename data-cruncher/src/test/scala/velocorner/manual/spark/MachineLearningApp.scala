@@ -15,9 +15,9 @@ import velocorner.util.Metrics
   */
 object MachineLearningApp extends App with Logging with Metrics with MyMacConfig {
 
-    log.info("connecting to couchbase bucket...")
-    val conn = CouchbaseConnector(SecretConfig.load())
-    val activities = conn.dailyProgressForAthlete(432909, 10)
+  log.info("connecting to couchbase bucket...")
+  val conn = CouchbaseConnector(SecretConfig.load())
+  val activities = conn.dailyProgressForAthlete(432909, 10)
 
 
   //log.info(s"got ${activities.count()} activities")

@@ -2,6 +2,8 @@ package velocorner.manual.spark
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
+import velocorner.manual.spark.PiMonteCarloApp.log
+import velocorner.spark.LocalSpark
 import velocorner.util.Metrics
 
 
@@ -10,19 +12,10 @@ import velocorner.util.Metrics
  *
  * Created by levi on 02/02/15.
  */
-object WordCountApp extends App with Metrics {
+object WordCountApp extends App with Metrics with LocalSpark[Long] {
 
-  val scConf = new SparkConf()
-    .setAppName("Word Count")
-    .setMaster("local[*]") // set the master to local
-  val sc = new SparkContext(scConf)
-  val resulted = try {
-    spark(sc)
-  } finally {
-    sc.stop()
-  }
 
-  println(s"resulted: $resulted")
+  override def sparkAppName: String = "Word Count"
 
   def spark(sc: SparkContext) = {
     val rdd: RDD[String] = sc.textFile("data-cruncher/src/test/resources/data/book/kipling.txt")
@@ -47,8 +40,14 @@ object WordCountApp extends App with Metrics {
     // eventually save the results
     //println(s"Writing output to: $out")
     //wc.saveAsTextFile(out)
-    wc.count()
+    val counter = wc.count()
+    log.info("-----------------------------")
+    log.info(s"resulted: $counter")
+    log.info("-----------------------------")
+    counter
   }
+
+  proceed()
 }
 
 // Exercise: Use other versions of the Bible:
