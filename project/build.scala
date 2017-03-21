@@ -92,7 +92,9 @@ object sbuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
         dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.scalaSpec
-      ) ++ dependencies.logging ++ dependencies.storage
+      ) ++ dependencies.logging
+        ++ dependencies.storage
+        ++ dependencies.elastic4s
     )
   )
 
@@ -101,7 +103,7 @@ object sbuild extends Build {
     base = file("data-cruncher"),
     dependencies = Seq(dataStorage % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark ++ dependencies.elastic4s
+      libraryDependencies ++= dependencies.spark
 
     )
   )

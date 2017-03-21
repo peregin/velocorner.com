@@ -1,25 +1,25 @@
 package velocorner.manual.elastic
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri}
+import com.sksamuel.elastic4s.{ElasticsearchClientUri, TcpClient}
 import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import velocorner.model.Activity
-import velocorner.util.JsonIo
+import velocorner.util.{ElasticSupport, JsonIo}
 
 import scala.io.Source
 
 
-object ElasticManual extends App with Logging {
+object ElasticManual extends App with ElasticSupport with Logging {
 
   log.info("starting...")
 
-  val settings = Settings.builder()
-    .put("http.enabled", true)
-    .put("path.home", "elastic")
+  //val settings = Settings.builder()
+  //  .put("http.enabled", true)
+  //  .put("path.home", "elastic")
   //val client = ElasticClient.local(settings.build)
   val remoteSettings = Settings.builder().put("cluster.name", "peregin")
-  val client = ElasticClient.transport(remoteSettings.build(), ElasticsearchClientUri("elasticsearch://localhost:9300"))
+  val client = TcpClient.transport(remoteSettings.build(), ElasticsearchClientUri("elasticsearch://localhost:9300"))
 
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
@@ -27,17 +27,10 @@ object ElasticManual extends App with Logging {
   val activities = read("last30activities.json", "activity-805296924.json")
 
   log.info(s"indexing ${activities.size} documents ...")
-  val indices = activities.map(a => index into s"velocorner/${a.`type`}"
-    fields(
-      "name" -> a.name,
-      "start_date" -> a.start_date,
-      "distance" -> a.distance / 1000,
-      "elevation" -> a.total_elevation_gain,
-      "average_speed" -> a.average_speed.getOrElse(0f),
-      "max_speed" -> a.max_speed.getOrElse(0f),
-      "average_temp" -> a.average_temp.getOrElse(0f),
-      "average_watts" -> a.average_watts.getOrElse(0f)
-    ) id a.id)
+  val indices = activities.map{a =>
+    val ixDef = index into s"velocorner/${a.`type`}"
+    extractIndices(a, ixDef) id a.id
+  }
   client.execute(bulk(indices)).await
 
   log.info("searching...")
