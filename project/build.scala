@@ -13,7 +13,8 @@ object dependencies {
   val logbackVersion = "1.1.8"
   val elasticVersion = "5.2.5"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.13"
+  val orientDbVersion = "2.2.17"
+  val log4jVersion = "2.8.1"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -41,8 +42,8 @@ object dependencies {
 
   def logging = Seq(logback, slf4s,
     "org.slf4j" % "slf4j-simple" % "1.7.21", // needed because of the ES
-    "org.apache.logging.log4j" % "log4j-api" % "2.6.2",
-    "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.6.2"
+    "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
+    "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
