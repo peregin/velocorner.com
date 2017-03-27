@@ -1,8 +1,6 @@
 package velocorner.manual.elastic
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{ElasticsearchClientUri, TcpClient}
-import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import velocorner.model.Activity
 import velocorner.util.{ElasticSupport, JsonIo}
@@ -14,12 +12,7 @@ object ElasticManual extends App with ElasticSupport with Logging {
 
   log.info("starting...")
 
-  //val settings = Settings.builder()
-  //  .put("http.enabled", true)
-  //  .put("path.home", "elastic")
-  //val client = ElasticClient.local(settings.build)
-  val remoteSettings = Settings.builder().put("cluster.name", "peregin")
-  val client = TcpClient.transport(remoteSettings.build(), ElasticsearchClientUri("elasticsearch://localhost:9300"))
+  val client = elasticLocal()
 
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
@@ -27,10 +20,7 @@ object ElasticManual extends App with ElasticSupport with Logging {
   val activities = read("last30activities.json", "activity-805296924.json")
 
   log.info(s"indexing ${activities.size} documents ...")
-  val indices = activities.map{a =>
-    val ixDef = index into s"velocorner/${a.`type`}"
-    extractIndices(a, ixDef) id a.id
-  }
+  val indices = map2Indices(activities)
   client.execute(bulk(indices)).await
 
   log.info("searching...")
