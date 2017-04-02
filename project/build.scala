@@ -43,14 +43,16 @@ object dependencies {
   def logging = Seq(logback, slf4s,
     "org.slf4j" % "slf4j-simple" % "1.7.21", // needed because of the ES
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
-    "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
+    "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion,
+    "org.apache.logging.log4j" % "jcl-over-slf4j" % log4jVersion
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion
   )
   def orientDb = Seq(
     "com.orientechnologies" % "orientdb-core" % orientDbVersion,

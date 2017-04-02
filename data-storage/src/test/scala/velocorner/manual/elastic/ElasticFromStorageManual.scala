@@ -18,7 +18,7 @@ object ElasticFromStorageManual extends App with ElasticSupport with Logging wit
   val activities = storage.listRecentActivities(432909, 10000)
   storage.destroy()
 
-  val client = elasticLocal()
+  val client = elasticCluster()
 
   log.info(s"indexing ${activities.size} documents ...")
   val indices = map2Indices(activities)

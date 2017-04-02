@@ -1,7 +1,7 @@
 package velocorner.util
 
-import com.sksamuel.elastic4s.ElasticDsl.index
-import com.sksamuel.elastic4s.indexes.IndexDefinition
+import com.sksamuel.elastic4s.embedded.LocalNode
+import com.sksamuel.elastic4s.indexes.{IndexApi, IndexDefinition}
 import com.sksamuel.elastic4s.{ElasticsearchClientUri, TcpClient}
 import org.elasticsearch.common.settings.Settings
 import velocorner.model.Activity
@@ -9,20 +9,28 @@ import velocorner.model.Activity
 /**
   * Created by levi on 21.03.17.
   */
-trait ElasticSupport {
+trait ElasticSupport extends IndexApi {
 
-  //val settings = Settings.builder()
-  //  .put("http.enabled", true)
-  //  .put("path.home", "elastic")
-  //val client = ElasticClient.local(settings.build)
-  def elasticLocal() = {
-    val remoteSettings = Settings.builder().put("cluster.name", "peregin")
+  def elasticEmbedded() = {
+    val localSettings = Settings.builder()
+      .put("http.enabled", true)
+      .put("path.home", "elastic")
+      .put("path.data", "elastic/data")
+      .put("path.repo", "elastic/repo")
+      .put("cluster.name", "velocorner")
+    val node = LocalNode(localSettings.build())
+    node.elastic4sclient(shutdownNodeOnClose = true)
+  }
+
+  def elasticCluster() = {
+    val remoteSettings = Settings.builder()
+      .put("cluster.name", "peregin")
     TcpClient.transport(remoteSettings.build(), ElasticsearchClientUri("elasticsearch://localhost:9300"))
   }
 
   def map2Indices(activities: Iterable[Activity]): Iterable[IndexDefinition] = {
     activities.map { a =>
-      val ixDefinition = index into s"velocorner/${a.`type`}"
+      val ixDefinition = indexInto(s"velocorner/${a.`type`}")
       extractIndices(a, ixDefinition) id a.id
     }
   }
