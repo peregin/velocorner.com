@@ -1,6 +1,5 @@
 package velocorner.util
 
-import com.sksamuel.elastic4s.embedded.LocalNode
 import com.sksamuel.elastic4s.indexes.{IndexApi, IndexDefinition}
 import com.sksamuel.elastic4s.{ElasticsearchClientUri, TcpClient}
 import org.elasticsearch.common.settings.Settings
@@ -11,16 +10,16 @@ import velocorner.model.Activity
   */
 trait ElasticSupport extends IndexApi {
 
-  def elasticEmbedded() = {
-    val localSettings = Settings.builder()
-      .put("http.enabled", true)
-      .put("path.home", "elastic")
-      .put("path.data", "elastic/data")
-      .put("path.repo", "elastic/repo")
-      .put("cluster.name", "velocorner")
-    val node = LocalNode(localSettings.build())
-    node.elastic4sclient(shutdownNodeOnClose = true)
-  }
+//  def elasticEmbedded() = {
+//    val localSettings = Settings.builder()
+//      .put("http.enabled", true)
+//      .put("path.home", "elastic")
+//      .put("path.data", "elastic/data")
+//      .put("path.repo", "elastic/repo")
+//      .put("cluster.name", "velocorner")
+//    val node = LocalNode(localSettings.build())
+//    node.elastic4sclient(shutdownNodeOnClose = true)
+//  }
 
   def elasticCluster() = {
     val remoteSettings = Settings.builder()

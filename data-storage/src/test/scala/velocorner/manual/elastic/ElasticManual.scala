@@ -12,7 +12,7 @@ object ElasticManual extends App with ElasticSupport with Logging {
 
   log.info("starting...")
 
-  val client = elasticEmbedded()
+  val client = elasticCluster()
 
   log.info("reading json entries...")
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
