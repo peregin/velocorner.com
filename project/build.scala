@@ -10,11 +10,11 @@ object dependencies {
 
   val sparkVersion = "2.1.0"
   val playAuthVersion = "0.14.2"
-  val logbackVersion = "1.2.2"
-  val elasticVersion = "5.2.11"
+  val logbackVersion = "1.2.3"
+  val elasticVersion = "5.3.2"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.17"
-  val log4jVersion = "2.8.1"
+  val orientDbVersion = "2.2.19"
+  val log4jVersion = "2.8.2"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -66,7 +66,7 @@ object sbuild extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.11.8",
+    scalaVersion := "2.11.11",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
