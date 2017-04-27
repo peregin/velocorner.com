@@ -23,14 +23,14 @@ trait HttpFeed {
     val proxyServer = (config.getProxyUser, config.getProxyPassword) match {
       case (Some(proxyUser), Some(proxyPassword)) =>
         val realm = new Realm.Builder(proxyUser, proxyPassword).build()
-        new ProxyServer(proxyHost, proxyPort, 443, realm, List.empty.asJava)
+        new ProxyServer(proxyHost, proxyPort, 443, realm, List.empty[String].asJava)
       case _ =>
-        new ProxyServer(proxyHost, proxyPort, 443, null, List.empty.asJava)
+        new ProxyServer(proxyHost, proxyPort, 443, null, List.empty[String].asJava)
     }
     httpConfigBuilder.setProxyServer(proxyServer)
   }
 
-  implicit val system = ActorSystem.create("ws")
+  implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()
   val wsClient = new AhcWSClient(httpConfigBuilder.build())
 }

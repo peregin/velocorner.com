@@ -25,7 +25,7 @@ trait AggregateActivities extends Logging {
       else false
     }
 
-    log.info("UNTIL THIS DAY")
+    log.info(s"YEAR TO DATE $now")
     printProgress(cyclingActivitiesUntilThisDay)
   }
 
