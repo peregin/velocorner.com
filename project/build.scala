@@ -41,10 +41,9 @@ object dependencies {
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 
   def logging = Seq(logback, slf4s,
-    "org.slf4j" % "slf4j-simple" % "1.7.21", // needed because of the ES
+    "org.slf4j" % "slf4j-simple" % "1.7.21" exclude("org.slf4j", "slf4j-log4j12") exclude("log4j", "log4j"), // needed because of the ES
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
-//    "org.apache.logging.log4j" % "jcl-over-slf4j" % log4jVersion // because of embedded ES
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
   def auth = Seq(playAuth, playAuthSocial)
