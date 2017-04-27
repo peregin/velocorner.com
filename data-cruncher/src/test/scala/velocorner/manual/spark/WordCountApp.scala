@@ -1,8 +1,7 @@
 package velocorner.manual.spark
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import velocorner.manual.spark.PiMonteCarloApp.log
 import velocorner.spark.LocalSpark
 import velocorner.util.Metrics
 
@@ -14,6 +13,7 @@ import velocorner.util.Metrics
  */
 object WordCountApp extends App with Metrics with LocalSpark[Long] {
 
+  runSpark()
 
   override def sparkAppName: String = "Word Count"
 
@@ -40,14 +40,8 @@ object WordCountApp extends App with Metrics with LocalSpark[Long] {
     // eventually save the results
     //println(s"Writing output to: $out")
     //wc.saveAsTextFile(out)
-    val counter = wc.count()
-    log.info("-----------------------------")
-    log.info(s"resulted: $counter")
-    log.info("-----------------------------")
-    counter
+    wc.count()
   }
-
-  proceed()
 }
 
 // Exercise: Use other versions of the Bible:

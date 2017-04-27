@@ -78,14 +78,7 @@ object sbuild extends Build {
     dependencyOverrides ++= Set(
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark and couchbase connector
     ),
-    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
-    dependencyOverrides += "io.netty" % "netty-codec-http" % "4.0.41.Final", // because of ES 5
-    dependencyOverrides += "io.netty" % "netty-handler" % "4.0.41.Final",
-    dependencyOverrides += "io.netty" % "netty-codec" % "4.0.41.Final",
-    dependencyOverrides += "io.netty" % "netty-transport" % "4.0.41.Final",
-    dependencyOverrides += "io.netty" % "netty-buffer" % "4.0.41.Final",
-    dependencyOverrides += "io.netty" % "netty-common" % "4.0.41.Final",
-    dependencyOverrides += "io.netty" % "netty-transport-native-epoll" % "4.0.41.Final"
+    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2" // because of ES 5
   )
 
   lazy val dataStorage = Project(

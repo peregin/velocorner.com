@@ -9,6 +9,8 @@ trait LocalSpark[T] extends Logging {
   val scConf = new SparkConf()
     .setAppName(sparkAppName)
     .setMaster("local[*]") // set the master to local
+    .set("spark.driver.bindAddress", "localhost")
+    .set("spark.driver.host", "localhost")
   val sc = new SparkContext(scConf)
 
   def sparkAppName: String
@@ -21,7 +23,7 @@ trait LocalSpark[T] extends Logging {
     log.info("--------------------------------------------------------------")
   }
 
-  def proceed() = {
+  def runSpark() = {
     val result = try {
       spark(sc)
     } finally {

@@ -1,7 +1,7 @@
 package velocorner.util
 
 import org.specs2.mutable.Specification
-import velocorner.model.{Athlete, Activity}
+import velocorner.model.{Activity, Athlete}
 
 import scala.io.Source
 
@@ -57,6 +57,13 @@ class JsonIoSpec extends Specification {
       val a = Athlete(1, 2, Some("Levi"), None, None, Some("city"), Some("country"))
       val json = JsonIo.write(a)
       json must contain("type\" : \"Athlete")
+    }
+  }
+
+  "gzip file" should {
+    "be parsed" in {
+      val list = JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
+      list must haveSize(200)
     }
   }
 
