@@ -2,9 +2,10 @@ package velocorner.manual.spark
 
 import org.apache.spark.SparkContext
 import org.apache.spark.ml.regression.LinearRegression
-import org.apache.spark.mllib.feature.StandardScaler
-import org.apache.spark.mllib.linalg.Vectors
-import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.ml.linalg.Vectors
+import org.apache.spark.ml.feature.LabeledPoint
+import org.apache.spark.sql.SparkSession
+import org.joda.time.DateTime
 import org.slf4s.Logging
 import velocorner.manual.MyMacConfig
 import velocorner.model.Activity
@@ -31,14 +32,21 @@ object MachineLearningApp extends App with LocalSpark[String] with Logging with 
     log.info(s"got ${data2015.size} activities from 2015")
 
     // prepare training set
-    val parsedTrainData = data2015.map(_.labeledPoint)
-    val rddTraining = sc.makeRDD(parsedTrainData).cache()
-    val scaler = new StandardScaler(withMean = true, withStd = true).fit(rddTraining.map(x => x.features))
-    val scaledTrainData = parsedTrainData.map(x => LabeledPoint(x.label, scaler.transform(Vectors.dense(x.features.toArray))))
+    val parsedData = data2015.map(_.labeledPoint)
+    val rdd = sc.makeRDD(parsedData).cache()
 
-    val algorithm = new LinearRegression().setMaxIter(10)
-    //algorithm.fit(scaledTrainData)
-    "done"
+    val algorithm = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+    val session = SparkSession.builder().getOrCreate()
+    val Array(trainingData, testData) = session.createDataFrame(rdd).randomSplit(Array(0.7, 0.3), 1234)
+
+    val model = algorithm.fit(trainingData)
+
+    log.info(s"coefficients: ${model.coefficients} intercept: ${model.intercept}")
+    model.summary.residuals.show()
+
+    val predictions = model.transform(testData)
+    predictions.show()
+    predictions.toString()
   }
 
 
@@ -48,12 +56,19 @@ object MachineLearningApp extends App with LocalSpark[String] with Logging with 
     // - month
     // - day
     // - day of week - work days vs weekends
-    def features: Array[Double] = Array(
-      activity.start_date.getMonthOfYear.toDouble,
-      activity.start_date.getDayOfMonth.toDouble,
-      activity.start_date.getDayOfWeek.toDouble
-    )
+    def features: Array[Double] = FeatureExtractor.from(activity.start_date)
 
     def labeledPoint: LabeledPoint = LabeledPoint(activity.distance.toDouble, Vectors.dense(features))
+  }
+
+  object FeatureExtractor {
+
+    def from(start_date: DateTime): Array[Double] = {
+      Array(
+        start_date.getMonthOfYear.toDouble,
+        start_date.getDayOfMonth.toDouble,
+        start_date.getDayOfWeek.toDouble
+      )
+    }
   }
 }
