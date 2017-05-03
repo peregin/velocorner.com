@@ -38,7 +38,8 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
         maybeAccount,
         currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
-        toDistanceSeries(aggregatedYearlyProgress)
+        toDistanceSeries(aggregatedYearlyProgress),
+        toElevationSeries(aggregatedYearlyProgress)
       )
     }
 

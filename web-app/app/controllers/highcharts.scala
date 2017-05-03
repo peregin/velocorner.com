@@ -34,6 +34,8 @@ package object highcharts {
 
   def toDistanceSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.distance)
 
+  def toElevationSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.elevation)
+
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
     items.map(yp => DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
   }

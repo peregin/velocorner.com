@@ -8,6 +8,7 @@ import velocorner.model.{Account, Progress}
   */
 case class LandingPageContext(account: Option[Account],
                               statistics: Progress,
-                              yearlyProgress: Iterable[DailySeries],
-                              aggregatedYearlyProgress: Iterable[DailySeries]
+                              yearlyDistance: Iterable[DailySeries],
+                              aggregatedYearlyDistance: Iterable[DailySeries],
+                              aggregatedYearlyElevation: Iterable[DailySeries]
                               )
