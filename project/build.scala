@@ -13,10 +13,10 @@ object dependencies {
   val logbackVersion = "1.2.3"
   val elasticVersion = "5.4.3"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.20"
+  val orientDbVersion = "2.2.21"
   val log4jVersion = "2.8.2"
 
-  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.12"
+  val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
 
