@@ -66,8 +66,7 @@ object sbuild extends Build {
   lazy val runDist : ReleaseStep = ReleaseStep(
     action = { st: State =>
       val extracted = Project.extract(st)
-      val ref = extracted.get(thisProjectRef)
-      extracted.runAggregated(clean in Global in ref, st)
+      extracted.runAggregated(com.typesafe.sbt.packager.Keys.dist in Global in webApp, st)
     }
   )
 
@@ -90,7 +89,7 @@ object sbuild extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      releaseStepTask(com.typesafe.sbt.packager.Keys.dist in webApp),
+      runDist,
       setNextVersion,
       commitNextVersion
     ),
