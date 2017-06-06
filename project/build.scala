@@ -1,8 +1,5 @@
 import sbt._
 import Keys._
-import play.sbt._
-import Play.autoImport._
-import akka.util.Helpers.Requiring
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.{BuildInfoKeys, _}
 import sbtrelease._
@@ -66,8 +63,16 @@ object dependencies {
 
 object sbuild extends Build {
 
+  lazy val runDist : ReleaseStep = ReleaseStep(
+    action = { st: State =>
+      val extracted = Project.extract(st)
+      val ref = extracted.get(thisProjectRef)
+      extracted.runAggregated(clean in Global in ref, st)
+    }
+  )
+
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
-    version := "1.0.0-SNAPSHOT",
+    version <<= version in ThisBuild,
     scalaVersion := "2.11.11",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
@@ -85,6 +90,7 @@ object sbuild extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
+      releaseStepTask(com.typesafe.sbt.packager.Keys.dist),
       setNextVersion,
       commitNextVersion
     ),
