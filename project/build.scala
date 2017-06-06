@@ -5,7 +5,9 @@ import Play.autoImport._
 import akka.util.Helpers.Requiring
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.{BuildInfoKeys, _}
-
+import sbtrelease._
+import ReleaseStateTransformations._
+import sbtrelease.ReleasePlugin.autoImport._
 
 object dependencies {
 
@@ -74,6 +76,17 @@ object sbuild extends Build {
     resolvers ++= Seq(
       "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "Amazon Repository" at "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release"
+    ),
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      setNextVersion,
+      commitNextVersion
     ),
     dependencyOverrides ++= Set(
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark and couchbase connector
