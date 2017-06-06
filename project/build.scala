@@ -90,7 +90,7 @@ object sbuild extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      releaseStepTask(com.typesafe.sbt.packager.Keys.dist),
+      releaseStepTask(com.typesafe.sbt.packager.Keys.dist in webApp),
       setNextVersion,
       commitNextVersion
     ),
