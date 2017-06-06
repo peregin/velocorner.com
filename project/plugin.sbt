@@ -22,3 +22,6 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.15")
 // code coverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 
+// Gerolf's release plugin
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.5")
+
