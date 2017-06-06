@@ -4,6 +4,7 @@ import play.sbt._
 import Play.autoImport._
 import akka.util.Helpers.Requiring
 import play.sbt.routes.RoutesCompiler.autoImport._
+import sbtbuildinfo.{BuildInfoKeys, _}
 
 
 object dependencies {
@@ -116,10 +117,16 @@ object sbuild extends Build {
     base = file("web-app"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache),
-      routesGenerator := StaticRoutesGenerator
+      routesGenerator := StaticRoutesGenerator,
+      BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
+        name, version, scalaVersion, sbtVersion,
+        BuildInfoKey.action("buildTime") {
+          java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+        }
+      )
     ),
     dependencies = Seq(dataStorage)
-  ).enablePlugins(play.sbt.PlayScala)
+  ).enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
 
 
   // top level aggregate
