@@ -3,18 +3,20 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /about                      controllers.Application.about
-GET     /refresh                    controllers.Application.refresh
-GET     /logout                     controllers.Application.logout
+GET     /                            controllers.Application.index
+GET     /about                       controllers.Application.about
+GET     /refresh                     controllers.Application.refresh
+GET     /logout                      controllers.Application.logout
 
-GET     /login/strava               controllers.AuthController.login(scope: String)
-GET     /link/strava                controllers.AuthController.link(scope: String)
-GET     /authorize/strava           controllers.AuthController.authorize
+GET     /login/strava                controllers.AuthController.login(scope: String)
+GET     /link/strava                 controllers.AuthController.link(scope: String)
+GET     /authorize/strava            controllers.AuthController.authorize
 
-GET     /rest/club/:action          controllers.RestController.recentClub(action: String)
-GET     /rest/athlete/progress      controllers.RestController.athleteProgress
+# REST API
+GET     /rest/club/:action           controllers.RestController.recentClub(action: String)
+GET     /rest/athlete/statistics     controllers.RestController.statistics
+GET     /rest/athlete/yearly/:action controllers.RestController.yearly(action: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-GET     /counter                    controllers.Assets.at(path="/public", file="html/counter.html")
+GET     /assets/*file                controllers.Assets.at(path="/public", file)
+GET     /counter                     controllers.Assets.at(path="/public", file="html/counter.html")

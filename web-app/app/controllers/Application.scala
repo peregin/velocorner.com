@@ -6,7 +6,6 @@ import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.slf4s
 import play.Logger
 import play.api.mvc._
-import velocorner.model._
 import velocorner.util.Metrics
 
 import scala.concurrent.Future
@@ -23,19 +22,7 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
     val context = timed("building page context") {
       val maybeAccount = loggedIn
       Logger.info(s"rendering for $maybeAccount")
-
-      val storage = Global.getStorage
-      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-      val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
-      val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-
-      import highcharts._
-      LandingPageContext(
-        maybeAccount,
-        toDistanceSeries(flattenedYearlyProgress),
-        toDistanceSeries(aggregatedYearlyProgress),
-        toElevationSeries(aggregatedYearlyProgress)
-      )
+      PageContext(maybeAccount)
     }
 
     Ok(views.html.index(context))

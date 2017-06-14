@@ -1,15 +1,15 @@
-@(context: LandingPageContext)(implicit request: play.api.mvc.Request[Any])
+@(context: PageContext)(implicit request: play.api.mvc.Request[Any])
 
 @common.main("Home") {
 
     @context.account.map { user =>
         <div class="tag-box">
-            @widget.profile(user, "/rest/athlete/progress")
+            @widget.profile(user, "/rest/athlete/statistics")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
-            @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyDistance)
-            @widget.chart("yearlyProgress", "Yearly Distance", context.aggregatedYearlyDistance)
-            @widget.chart("yearlyElevation", "Yearly Elevation", context.aggregatedYearlyElevation)
+            @widget.ajaxchart("yearlyChart", "Yearly Heatmap", "/rest/athlete/yearly/heatmap")
+            @widget.ajaxchart("yearlyProgress", "Yearly Distance", "/rest/athlete/yearly/distance")
+            @widget.ajaxchart("yearlyElevation", "Yearly Elevation", "/rest/athlete/yearly/elevation")
         </div>
     }
 

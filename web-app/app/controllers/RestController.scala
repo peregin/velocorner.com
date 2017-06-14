@@ -44,9 +44,10 @@ object RestController extends Controller with OptionalAuthElement with AuthConfi
   }
 
   // def mapped to /rest/athlete/progress
-  def athleteProgress = AsyncStack { implicit request =>
+  // current year's progress
+  def statistics = AsyncStack { implicit request =>
     val maybeAccount = loggedIn
-    Logger.info(s"athlete progress for ${maybeAccount.map(_.displayName)}")
+    Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
     val storage = Global.getStorage
     val currentYear = LocalDate.now().getYear
@@ -56,6 +57,26 @@ object RestController extends Controller with OptionalAuthElement with AuthConfi
 
     Future.successful(
       Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(currentYearProgress)))
+    )
+  }
+
+  // def mapped to /rest/athlete/progress/:action
+  def yearly(action: String) = AsyncStack { implicit request =>
+    val maybeAccount = loggedIn
+    Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
+
+    val storage = Global.getStorage
+    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+
+    val dataSeries = action.toLowerCase match {
+      case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
+      case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
+      case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
+      case other => sys.error(s"not supported action: $action")
+    }
+
+    Future.successful(
+      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
     )
   }
 }
