@@ -4,7 +4,7 @@
 
     @context.account.map { user =>
         <div class="tag-box">
-            @widget.profile(user, context.statistics)
+            @widget.profile(user, "/rest/athlete/progress")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
             @widget.chart("yearlyChart", "Yearly Heatmap", context.yearlyDistance)
@@ -42,11 +42,4 @@
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/counter/waypoints.min.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/counter/jquery.counterup.min.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/circles-master/circles.js")"></script>
-<!-- JS Page Level -->
-<!--<script type="text/javascript" src="@routes.Assets.at("unify/assets/js/app.js")"></script>-->
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/js/plugins/circles-master.js")"></script>
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        App.initCounter();
-    });
-</script>

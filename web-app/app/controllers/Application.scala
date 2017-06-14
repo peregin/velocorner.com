@@ -2,9 +2,7 @@ package controllers
 
 
 import controllers.auth.AuthConfigSupport
-import highcharts.DailySeries
 import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
-import org.joda.time.LocalDate
 import org.slf4s
 import play.Logger
 import play.api.mvc._
@@ -27,16 +25,13 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
       Logger.info(s"rendering for $maybeAccount")
 
       val storage = Global.getStorage
-      val currentYear = LocalDate.now().getYear
       val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
       val flattenedYearlyProgress = YearlyProgress.zeroOnMissingDate(yearlyProgress)
       val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-      val currentYearStatistics = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
 
       import highcharts._
       LandingPageContext(
         maybeAccount,
-        currentYearStatistics,
         toDistanceSeries(flattenedYearlyProgress),
         toDistanceSeries(aggregatedYearlyProgress),
         toElevationSeries(aggregatedYearlyProgress)

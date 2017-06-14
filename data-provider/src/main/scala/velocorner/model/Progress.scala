@@ -4,6 +4,8 @@ import play.api.libs.json._
 
 object Progress {
 
+  implicit val totalFormat = Format[Progress](Json.reads[Progress], Json.writes[Progress])
+
   /**
    * value format: {"ride":1,"dist":6741.7998046875,"distmax":6741.7998046875,"elev":93.0999984741211,"elevmax":93.0999984741211,"time":1144}
    * Note that distance is mapped to meters and time is mapped to seconds
@@ -32,7 +34,8 @@ object Progress {
  * @param averageSpeed expressed in kph.
  */
 case class Progress(rides: Int,
-                    distance: Double, longestDistance: Double, movingTime: Long,
+                    distance: Double, longestDistance: Double,
+                    movingTime: Long,
                     averageSpeed: Double,
                     elevation: Double, longestElevation: Double) {
 

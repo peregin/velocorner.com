@@ -1,9 +1,7 @@
 @(chartId: String, chartTitle: String, progress: Iterable[highcharts.DailySeries])
 
 <script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/jquery/jquery.min.js")"></script>
-
 <script type="text/javascript">//<![CDATA[
-
 $(function () {
     var chart;
     chart = new Highcharts.Chart({
@@ -68,9 +66,7 @@ $(function () {
 
     });
 });
-
 //]]>
-
 </script>
 
 <script type="text/javascript" src="@routes.Assets.at("highcharts/highcharts.js")"></script>

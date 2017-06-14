@@ -1,18 +1,25 @@
 package controllers
 
+import controllers.auth.AuthConfigSupport
 import highcharts._
+import play.Logger
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import velocorner.model.{AthleteDailyProgress, Club}
+import velocorner.model.{AthleteDailyProgress, Club, Progress, YearlyProgress}
+import jp.t2v.lab.play2.auth.OptionalAuthElement
+import org.joda.time.LocalDate
 
 import scala.concurrent.Future
 
 /**
   * Created by levi on 06/10/16.
   */
-object RestController extends Controller {
+object RestController extends Controller with OptionalAuthElement with AuthConfigSupport {
 
+  // mapped to /rest/club/:action
   def recentClub(action: String) = Action.async { implicit request =>
+    Logger.info(s"recent club action for $action")
+
     // sync, load if needed
     RefreshStrategy.refreshClubActivities()
 
@@ -25,14 +32,30 @@ object RestController extends Controller {
     val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
     val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
 
-    val dataSeries = action match {
+    val dataSeries = action.toLowerCase match {
       case "distance" => toAthleteDistanceSeries(mostRecentAthleteProgress)
       case "elevation" => toAthleteElevationSeries(mostRecentAthleteProgress)
       case other => sys.error(s"not supported action: $action")
     }
     val series = dataSeries.map(_.aggregate).map(seriesId2Name)
     Future.successful(
-      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(series)))
+      Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))
+    )
+  }
+
+  // def mapped to /rest/athlete/progress
+  def athleteProgress = AsyncStack { implicit request =>
+    val maybeAccount = loggedIn
+    Logger.info(s"athlete progress for ${maybeAccount.map(_.displayName)}")
+
+    val storage = Global.getStorage
+    val currentYear = LocalDate.now().getYear
+    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+    val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
+    val currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
+
+    Future.successful(
+      Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(currentYearProgress)))
     )
   }
 }

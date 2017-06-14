@@ -1,4 +1,4 @@
-@(account: velocorner.model.Account, statistics: velocorner.model.Progress)
+@(account: velocorner.model.Account, restUrl: String)
 
 <!-- Profile and Counters -->
 <div class="main-counters margin-bottom-20">
@@ -29,34 +29,42 @@
 
         <div class="counters col-md-2 col-sm-2">
             <span class="counter-icon"><i class="fa fa-bicycle rounded"></i></span>
-            <span class="counter">@statistics.rides</span>
+            <span id="profile-rides" class="counter">0</span>
             <h4>Rides</h4>
         </div>
         <div class="counters col-md-2 col-sm-2">
             <span class="counter-icon"><i class="fa fa-globe rounded"></i></span>
-            <span class="counter">@statistics.distance.toInt</span>km
+            <span id="profile-distance" class="counter">0</span>km
             <h4>Distance</h4>
         </div>
         <div class="counters col-md-2 col-sm-2">
             <span class="counter-icon"><i class="fa fa-rocket rounded"></i></span>
-            <span class="counter">@statistics.elevation.toInt</span>m
+            <span id="profile-elevation" class="counter">0</span>m
             <h4>Elevation</h4>
         </div>
         <div class="counters col-md-2 col-sm-2">
             <span class="counter-icon"><i class="fa fa-clock-o rounded"></i></span>
-            <span class="counter">@{statistics.movingTime/3600}</span>h
+            <span id="profile-hours" class="counter">0</span>h
             <h4>Hours</h4>
         </div>
-        <!--<div class="counters col-md-2 col-sm-2">-->
-        <!--<span class="counter-icon"><i class="fa fa-tachometer rounded"></i></span>-->
-        <!--<span class="counter">@statistics.longestElevation.toInt</span>m-->
-        <!--<h4>Longest Elevation</h4>-->
-        <!--</div>-->
-        <!--<div class="counters col-md-2 col-sm-2">-->
-        <!--<span class="counter-icon"><i class="fa fa-bolt rounded"></i></span>-->
-        <!--<span class="counter">@statistics.longestDistance.toInt</span>km-->
-        <!--<h4>Longest Distance</h4>-->
-        <!--</div>-->
     </div>
 </div>
 <!-- End Counters -->
+
+<script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript">//<![CDATA[
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: "@restUrl",
+        success: function(data) {
+            $('#profile-rides').html(data.progress.rides)
+            $('#profile-distance').html(Math.round(data.progress.distance))
+            $('#profile-elevation').html(Math.round(data.progress.elevation))
+            $('#profile-hours').html(Math.round(data.progress.movingTime/3600))
+            App.initCounter();
+            console.log(data.progress);
+       }
+});
+//]]>
+</script>
