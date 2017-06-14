@@ -37,6 +37,8 @@ object dependencies {
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
+  val rx = "io.reactivex" %% "rxscala" % "0.26.5"
+
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 
@@ -108,12 +110,12 @@ object sbuild extends Build {
     dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2" // because of ES 5
   )
 
-  lazy val dataStorage = Project(
-    id = "data-storage",
-    base = file("data-storage"),
+  lazy val dataProvider = Project(
+    id = "data-provider",
+    base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.scalaSpec
+        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.rx, dependencies.scalaSpec
       ) ++ dependencies.logging
         ++ dependencies.storage
         ++ dependencies.elastic4s
@@ -123,7 +125,7 @@ object sbuild extends Build {
   lazy val dataCruncher = Project(
     id = "data-cruncher",
     base = file("data-cruncher"),
-    dependencies = Seq(dataStorage % "test->test;compile->compile"),
+    dependencies = Seq(dataProvider % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.spark
 
@@ -143,7 +145,7 @@ object sbuild extends Build {
         }
       )
     ),
-    dependencies = Seq(dataStorage)
+    dependencies = Seq(dataProvider)
   ).enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
 
 
@@ -152,6 +154,6 @@ object sbuild extends Build {
     id = "velocorner",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(dataStorage, dataCruncher, webApp)
+    aggregate = Seq(dataProvider, dataCruncher, webApp)
   )
 }

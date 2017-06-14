@@ -27,6 +27,10 @@ add VirtualHost in httpd.conf
 exclude proxy for static content
 server alias for www
 
+Email
+=====
+makemap hash /etc/mail/virtusertable < /etc/mail/virtusertable
+
 Couchbase
 =========
 sudo rpm --install couchbase-server-enterprise-4.5.0-centos6.x86_64.rpm
