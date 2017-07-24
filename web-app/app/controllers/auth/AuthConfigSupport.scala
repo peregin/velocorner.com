@@ -1,6 +1,6 @@
 package controllers.auth
 
-import controllers.{Global, routes}
+import controllers.{ConnectivitySettings, routes}
 import jp.t2v.lab.play2.auth.{AuthConfig, CookieTokenAccessor}
 import play.api.Logger
 import play.api.mvc.Results._
@@ -10,7 +10,6 @@ import velocorner.model.Account
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 import concurrent.duration._
-
 import scala.language.postfixOps
 
 
@@ -24,6 +23,8 @@ trait AuthConfigSupport extends AuthConfig {
   type User = Account
 
   type Authority = Permission
+
+  val connectivity: ConnectivitySettings
 
   val idTag: ClassTag[Id] = classTag[Id]
   val sessionTimeoutInSeconds: Int = (1 day).toSeconds.toInt
@@ -39,19 +40,19 @@ trait AuthConfigSupport extends AuthConfig {
 
   override def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
     Logger.info(s"resolving user[$id]")
-    Future.successful(Global.getStorage.getAccount(id))
+    Future.successful(connectivity.storage.getAccount(id))
   }
 
   override def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.Application.index()))
+    Future.successful(Redirect(routes.ApplicationController.index()))
   }
 
   override def logoutSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.Application.index()))
+    Future.successful(Redirect(routes.ApplicationController.index()))
   }
 
   override def authenticationFailed(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.Application.index()))
+    Future.successful(Redirect(routes.ApplicationController.index()))
   }
 
   override def authorize(user: Account, authority: Permission)(implicit context: ExecutionContext): Future[Boolean] = {

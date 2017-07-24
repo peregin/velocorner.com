@@ -2,7 +2,7 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import controllers.Global
+import controllers.ConnectivitySettings
 import jp.t2v.lab.play2.auth.social.core.{AccessTokenRetrievalFailedException, OAuth2Authenticator}
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
@@ -16,16 +16,16 @@ import scala.util.control.NonFatal
 /**
   * Created by levi on 09/12/15.
   */
-class StravaAuthenticator extends OAuth2Authenticator {
+class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Authenticator {
 
   override type AccessToken = String
 
   override val authorizationUrl: String = StravaActivityFeed.authorizationUrl
-  override val clientSecret: String = Global.getSecretConfig.getSecret("strava")
+  override val clientSecret: String = connectivity.secretConfig.getSecret("strava")
   override val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
   override val providerName: String = "strava"
-  override val clientId: String = Global.getSecretConfig.getId("strava")
-  override val callbackUrl: String = Global.getSecretConfig.getCallbackUrl("strava")
+  override val clientId: String = connectivity.secretConfig.getId("strava")
+  override val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
 
   override def getAuthorizationUrl(scope: String, state: String): String = {
     Logger.info(s"authorization url for scope[$scope]")
@@ -41,7 +41,7 @@ class StravaAuthenticator extends OAuth2Authenticator {
 
   override def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
     Logger.info(s"retrieve token for code[$code]")
-    Global.getFeed.wsClient.url(accessTokenUrl)
+    connectivity.getFeed.wsClient.url(accessTokenUrl)
       .withQueryString(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,

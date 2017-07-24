@@ -3,10 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                            controllers.Application.index
-GET     /about                       controllers.Application.about
-GET     /refresh                     controllers.Application.refresh
-GET     /logout                      controllers.Application.logout
+GET     /                            controllers.ApplicationController.index
+GET     /about                       controllers.ApplicationController.about
+GET     /refresh                     controllers.ApplicationController.refresh
+GET     /logout                      controllers.ApplicationController.logout
 
 GET     /login/strava                controllers.AuthController.login(scope: String)
 GET     /link/strava                 controllers.AuthController.link(scope: String)

@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.Inject
+
 import controllers.auth.AuthConfigSupport
 import highcharts._
 import play.Logger
@@ -14,16 +16,16 @@ import scala.concurrent.Future
 /**
   * Created by levi on 06/10/16.
   */
-object RestController extends Controller with OptionalAuthElement with AuthConfigSupport {
+class RestController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with OptionalAuthElement with AuthConfigSupport {
 
   // mapped to /rest/club/:action
   def recentClub(action: String) = Action.async { implicit request =>
     Logger.info(s"recent club action for $action")
 
     // sync, load if needed
-    RefreshStrategy.refreshClubActivities()
+    strategy.refreshClubActivities()
 
-    val storage = Global.getStorage
+    val storage = connectivity.storage
     val dailyAthleteProgress = storage.dailyProgressForAll(200)
     val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
 
@@ -49,7 +51,7 @@ object RestController extends Controller with OptionalAuthElement with AuthConfi
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = Global.getStorage
+    val storage = connectivity.storage
     val currentYear = LocalDate.now().getYear
     val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
     val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
@@ -65,7 +67,7 @@ object RestController extends Controller with OptionalAuthElement with AuthConfi
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = Global.getStorage
+    val storage = connectivity.storage
     val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
 
     val dataSeries = action.toLowerCase match {

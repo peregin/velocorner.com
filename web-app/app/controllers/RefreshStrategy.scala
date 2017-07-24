@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.{Inject, Singleton}
+
 import org.joda.time.DateTime
 import org.slf4s
 import org.slf4s.Logging
@@ -12,7 +14,8 @@ import scala.annotation.tailrec
 /**
   * Isolate the update the logic to refresh club and account activities.
   */
-object RefreshStrategy extends Logging {
+@Singleton
+class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logging {
 
   override val log = new slf4s.Logger(Logger.underlying())
 
@@ -29,8 +32,9 @@ object RefreshStrategy extends Logging {
     if (diffInMillis > 1200000) {
       log.info("refreshing club information from Stava")
       // update from Strava
-      val feed = Global.getFeed
-      val storage = Global.getStorage
+      val feed = connectivity.getFeed
+      val storage = connectivity.storage
+
       val clubActivities = feed.listRecentClubActivities(Club.Velocorner)
       storage.store(clubActivities)
       val clubAthletes = feed.listClubAthletes(Club.Velocorner)
@@ -42,8 +46,9 @@ object RefreshStrategy extends Logging {
 
   def refreshAccountActivities(account: Account) {
     // allow refresh after some time only
-    val storage = Global.getStorage
-    val feed = Global.getFeed(account.accessToken)
+    val storage = connectivity.storage
+    val feed = connectivity.getFeed(account.accessToken)
+
     val now = DateTime.now()
     log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
 

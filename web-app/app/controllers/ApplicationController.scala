@@ -1,6 +1,8 @@
 package controllers
 
 
+import javax.inject.Inject
+
 import controllers.auth.AuthConfigSupport
 import jp.t2v.lab.play2.auth.{Logout, OptionalAuthElement}
 import org.slf4s
@@ -10,7 +12,7 @@ import velocorner.util.Metrics
 
 import scala.concurrent.Future
 
-object Application extends Controller with OptionalAuthElement with AuthConfigSupport with Logout with Metrics {
+class ApplicationController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with OptionalAuthElement with AuthConfigSupport with Logout with Metrics {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -32,10 +34,9 @@ object Application extends Controller with OptionalAuthElement with AuthConfigSu
     val maybeAccount = loggedIn
     Logger.info(s"refreshing for $maybeAccount")
 
-    import RefreshStrategy._
-    maybeAccount.foreach(refreshAccountActivities)
+    maybeAccount.foreach(strategy.refreshAccountActivities)
 
-    Future.successful(Redirect(routes.Application.index()))
+    Future.successful(Redirect(routes.ApplicationController.index()))
   }
 
   def logout = Action.async{ implicit request =>

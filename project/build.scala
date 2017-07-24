@@ -137,7 +137,7 @@ object sbuild extends Build {
     base = file("web-app"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache),
-      routesGenerator := StaticRoutesGenerator,
+      routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,
         BuildInfoKey.action("buildTime") {
