@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="com.orientechnologies" level="WARN"/>
+    <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="javax.management" level="INFO"/>
+    <logger name="com.google.inject" level="INFO"/>
+    <logger name="com.sun.xml" level="INFO"/>
+
+</configuration>
