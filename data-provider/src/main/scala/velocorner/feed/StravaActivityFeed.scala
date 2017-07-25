@@ -45,19 +45,19 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
 
   // clubs
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
-    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get()
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHeaders(("Authorization", authHeader)).get())
     extractActivities(response)
   }
 
   override def listClubAthletes(clubId: Long): List[Athlete] = {
-    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/members").withHeaders(("Authorization", authHeader)).get()
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/members").withHeaders(("Authorization", authHeader)).get())
     val json = Await.result(response, timeout).body
     JsonIo.read[List[Athlete]](json)
   }
 
   // activities
   override def listAthleteActivities(page: Int, pageSize: Int = StravaActivityFeed.maxItemsPerPage): List[Activity] = {
-    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete/activities")
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete/activities"))
       .withHeaders(("Authorization", authHeader))
       .withQueryString(("page", page.toString), ("per_page", pageSize.toString))
       .get()
@@ -71,13 +71,13 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
 
   // athlete
   override def getAthlete: Athlete = {
-    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get()
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete").withHeaders(("Authorization", authHeader)).get())
     Await.result(response, timeout).json.as[Athlete]
   }
 
   // year to date and overall stats - must be the logged in athlete id
   override def getStatistics(athleteId: Int): Statistics = {
-    val response = wsClient.url(s"${StravaActivityFeed.baseUrl}/api/v3/athletes/$athleteId/stats").withHeaders(("Authorization", authHeader)).get()
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/athletes/$athleteId/stats").withHeaders(("Authorization", authHeader)).get())
     val json = Await.result(response, timeout).body
     JsonIo.read[Statistics](json)
   }

@@ -41,7 +41,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
 
   override def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
     Logger.info(s"retrieve token for code[$code]")
-    connectivity.getFeed.wsClient.url(accessTokenUrl)
+    connectivity.getFeed.ws(_.url(accessTokenUrl))
       .withQueryString(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,

@@ -1,8 +1,7 @@
 package controllers
 
 import org.scalatestplus.play._
-import play.api.test.FakeRequest
-import play.api.test.Helpers
+import play.api.test._
 import akka.util.Timeout
 import scala.concurrent.duration._
 

@@ -15,12 +15,11 @@ object StravaFeedApp extends App with Logging with MyMacConfig {
 
 
   log.info("connecting...")
-  val response: Future[WSResponse] = feed.wsClient.url("https://strava.com").get()
+  val response: Future[WSResponse] = feed.ws(_.url("https://strava.com")).get()
   log.info("retrieving...")
   response.onSuccess{
     case reply =>
       log.info(reply.body.length.toString)
       log.info(reply.statusText)
   }
-  response.onComplete(_ => feed.wsClient.close())
 }
