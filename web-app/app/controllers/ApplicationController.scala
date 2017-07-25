@@ -12,9 +12,7 @@ import velocorner.util.Metrics
 
 import scala.concurrent.Future
 
-class ApplicationController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with OptionalAuthElement with AuthConfigSupport with Logout with Metrics {
-
-  import scala.concurrent.ExecutionContext.Implicits.global
+class ApplicationController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with OptionalAuthElement with AuthConfigSupport with Metrics {
 
   override val log = new slf4s.Logger(Logger.underlying())
 
@@ -37,13 +35,5 @@ class ApplicationController @Inject()(val connectivity: ConnectivitySettings, st
     maybeAccount.foreach(strategy.refreshAccountActivities)
 
     Future.successful(Redirect(routes.ApplicationController.index()))
-  }
-
-  def logout = Action.async{ implicit request =>
-    gotoLogoutSucceeded
-  }
-
-  def about = Action {
-    Ok(views.html.about())
   }
 }

@@ -20,11 +20,18 @@ object dependencies {
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
   val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
 
+  def orientDb = Seq(
+    "com.orientechnologies" % "orientdb-core" % orientDbVersion,
+    "com.orientechnologies" % "orientdb-client" % orientDbVersion,
+    "com.orientechnologies" % "orientdb-server" % orientDbVersion
+  )
+
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
   val playCache = "com.typesafe.play" %% "play-cache" % play.core.PlayVersion.current
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
+  val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test"
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
@@ -54,11 +61,6 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
 //    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion
-  )
-  def orientDb = Seq(
-    "com.orientechnologies" % "orientdb-core" % orientDbVersion,
-    "com.orientechnologies" % "orientdb-client" % orientDbVersion,
-    "com.orientechnologies" % "orientdb-server" % orientDbVersion
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 }
@@ -136,7 +138,8 @@ object sbuild extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache),
+      libraryDependencies ++=
+        dependencies.auth ++ Seq(dependencies.playCache, dependencies.playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,

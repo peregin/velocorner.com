@@ -4,13 +4,14 @@
 
 # Home page
 GET     /                            controllers.ApplicationController.index
-GET     /about                       controllers.ApplicationController.about
 GET     /refresh                     controllers.ApplicationController.refresh
-GET     /logout                      controllers.ApplicationController.logout
+
+GET     /about                       controllers.AboutController.about
 
 GET     /login/strava                controllers.AuthController.login(scope: String)
 GET     /link/strava                 controllers.AuthController.link(scope: String)
 GET     /authorize/strava            controllers.AuthController.authorize
+GET     /logout                      controllers.AuthController.logout
 
 # REST API
 GET     /rest/club/:action           controllers.RestController.recentClub(action: String)
