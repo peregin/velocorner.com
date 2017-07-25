@@ -33,7 +33,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
       log.info("refreshing club information from Stava")
       // update from Strava
       val feed = connectivity.getFeed
-      val storage = connectivity.storage
+      val storage = connectivity.getStorage
 
       val clubActivities = feed.listRecentClubActivities(Club.Velocorner)
       storage.store(clubActivities)
@@ -46,7 +46,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
 
   def refreshAccountActivities(account: Account) {
     // allow refresh after some time only
-    val storage = connectivity.storage
+    val storage = connectivity.getStorage
     val feed = connectivity.getFeed(account.accessToken)
 
     val now = DateTime.now()

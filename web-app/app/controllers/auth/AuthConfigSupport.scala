@@ -40,7 +40,7 @@ trait AuthConfigSupport extends AuthConfig {
 
   override def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
     Logger.info(s"resolving user[$id]")
-    Future.successful(connectivity.storage.getAccount(id))
+    Future.successful(connectivity.getStorage.getAccount(id))
   }
 
   override def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {

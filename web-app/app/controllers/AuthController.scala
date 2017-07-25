@@ -22,7 +22,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   override def onOAuthLinkSucceeded(token: AccessToken, consumerUser: User)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     Logger.info(s"oauth link succeeded with token[$token]")
     retrieveProviderUser(token).map{providerUser =>
-      connectivity.storage.store(providerUser)
+      connectivity.getStorage.store(providerUser)
       Redirect(routes.ApplicationController.index)
     }
   }
@@ -30,7 +30,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   override def onOAuthLoginSucceeded(token: AccessToken)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     Logger.info(s"oauth login succeeded with token[$token]")
     retrieveProviderUser(token).flatMap { providerUser =>
-      val storage = connectivity.storage
+      val storage = connectivity.getStorage
       val maybeAccount = storage.getAccount(providerUser.athleteId)
       Logger.info(s"account for token[$token] is $maybeAccount")
       if (maybeAccount.isEmpty) storage.store(providerUser)

@@ -25,7 +25,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
     // sync, load if needed
     strategy.refreshClubActivities()
 
-    val storage = connectivity.storage
+    val storage = connectivity.getStorage
     val dailyAthleteProgress = storage.dailyProgressForAll(200)
     val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
 
@@ -51,7 +51,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = connectivity.storage
+    val storage = connectivity.getStorage
     val currentYear = LocalDate.now().getYear
     val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
     val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
@@ -67,7 +67,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = connectivity.storage
+    val storage = connectivity.getStorage
     val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
 
     val dataSeries = action.toLowerCase match {

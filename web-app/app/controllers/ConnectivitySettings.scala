@@ -16,24 +16,23 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   val secretConfig = SecretConfig(configuration.underlying)
 
-  val appSecret = configuration.getString("application.secret")
-  Logger.info(s"application secret: ${appSecret.mkString}")
-
-  val storageType = configuration.getString("storage").getOrElse("or")
+  private val storageType = configuration.getString("storage").getOrElse("or")
   Logger.info(s"initializing storage $storageType ...")
-  val storage = Storage.create(storageType, secretConfig)
+  private val storage = Storage.create(storageType, secretConfig)
   storage.initialize
   Logger.info("ready...")
 
-  def disconnect() {
-    Logger.info("releasing storage connections...")
-    storage.destroy
-    Logger.info("stopped...")
-  }
+  def getStorage = storage
 
   def getFeed = new StravaActivityFeed(None, secretConfig)
 
   def getFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
+
+  def disconnect() {
+    Logger.info("releasing storage connections...")
+    getStorage.destroy
+    Logger.info("stopped...")
+  }
 
   lifecycle.addStopHook(() => Future.successful(disconnect()))
 }
