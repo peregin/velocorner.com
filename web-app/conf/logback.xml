@@ -16,5 +16,6 @@
     <logger name="javax.management" level="INFO"/>
     <logger name="com.google.inject" level="INFO"/>
     <logger name="com.sun.xml" level="INFO"/>
+    <logger name="net.sf.ehcache" level="INFO"/>
 
 </configuration>
