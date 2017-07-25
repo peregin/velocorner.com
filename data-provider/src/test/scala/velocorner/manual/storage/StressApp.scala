@@ -19,7 +19,7 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
 
   val par = 10
   val latch = new CountDownLatch(par)
-  implicit var ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
     override def newThread(r: Runnable): Thread = {
       val t = new Thread(r, "worker")
       t.setDaemon(true)
