@@ -5,6 +5,10 @@ import sbtbuildinfo.{BuildInfoKeys, _}
 import sbtrelease._
 import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
+import com.typesafe.sbt.packager.docker._
+import com.typesafe.sbt.SbtNativePackager.autoImport._
+
 
 object dependencies {
 
@@ -138,15 +142,17 @@ object sbuild extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++=
-        dependencies.auth ++ Seq(dependencies.playCache, dependencies.playTest),
+      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache, dependencies.playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,
         BuildInfoKey.action("buildTime") {
           java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
         }
-      )
+      ),
+      maintainer := "velocorner.com@gmail.com",
+      packageName in Docker := "velocorner.com",
+      dockerExposedPorts in Docker := Seq(9000)
     ),
     dependencies = Seq(dataProvider)
   ).enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
