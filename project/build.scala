@@ -79,8 +79,8 @@ object sbuild extends Build {
     scalaVersion := "2.11.11",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
-    javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
-    scalacOptions := Seq("-target:jvm-1.7", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+    javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
+    scalacOptions := Seq("-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
     resolvers ++= Seq(
       "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
       "Amazon Repository" at "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release"
