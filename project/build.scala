@@ -152,7 +152,8 @@ object sbuild extends Build {
       ),
       maintainer := "velocorner.com@gmail.com",
       packageName in Docker := "velocorner.com",
-      dockerExposedPorts in Docker := Seq(9000)
+      dockerExposedPorts in Docker := Seq(9000),
+      dockerBaseImage in Docker := "java:8"
     ),
     dependencies = Seq(dataProvider)
   ).enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
