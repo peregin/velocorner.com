@@ -12,13 +12,13 @@ import scala.language.postfixOps
 */
 object WithingsMeasureFeed {
 
-  val baseUrl = "http://wbsapi.withings.net"
+  val baseUrl = "https://api.health.nokia.com/v2"
 }
 
 class WithingsMeasureFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with MeasureFeed with Logging {
 
   val token = maybeToken.getOrElse(config.getToken("withings")) // dedicated token after authentication or application generic
-  log.info(s"connecting to strava with token [$token]...")
+  log.info(s"connecting to withings with token [$token]...")
 
   val authHeader = s"Bearer $token"
   val timeout = 10 seconds
