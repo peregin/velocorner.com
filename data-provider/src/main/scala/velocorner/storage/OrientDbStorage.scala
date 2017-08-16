@@ -1,22 +1,22 @@
 package velocorner.storage
 
-import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentPool, ODatabaseDocumentTx}
+import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import com.orientechnologies.orient.server.OServer
+import org.slf4s.Logging
 import velocorner.model._
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.JsonIo
-import org.slf4s.Logging
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
 /**
   * Created by levi on 14.11.16.
   */
-class OrientDbStorage(rootDir: String) extends Storage with Logging {
+class OrientDbStorage(val rootDir: String, storageType: String = "plocal") extends Storage with Logging {
 
   var server: Option[OServer] = None
 
@@ -122,7 +122,7 @@ class OrientDbStorage(rootDir: String) extends Storage with Logging {
          |        </listeners>
          |    </network>
          |    <storages>
-         |        <storage name="velocorner" path="plocal:$rootDir/velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
+         |        <storage name="velocorner" path="$storageType:$rootDir/velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
          |    </storages>
          |    <users>
          |        <user name="admin" password="admin" resources="*"/>

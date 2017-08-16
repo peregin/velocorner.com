@@ -17,7 +17,7 @@ object dependencies {
   val logbackVersion = "1.2.3"
   val elasticVersion = "5.4.8"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.24"
+  val orientDbVersion = "2.2.26"
   val log4jVersion = "2.8.2"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
@@ -52,6 +52,7 @@ object dependencies {
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
+  val apacheCommons = "commons-io" % "commons-io" % "2.4" % "test"
 
   def logging = Seq(logback, slf4s,
     "org.slf4j" % "slf4j-simple" % "1.7.21" exclude("org.slf4j", "slf4j-log4j12") exclude("log4j", "log4j"), // needed because of the ES
@@ -121,7 +122,8 @@ object sbuild extends Build {
     base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.rx, dependencies.scalaSpec
+        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.rx,
+        dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging
         ++ dependencies.storage
         ++ dependencies.elastic4s
