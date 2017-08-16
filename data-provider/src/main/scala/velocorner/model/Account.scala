@@ -4,6 +4,8 @@ import org.joda.time.DateTime
 import play.api.libs.json._
 
 object Account {
+  implicit val dateTimeFormat = Format[DateTime](Reads.jodaDateReads(DateTimePattern.format), Writes.jodaDateWrites(DateTimePattern.format))
+
   val writes = new Writes[Account] {
     override def writes(o: Account): JsValue = {
       val baseJs: JsObject = Json.writes[Account].writes(o).as[JsObject]
@@ -12,7 +14,6 @@ object Account {
     }
   }
 
-  implicit val dateTimeFormat = Format[DateTime](Reads.jodaDateReads(DateTimePattern.format), Writes.jodaDateWrites(DateTimePattern.format))
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
   def from(athlete: Athlete, token: String, lastUpdate: Option[DateTime]) = new Account(

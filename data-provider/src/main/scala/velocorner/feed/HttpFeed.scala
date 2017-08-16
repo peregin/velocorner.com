@@ -2,14 +2,13 @@ package velocorner.feed
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import org.asynchttpclient.{DefaultAsyncHttpClientConfig, Realm}
-import org.asynchttpclient.proxy.ProxyServer
-import play.api.libs.ws.WSClient
-import play.api.libs.ws.ahc.AhcWSClient
+import play.api.libs.ws.StandaloneWSClient
+import play.api.libs.ws.ahc.StandaloneAhcWSClient
+import play.shaded.ahc.org.asynchttpclient.proxy.ProxyServer
+import play.shaded.ahc.org.asynchttpclient.{DefaultAsyncHttpClient, DefaultAsyncHttpClientConfig, Realm}
 import velocorner.SecretConfig
 
 import scala.collection.JavaConverters._
-import scala.util.Try
 
 /**
   * Created by levi on 25.10.16.
@@ -35,9 +34,10 @@ trait HttpFeed {
   implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()
 
-  private val wsClient = new AhcWSClient(httpConfigBuilder.build())
+  private val asyncHttpClient = new DefaultAsyncHttpClient(httpConfigBuilder.build())
+  private val wsClient = new StandaloneAhcWSClient(asyncHttpClient)
 
-  def ws[T](func: WSClient => T): T = {
+  def ws[T](func: StandaloneWSClient => T): T = {
     val client = wsClient
     try {
       func(client)

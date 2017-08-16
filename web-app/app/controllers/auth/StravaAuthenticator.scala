@@ -6,7 +6,8 @@ import controllers.ConnectivitySettings
 import jp.t2v.lab.play2.auth.social.core.{AccessTokenRetrievalFailedException, OAuth2Authenticator}
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.ws.WSResponse
+import play.api.libs.json.JsValue
+import play.api.libs.ws.{StandaloneWSResponse, WSResponse}
 import play.api.mvc.Results
 import velocorner.feed.StravaActivityFeed
 
@@ -42,19 +43,20 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
   override def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
     Logger.info(s"retrieve token for code[$code]")
     connectivity.getFeed.ws(_.url(accessTokenUrl))
-      .withQueryString(
+      .withQueryStringParameters(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,
         "code" -> code)
-      .withHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+      .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
       .post(Results.EmptyContent())
       .map(parseAccessTokenResponse)
   }
 
-  override def parseAccessTokenResponse(response: WSResponse): String = {
+  override def parseAccessTokenResponse(response: StandaloneWSResponse): String = {
     Logger.info("parsing token")
     try {
-      val json = response.json
+      import play.api.libs.ws.JsonBodyReadables._
+      val json = response.body[JsValue]
       val athleteId = (json \ "athlete" \ "id").as[Int]
       Logger.info(s"token for athlete $athleteId")
       (json \ "access_token").as[String]

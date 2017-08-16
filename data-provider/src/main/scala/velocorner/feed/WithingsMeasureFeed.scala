@@ -30,7 +30,7 @@ class WithingsMeasureFeed(maybeToken: Option[String], val config: SecretConfig) 
   // oauth_token = AAA
   // oauth_signature = BBB
   override def listMeasures: String = {
-    val response = ws(_.url(s"${WithingsMeasureFeed.baseUrl}/measure?action=getmeas").withHeaders(("Authorization", authHeader)).get())
+    val response = ws(_.url(s"${WithingsMeasureFeed.baseUrl}/measure?action=getmeas").withHttpHeaders(("Authorization", authHeader)).get())
     Await.result(response, timeout).body
   }
 }

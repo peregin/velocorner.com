@@ -32,6 +32,7 @@ object dependencies {
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
+  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.1"
   val playCache = "com.typesafe.play" %% "play-cache" % play.core.PlayVersion.current
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
@@ -122,7 +123,8 @@ object sbuild extends Build {
     base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWs, dependencies.ficus, dependencies.rx,
+        dependencies.playJson, dependencies.playWs, dependencies.playAhcWs,
+        dependencies.ficus, dependencies.rx,
         dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging
         ++ dependencies.storage

@@ -1,7 +1,7 @@
 package velocorner.manual
 
 import org.slf4s.Logging
-import play.api.libs.ws.WSResponse
+import play.api.libs.ws.StandaloneWSRequest
 import velocorner.SecretConfig
 import velocorner.feed.StravaActivityFeed
 
@@ -15,11 +15,11 @@ object StravaFeedApp extends App with Logging with MyMacConfig {
 
 
   log.info("connecting...")
-  val response: Future[WSResponse] = feed.ws(_.url("https://strava.com")).get()
+  val response: Future[StandaloneWSRequest#Response] = feed.ws(_.url("https://strava.com")).get()
   log.info("retrieving...")
   response.onSuccess{
     case reply =>
-      log.info(reply.body.length.toString)
+      log.info(reply.body)
       log.info(reply.statusText)
   }
 }
