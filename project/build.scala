@@ -114,7 +114,8 @@ object sbuild extends Build {
       "io.netty" % "netty-common" % "4.0.41.Final",
       "io.netty" % "netty-transport-native-epoll" % "4.0.41.Final"
     ),
-    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2" // because of ES 5
+    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
+    dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
 
   lazy val dataProvider = Project(
