@@ -45,6 +45,7 @@ object dependencies {
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
   val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.1.0"
+  val cassandraSpark = "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.4"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
@@ -59,7 +60,7 @@ object dependencies {
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark, cassandraSpark)
   def auth = Seq(playAuth, playAuthSocial)
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
