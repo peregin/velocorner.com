@@ -13,7 +13,7 @@ import scala.io.Source
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll {
 
-  if (ODatabaseRecordThreadLocal.INSTANCE == null) {
+  if (Option(ODatabaseRecordThreadLocal.INSTANCE).isEmpty) {
     sys.error("Calling this manually apparently prevent an initialization issue.")
   }
 
