@@ -44,7 +44,6 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val couchbaseSpark = "com.couchbase.client" %% "spark-connector" % "2.1.0"
   val cassandraSpark = "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.4"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
@@ -60,7 +59,7 @@ object dependencies {
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, couchbaseSpark, cassandraSpark)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, cassandraSpark)
   def auth = Seq(playAuth, playAuthSocial)
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
@@ -104,7 +103,7 @@ object sbuild extends Build {
       commitNextVersion
     ),
     dependencyOverrides ++= Set(
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark and couchbase connector
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark
     ),
     dependencyOverrides ++= Set(
       "io.netty" % "netty-codec-http" % "4.0.41.Final", // because of ES 5
