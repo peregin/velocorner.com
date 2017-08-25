@@ -25,4 +25,5 @@ projectFilesBackup*/
 orientdb_data/
 localhost/
 /elastic/
+spark-warehouse/
 

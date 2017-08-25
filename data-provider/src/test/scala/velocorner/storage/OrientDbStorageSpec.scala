@@ -2,6 +2,7 @@ package velocorner.storage
 
 import java.io.File
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal
 import org.apache.commons.io.FileUtils
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
@@ -11,6 +12,10 @@ import velocorner.util.JsonIo
 import scala.io.Source
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll {
+
+  if (Option(ODatabaseRecordThreadLocal.INSTANCE).isEmpty) {
+    sys.error("Calling this manually apparently prevent an initialization issue.")
+  }
 
   sequential
   stopOnFail
