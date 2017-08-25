@@ -52,7 +52,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
       .map(parseAccessTokenResponse)
   }
 
-  override def parseAccessTokenResponse(response: StandaloneWSResponse): String = {
+  def parseAccessTokenResponse(response: StandaloneWSResponse): String = {
     Logger.info("parsing token")
     try {
       import play.api.libs.ws.JsonBodyReadables._
