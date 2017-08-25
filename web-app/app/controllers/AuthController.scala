@@ -4,13 +4,12 @@ import java.util.UUID
 import javax.inject.Inject
 
 import controllers.auth.{AuthConfigSupport, StravaAuthenticator}
-import jp.t2v.lab.play2.auth.social.core.OAuth2Authenticator
 import play.api.mvc.Results._
 import play.api.mvc._
 import velocorner.model.Account
 
 
-object Oauth2Controller {
+object Oauth2Controller1 {
 
   def loggedIn(request: Request[AnyContent]): Option[Account] = {
     // TODO:
@@ -19,14 +18,14 @@ object Oauth2Controller {
   }
 }
 
-class OAuth2Controller @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport {
+class AuthController @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport {
 
-  protected val authenticator: OAuth2Authenticator = new StravaAuthenticator(connectivity)
+  protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
   protected val OAuth2StateKey = "velocorner.oauth2.state"
 
   def login(scope: String) = Action { implicit request =>
-    Oauth2Controller.loggedIn(request) match {
+    Oauth2Controller1.loggedIn(request) match {
       case Some(a) =>
         Redirect(routes.ApplicationController.index())
       case None =>
@@ -35,7 +34,7 @@ class OAuth2Controller @Inject()(val connectivity: ConnectivitySettings) extends
   }
 
   def link(scope: String) = Action { implicit request =>
-    Oauth2Controller.loggedIn(request) match {
+    Oauth2Controller1.loggedIn(request) match {
       case Some(a) =>
         redirectToAuthorization(scope, request)
       case None =>
@@ -43,7 +42,7 @@ class OAuth2Controller @Inject()(val connectivity: ConnectivitySettings) extends
     }
   }
 
-  private def redirectToAuthorization(scope: String, request: WrappedRequest) = {
+  private def redirectToAuthorization(scope: String, request: Request[AnyContent]) = {
     val state = UUID.randomUUID().toString
     Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
       request.session + (OAuth2StateKey -> state)
@@ -54,7 +53,7 @@ class OAuth2Controller @Inject()(val connectivity: ConnectivitySettings) extends
     Forbidden
   }
 
-  def logout = Action.async{ implicit request =>
+  def logout = Action{ implicit request =>
     //tokenAccessor.extract(request) foreach idContainer.remove
     //result.map(tokenAccessor.delete)
     Redirect(routes.ApplicationController.index)

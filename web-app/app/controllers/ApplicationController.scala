@@ -10,7 +10,9 @@ import velocorner.util.Metrics
 
 import scala.concurrent.Future
 
-class ApplicationController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with Metrics {
+class ApplicationController @Inject()
+(components: ControllerComponents, val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
+(implicit assets: AssetsFinder) extends AbstractController(components) with Metrics {
 
   override val log = new slf4s.Logger(Logger.underlying())
 
@@ -18,7 +20,7 @@ class ApplicationController @Inject()(val connectivity: ConnectivitySettings, st
     Logger.info("rendering landing page...")
 
     val context = timed("building page context") {
-      val maybeAccount = Oauth2Controller.loggedIn(request)
+      val maybeAccount = Oauth2Controller1.loggedIn(request)
       Logger.info(s"rendering for $maybeAccount")
       PageContext(maybeAccount)
     }
@@ -27,7 +29,7 @@ class ApplicationController @Inject()(val connectivity: ConnectivitySettings, st
   }
 
   def refresh = Action.async{ implicit request =>
-    val maybeAccount = Oauth2Controller.loggedIn(request)
+    val maybeAccount = Oauth2Controller1.loggedIn(request)
     Logger.info(s"refreshing for $maybeAccount")
 
     maybeAccount.foreach(strategy.refreshAccountActivities)

@@ -3,32 +3,33 @@ package controllers.auth
 import java.net.{URI, URLEncoder}
 
 import controllers.ConnectivitySettings
-import jp.t2v.lab.play2.auth.social.core.{AccessTokenRetrievalFailedException, OAuth2Authenticator}
+import jp.t2v.lab.play2.auth.social.core.AccessTokenRetrievalFailedException
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.JsValue
-import play.api.libs.ws.{StandaloneWSResponse, WSResponse}
-import play.api.mvc.Results
+import play.api.libs.ws.JsonBodyReadables._
+import play.api.libs.ws.StandaloneWSResponse
 import velocorner.feed.StravaActivityFeed
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
+
 /**
   * Created by levi on 09/12/15.
   */
-class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Authenticator {
+class StravaAuthenticator(connectivity: ConnectivitySettings) {//extends OAuth2Authenticator {
 
-  override type AccessToken = String
+  type AccessToken = String
 
-  override val authorizationUrl: String = StravaActivityFeed.authorizationUrl
-  override val clientSecret: String = connectivity.secretConfig.getSecret("strava")
-  override val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
-  override val providerName: String = "strava"
-  override val clientId: String = connectivity.secretConfig.getId("strava")
-  override val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
+  val authorizationUrl: String = StravaActivityFeed.authorizationUrl
+  val clientSecret: String = connectivity.secretConfig.getSecret("strava")
+  val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
+  val providerName: String = "strava"
+  val clientId: String = connectivity.secretConfig.getId("strava")
+  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
 
-  override def getAuthorizationUrl(scope: String, state: String): String = {
+   def getAuthorizationUrl(scope: String, state: String): String = {
     Logger.info(s"authorization url for scope[$scope]")
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     // scope is the host name localhost:9000 or www.velocorner.com
@@ -40,7 +41,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
   }
 
-  override def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
+   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
     Logger.info(s"retrieve token for code[$code]")
     connectivity.getFeed.ws(_.url(accessTokenUrl))
       .withQueryStringParameters(
@@ -48,14 +49,13 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
         "client_secret" -> clientSecret,
         "code" -> code)
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .post(Results.EmptyContent())
+      .get()
       .map(parseAccessTokenResponse)
   }
 
   def parseAccessTokenResponse(response: StandaloneWSResponse): String = {
     Logger.info("parsing token")
     try {
-      import play.api.libs.ws.JsonBodyReadables._
       val json = response.body[JsValue]
       val athleteId = (json \ "athlete" \ "id").as[Int]
       Logger.info(s"token for athlete $athleteId")
@@ -64,4 +64,6 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends OAuth2Auth
       case NonFatal(e) => throw new AccessTokenRetrievalFailedException(s"Failed to parse access token: ${response.body}", e)
     }
   }
+
+  //override def parseAccessTokenResponse(response: WSResponse) = ???
 }

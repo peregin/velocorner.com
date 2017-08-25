@@ -1,4 +1,4 @@
-@(account: velocorner.model.Account, restUrl: String)
+@(account: velocorner.model.Account, restUrl: String)(implicit assets: AssetsFinder)
 
 <!-- Profile and Counters -->
 <div class="main-counters margin-bottom-20">
@@ -51,7 +51,7 @@
 </div>
 <!-- End Counters -->
 
-<script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $.ajax({
         type: "GET",

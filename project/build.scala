@@ -6,8 +6,8 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
-import com.typesafe.sbt.packager.docker._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
+import play.sbt.PlayImport._
 
 
 object dependencies {
@@ -31,9 +31,8 @@ object dependencies {
   )
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
-  val playWs = "com.typesafe.play" %% "play-ws" % play.core.PlayVersion.current
-  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.1"
-  val playCache = "com.typesafe.play" %% "play-cache" % play.core.PlayVersion.current
+  val playWsJson = "com.typesafe.play" %% "play-ws-standalone-json" % "1.0.4"
+  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.4"
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
@@ -124,7 +123,7 @@ object sbuild extends Build {
     base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWs, dependencies.playAhcWs,
+        dependencies.playJson, dependencies.playAhcWs,
         dependencies.ficus, dependencies.rx,
         dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging
@@ -147,7 +146,7 @@ object sbuild extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth ++ Seq(dependencies.playCache, dependencies.playTest),
+      libraryDependencies ++= dependencies.auth ++ Seq(guice, ehcache, dependencies.playWsJson, dependencies.playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,

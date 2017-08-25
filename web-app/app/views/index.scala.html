@@ -1,4 +1,4 @@
-@(context: PageContext)(implicit request: play.api.mvc.Request[Any])
+@(context: PageContext)(implicit request: play.api.mvc.Request[Any], assets: AssetsFinder)
 
 @common.main("Home") {
 
@@ -16,10 +16,10 @@
     @if(context.account.isEmpty) {
         <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
             <a href="@routes.AuthController.login(request.host)">
-            <img src=""><img src="@routes.Assets.at("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+            <img src=""><img src="@assets.path("images/connect-with-strava.png")"  alt="darkblurbg"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
             </a>
             Login with your Strava account, you will be able to see your yearly progress and various statistics.
-            <img src="@routes.Assets.at("images/yearly-heatmap200.png")" alt="Heatmap">
+            <img src="@assets.path("images/yearly-heatmap200.png")" alt="Heatmap">
         </div>
     }
 
@@ -39,7 +39,7 @@
 <!-- end of common main section -->
 
 <!-- JS Implementing Plugins -->
-<script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/counter/waypoints.min.js")"></script>
-<script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/counter/jquery.counterup.min.js")"></script>
-<script type="text/javascript" src="@routes.Assets.at("unify/assets/plugins/circles-master/circles.js")"></script>
-<script type="text/javascript" src="@routes.Assets.at("unify/assets/js/plugins/circles-master.js")"></script>
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/counter/waypoints.min.js")"></script>
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/counter/jquery.counterup.min.js")"></script>
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/circles-master/circles.js")"></script>
+<script type="text/javascript" src="@assets.path("unify/assets/js/plugins/circles-master.js")"></script>

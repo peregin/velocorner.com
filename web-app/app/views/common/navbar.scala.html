@@ -1,4 +1,4 @@
-@(title: String = "Home")
+@(title: String = "Home")(implicit assets: AssetsFinder)
 
 <!-- Navbar -->
 <div class="navbar navbar-default mega-menu navbar-responsive-collapse" role="navigation">
@@ -12,7 +12,7 @@
             </button>
             <h2>
                 <a class="navbar-brand" href="/" style="padding: 0;">
-                    <img id="logo-header" style="height: 45px; width: 45px;" src="@routes.Assets.at("images/logo50.png")" alt="Logo">
+                    <img id="logo-header" style="height: 45px; width: 45px;" src="@assets.path("images/logo50.png")" alt="Logo">
                 </a>
                 &nbsp;
                 <a class="navbar-brand" href="/">VELOCORNER</a>
