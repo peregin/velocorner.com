@@ -7,6 +7,7 @@ import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
+import dependencies.slf4s
 import play.sbt.PlayImport._
 
 
@@ -19,6 +20,7 @@ object dependencies {
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.26"
   val log4jVersion = "2.8.2"
+  val slf4sVersion = "1.7.13"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -38,7 +40,7 @@ object dependencies {
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
-  val slf4s = "org.slf4s" %% "slf4s-api" % "1.7.13"
+  val slf4s = "org.slf4s" %% "slf4s-api" % slf4sVersion
 
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
@@ -55,7 +57,6 @@ object dependencies {
   val apacheCommons = "commons-io" % "commons-io" % "2.4" % "test"
 
   def logging = Seq(logback, slf4s,
-    "org.slf4j" % "slf4j-simple" % "1.7.21" exclude("org.slf4j", "slf4j-log4j12") exclude("log4j", "log4j"), // needed because of the ES
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )

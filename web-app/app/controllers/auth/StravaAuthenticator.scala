@@ -2,7 +2,7 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import controllers.ConnectivitySettings
+import controllers.{AuthController, ConnectivitySettings}
 import jp.t2v.lab.play2.auth.social.core.AccessTokenRetrievalFailedException
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
@@ -10,17 +10,18 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.feed.StravaActivityFeed
+import velocorner.model.{Account, Athlete}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
+case class AccessTokenResponse(token: AuthController#AccessToken, athlete: Option[AuthController#ProviderUser])
 
 /**
   * Created by levi on 09/12/15.
+  * TODO: OauthAuthenticator
   */
-class StravaAuthenticator(connectivity: ConnectivitySettings) {//extends OAuth2Authenticator {
-
-  type AccessToken = String
+class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
   val clientSecret: String = connectivity.secretConfig.getSecret("strava")
@@ -41,29 +42,28 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {//extends OAuth2A
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
   }
 
-   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessToken] = {
+   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
     Logger.info(s"retrieve token for code[$code]")
     connectivity.getFeed.ws(_.url(accessTokenUrl))
-      .withQueryStringParameters(
+      .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+      .post(Map(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,
         "code" -> code)
-      .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .get()
+      )
       .map(parseAccessTokenResponse)
   }
 
-  def parseAccessTokenResponse(response: StandaloneWSResponse): String = {
-    Logger.info("parsing token")
+  def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
+    Logger.info(s"parsing token from $response")
     try {
       val json = response.body[JsValue]
-      val athleteId = (json \ "athlete" \ "id").as[Int]
-      Logger.info(s"token for athlete $athleteId")
-      (json \ "access_token").as[String]
+      val athlete = (json \ "athlete").as[Athlete]
+      val token = (json \ "access_token").as[String]
+      Logger.info(s"got token[$token] for athlete $athlete")
+      AccessTokenResponse(token, Some(Account.from(athlete, token, None)))
     } catch {
       case NonFatal(e) => throw new AccessTokenRetrievalFailedException(s"Failed to parse access token: ${response.body}", e)
     }
   }
-
-  //override def parseAccessTokenResponse(response: WSResponse) = ???
 }

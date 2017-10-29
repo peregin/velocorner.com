@@ -23,6 +23,7 @@ object ClubActivitiesFromStravaToStorageApp extends App with Logging with MyMacC
   log.info("done...")
 
   storage.destroy()
+  feed.close()
 
   sys.exit(0)
 }

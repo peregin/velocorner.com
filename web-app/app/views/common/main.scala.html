@@ -1,11 +1,10 @@
 @(title: String)(content: Html)(implicit assets: AssetsFinder)
-
 <!DOCTYPE html>
 
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
-<head>
+    <head>
         <title>@title</title>
 
         <!-- Meta -->
@@ -62,7 +61,7 @@
         <!--=== End Header ===-->
 
         <!--=== Slider ===-->
-        <div class="tp-banner-container hidden-phone" style="height: 300px;">
+        <div class="tp-banner-container hidden-phone VC_height300">
             <div class="tp-banner">
                 <ul>
                     @slide_item("images/background/davos.jpg", "Davos")
@@ -104,10 +103,10 @@
                             <div class="col-md-3 md-margin-bottom-40">
                                 <div class="headline"><h2 class="heading-sm">Contact Us</h2></div>
                                 <ul class="social-icons">
-                                    <li style="margin-right: 20px;"><a href="https://twitter.com/velocorner_com" data-original-title="Twitter" class="rounded-x social_twitter"></a><small>TWITTER</small></li>
-                                    <li style="margin-right: 20px;"><a href="https://github.com/peregin/velocorner.com" data-original-title="Github" class="rounded-x social_github"></a><small>GITHUB</small></li>
-                                    <li style="margin-right: 20px;"><a href="https://www.strava.com/clubs/velocorner" data-original-title="Strava" class="rounded-x social_strava"></a><small>STRAVA</small></li>
-                                    <li style="margin-right: 20px;"><a href="mailto:velocorner.com@@gmail.com" data-original-title="Email" class="rounded-x social_email">velocorner.com@@gmail.com</a><small>EMAIL</small></li>
+                                    <li class="VC_margin_right20"><a href="https://twitter.com/velocorner_com" data-original-title="Twitter" class="rounded-x social_twitter"></a><small>TWITTER</small></li>
+                                    <li class="VC_margin_right20"><a href="https://github.com/peregin/velocorner.com" data-original-title="Github" class="rounded-x social_github"></a><small>GITHUB</small></li>
+                                    <li class="VC_margin_right20"><a href="https://www.strava.com/clubs/velocorner" data-original-title="Strava" class="rounded-x social_strava"></a><small>STRAVA</small></li>
+                                    <li class="VC_margin_right20"><a href="mailto:velocorner.com@@gmail.com" data-original-title="Email" class="rounded-x social_email">velocorner.com@@gmail.com</a><small>EMAIL</small></li>
                                 </ul>
                             </div>
                             <!-- End Social Links -->

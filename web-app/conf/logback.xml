@@ -13,6 +13,7 @@
     </root>
     <logger name="com.orientechnologies" level="WARN"/>
     <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="play.shaded.ahc.org.asynchttpclient" level="INFO"/>
     <logger name="javax.management" level="INFO"/>
     <logger name="com.google.inject" level="INFO"/>
     <logger name="com.sun.xml" level="INFO"/>

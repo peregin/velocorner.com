@@ -26,7 +26,7 @@ object JsonIo {
     val jsonValue = Json.parse(json)
     jsonValue.validate[T] match {
       case JsSuccess(that, _) => that
-      case JsError(errors) => sys.error(s"unable to parse file because $errors")
+      case JsError(errors) => sys.error(s"unable to parse file because $errors from $json")
     }
   }
 

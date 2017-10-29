@@ -1,5 +1,4 @@
 @(implicit assets: AssetsFinder)
-
 @common.main("About") {
 
     <h1>Welcome to the cycling site!</h1>
@@ -40,15 +39,15 @@
                         <ul class="list-group sidebar-nav-v1" id="sidebar-nav-1">
                             <li class="list-group-item">
                                 <span class="badge badge-green rounded-2x">@buildinfo.BuildInfo.version</span>
-                                <div style="padding: 8px">Build Version</div>
+                                <div class="VC_padding8">Build Version</div>
                             </li>
                             <li class="list-group-item">
                                 <span class="badge badge-blue rounded-2x">@buildinfo.BuildInfo.scalaVersion</span>
-                                <div style="padding: 8px">Scala Version</div>
+                                <div class="VC_padding8">Scala Version</div>
                             </li>
                             <li class="list-group-item">
                                 <span class="badge badge-dark rounded-2x">@buildinfo.BuildInfo.buildTime</span>
-                                <div style="padding: 8px">Build Time</div>
+                                <div class="VC_padding8">Build Time</div>
                             </li>
                         </ul>
                     </div>

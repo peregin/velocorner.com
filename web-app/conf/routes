@@ -5,7 +5,6 @@
 # Home page
 GET     /                            controllers.ApplicationController.index
 GET     /refresh                     controllers.ApplicationController.refresh
-
 GET     /about                       controllers.AboutController.about
 
 GET     /login/strava                controllers.AuthController.login(scope: String)

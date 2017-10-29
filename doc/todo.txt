@@ -2,8 +2,8 @@ TO DO
 =====
 
 - asynchronous refresh - websocket/comet library
-- AngularJS
-- ElasticSearch for querying statistics
+- React
+- Elastic for querying statistics
 
 Statistics
 ==========

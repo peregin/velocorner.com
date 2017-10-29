@@ -16,5 +16,5 @@ object ClubActivitiesFromStravaToConsoleApp extends App with Logging with MyMacC
   }
 
   log.info(s"got ${activities.size} club activities")
-
+  feed.close()
 }

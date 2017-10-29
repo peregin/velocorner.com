@@ -3,3 +3,11 @@
  * Overwrites
  * header image is 1920x300
  */
+.VC_nopadding {padding: 0;}
+.VC_padding8 {padding: 8px;}
+
+.VC_logo_size {height: 40px; width: 40px;}
+
+.VC_height300 {height: 300px;}
+.VC_margin_right20 {margin-right: 20px;}
+

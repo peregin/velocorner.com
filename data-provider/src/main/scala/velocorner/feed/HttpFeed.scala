@@ -1,5 +1,7 @@
 package velocorner.feed
 
+import java.io.Closeable
+
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import play.api.libs.ws.StandaloneWSClient
@@ -13,7 +15,7 @@ import scala.collection.JavaConverters._
 /**
   * Created by levi on 25.10.16.
   */
-trait HttpFeed {
+trait HttpFeed extends Closeable {
 
   val config: SecretConfig
 
@@ -42,7 +44,13 @@ trait HttpFeed {
     try {
       func(client)
     } finally {
-      //client.close()
+      // cleanup any resources here
     }
+  }
+
+  def close() = {
+    wsClient.close()
+    materializer.shutdown()
+    system.terminate()
   }
 }
