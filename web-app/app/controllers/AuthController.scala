@@ -5,9 +5,11 @@ import java.util.concurrent.{Executors, ThreadFactory}
 import javax.inject.Inject
 
 import controllers.auth.{AccessTokenResponse, AuthConfigSupport, StravaAuthenticator}
+import jp.t2v.lab.play2.auth.ResultUpdater
 import play.Logger
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
+import play.api.libs.typedmap.TypedKey
 import play.api.mvc.Results._
 import play.api.mvc._
 import velocorner.model.Account
@@ -17,22 +19,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object Oauth2Controller1 {
 
+  val OAuth2StateKey = "velocorner.oauth2.state"
+  val OAuth2CookieKey = "velocorner.oauth2.cookie"
+  val OAuth2AttrKey = TypedKey[Account]
+
   implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, new ThreadFactory {
     override def newThread(r: Runnable): Thread = {
       val t = new Thread(r, "play worker")
       t.setDaemon(true)
       t
-    }
-  }))
+    }}
+  ))
 
-  def loggedIn(request: Request[AnyContent]): Option[Account] = {
-    // TODO:
-    //request.attrs.get(Account)
-    None
-  }
+
+  def loggedIn(request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
+
+  // TODO: update session and cookie
+//  override def proceed[A](req: RequestWithAttributes[A])(f: RequestWithAttributes[A] => Future[Result]): Future[Result] = {
+//    implicit val (r, ctx) = (req, StackActionExecutionContext(req))
+//    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
+//    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
+//      super.proceed(maybeUser.map(u => req.set(OAuth2AttrKey, u)).getOrElse(req))(f).map(cookieUpdater)
+//    }
+//  }
 }
 
-import Oauth2Controller1.ec
+import controllers.Oauth2Controller1.{OAuth2CookieKey, OAuth2StateKey, ec}
 
 class AuthController @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport {
 
@@ -41,8 +53,6 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   type ConsumerUser = Account
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
-
-  protected val OAuth2StateKey = "velocorner.oauth2.state"
 
   def login(scope: String) = Action { implicit request =>
     Oauth2Controller1.loggedIn(request) match {
@@ -80,25 +90,42 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
       }
     }
 
-    form.value match {
+    val result = form.value match {
       case Some(v) if !form.hasErrors => formSuccess(v)
       case _ => Future.successful(BadRequest)
     }
+    result.map(_.removingFromSession(OAuth2StateKey))
   }
 
-  def logout = Action{ implicit request =>
-    //tokenAccessor.extract(request) foreach idContainer.remove
-    //result.map(tokenAccessor.delete)
-    Redirect(routes.ApplicationController.index)
+  def logout = Action { implicit request =>
+    // TODO: remove it from attributes/session
+    Redirect(routes.ApplicationController.index).discardingCookies(DiscardingCookie(OAuth2CookieKey))
   }
 
   // - utility methods below -
 
   private def redirectToAuthorization(scope: String, request: Request[AnyContent]) = {
-    val state = UUID.randomUUID().toString
+    // TODO: propagate an applications state
+    val state =  UUID.randomUUID().toString
     Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
       request.session + (OAuth2StateKey -> state)
     )
+  }
+
+  // AsyncAuth
+  private def extractToken(request: RequestHeader): Option[String] = tokenAccessor.extract(request)
+  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
+    (for {
+      token  <- extractToken(request)
+    } yield for {
+      Some(userId) <- idContainer.get(token)
+      Some(user)   <- resolveUser(userId)
+      _            <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
+    } yield {
+      Option(user) -> tokenAccessor.put(token) _
+    }) getOrElse {
+      Future.successful(Option.empty -> identity)
+    }
   }
 
   // the original API distinguishes between provider and consumer users
