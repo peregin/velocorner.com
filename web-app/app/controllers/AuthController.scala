@@ -4,6 +4,7 @@ import java.util.UUID
 import java.util.concurrent.{Executors, ThreadFactory}
 import javax.inject.Inject
 
+import controllers.Oauth2Controller1.OAuth2AttrKey
 import controllers.auth.{AccessTokenResponse, AuthConfigSupport, StravaAuthenticator}
 import jp.t2v.lab.play2.auth.ResultUpdater
 import play.Logger
@@ -33,15 +34,6 @@ object Oauth2Controller1 {
 
 
   def loggedIn(request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
-
-  // TODO: update session and cookie
-//  override def proceed[A](req: RequestWithAttributes[A])(f: RequestWithAttributes[A] => Future[Result]): Future[Result] = {
-//    implicit val (r, ctx) = (req, StackActionExecutionContext(req))
-//    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
-//    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
-//      super.proceed(maybeUser.map(u => req.set(OAuth2AttrKey, u)).getOrElse(req))(f).map(cookieUpdater)
-//    }
-//  }
 }
 
 import controllers.Oauth2Controller1.{OAuth2CookieKey, OAuth2StateKey, ec}
@@ -157,6 +149,14 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
       gotoLoginSucceeded(providerUser.athleteId)
     }
   }
+
+  // TODO: update session and cookie
+//  def proceed[A](req: Request[A])(f: Request[A] => Future[Result]): Future[Result] = {
+//    implicit val (r, ctx) = (req, ec)
+//    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
+//    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
+//      maybeUser.map(u => req.addAttr(OAuth2AttrKey, u)).getOrElse(req)).(f).map(cookieUpdater)
+//  }
 
   def gotoLoginSucceeded(athleteId: Int)(implicit request: RequestHeader): Future[Result] = {
     // new session
