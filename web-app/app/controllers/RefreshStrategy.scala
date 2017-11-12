@@ -22,7 +22,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
   @volatile var lastClubUpdateTs = 0L
   private val clubLock = new Object
 
-  def refreshClubActivities() {
+  def refreshClubActivities(clubId: Int) {
     val diffInMillis = clubLock.synchronized {
       val nowInMillis = DateTime.now().getMillis
       val diffInMillis = nowInMillis - lastClubUpdateTs
@@ -35,11 +35,12 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
       val feed = connectivity.getFeed
       val storage = connectivity.getStorage
 
-      val clubActivities = feed.listRecentClubActivities(Club.Velocorner)
+      val clubActivities = feed.listRecentClubActivities(clubId)
+      log.info(s"Retrieved ${clubActivities.size} club activities from Stava")
       storage.store(clubActivities)
-      val clubAthletes = feed.listClubAthletes(Club.Velocorner)
+      val clubAthletes = feed.listClubAthletes(clubId)
       clubAthletes.foreach(storage.store)
-      val club = Club(Club.Velocorner, clubAthletes.map(_.id))
+      val club = Club(clubId, clubAthletes.map(_.id))
       storage.store(club)
     }
   }

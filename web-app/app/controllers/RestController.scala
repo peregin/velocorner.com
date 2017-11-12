@@ -23,7 +23,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
     Logger.info(s"recent club action for $action")
 
     // sync, load if needed
-    strategy.refreshClubActivities()
+    strategy.refreshClubActivities(Club.Velocorner)
 
     val storage = connectivity.getStorage
     val dailyAthleteProgress = storage.dailyProgressForAll(200)

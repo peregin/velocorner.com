@@ -12,24 +12,23 @@ import scala.concurrent.Future
 
 class ApplicationController @Inject()
 (components: ControllerComponents, val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
-(implicit assets: AssetsFinder) extends AbstractController(components) with Metrics {
+(implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker with Metrics {
 
-  override val log = new slf4s.Logger(Logger.underlying())
+  override val log = new slf4s.Logger(Logger.underlying()) // because of the Metrics
 
-  def index = Action{ implicit request =>
-    Logger.info("rendering landing page...")
+  def index = AuthAction { implicit request =>
+    val maybeAccount = loggedIn(request)
+    Logger.info(s"rendering landing page for $maybeAccount")
 
     val context = timed("building page context") {
-      val maybeAccount = Oauth2Controller1.loggedIn(request)
-      Logger.info(s"rendering for $maybeAccount")
       PageContext(maybeAccount)
     }
 
     Ok(views.html.index(context))
   }
 
-  def refresh = Action.async{ implicit request =>
-    val maybeAccount = Oauth2Controller1.loggedIn(request)
+  def refresh = AuthAsyncAction { implicit request =>
+    val maybeAccount = loggedIn(request)
     Logger.info(s"refreshing for $maybeAccount")
 
     maybeAccount.foreach(strategy.refreshAccountActivities)

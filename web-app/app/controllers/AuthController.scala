@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.{Executors, ThreadFactory}
 import javax.inject.Inject
 
-import controllers.Oauth2Controller1.OAuth2AttrKey
+import controllers.Oauth2Controller1.{OAuth2AttrKey, ec}
 import controllers.auth.{AccessTokenResponse, AuthConfigSupport, StravaAuthenticator}
 import jp.t2v.lab.play2.auth.ResultUpdater
 import play.Logger
@@ -16,7 +16,6 @@ import play.api.mvc._
 import velocorner.model.Account
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 object Oauth2Controller1 {
 
@@ -31,14 +30,54 @@ object Oauth2Controller1 {
       t
     }}
   ))
-
-
-  def loggedIn(request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
 }
 
 import controllers.Oauth2Controller1.{OAuth2CookieKey, OAuth2StateKey, ec}
 
-class AuthController @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport {
+trait AuthChecker extends AuthConfigSupport {
+
+  class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
+
+    override protected def executionContext: ExecutionContext = ec
+    override def parser: BodyParser[AnyContent] = BodyParsers.parse.default
+    override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
+      proceed(request)(block)
+    }
+  }
+
+  def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
+  def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
+
+  def loggedIn(request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
+
+  private def extractToken(request: RequestHeader): Option[String] = tokenAccessor.extract(request)
+  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
+    (for {
+      token  <- extractToken(request)
+    } yield for {
+      Some(userId) <- idContainer.get(token)
+      Some(user)   <- resolveUser(userId)
+      _            <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
+    } yield {
+      Option(user) -> tokenAccessor.put(token) _
+    }) getOrElse {
+      Future.successful(Option.empty -> identity)
+    }
+  }
+
+  def proceed[A](req: Request[A])(f: Request[A] => Future[Result]): Future[Result] = {
+    implicit val r = req
+    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
+    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
+      val richReq = maybeUser.map(u => req.addAttr(OAuth2AttrKey, u)).getOrElse(req)
+      val rr = f(richReq)
+      rr.map(cookieUpdater)
+    }
+  }
+
+}
+
+class AuthController @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport with AuthChecker {
 
   type AccessToken = String
   type ProviderUser = Account
@@ -47,7 +86,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
   def login(scope: String) = Action { implicit request =>
-    Oauth2Controller1.loggedIn(request) match {
+    loggedIn(request) match {
       case Some(a) =>
         Redirect(routes.ApplicationController.index())
       case None =>
@@ -56,7 +95,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   }
 
   def link(scope: String) = Action { implicit request =>
-    Oauth2Controller1.loggedIn(request) match {
+    loggedIn(request) match {
       case Some(a) =>
         redirectToAuthorization(scope, request)
       case None =>
@@ -76,7 +115,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
     def formSuccess(v: (String, String)): Future[Result] = {
       val (code, state) = v
       val accessTokenResponse = authenticator.retrieveAccessToken(code)
-      Oauth2Controller1.loggedIn(request) match {
+      loggedIn(request) match {
         case Some(account) => accessTokenResponse.flatMap(resp => onOAuthLinkSucceeded(resp, account))
         case None => accessTokenResponse.flatMap(onOAuthLoginSucceeded)
       }
@@ -90,8 +129,11 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
   }
 
   def logout = Action { implicit request =>
-    // TODO: remove it from attributes/session
-    Redirect(routes.ApplicationController.index).discardingCookies(DiscardingCookie(OAuth2CookieKey))
+    tokenAccessor.extract(request) foreach idContainer.remove
+    val res = Redirect(routes.ApplicationController.index)
+    // TODO: fix this
+    tokenAccessor.delete(res.discardingCookies(DiscardingCookie(OAuth2CookieKey)))
+
   }
 
   // - utility methods below -
@@ -102,22 +144,6 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
     Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
       request.session + (OAuth2StateKey -> state)
     )
-  }
-
-  // AsyncAuth
-  private def extractToken(request: RequestHeader): Option[String] = tokenAccessor.extract(request)
-  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
-    (for {
-      token  <- extractToken(request)
-    } yield for {
-      Some(userId) <- idContainer.get(token)
-      Some(user)   <- resolveUser(userId)
-      _            <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
-    } yield {
-      Option(user) -> tokenAccessor.put(token) _
-    }) getOrElse {
-      Future.successful(Option.empty -> identity)
-    }
   }
 
   // the original API distinguishes between provider and consumer users
@@ -150,17 +176,10 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings) extends A
     }
   }
 
-  // TODO: update session and cookie
-//  def proceed[A](req: Request[A])(f: Request[A] => Future[Result]): Future[Result] = {
-//    implicit val (r, ctx) = (req, ec)
-//    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
-//    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
-//      maybeUser.map(u => req.addAttr(OAuth2AttrKey, u)).getOrElse(req)).(f).map(cookieUpdater)
-//  }
-
   def gotoLoginSucceeded(athleteId: Int)(implicit request: RequestHeader): Future[Result] = {
-    // new session
-    // persist token -> user
-    loginSucceeded(request)
+    for {
+      token <- idContainer.startNewSession(athleteId, sessionTimeoutInSeconds)
+      r     <- loginSucceeded(request)
+    } yield tokenAccessor.put(token)(r)
   }
 }
