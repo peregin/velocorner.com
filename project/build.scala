@@ -16,11 +16,11 @@ object dependencies {
   val sparkVersion = "2.2.0"
   val playAuthVersion = "0.14.2"
   val logbackVersion = "1.2.3"
-  val elasticVersion = "5.4.8"
+  val elasticVersion = "5.4.13"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.26"
-  val log4jVersion = "2.8.2"
-  val slf4sVersion = "1.7.13"
+  val orientDbVersion = "2.2.30"
+  val log4jVersion = "2.9.1"
+  val slf4sVersion = "1.7.25"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -33,8 +33,8 @@ object dependencies {
   )
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
-  val playWsJson = "com.typesafe.play" %% "play-ws-standalone-json" % "1.0.4"
-  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.4"
+  val playWsJson = "com.typesafe.play" %% "play-ws-standalone-json" % "1.0.7"
+  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.7"
   val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
   val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
@@ -46,7 +46,7 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val cassandraSpark = "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.4"
+  val cassandraSpark = "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.5"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
@@ -54,7 +54,7 @@ object dependencies {
 
   val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
-  val apacheCommons = "commons-io" % "commons-io" % "2.4" % "test"
+  val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 
   def logging = Seq(logback, slf4s,
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
@@ -82,7 +82,7 @@ object sbuild extends Build {
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
     version <<= version in ThisBuild,
-    scalaVersion := "2.11.11",
+    scalaVersion := "2.11.12",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
@@ -105,15 +105,6 @@ object sbuild extends Build {
     ),
     dependencyOverrides ++= Set(
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark
-    ),
-    dependencyOverrides ++= Set(
-      "io.netty" % "netty-codec-http" % "4.0.41.Final", // because of ES 5
-      "io.netty" % "netty-handler" % "4.0.41.Final",
-      "io.netty" % "netty-codec" % "4.0.41.Final",
-      "io.netty" % "netty-transport" % "4.0.41.Final",
-      "io.netty" % "netty-buffer" % "4.0.41.Final",
-      "io.netty" % "netty-common" % "4.0.41.Final",
-      "io.netty" % "netty-transport-native-epoll" % "4.0.41.Final"
     ),
     dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
