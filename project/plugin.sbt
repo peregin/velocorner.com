@@ -10,6 +10,8 @@ addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "5.2.4")
 // to generate dependency graph of the libraries
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.0")
 
+addSbtPlugin("com.gilt" % "sbt-dependency-graph-sugar" % "0.8.2")
+
 // check latest updates form maven
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.3")
 

@@ -8,6 +8,7 @@ import controllers.Oauth2Controller1.{OAuth2AttrKey, ec}
 import controllers.auth.{AccessTokenResponse, AuthConfigSupport, StravaAuthenticator}
 import jp.t2v.lab.play2.auth.ResultUpdater
 import play.Logger
+import play.api.cache.AsyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
 import play.api.libs.typedmap.TypedKey
@@ -35,6 +36,8 @@ object Oauth2Controller1 {
 import controllers.Oauth2Controller1.{OAuth2CookieKey, OAuth2StateKey, ec}
 
 trait AuthChecker extends AuthConfigSupport {
+
+  val cache: AsyncCacheApi
 
   class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
 
@@ -77,7 +80,7 @@ trait AuthChecker extends AuthConfigSupport {
 
 }
 
-class AuthController @Inject()(val connectivity: ConnectivitySettings) extends AuthConfigSupport with AuthChecker {
+class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: AsyncCacheApi) extends AuthConfigSupport with AuthChecker {
 
   type AccessToken = String
   type ProviderUser = Account

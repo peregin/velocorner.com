@@ -5,13 +5,15 @@ import javax.inject.Inject
 
 import org.slf4s
 import play.Logger
+import play.api.cache.AsyncCacheApi
 import play.api.mvc._
 import velocorner.util.Metrics
 
 import scala.concurrent.Future
 
 class ApplicationController @Inject()
-(components: ControllerComponents, val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
+(components: ControllerComponents, val cache: AsyncCacheApi,
+ val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
 (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker with Metrics {
 
   override val log = new slf4s.Logger(Logger.underlying()) // because of the Metrics
