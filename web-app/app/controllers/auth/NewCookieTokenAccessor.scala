@@ -1,6 +1,6 @@
 package controllers.auth
 
-import jp.t2v.lab.play2.auth.AuthenticityToken
+import controllers.AuthController.AuthenticityToken
 import play.api.mvc.{Cookie, DiscardingCookie, RequestHeader, Result}
 
 class NewCookieTokenAccessor(

@@ -18,11 +18,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object AuthController {
 
+  // package object?
   type AccessToken = String
   type ProviderUser = Account
   type ConsumerUser = Account
   type User = Account
   type Id = Long
+  type AuthenticityToken = String
+  type SignedToken = String
+  type ResultUpdater = Result => Result
 
   val OAuth2StateKey = "velocorner.oauth2.state"
   val OAuth2CookieKey = "velocorner.oauth2.cookie"

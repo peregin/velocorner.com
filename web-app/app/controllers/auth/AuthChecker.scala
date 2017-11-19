@@ -1,8 +1,7 @@
 package controllers.auth
 
-import controllers.AuthController.{Id, OAuth2AttrKey, User, ec}
+import controllers.AuthController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
 import controllers.ConnectivitySettings
-import jp.t2v.lab.play2.auth.{AsyncIdContainer, ResultUpdater}
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
@@ -20,7 +19,7 @@ trait AuthChecker { //extends AuthConfigSupport {
   val sessionTimeoutInSeconds: Int = (1 day).toSeconds.toInt
 
   // auth conf
-  lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new NewCacheIdContainer[Id](cache))
+  lazy val idContainer: NewAsyncIdContainer[Id] = NewAsyncIdContainer(new NewCacheIdContainer[Id](cache))
 
   // auth conf
   lazy val tokenAccessor = new NewCookieTokenAccessor(

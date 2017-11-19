@@ -14,7 +14,6 @@ import play.sbt.PlayImport._
 object dependencies {
 
   val sparkVersion = "2.2.0"
-  val playAuthVersion = "0.14.2"
   val logbackVersion = "1.2.3"
   val elasticVersion = "5.4.13"
   val specsVersion = "3.7"
@@ -35,8 +34,6 @@ object dependencies {
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
   val playWsJson = "com.typesafe.play" %% "play-ws-standalone-json" % "1.0.7"
   val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.7"
-  val playAuth = "jp.t2v" %% "play2-auth" % playAuthVersion
-  val playAuthSocial = "jp.t2v" %% "play2-auth-social" % playAuthVersion
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
@@ -61,7 +58,6 @@ object dependencies {
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, cassandraSpark)
-  def auth = Seq(playAuth, playAuthSocial)
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
@@ -138,7 +134,7 @@ object sbuild extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.auth ++ Seq(guice, ehcache, dependencies.playWsJson, dependencies.playTest),
+      libraryDependencies ++= Seq(guice, ehcache, dependencies.playWsJson, dependencies.playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,

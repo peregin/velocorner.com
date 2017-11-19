@@ -3,16 +3,15 @@ package controllers.auth
 import java.security.SecureRandom
 import javax.inject.Inject
 
-import jp.t2v.lab.play2.auth.{AuthenticityToken, IdContainer}
+import controllers.AuthController.AuthenticityToken
 import play.api.cache.SyncCacheApi
 
 import scala.annotation.tailrec
+import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.Random
 
-import concurrent.duration._
-
-class NewCacheIdContainer[Id: ClassTag] @Inject()(cache: SyncCacheApi) extends IdContainer[Id] {
+class NewCacheIdContainer[Id: ClassTag] @Inject()(cache: SyncCacheApi) {
 
   private[auth] val tokenSuffix = ":token"
   private[auth] val userIdSuffix = ":userId"
