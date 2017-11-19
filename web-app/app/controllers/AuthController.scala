@@ -4,21 +4,25 @@ import java.util.UUID
 import java.util.concurrent.{Executors, ThreadFactory}
 import javax.inject.Inject
 
-import controllers.Oauth2Controller1.{OAuth2AttrKey, ec}
-import controllers.auth.{AccessTokenResponse, AuthConfigSupport, StravaAuthenticator}
-import jp.t2v.lab.play2.auth.ResultUpdater
+import controllers.auth.{AccessTokenResponse, AuthChecker, StravaAuthenticator}
 import play.Logger
-import play.api.cache.AsyncCacheApi
+import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
 import play.api.libs.typedmap.TypedKey
-import play.api.mvc.Results._
+import play.api.mvc.Results.{BadRequest, Redirect, Unauthorized}
 import play.api.mvc._
 import velocorner.model.Account
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object Oauth2Controller1 {
+object AuthController {
+
+  type AccessToken = String
+  type ProviderUser = Account
+  type ConsumerUser = Account
+  type User = Account
+  type Id = Long
 
   val OAuth2StateKey = "velocorner.oauth2.state"
   val OAuth2CookieKey = "velocorner.oauth2.cookie"
@@ -33,58 +37,10 @@ object Oauth2Controller1 {
   ))
 }
 
-import controllers.Oauth2Controller1.{OAuth2CookieKey, OAuth2StateKey, ec}
+import controllers.AuthController.{AccessToken, ConsumerUser, OAuth2CookieKey, OAuth2StateKey, ProviderUser, ec}
 
-trait AuthChecker extends AuthConfigSupport {
 
-  val cache: AsyncCacheApi
-
-  class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
-
-    override protected def executionContext: ExecutionContext = ec
-    override def parser: BodyParser[AnyContent] = BodyParsers.parse.default
-    override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
-      proceed(request)(block)
-    }
-  }
-
-  def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
-  def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
-
-  def loggedIn(request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
-
-  private def extractToken(request: RequestHeader): Option[String] = tokenAccessor.extract(request)
-  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
-    (for {
-      token  <- extractToken(request)
-    } yield for {
-      Some(userId) <- idContainer.get(token)
-      Some(user)   <- resolveUser(userId)
-      _            <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
-    } yield {
-      Option(user) -> tokenAccessor.put(token) _
-    }) getOrElse {
-      Future.successful(Option.empty -> identity)
-    }
-  }
-
-  def proceed[A](req: Request[A])(f: Request[A] => Future[Result]): Future[Result] = {
-    implicit val r = req
-    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
-    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
-      val richReq = maybeUser.map(u => req.addAttr(OAuth2AttrKey, u)).getOrElse(req)
-      val rr = f(richReq)
-      rr.map(cookieUpdater)
-    }
-  }
-
-}
-
-class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: AsyncCacheApi) extends AuthConfigSupport with AuthChecker {
-
-  type AccessToken = String
-  type ProviderUser = Account
-  type ConsumerUser = Account
+class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi) extends AuthChecker {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
@@ -158,6 +114,9 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
     Future.successful(Account.from(athlete, token, None))
   }
 
+  import AuthController.ec
+
+
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     Logger.info(s"oauth link succeeded with token[${resp.token}]")
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
@@ -184,5 +143,10 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
       token <- idContainer.startNewSession(athleteId, sessionTimeoutInSeconds)
       r     <- loginSucceeded(request)
     } yield tokenAccessor.put(token)(r)
+  }
+
+  // auth control
+  def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
+    Future.successful(Redirect(routes.ApplicationController.index()))
   }
 }

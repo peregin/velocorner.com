@@ -3,23 +3,24 @@ package controllers
 
 import javax.inject.Inject
 
+import controllers.auth.AuthChecker
 import org.slf4s
 import play.Logger
-import play.api.cache.AsyncCacheApi
+import play.api.cache.SyncCacheApi
 import play.api.mvc._
 import velocorner.util.Metrics
 
 import scala.concurrent.Future
 
 class ApplicationController @Inject()
-(components: ControllerComponents, val cache: AsyncCacheApi,
+(components: ControllerComponents, val cache: SyncCacheApi,
  val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
 (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker with Metrics {
 
   override val log = new slf4s.Logger(Logger.underlying()) // because of the Metrics
 
   def index = AuthAction { implicit request =>
-    val maybeAccount = loggedIn(request)
+    val maybeAccount = loggedIn
     Logger.info(s"rendering landing page for $maybeAccount")
 
     val context = timed("building page context") {
@@ -30,7 +31,7 @@ class ApplicationController @Inject()
   }
 
   def refresh = AuthAsyncAction { implicit request =>
-    val maybeAccount = loggedIn(request)
+    val maybeAccount = loggedIn
     Logger.info(s"refreshing for $maybeAccount")
 
     maybeAccount.foreach(strategy.refreshAccountActivities)

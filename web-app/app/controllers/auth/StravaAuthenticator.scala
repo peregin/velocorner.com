@@ -2,8 +2,8 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import controllers.{AuthController, ConnectivitySettings}
-import jp.t2v.lab.play2.auth.social.core.AccessTokenRetrievalFailedException
+import controllers.AuthController.{AccessToken, ProviderUser}
+import controllers.ConnectivitySettings
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.JsValue
@@ -15,7 +15,7 @@ import velocorner.model.{Account, Athlete}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-case class AccessTokenResponse(token: AuthController#AccessToken, athlete: Option[AuthController#ProviderUser])
+case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
 
 /**
   * Created by levi on 09/12/15.
@@ -63,7 +63,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       Logger.info(s"got token[$token] for athlete $athlete")
       AccessTokenResponse(token, Some(Account.from(athlete, token, None)))
     } catch {
-      case NonFatal(e) => throw new AccessTokenRetrievalFailedException(s"Failed to parse access token: ${response.body}", e)
+      case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }
   }
 }

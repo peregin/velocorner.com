@@ -2,21 +2,22 @@ package controllers
 
 import javax.inject.Inject
 
-import controllers.auth.AuthConfigSupport
+import controllers.auth.AuthChecker
 import highcharts._
+import org.joda.time.LocalDate
 import play.Logger
+import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import velocorner.model.{AthleteDailyProgress, Club, Progress, YearlyProgress}
-import jp.t2v.lab.play2.auth.OptionalAuthElement
-import org.joda.time.LocalDate
 
 import scala.concurrent.Future
 
 /**
   * Created by levi on 06/10/16.
   */
-class RestController @Inject()(val connectivity: ConnectivitySettings, strategy: RefreshStrategy) extends Controller with OptionalAuthElement with AuthConfigSupport {
+class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
+  extends Controller with AuthChecker {
 
   // mapped to /rest/club/:action
   def recentClub(action: String) = Action.async { implicit request =>
@@ -47,7 +48,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
 
   // def mapped to /rest/athlete/progress
   // current year's progress
-  def statistics = AsyncStack { implicit request =>
+  def statistics = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
@@ -63,7 +64,7 @@ class RestController @Inject()(val connectivity: ConnectivitySettings, strategy:
   }
 
   // def mapped to /rest/athlete/progress/:action
-  def yearly(action: String) = AsyncStack { implicit request =>
+  def yearly(action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 

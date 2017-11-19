@@ -16,6 +16,7 @@ import scala.language.postfixOps
 /**
   * Created by levi on 30/11/15.
   */
+
 trait AuthConfigSupport extends AuthConfig {
 
   type Id = Long
@@ -63,3 +64,4 @@ trait AuthConfigSupport extends AuthConfig {
     Future.successful(Forbidden("no permission"))
   }
 }
+
