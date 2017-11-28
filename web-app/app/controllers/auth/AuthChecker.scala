@@ -10,6 +10,8 @@ import velocorner.model.Account
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
+import AuthController.OAuth2CookieKey
+
 trait AuthChecker {
 
   val cache: SyncCacheApi
@@ -23,7 +25,7 @@ trait AuthChecker {
 
   // auth conf
   lazy val tokenAccessor = new NewCookieTokenAccessor(
-    cookieName = "PLAY2AUTH_SESS_ID",
+    cookieName = OAuth2CookieKey,
     cookieSecureOption = false,
     cookieHttpOnlyOption = true,
     cookieDomainOption = None,

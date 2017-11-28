@@ -28,8 +28,8 @@ object AuthController {
   type SignedToken = String
   type ResultUpdater = Result => Result
 
+  val OAuth2CookieKey = "velocorner.oauth2.id"
   val OAuth2StateKey = "velocorner.oauth2.state"
-  val OAuth2CookieKey = "velocorner.oauth2.cookie"
   val OAuth2AttrKey = TypedKey[Account]
 
   implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, new ThreadFactory {

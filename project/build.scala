@@ -15,11 +15,12 @@ object dependencies {
 
   val sparkVersion = "2.2.0"
   val logbackVersion = "1.2.3"
-  val elasticVersion = "5.4.13"
+  val elasticVersion = "5.6.0"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.30"
-  val log4jVersion = "2.9.1"
+  val log4jVersion = "2.10.0"
   val slf4sVersion = "1.7.25"
+  val playWsVersion = "1.1.3" // standalone version
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -32,9 +33,9 @@ object dependencies {
   )
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
-  val playWsJson = "com.typesafe.play" %% "play-ws-standalone-json" % "1.0.7"
-  val playAhcWs = "com.typesafe.play" %% "play-ahc-ws-standalone" % "1.0.7"
-  val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
+  val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
+  val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
+  val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   val slf4s = "org.slf4s" %% "slf4s-api" % slf4sVersion
@@ -111,7 +112,7 @@ object sbuild extends Build {
     base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playAhcWs,
+        dependencies.playJson, dependencies.playWsAhcStandalone,
         dependencies.ficus, dependencies.rx,
         dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging
@@ -134,7 +135,7 @@ object sbuild extends Build {
     id = "web-app",
     base = file("web-app"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= Seq(guice, ehcache, dependencies.playWsJson, dependencies.playTest),
+      libraryDependencies ++= Seq(guice, ehcache, dependencies.playWsJsonStandalone, dependencies.playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,
