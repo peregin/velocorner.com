@@ -1,10 +1,10 @@
 package controllers.auth
 
-import controllers.AuthController.AuthenticityToken
+import AuthController.AuthenticityToken
 import play.api.mvc.{Cookie, DiscardingCookie, RequestHeader, Result}
 
 class NewCookieTokenAccessor(
-                              protected val cookieName: String = "PLAY2AUTH_SESS_ID",
+                              protected val cookieName: String,
                               protected val cookieSecureOption: Boolean = false,
                               protected val cookieHttpOnlyOption: Boolean = true,
                               protected val cookieDomainOption: Option[String] = None,

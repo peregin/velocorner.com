@@ -1,10 +1,10 @@
-package controllers
+package controllers.auth
 
 import java.util.UUID
 import java.util.concurrent.{Executors, ThreadFactory}
 import javax.inject.Inject
 
-import controllers.auth.{AccessTokenResponse, AuthChecker, StravaAuthenticator}
+import controllers.ConnectivitySettings
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
@@ -41,7 +41,7 @@ object AuthController {
   ))
 }
 
-import controllers.AuthController.{AccessToken, ConsumerUser, OAuth2CookieKey, OAuth2StateKey, ProviderUser, ec}
+import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2CookieKey, OAuth2StateKey, ProviderUser, ec}
 
 
 class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi) extends AuthChecker {
@@ -51,7 +51,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
   def login(scope: String) = Action { implicit request =>
     loggedIn(request) match {
       case Some(a) =>
-        Redirect(routes.ApplicationController.index())
+        Redirect(controllers.routes.ApplicationController.index())
       case None =>
         redirectToAuthorization(scope, request)
     }
@@ -93,7 +93,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
 
   def logout = Action { implicit request =>
     tokenAccessor.extract(request) foreach idContainer.remove
-    val res = Redirect(routes.ApplicationController.index)
+    val res = Redirect(controllers.routes.ApplicationController.index)
     // TODO: fix this
     tokenAccessor.delete(res.discardingCookies(DiscardingCookie(OAuth2CookieKey)))
 
@@ -126,7 +126,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.map{providerUser =>
       connectivity.getStorage.store(providerUser)
-      Redirect(routes.ApplicationController.index)
+      Redirect(controllers.routes.ApplicationController.index)
     }
   }
 
@@ -151,6 +151,6 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
 
   // auth control
   def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(routes.ApplicationController.index()))
+    Future.successful(Redirect(controllers.routes.ApplicationController.index()))
   }
 }

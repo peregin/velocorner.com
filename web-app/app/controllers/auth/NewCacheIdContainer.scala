@@ -3,7 +3,7 @@ package controllers.auth
 import java.security.SecureRandom
 import javax.inject.Inject
 
-import controllers.AuthController.AuthenticityToken
+import AuthController.AuthenticityToken
 import play.api.cache.SyncCacheApi
 
 import scala.annotation.tailrec

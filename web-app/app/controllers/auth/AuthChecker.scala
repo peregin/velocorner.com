@@ -1,6 +1,6 @@
 package controllers.auth
 
-import controllers.AuthController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
+import AuthController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
 import controllers.ConnectivitySettings
 import play.Logger
 import play.api.cache.SyncCacheApi
@@ -10,7 +10,7 @@ import velocorner.model.Account
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthChecker { //extends AuthConfigSupport {
+trait AuthChecker {
 
   val cache: SyncCacheApi
 

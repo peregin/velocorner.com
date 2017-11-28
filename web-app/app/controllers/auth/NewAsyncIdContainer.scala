@@ -1,6 +1,6 @@
 package controllers.auth
 
-import controllers.AuthController.AuthenticityToken
+import AuthController.AuthenticityToken
 
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc.RequestHeader
