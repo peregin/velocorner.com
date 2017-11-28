@@ -2,7 +2,7 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import controllers.AuthController.{AccessToken, ProviderUser}
+import AuthController.{AccessToken, ProviderUser}
 import controllers.ConnectivitySettings
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
@@ -39,7 +39,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
     //val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
-    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=force&scope=public"
+    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=public"
   }
 
    def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
