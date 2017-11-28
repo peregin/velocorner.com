@@ -94,8 +94,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
   def logout = Action { implicit request =>
     tokenAccessor.extract(request) foreach idContainer.remove
     val res = Redirect(controllers.routes.ApplicationController.index)
-    // TODO: fix this
-    tokenAccessor.delete(res.discardingCookies(DiscardingCookie(OAuth2CookieKey)))
+    tokenAccessor.delete(res)
 
   }
 

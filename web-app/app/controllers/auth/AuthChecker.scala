@@ -21,10 +21,10 @@ trait AuthChecker {
   val sessionTimeoutInSeconds: Int = (1 day).toSeconds.toInt
 
   // auth conf
-  lazy val idContainer: NewAsyncIdContainer[Id] = NewAsyncIdContainer(new NewCacheIdContainer[Id](cache))
+  lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new CacheIdContainer[Id](cache))
 
   // auth conf
-  lazy val tokenAccessor = new NewCookieTokenAccessor(
+  lazy val tokenAccessor = new CookieTokenAccessor(
     cookieName = OAuth2CookieKey,
     cookieSecureOption = false,
     cookieHttpOnlyOption = true,

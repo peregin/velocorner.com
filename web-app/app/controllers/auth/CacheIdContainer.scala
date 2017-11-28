@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.Random
 
-class NewCacheIdContainer[Id: ClassTag] @Inject()(cache: SyncCacheApi) {
+class CacheIdContainer[Id: ClassTag] @Inject()(cache: SyncCacheApi) {
 
   private[auth] val tokenSuffix = ":token"
   private[auth] val userIdSuffix = ":userId"

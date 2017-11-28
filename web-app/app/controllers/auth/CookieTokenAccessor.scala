@@ -3,7 +3,7 @@ package controllers.auth
 import AuthController.AuthenticityToken
 import play.api.mvc.{Cookie, DiscardingCookie, RequestHeader, Result}
 
-class NewCookieTokenAccessor(
+class CookieTokenAccessor(
                               protected val cookieName: String,
                               protected val cookieSecureOption: Boolean = false,
                               protected val cookieHttpOnlyOption: Boolean = true,

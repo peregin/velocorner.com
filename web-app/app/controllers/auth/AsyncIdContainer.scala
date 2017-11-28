@@ -5,7 +5,7 @@ import AuthController.AuthenticityToken
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc.RequestHeader
 
-trait NewAsyncIdContainer[Id] {
+trait AsyncIdContainer[Id] {
 
   def startNewSession(userId: Id, timeoutInSeconds: Int)(implicit request: RequestHeader, context: ExecutionContext): Future[AuthenticityToken]
 
@@ -15,9 +15,9 @@ trait NewAsyncIdContainer[Id] {
   def prolongTimeout(token: AuthenticityToken, timeoutInSeconds: Int)(implicit request: RequestHeader, context: ExecutionContext): Future[Unit]
 
 }
-object NewAsyncIdContainer {
+object AsyncIdContainer {
   // generic here, IdContainer
-  def apply[A](underlying: NewCacheIdContainer[A]): NewAsyncIdContainer[A] = new NewAsyncIdContainer[A] {
+  def apply[A](underlying: CacheIdContainer[A]): AsyncIdContainer[A] = new AsyncIdContainer[A] {
     import Future.{successful => future}
     def startNewSession(userId: A, timeoutInSeconds: Int)(implicit request: RequestHeader, context: ExecutionContext): Future[AuthenticityToken] =
       future(underlying.startNewSession(userId, timeoutInSeconds))
