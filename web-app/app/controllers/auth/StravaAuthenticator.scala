@@ -15,6 +15,8 @@ import velocorner.model.{Account, Athlete}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
+import play.api.libs.ws.DefaultBodyWritables._
+
 case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
 
 /**
@@ -42,7 +44,6 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=public"
   }
 
-   import play.api.libs.ws.DefaultBodyWritables._
    def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
     Logger.info(s"retrieve token for code[$code]")
     connectivity.getFeed.ws(_.url(accessTokenUrl))
