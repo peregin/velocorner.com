@@ -5,7 +5,7 @@ import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
-object AthleteFromStravaApp extends App with Logging with MyMacConfig {
+object AthleteFromStravaToStorageApp extends App with Logging with MyMacConfig {
 
   private val config = SecretConfig.load()
   implicit val feed = new StravaActivityFeed(None, config)
