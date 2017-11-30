@@ -15,7 +15,6 @@ import velocorner.model.{Account, Athlete}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import play.api.libs.ws.DefaultBodyWritables._
-import velocorner.util.CloseableResource
 
 case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
 
@@ -23,7 +22,7 @@ case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser]
   * Created by levi on 09/12/15.
   * TODO: OauthAuthenticator
   */
-class StravaAuthenticator(connectivity: ConnectivitySettings) extends CloseableResource {
+class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
   val clientSecret: String = connectivity.secretConfig.getSecret("strava")
@@ -46,14 +45,17 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) extends CloseableR
 
    def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
     Logger.info(s"retrieve token for code[$code]")
-      withCloseable(connectivity.getFeed)(_.ws(_.url(accessTokenUrl))
+     val feed = connectivity.getFeed
+     val resp = feed.ws(_.url(accessTokenUrl))
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
       .post(Map(
         "client_id" -> clientId,
         "client_secret" -> clientSecret,
         "code" -> code)
       )
-      .map(parseAccessTokenResponse))
+      .map(parseAccessTokenResponse)
+     resp.onComplete(_ => feed.close())
+     resp
   }
 
   def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
