@@ -1,8 +1,7 @@
-package velocorner.manual.elastic
+package velocorner.manual
 
 import com.sksamuel.elastic4s.ElasticDsl.{bulk, _}
 import org.slf4s.Logging
-import velocorner.manual.MyMacConfig
 import velocorner.storage.Storage
 import velocorner.util.ElasticSupport
 

@@ -1,4 +1,4 @@
-package velocorner.manual.elastic
+package velocorner.manual
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.slf4s.Logging

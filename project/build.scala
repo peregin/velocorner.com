@@ -60,10 +60,8 @@ object dependencies {
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, cassandraSpark)
   def elastic4s = Seq(
-    "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-json4s" % elasticVersion
-//    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-tcp" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 }
@@ -117,7 +115,6 @@ object sbuild extends Build {
         dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging
         ++ dependencies.storage
-        ++ dependencies.elastic4s
     )
   )
 
@@ -127,7 +124,15 @@ object sbuild extends Build {
     dependencies = Seq(dataProvider % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= dependencies.spark
+    )
+  )
 
+  lazy val dataSearch = Project(
+    id = "data-search",
+    base = file("data-search"),
+    dependencies = Seq(dataProvider % "test->test;compile->compile"),
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= dependencies.elastic4s
     )
   )
 
@@ -157,6 +162,6 @@ object sbuild extends Build {
     id = "velocorner",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(dataProvider, dataCruncher, webApp)
+    aggregate = Seq(dataProvider, dataCruncher, dataSearch, webApp)
   )
 }

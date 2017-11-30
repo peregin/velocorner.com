@@ -22,7 +22,7 @@ logs/
 RemoteSystemsTempFiles/
 rethinkdb_data/
 projectFilesBackup*/
-orientdb_data/
+orientdb_data*/
 localhost/
 /elastic/
 spark-warehouse/
