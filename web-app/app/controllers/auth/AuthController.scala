@@ -17,6 +17,8 @@ import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
 
+import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
+
 object AuthController {
 
   // package object?
@@ -41,9 +43,6 @@ object AuthController {
     }}
   ))
 }
-
-import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
-
 
 class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi)
   extends AuthChecker with CloseableResource {
