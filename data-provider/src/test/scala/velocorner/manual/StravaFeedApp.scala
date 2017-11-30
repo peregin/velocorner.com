@@ -5,7 +5,7 @@ import java.util.concurrent.Executors
 import org.slf4s.Logging
 import play.api.libs.ws.StandaloneWSRequest
 import velocorner.SecretConfig
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{HttpFeed, StravaActivityFeed}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,6 +29,7 @@ object StravaFeedApp extends App with Logging with MyMacConfig {
   response.onComplete{
     case _ =>
       feed.close()
+      HttpFeed.shutdown()
       executorService.shutdownNow()
   }
 }

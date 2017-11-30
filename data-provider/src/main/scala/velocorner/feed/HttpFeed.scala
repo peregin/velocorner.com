@@ -11,6 +11,18 @@ import play.shaded.ahc.org.asynchttpclient.{DefaultAsyncHttpClient, DefaultAsync
 import velocorner.SecretConfig
 
 import scala.collection.JavaConverters._
+import HttpFeed._
+
+object HttpFeed {
+
+  implicit val system = ActorSystem.create("ws-feed")
+  implicit val materializer = ActorMaterializer()
+
+  def shutdown() {
+    materializer.shutdown()
+    system.terminate()
+  }
+}
 
 /**
   * Created by levi on 25.10.16.
@@ -33,9 +45,6 @@ trait HttpFeed extends Closeable {
     httpConfigBuilder.setProxyServer(proxyServer)
   }
 
-  implicit val system = ActorSystem.create("ws-feed")
-  implicit val materializer = ActorMaterializer()
-
   private val asyncHttpClient = new DefaultAsyncHttpClient(httpConfigBuilder.build())
   private val wsClient = new StandaloneAhcWSClient(asyncHttpClient)
 
@@ -50,7 +59,5 @@ trait HttpFeed extends Closeable {
 
   def close() = {
     wsClient.close()
-    materializer.shutdown()
-    system.terminate()
   }
 }

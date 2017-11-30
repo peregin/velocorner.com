@@ -2,7 +2,7 @@ package velocorner.manual
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
 object AthleteFromStravaApp extends App with Logging with MyMacConfig {
@@ -18,5 +18,6 @@ object AthleteFromStravaApp extends App with Logging with MyMacConfig {
 
   log.info("done...")
   storage.destroy()
-  sys.exit(0)
+  feed.close()
+  HttpFeed.shutdown()
 }

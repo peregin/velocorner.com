@@ -2,7 +2,7 @@ package velocorner.manual
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 import velocorner.util.Metrics
 
@@ -21,5 +21,6 @@ object ActivitiesFromStravaAndAggregateApp extends App with Logging with Metrics
 
   log.info("done...")
   storage.destroy()
-  sys.exit(0)
+  feed.close()
+  HttpFeed.shutdown()
 }

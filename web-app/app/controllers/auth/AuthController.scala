@@ -13,6 +13,7 @@ import play.api.libs.typedmap.TypedKey
 import play.api.mvc.Results.{BadRequest, Redirect, Unauthorized}
 import play.api.mvc._
 import velocorner.model.Account
+import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,10 +42,11 @@ object AuthController {
   ))
 }
 
-import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2CookieKey, OAuth2StateKey, ProviderUser, ec}
+import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
 
 
-class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi) extends AuthChecker {
+class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi)
+  extends AuthChecker with CloseableResource {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
@@ -112,7 +114,7 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
   def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     val token = accessToken.toString
     Logger.info(s"retrieve provider user for $token")
-    val athlete = connectivity.getFeed(token).getAthlete
+    val athlete = withCloseable(connectivity.getFeed(token))(_.getAthlete)
     Logger.info(s"got provided athlete for user $athlete")
     Future.successful(Account.from(athlete, token, None))
   }

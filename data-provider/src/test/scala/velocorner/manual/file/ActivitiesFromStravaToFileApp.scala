@@ -4,8 +4,8 @@ import java.io.PrintWriter
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
+import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.manual.MyMacConfig
-import velocorner.feed.StravaActivityFeed
 import velocorner.util.JsonIo
 
 
@@ -21,4 +21,7 @@ object ActivitiesFromStravaToFileApp extends App with Logging with MyMacConfig {
   pw.print(json)
   pw.close()
   log.info("file has been created")
+
+  feed.close()
+  HttpFeed.shutdown()
 }

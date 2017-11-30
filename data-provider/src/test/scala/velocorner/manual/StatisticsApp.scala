@@ -2,12 +2,15 @@ package velocorner.manual
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{HttpFeed, StravaActivityFeed}
+import velocorner.util.CloseableResource
 
 
-object StatisticsApp extends App with Logging with MyMacConfig {
+object StatisticsApp extends App with Logging with CloseableResource with MyMacConfig {
 
-  val feed = new StravaActivityFeed(None, SecretConfig.load())
-  val statistics = feed.getStatistics(432909)
-  log.info(s"stats $statistics")
+  withCloseable(new StravaActivityFeed(None, SecretConfig.load())) { feed =>
+    val statistics = feed.getStatistics(432909)
+    log.info(s"stats $statistics")
+  }
+  HttpFeed.shutdown()
 }
