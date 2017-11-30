@@ -16,6 +16,7 @@ GET     /logout                      controllers.auth.AuthController.logout
 GET     /rest/club/:action           controllers.RestController.recentClub(action: String)
 GET     /rest/athlete/statistics     controllers.RestController.statistics
 GET     /rest/athlete/yearly/:action controllers.RestController.yearly(action: String)
+GET     /rest/athlete/ytd/:action    controllers.RestController.ytd(action: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                controllers.Assets.at(path="/public", file)

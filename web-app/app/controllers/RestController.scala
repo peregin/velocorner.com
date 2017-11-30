@@ -63,7 +63,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     )
   }
 
-  // def mapped to /rest/athlete/progress/:action
+  // def mapped to /rest/athlete/yearly/:action
   def yearly(action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
@@ -73,6 +73,26 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
     val dataSeries = action.toLowerCase match {
       case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
+      case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
+      case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
+      case other => sys.error(s"not supported action: $action")
+    }
+
+    Future.successful(
+      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
+    )
+  }
+
+  // year to date aggregation
+  // def mapped to /rest/athlete/ytd/:action
+  def ytd(action: String) = AuthAsyncAction { implicit request =>
+    val maybeAccount = loggedIn
+    Logger.info(s"athlete year to date statistics for ${maybeAccount.map(_.displayName)}")
+
+    val storage = connectivity.getStorage
+    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+
+    val dataSeries = action.toLowerCase match {
       case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
       case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
       case other => sys.error(s"not supported action: $action")
