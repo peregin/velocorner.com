@@ -13,6 +13,11 @@ case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
     val newProgress = days.map(d => day2Progress.getOrElse(d, DailyProgress(d, Progress.zero)))
     YearlyProgress(year, newProgress)
   }
+
+  def ytd(now: LocalDate): YearlyProgress = {
+    // TODO: from here
+    ???
+  }
 }
 
 object YearlyProgress {

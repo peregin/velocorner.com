@@ -10,8 +10,12 @@ import velocorner.model.{DailyProgress, YearlyProgress}
 trait AggregateActivities extends Logging {
 
   def printAllProgress(cyclingActivities: Iterable[DailyProgress]) {
+    printAll(YearlyProgress.from(cyclingActivities))
+  }
+
+  def printAll(yearly: Iterable[YearlyProgress]) {
     log.info("TOTAL")
-    printProgress(cyclingActivities)
+    printProgress(yearly)
 
     // each until current day
     val now = LocalDate.now()
@@ -29,8 +33,7 @@ trait AggregateActivities extends Logging {
     printProgress(cyclingActivitiesUntilThisDay)
   }
 
-  protected def printProgress(from: Iterable[DailyProgress]) {
-    val byYear = YearlyProgress.from(from)
+  protected def printProgress(byYear: Iterable[YearlyProgress]) {
     val aggregateByYear = byYear.map(YearlyAggregate.from)
     aggregateByYear.foreach(_.logSummary())
   }
