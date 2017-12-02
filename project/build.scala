@@ -44,7 +44,6 @@ object dependencies {
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
   val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
   val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-  val cassandraSpark = "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.5"
 
   val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
@@ -58,7 +57,7 @@ object dependencies {
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib, cassandraSpark)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib)
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-tcp" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion
