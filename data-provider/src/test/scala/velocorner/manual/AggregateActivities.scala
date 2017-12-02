@@ -14,21 +14,13 @@ trait AggregateActivities extends Logging {
   }
 
   def printAll(yearly: Iterable[YearlyProgress]) {
+    // everything
     log.info("TOTAL")
     printProgress(yearly)
 
-    // each until current day
+    // every progress until current day
     val now = LocalDate.now()
-    val mn = now.monthOfYear().get()
-    val dn = now.getDayOfMonth
-    val cyclingActivitiesUntilThisDay = cyclingActivities.filter{ a =>
-      val m = a.day.monthOfYear().get()
-      val d = a.day.dayOfMonth().get()
-      if (m < mn) true
-      else if (m == mn) d <= dn
-      else false
-    }
-
+    val cyclingActivitiesUntilThisDay = yearly.map(_.ytd(now))
     log.info(s"YEAR TO DATE $now")
     printProgress(cyclingActivitiesUntilThisDay)
   }
@@ -37,5 +29,4 @@ trait AggregateActivities extends Logging {
     val aggregateByYear = byYear.map(YearlyAggregate.from)
     aggregateByYear.foreach(_.logSummary())
   }
-
 }

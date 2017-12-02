@@ -15,8 +15,15 @@ case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
   }
 
   def ytd(now: LocalDate): YearlyProgress = {
-    // TODO: from here
-    ???
+    val monthToDate = now.monthOfYear().get()
+    val dayToDate = now.getDayOfMonth
+    YearlyProgress(year, progress.filter{ a =>
+      val m = a.day.monthOfYear().get()
+      val d = a.day.dayOfMonth().get()
+      if (m < monthToDate) true
+      else if (m == monthToDate) d <= dayToDate
+      else false
+    })
   }
 }
 
