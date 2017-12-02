@@ -27,6 +27,6 @@ trait AggregateActivities extends Logging {
 
   protected def printProgress(byYear: Iterable[YearlyProgress]) {
     val aggregateByYear = byYear.map(YearlyAggregate.from)
-    aggregateByYear.foreach(_.logSummary())
+    aggregateByYear.foreach(_.prettyPrint())
   }
 }

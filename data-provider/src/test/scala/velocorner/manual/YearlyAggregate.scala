@@ -16,7 +16,7 @@ object YearlyAggregate {
 
 case class YearlyAggregate(year: Int, aggregate: Progress) extends Logging {
 
-  def logSummary() {
+  def prettyPrint() {
     log.info(f"year $year -> ${aggregate.distance}%6.0f km, ${aggregate.elevation}%7.0f \u2191m, ${aggregate.rides}%4d rides")
   }
 }
