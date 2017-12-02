@@ -69,9 +69,7 @@ $(function () {
             $.each(value, function(key, val) {
                 if (key == 'name') {
                     series.name = val;
-                }
-                else
-                {
+                } else {
                     $.each(val, function(dayKey, entry) {
                         var d = entry.day.split("-");
                         var x = Date.UTC(2016, d[1]-1, d[2]);

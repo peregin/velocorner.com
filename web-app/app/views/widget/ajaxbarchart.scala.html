@@ -1,0 +1,113 @@
+@(chartId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript">//<![CDATA[
+$(function () {
+    var chart;
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: '@chartId',
+            type: 'bar',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+            },
+            zoomType: 'x',
+            backgroundColor: '#FFFADE',
+            borderRadius: 20
+        },
+        title: {
+            text: '@chartTitle'
+        },
+        subtitle: {
+            text: ''
+        },
+        exporting: {
+            buttons: {
+                contextButtons: {
+                    enabled: false,
+                    menuItems: null
+                }
+            },
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            categories: []
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'km',
+                align: 'middle'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            floating: true,
+            backgroundColor: '#FFFFFF',
+            align: 'right',
+            verticalAlign: 'top',
+            y: 60,
+            x: -60
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>' + this.x + '</b>: ' + this.y + ' km';
+            }
+        },
+        series: []
+    });
+
+    chart.showLoading('Loading @chartTitle Data...');
+    var fetchStatistics = $.ajax({
+        type: "GET",
+        url: "@restUrl"
+    });
+    fetchStatistics.done(function(statisticsData) {
+        console.log("got the data for @chartId");
+        $.each(statisticsData.series, function(key, value) {
+            var series = {name:'', data:[]};
+            var categories = [];
+            $.each(value, function(key, val) {
+                if (key == 'name') {
+                    categories.name = val;
+                } else {
+                    $.each(val, function(dayKey, entry) {
+                        var d = entry.day.split("-");
+                        var x = Date.UTC(2016, d[1]-1, d[2]);
+                        series.data.push(entry.value);
+                    });
+                }
+            });
+            chart.addSeries(series);
+            //chart.addCategories(categories);
+        });
+        chart.hideLoading();
+        chart.chartBackground.attr({
+            fill: '#FFFFFF'
+        });
+    });
+
+});
+//]]>
+</script>
+
+<script type="text/javascript" src="@routes.Assets.at("highcharts/highcharts.js")"></script>
+<script type="text/javascript" src="@routes.Assets.at("highcharts/modules/exporting.js")"></script>
+
+
+<div id="@chartId" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+

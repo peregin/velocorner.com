@@ -9,7 +9,7 @@ import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import velocorner.model.{AthleteDailyProgress, Club, Progress, YearlyProgress}
+import velocorner.model._
 
 import scala.concurrent.Future
 
@@ -75,7 +75,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
       case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
       case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
       case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
-      case other => sys.error(s"not supported action: $action")
+      case other => sys.error(s"not supported action: $other")
     }
 
     Future.successful(
@@ -87,15 +87,18 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   // def mapped to /rest/athlete/ytd/:action
   def ytd(action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
-    Logger.info(s"athlete year to date statistics for ${maybeAccount.map(_.displayName)}")
+    val now = LocalDate.now()
+    Logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
 
     val storage = connectivity.getStorage
     val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+    val ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
+      YearlyProgress(ytd.year, Seq(DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))))
 
     val dataSeries = action.toLowerCase match {
-      case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
-      case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
-      case other => sys.error(s"not supported action: $action")
+      case "distance" => toDistanceSeries(ytdProgress)
+      case "elevation" => toElevationSeries(ytdProgress)
+      case other => sys.error(s"not supported action: $other")
     }
 
     Future.successful(

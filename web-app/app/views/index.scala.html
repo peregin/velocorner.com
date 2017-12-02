@@ -7,9 +7,16 @@
             @widget.profile(user, "/rest/athlete/statistics")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
-            @widget.ajaxchart("yearlyChart", "Yearly Heatmap", "/rest/athlete/yearly/heatmap")
-            @widget.ajaxchart("yearlyProgress", "Yearly Distance", "/rest/athlete/yearly/distance")
-            @widget.ajaxchart("yearlyElevation", "Yearly Elevation", "/rest/athlete/yearly/elevation")
+            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "/rest/athlete/yearly/heatmap")
+            <div class="row">
+                <div class="col-md-4 md-margin-bottom-50" style="padding: 0;">
+                    @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", "/rest/athlete/ytd/distance")
+                </div>
+                <div class="col-md-6 md-margin-bottom-50" style="padding: 0;">
+                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "/rest/athlete/yearly/distance")
+                </div>
+            </div>
+            @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "/rest/athlete/yearly/elevation")
         </div>
     }
 
@@ -27,10 +34,10 @@
         <div class="headline"><h2>Recent Club Progress</h2></div>
         <div class="row">
             <div class="col-md-6 md-margin-bottom-50" style="padding-left: 0;">
-                @widget.ajaxchart("recentClubDistance", "Distance", "/rest/club/distance")
+                @widget.ajaxsplinechart("recentClubDistance", "Distance", "/rest/club/distance")
             </div>
             <div class="col-md-6 md-margin-bottom-50" style="padding-right: 0;">
-                @widget.ajaxchart("recentClubElevation", "Elevation", "/rest/club/elevation")
+                @widget.ajaxsplinechart("recentClubElevation", "Elevation", "/rest/club/elevation")
             </div>
         </div>
     </div>
