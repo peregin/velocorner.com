@@ -7,20 +7,13 @@ $(function () {
     chart = new Highcharts.Chart({
         chart: {
             renderTo: '@chartId',
-            type: 'bar',
-            options3d: {
-                enabled: true,
-                alpha: 45,
-            },
-            zoomType: 'x',
-            backgroundColor: '#FFFADE',
-            borderRadius: 20
+            type: 'bar'
         },
         title: {
             text: '@chartTitle'
         },
-        subtitle: {
-            text: ''
+        credits: {
+            enabled: false
         },
         exporting: {
             buttons: {
@@ -29,9 +22,6 @@ $(function () {
                     menuItems: null
                 }
             },
-            enabled: false
-        },
-        credits: {
             enabled: false
         },
         xAxis: {
@@ -78,23 +68,16 @@ $(function () {
     });
     fetchStatistics.done(function(statisticsData) {
         console.log("got the data for @chartId");
-        $.each(statisticsData.series, function(key, value) {
-            var series = {name:'', data:[]};
-            var categories = [];
-            $.each(value, function(key, val) {
-                if (key == 'name') {
-                    categories.name = val;
-                } else {
-                    $.each(val, function(dayKey, entry) {
-                        var d = entry.day.split("-");
-                        var x = Date.UTC(2016, d[1]-1, d[2]);
-                        series.data.push(entry.value);
-                    });
-                }
-            });
-            chart.addSeries(series);
-            chart.xAxis.categories = categories;
+        var data = statisticsData.series.map(item => item.series[0].value);
+        var names = statisticsData.series.map(item => item.name);
+        chart.addSeries({
+            name: 'Years',
+            showInLegend: false,
+            colorByPoint: true,
+            data: data
         });
+        chart.xAxis[0].setCategories(names);
+
         chart.hideLoading();
         chart.chartBackground.attr({
             fill: '#FFFFFF'
