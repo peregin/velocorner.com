@@ -9,10 +9,10 @@
             <div class="headline"><h2>Yearly Activities</h2></div>
             @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "/rest/athlete/yearly/heatmap")
             <div class="row">
-                <div class="col-md-4 md-margin-bottom-50" style="padding: 0;">
+                <div class="col-md-4 md-margin-bottom-50">
                     @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", "/rest/athlete/ytd/distance")
                 </div>
-                <div class="col-md-6 md-margin-bottom-50" style="padding: 0;">
+                <div class="col-md-8 md-margin-bottom-50">
                     @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "/rest/athlete/yearly/distance")
                 </div>
             </div>

@@ -93,7 +93,7 @@ $(function () {
                 }
             });
             chart.addSeries(series);
-            //chart.addCategories(categories);
+            chart.xAxis.categories = categories;
         });
         chart.hideLoading();
         chart.chartBackground.attr({
@@ -109,5 +109,5 @@ $(function () {
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/exporting.js")"></script>
 
 
-<div id="@chartId" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="@chartId" style="min-width: 260px; height: 400px; margin: 0 auto"></div>
 
