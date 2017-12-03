@@ -72,6 +72,11 @@ $(function () {
         var names = statisticsData.series.map(item => item.name);
         chart.addSeries({
             name: 'Years',
+            dataLabels: {
+                formatter: function() {
+                    return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> km';
+                }
+            },
             showInLegend: false,
             colorByPoint: true,
             data: data

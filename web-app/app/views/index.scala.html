@@ -16,7 +16,14 @@
                     @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "/rest/athlete/yearly/distance")
                 </div>
             </div>
-            @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "/rest/athlete/yearly/elevation")
+            <div class="row">
+                <div class="col-md-4 md-margin-bottom-50">
+                    @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", "/rest/athlete/ytd/elevation")
+                </div>
+                <div class="col-md-8 md-margin-bottom-50">
+                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "/rest/athlete/yearly/elevation")
+                </div>
+            </div>
         </div>
     }
 
