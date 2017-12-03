@@ -1,4 +1,4 @@
-@(chartId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+@(chartId: String, chartTitle: String, unit: String, restUrl: String)(implicit assets: AssetsFinder)
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
@@ -30,7 +30,7 @@ $(function () {
         yAxis: {
             min: 0,
             title: {
-                text: 'km',
+                text: '@unit',
                 align: 'middle'
             },
             labels: {
@@ -55,7 +55,7 @@ $(function () {
         },
         tooltip: {
             formatter: function() {
-                return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 2) + ' km';
+                return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 2) + ' @unit';
             }
         },
         series: []
@@ -74,7 +74,7 @@ $(function () {
             name: 'Years',
             dataLabels: {
                 formatter: function() {
-                    return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> km';
+                    return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> @unit';
                 }
             },
             showInLegend: false,
