@@ -7,7 +7,14 @@ $(function () {
     chart = new Highcharts.Chart({
         chart: {
             renderTo: '@chartId',
-            type: 'bar'
+            type: 'bar',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+            },
+            zoomType: 'x',
+            backgroundColor: '#FFFADE',
+            borderRadius: 20
         },
         title: {
             text: '@chartTitle'
