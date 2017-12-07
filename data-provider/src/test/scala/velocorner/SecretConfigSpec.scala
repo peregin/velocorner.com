@@ -30,5 +30,18 @@ class SecretConfigSpec extends Specification {
       conf.getProxyPort must beNone
     }
 
+    "mark disabled missing withings enabling" in {
+      val conf = new SecretConfig(ConfigFactory.parseString(""))
+      conf.isWithingsEnabled() must beFalse
+    }
+
+    "mark enabled explicit withings setup" in {
+      val testConfig =
+        """
+          |withings.enabled=true
+        """.stripMargin
+      val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
+      conf.isWithingsEnabled() must beTrue
+    }
   }
 }
