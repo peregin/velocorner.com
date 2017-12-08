@@ -7,7 +7,6 @@ import ReleaseStateTransformations._
 import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
-import dependencies.slf4s
 import play.sbt.PlayImport._
 
 
