@@ -18,12 +18,12 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.3")
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.7.0")
 
-// Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.7")
-
 // code coverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 
 // Gerolf's release plugin
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.5")
+
+// Use the Play sbt plugin for Play projects
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.7")
 

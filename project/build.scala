@@ -12,9 +12,9 @@ import play.sbt.PlayImport._
 
 object dependencies {
 
-  val sparkVersion = "2.2.0"
+  val sparkVersion = "2.2.1"
   val logbackVersion = "1.2.3"
-  val elasticVersion = "5.6.0"
+  val elasticVersion = "6.0.2"
   val specsVersion = "3.7"
   val orientDbVersion = "2.2.30"
   val log4jVersion = "2.10.0"
