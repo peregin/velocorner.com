@@ -17,9 +17,9 @@ import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import controllers.auth.AuthController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
+import controllers.auth.StravaController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
 
-object AuthController {
+object StravaController {
 
   // package object?
   type AccessToken = String
@@ -44,7 +44,7 @@ object AuthController {
   ))
 }
 
-class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi)
+class StravaController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi)
   extends AuthChecker with CloseableResource {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
@@ -117,9 +117,6 @@ class AuthController @Inject()(val connectivity: ConnectivitySettings, val cache
     Logger.info(s"got provided athlete for user $athlete")
     Future.successful(Account.from(athlete, token, None))
   }
-
-  import AuthController.ec
-
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     Logger.info(s"oauth link succeeded with token[${resp.token}]")

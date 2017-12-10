@@ -7,10 +7,13 @@ GET     /                            controllers.ApplicationController.index
 GET     /refresh                     controllers.ApplicationController.refresh
 GET     /about                       controllers.AboutController.about
 
-GET     /login/strava                controllers.auth.AuthController.login(scope: String)
-GET     /link/strava                 controllers.auth.AuthController.link(scope: String)
-GET     /authorize/strava            controllers.auth.AuthController.authorize
-GET     /logout                      controllers.auth.AuthController.logout
+GET     /login/strava                controllers.auth.StravaController.login(scope: String)
+GET     /link/strava                 controllers.auth.StravaController.link(scope: String)
+GET     /authorize/strava            controllers.auth.StravaController.authorize
+GET     /logout/strava               controllers.auth.StravaController.logout
+
+GET     /login/withings              controllers.auth.WithingsController.login(scope: String)
+GET     /authorize/withings          controllers.auth.WithingsController.authorize
 
 # REST API
 GET     /rest/club/:action           controllers.RestController.recentClub(action: String)

@@ -1,6 +1,6 @@
 package controllers.auth
 
-import AuthController.AuthenticityToken
+import StravaController.AuthenticityToken
 import play.api.mvc.{Cookie, DiscardingCookie, RequestHeader, Result}
 
 class CookieTokenAccessor(

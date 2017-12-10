@@ -3,7 +3,7 @@ package controllers.auth
 import java.security.SecureRandom
 import javax.inject.Inject
 
-import AuthController.AuthenticityToken
+import StravaController.AuthenticityToken
 import play.api.cache.SyncCacheApi
 
 import scala.annotation.tailrec

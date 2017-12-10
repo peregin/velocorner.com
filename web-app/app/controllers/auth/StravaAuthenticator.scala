@@ -2,7 +2,7 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import AuthController.{AccessToken, ProviderUser}
+import StravaController.{AccessToken, ProviderUser}
 import controllers.ConnectivitySettings
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}

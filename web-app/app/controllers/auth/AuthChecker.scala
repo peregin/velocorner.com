@@ -1,6 +1,6 @@
 package controllers.auth
 
-import AuthController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
+import StravaController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
 import controllers.ConnectivitySettings
 import play.Logger
 import play.api.cache.SyncCacheApi
@@ -10,7 +10,7 @@ import velocorner.model.Account
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-import AuthController.OAuth2CookieKey
+import StravaController.OAuth2CookieKey
 
 trait AuthChecker {
 

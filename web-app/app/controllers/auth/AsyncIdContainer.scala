@@ -1,6 +1,6 @@
 package controllers.auth
 
-import AuthController.AuthenticityToken
+import StravaController.AuthenticityToken
 
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc.RequestHeader

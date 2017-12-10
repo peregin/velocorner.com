@@ -24,7 +24,7 @@ class ApplicationController @Inject()
     Logger.info(s"rendering landing page for $maybeAccount")
 
     val context = timed("building page context") {
-      PageContext(maybeAccount)
+      PageContext(maybeAccount, connectivity.secretConfig.isWithingsEnabled())
     }
 
     Ok(views.html.index(context))
