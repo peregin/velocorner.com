@@ -16,7 +16,7 @@ import scala.language.implicitConversions
 /**
   * Created by levi on 14.11.16.
   */
-class OrientDbStorage(val rootDir: String, storageType: String = "plocal") extends Storage with Logging {
+class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serverPort: Int = 2480) extends Storage with Logging {
 
   var server: Option[OServer] = None
 
@@ -106,7 +106,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal") exten
          |            <protocol name="binary" implementation="com.orientechnologies.orient.server.network.protocol.binary.ONetworkProtocolBinary"/>
          |        </protocols>
          |        <listeners>
-         |            <listener ip-address="127.0.0.1" port-range="2480" protocol="http">
+         |            <listener ip-address="127.0.0.1" port-range="$serverPort" protocol="http">
          |                <commands>
          |                    <command
          |                        pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt"

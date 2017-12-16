@@ -41,6 +41,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll {
   }
 
   override def beforeAll() {
+    // eventually find a free port if the app is already running and inject it here
     storage = new OrientDbStorage("orientdb_data_test", "memory")
     storage.initialize()
   }
