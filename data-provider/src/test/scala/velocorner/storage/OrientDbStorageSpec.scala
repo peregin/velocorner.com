@@ -4,14 +4,15 @@ import java.io.File
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal
 import org.apache.commons.io.FileUtils
+import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.model.Activity
-import velocorner.util.JsonIo
+import velocorner.util.{FreePortFinder, JsonIo}
 
 import scala.io.Source
 
-class OrientDbStorageSpec extends Specification with BeforeAfterAll {
+class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging {
 
   if (Option(ODatabaseRecordThreadLocal.INSTANCE).isEmpty) {
     sys.error("Calling this manually apparently prevent an initialization issue.")
@@ -20,7 +21,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll {
   sequential
   stopOnFail
 
-  @volatile var storage: OrientDbStorage = null
+  @volatile var storage: OrientDbStorage = _
 
   "storage" should {
 
@@ -41,8 +42,10 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll {
   }
 
   override def beforeAll() {
-    // eventually find a free port if the app is already running and inject it here
-    storage = new OrientDbStorage("orientdb_data_test", "memory")
+    // eventually the port is already used if the application runs locally
+    val serverPort = FreePortFinder.find()
+    log.info(s"running OrientDb on port $serverPort")
+    storage = new OrientDbStorage("orientdb_data_test", "memory", serverPort)
     storage.initialize()
   }
 
