@@ -57,6 +57,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings) {
       oauth.retrieveAccessToken(tokenPair, verifier) match {
         case Right(t) => {
           // We received the authorized tokens in the OAuth object - store it before we proceed
+          Logger.info(s"received authorization token $t")
           Redirect(controllers.routes.ApplicationController.index).withSession("token" -> t.token, "secret" -> t.secret)
         }
         case Left(e) => throw e
@@ -65,7 +66,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings) {
       oauth.retrieveRequestToken(callbackUrl) match {
         case Right(t) => {
           // We received the unauthorized tokens in the OAuth object - store it before we proceed
-          Logger.info(s"received token $t")
+          Logger.info(s"received request token $t")
           Redirect(oauth.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
         }
         case Left(e) => throw e
