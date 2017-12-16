@@ -57,8 +57,15 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings) {
       oauth.retrieveAccessToken(tokenPair, verifier) match {
         case Right(t) => {
           // We received the authorized tokens in the OAuth object - store it before we proceed
-          Logger.info(s"received authorization token $t")
-          Redirect(controllers.routes.ApplicationController.index).withSession("token" -> t.token, "secret" -> t.secret)
+          val maybeUserId = request.getQueryString("userid")
+          Logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
+          maybeUserId match {
+            case Some(userId) =>
+              Redirect(controllers.routes.ApplicationController.index)
+                .withSession("token" -> t.token, "secret" -> t.secret, "withingsId" -> userId)
+            case _ =>
+              BadRequest
+          }
         }
         case Left(e) => throw e
       }
