@@ -1,6 +1,7 @@
 package velocorner.feed
 
 import org.slf4s.Logging
+import play.api.libs.oauth.{ConsumerKey, OAuthCalculator, RequestToken}
 import velocorner.SecretConfig
 
 import scala.concurrent.Await
@@ -13,24 +14,24 @@ import scala.language.postfixOps
 object WithingsMeasureFeed {
 
   val baseUrl = "https://api.health.nokia.com/v2"
+
+  def consumerKey(config: SecretConfig) = ConsumerKey(config.getToken("withings"), config.getSecret("withings"))
 }
 
-class WithingsMeasureFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with MeasureFeed with Logging {
+class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretConfig) extends HttpFeed with MeasureFeed with Logging {
 
-  val token = maybeToken.getOrElse(config.getToken("withings")) // dedicated token after authentication or application generic
-  log.info(s"connecting to withings with token [$token]...")
+  log.info(s"connecting to withings with token [${token.token}]...")
 
-  val authHeader = s"Bearer $token"
-  val timeout = 10 seconds
+  lazy val timeout = 10 seconds
 
-  // TODO: setup
-  // oauth_consumer_key =
-  // oauth_nonce = AAA
-  // oauth_timestamp = 1477376000
-  // oauth_token = AAA
-  // oauth_signature = BBB
+  private def signer = OAuthCalculator(WithingsMeasureFeed.consumerKey(config), token)
+
   override def listMeasures: String = {
-    val response = ws(_.url(s"${WithingsMeasureFeed.baseUrl}/measure?action=getmeas").withHttpHeaders(("Authorization", authHeader)).get())
+    val response = ws(_
+      .url(s"${WithingsMeasureFeed.baseUrl}/measure")
+      .withQueryStringParameters(("action", "getmeas"), ("userid", userId.toString))
+      .sign(signer)
+      .get())
     Await.result(response, timeout).body
   }
 }
