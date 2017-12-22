@@ -18,7 +18,7 @@ trait AuthChecker {
 
   val connectivity: ConnectivitySettings
 
-  val sessionTimeoutInSeconds: Int = (1 day).toSeconds.toInt
+  val sessionTimeoutInSeconds: Int = (7 days).toSeconds.toInt
 
   // auth conf
   lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new CacheIdContainer[Id](cache))
