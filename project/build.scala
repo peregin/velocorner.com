@@ -32,6 +32,7 @@ object dependencies {
   )
 
   val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
+  val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % play.core.PlayVersion.current
   val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
   val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
@@ -108,7 +109,7 @@ object sbuild extends Build {
     base = file("data-provider"),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playWsAhcStandalone,
+        dependencies.playJson, dependencies.playJsonJoda, dependencies.playWsAhcStandalone,
         dependencies.ficus, dependencies.rx,
         dependencies.scalaSpec, dependencies.apacheCommons
       ) ++ dependencies.logging

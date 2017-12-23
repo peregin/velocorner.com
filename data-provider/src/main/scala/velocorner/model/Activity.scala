@@ -1,7 +1,7 @@
 package velocorner.model
 
 import org.joda.time.DateTime
-import play.api.libs.json.{Writes, Reads, Json, Format}
+import play.api.libs.json._
 
 /**
  *
@@ -78,7 +78,7 @@ import play.api.libs.json.{Writes, Reads, Json, Format}
 
 object Activity {
 
-  implicit val dateTimeFormat = Format[DateTime](Reads.jodaDateReads(DateTimePattern.format), Writes.jodaDateWrites(DateTimePattern.format))
+  implicit val dateTimeFormat = Format[DateTime](JodaReads.jodaDateReads(DateTimePattern.format), JodaWrites.jodaDateWrites(DateTimePattern.format))
   implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
 }
 
