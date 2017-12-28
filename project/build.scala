@@ -20,6 +20,7 @@ object dependencies {
   val log4jVersion = "2.10.0"
   val slf4sVersion = "1.7.25"
   val playWsVersion = "1.1.3" // standalone version
+  val playJsonVersion = "2.6.8"
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -31,8 +32,8 @@ object dependencies {
     "com.orientechnologies" % "orientdb-server" % orientDbVersion
   )
 
-  val playJson = "com.typesafe.play" %% "play-json" % play.core.PlayVersion.current
-  val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % play.core.PlayVersion.current
+  val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
+  val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
   val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
   val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
