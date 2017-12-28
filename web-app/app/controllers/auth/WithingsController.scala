@@ -6,10 +6,9 @@ import controllers.ConnectivitySettings
 import play.Logger
 import play.api.libs.oauth.{ConsumerKey, OAuth, RequestToken, ServiceInfo}
 import play.api.mvc._
-import play.api.mvc.Results._
 import velocorner.model.Account
 
-class WithingsController @Inject()(val connectivity: ConnectivitySettings) {
+class WithingsController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents) extends AbstractController(components) {
 
   val clientToken: String = connectivity.secretConfig.getToken("withings")
   val clientSecret: String = connectivity.secretConfig.getSecret("withings")

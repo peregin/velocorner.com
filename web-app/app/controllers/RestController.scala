@@ -8,7 +8,7 @@ import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
 import velocorner.model._
 
 import scala.concurrent.Future
@@ -16,8 +16,8 @@ import scala.concurrent.Future
 /**
   * Created by levi on 06/10/16.
   */
-class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
-  extends Controller with AuthChecker {
+class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy, components: ControllerComponents)
+  extends AbstractController(components) with AuthChecker {
 
   // mapped to /rest/club/:action
   def recentClub(action: String) = Action.async { implicit request =>

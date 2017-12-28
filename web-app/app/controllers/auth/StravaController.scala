@@ -44,8 +44,8 @@ object StravaController {
   ))
 }
 
-class StravaController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi)
-  extends AuthChecker with CloseableResource {
+class StravaController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
+  extends AbstractController(components) with AuthChecker with CloseableResource {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 

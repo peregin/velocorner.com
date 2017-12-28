@@ -9,6 +9,7 @@ import velocorner.model.Account
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 
 import StravaController.OAuth2CookieKey
 
