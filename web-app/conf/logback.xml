@@ -11,13 +11,14 @@
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
+    <logger name="play.shaded.ahc" level="INFO"/>
     <logger name="com.orientechnologies" level="WARN"/>
-    <logger name="org.asynchttpclient" level="INFO"/>
-    <logger name="play.shaded.ahc.org.asynchttpclient" level="INFO"/>
-    <logger name="javax.management" level="INFO"/>
     <logger name="com.google.inject" level="INFO"/>
     <logger name="com.sun.xml" level="INFO"/>
+    <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="javax.management" level="INFO"/>
     <logger name="net.sf.ehcache" level="INFO"/>
     <logger name="akka.stream.impl" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
 
 </configuration>
