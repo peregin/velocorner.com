@@ -1,5 +1,5 @@
 import org.joda.time.LocalDate
-import play.api.libs.json.{Format, Json, Reads, Writes}
+import play.api.libs.json._
 import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, YearlyProgress}
 
 /**
@@ -8,7 +8,7 @@ import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, Yearly
 package object highcharts {
 
   object DailyPoint {
-    implicit val dateFormat = Format[LocalDate](Reads.jodaLocalDateReads(DateTimePattern.dateFormat), Writes.jodaLocalDateWrites(DateTimePattern.dateFormat))
+    implicit val dateFormat = Format[LocalDate](JodaReads.jodaLocalDateReads(DateTimePattern.dateFormat), JodaWrites.jodaLocalDateWrites(DateTimePattern.dateFormat))
     implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
   }
 
