@@ -4,8 +4,8 @@ import org.joda.time.DateTime
 import play.api.libs.json._
 
 /**
+ * Represents an Activity from the Strava feed:
  *
- * Activity list:
 
 [
   {

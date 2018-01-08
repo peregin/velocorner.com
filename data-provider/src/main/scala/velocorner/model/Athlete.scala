@@ -4,7 +4,7 @@ import play.api.libs.json.{Format, Json}
 import play.api.libs.json._
 
 /**
-  * Represents an athlete from the feed and storage layer.
+  * Represents an athlete from the Strava feed and storage layer.
   *
   * The feed provides the following superset of data:
   * "id": 227615,
