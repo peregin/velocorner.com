@@ -76,7 +76,7 @@ object sbuild extends Build {
   )
 
   lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
-    version <<= version in ThisBuild,
+    version := (version in ThisBuild).value,
     scalaVersion := "2.11.12",
     organization := "com.github.peregin",
     description := "The Cycling Platform",
