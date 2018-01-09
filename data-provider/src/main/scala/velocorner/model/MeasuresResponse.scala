@@ -43,13 +43,23 @@ import play.api.libs.json.{Format, Json}
   }
 }
 
-  *
   */
-object Measures {
 
-  implicit val activityFormat = Format[Measures](Json.reads[Measures], Json.writes[Measures])
+object MeasuresBody {
+
+  implicit val format = Format[MeasuresBody](Json.reads[MeasuresBody], Json.writes[MeasuresBody])
 }
 
-case class Measures(
-  status: Int
+case class MeasuresBody(
+  timezone: String
+)
+
+object MeasuresResponse {
+
+  implicit val format = Format[MeasuresResponse](Json.reads[MeasuresResponse], Json.writes[MeasuresResponse])
+}
+
+case class MeasuresResponse(
+  status: Int,
+  body: MeasuresBody
 )

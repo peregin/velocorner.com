@@ -12,9 +12,9 @@ class MeasuresSpec extends Specification {
     "be loaded from reference file" in {
 
       val json = Source.fromURL(getClass.getResource("/data/withings/measures.json")).mkString
-      val measures = JsonIo.read[Measures](json)
+      val measures = JsonIo.read[MeasuresResponse](json)
       measures.status === 0
-      //measures.timezone === "Europe\\/Zurich"
+      measures.body.timezone === "Europe/Zurich"
     }
   }
 }
