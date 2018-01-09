@@ -39,6 +39,14 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     "retrieve daily stats" in {
       storage.dailyProgressForAll(50) must haveSize(15)
     }
+
+    "retrieve recent activities for an athlete" in {
+      storage.listRecentActivities(432909, 50) must haveSize(24)
+    }
+
+    "retrieve daily stats for an athlete" in {
+      storage.dailyProgressForAthlete(432909) must haveSize(15)
+    }
   }
 
   override def beforeAll() {
