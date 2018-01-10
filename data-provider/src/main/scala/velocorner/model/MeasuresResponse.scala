@@ -46,6 +46,14 @@ import play.api.libs.json._
 
   */
 
+object MeasuresGroup {
+  implicit val format = Format[MeasuresGroup](Json.reads[MeasuresGroup], Json.writes[MeasuresGroup])
+}
+
+case class MeasuresGroup(
+  grpid: Long
+)
+
 object MeasuresBody {
 
   // epoch to DateTime
@@ -60,7 +68,8 @@ object MeasuresBody {
 
 case class MeasuresBody(
   updatetime: DateTime,
-  timezone: String
+  timezone: String,
+  measuregrps: List[MeasuresGroup]
 )
 
 object MeasuresResponse {

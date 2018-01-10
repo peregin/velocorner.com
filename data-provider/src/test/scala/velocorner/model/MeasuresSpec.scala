@@ -17,6 +17,9 @@ class MeasuresSpec extends Specification {
       measures.status === 0
       measures.body.updatetime.compareTo(DateTime.parse("2018-01-07T20:38:43.000+01:00")) === 0
       measures.body.timezone === "Europe/Zurich"
+      measures.body.measuregrps must haveSize(49)
+      val first = measures.body.measuregrps.head
+      first.grpid === 999543286
     }
   }
 }
