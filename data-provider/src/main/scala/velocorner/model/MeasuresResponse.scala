@@ -1,6 +1,7 @@
 package velocorner.model
 
-import play.api.libs.json.{Format, Json}
+import org.joda.time.DateTime
+import play.api.libs.json._
 
 /**
   * Represents a GetMeasures from the Withings feed:
@@ -47,10 +48,18 @@ import play.api.libs.json.{Format, Json}
 
 object MeasuresBody {
 
+  // epoch to DateTime
+  implicit val dateTimeFormat = Format[DateTime](new Reads[DateTime] {
+    override def reads(json: JsValue): JsResult[DateTime] = {
+      val epoch = json.asInstanceOf[JsNumber].value.toLong * 1000
+      JsSuccess(new DateTime(epoch))
+    }
+  }, JodaWrites.JodaDateTimeNumberWrites)
   implicit val format = Format[MeasuresBody](Json.reads[MeasuresBody], Json.writes[MeasuresBody])
 }
 
 case class MeasuresBody(
+  updatetime: DateTime,
   timezone: String
 )
 
