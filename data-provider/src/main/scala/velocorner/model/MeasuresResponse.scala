@@ -5,7 +5,7 @@ import play.api.libs.json._
 
 /**
   * Represents a GetMeasures from the Withings feed:
-  *
+  * https://developer.health.nokia.com/api/doc#api-Measure-get_measure
   *
 
 {
@@ -46,23 +46,32 @@ import play.api.libs.json._
 
   */
 
-object MeasuresGroup {
-  implicit val format = Format[MeasuresGroup](Json.reads[MeasuresGroup], Json.writes[MeasuresGroup])
-}
+object EpochFormatter {
 
-case class MeasuresGroup(
-  grpid: Long
-)
-
-object MeasuresBody {
-
-  // epoch to DateTime
-  implicit val dateTimeFormat = Format[DateTime](new Reads[DateTime] {
+  // epoch to DateTime nad vice versa
+  def create = Format[DateTime](new Reads[DateTime] {
     override def reads(json: JsValue): JsResult[DateTime] = {
       val epoch = json.asInstanceOf[JsNumber].value.toLong * 1000
       JsSuccess(new DateTime(epoch))
     }
   }, JodaWrites.JodaDateTimeNumberWrites)
+}
+
+object MeasuresGroup {
+
+  implicit val dateTimeFormat = EpochFormatter.create
+  implicit val format = Format[MeasuresGroup](Json.reads[MeasuresGroup], Json.writes[MeasuresGroup])
+}
+
+case class MeasuresGroup(
+  grpid: Long,
+  attrib: Int,
+  date: DateTime
+)
+
+object MeasuresBody {
+
+  implicit val dateTimeFormat = EpochFormatter.create
   implicit val format = Format[MeasuresBody](Json.reads[MeasuresBody], Json.writes[MeasuresBody])
 }
 

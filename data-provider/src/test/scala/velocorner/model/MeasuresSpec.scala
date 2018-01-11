@@ -20,6 +20,8 @@ class MeasuresSpec extends Specification {
       measures.body.measuregrps must haveSize(49)
       val first = measures.body.measuregrps.head
       first.grpid === 999543286
+      first.attrib === 0
+      first.date.compareTo(DateTime.parse("2018-01-05T23:16:56.000+01:00")) === 0
     }
   }
 }
