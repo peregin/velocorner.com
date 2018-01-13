@@ -25,19 +25,6 @@ import play.api.libs.json._
             "unit": -3
           }
         ]
-      },
-      {
-        "grpid": 200333696,
-        "attrib": 0,
-        "date": 1397305600,
-        "category": 1,
-        "measures": [
-          {
-            "value": 73163,
-            "type": 1,
-            "unit": -3
-          }
-        ]
       }
     ],
     "timezone": "Europe\/Zurich"
@@ -66,7 +53,8 @@ object MeasuresGroup {
 case class MeasuresGroup(
   grpid: Long,
   attrib: Int,
-  date: DateTime
+  date: DateTime,
+  category: Int
 )
 
 object MeasuresBody {

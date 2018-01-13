@@ -8,7 +8,7 @@ import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, Yearly
 package object highcharts {
 
   object DailyPoint {
-    implicit val dateFormat = Format[LocalDate](JodaReads.jodaLocalDateReads(DateTimePattern.dateFormat), JodaWrites.jodaLocalDateWrites(DateTimePattern.dateFormat))
+    implicit val dateFormat = DateTimePattern.createShortFormatter
     implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
   }
 

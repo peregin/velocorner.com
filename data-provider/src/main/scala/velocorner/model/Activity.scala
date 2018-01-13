@@ -78,7 +78,7 @@ import play.api.libs.json._
 
 object Activity {
 
-  implicit val dateTimeFormat = Format[DateTime](JodaReads.jodaDateReads(DateTimePattern.format), JodaWrites.jodaDateWrites(DateTimePattern.format))
+  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
   implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
 }
 
