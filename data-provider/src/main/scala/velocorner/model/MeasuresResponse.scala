@@ -44,6 +44,18 @@ object EpochFormatter {
   }, JodaWrites.JodaDateTimeNumberWrites)
 }
 
+
+object MeasuresEntry {
+
+  implicit val format = Format[MeasuresEntry](Json.reads[MeasuresEntry], Json.writes[MeasuresEntry])
+}
+
+case class MeasuresEntry(
+  value: Int,
+  `type`: Int,
+  unit: Int
+)
+
 object MeasuresGroup {
 
   implicit val dateTimeFormat = EpochFormatter.create
@@ -54,7 +66,8 @@ case class MeasuresGroup(
   grpid: Long,
   attrib: Int,
   date: DateTime,
-  category: Int
+  category: Int,
+  measures: List[MeasuresEntry]
 )
 
 object MeasuresBody {

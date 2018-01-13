@@ -23,6 +23,11 @@ class MeasuresSpec extends Specification {
       first.attrib === 0
       first.date.compareTo(DateTime.parse("2018-01-05T23:16:56.000+01:00")) === 0
       first.category === 1
+      first.measures must haveSize(1)
+      val entry = first.measures.head
+      entry.value === 76567
+      entry.`type` === 1
+      entry.unit === -3
     }
   }
 }
