@@ -2,6 +2,15 @@
 
 @common.main("Home") {
 
+    @if(context.isWithingsEnabled) {
+        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+            <a href="@controllers.auth.routes.WithingsController.login(request.host)">
+                <img src="@assets.path("images/connect-with-withings.png")" alt="darkblurbg" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+            </a>
+            Login with your Withings account, you will be able to see your year to date measures.
+        </div>
+    }
+
     @context.account.map { user =>
         <div class="tag-box">
             @widget.profile(user, "/rest/athlete/statistics")
@@ -27,14 +36,6 @@
         </div>
     }
 
-    @if(context.isWithingsEnabled) {
-        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-            <a href="@controllers.auth.routes.WithingsController.login(request.host)">
-                <img src="@assets.path("images/connect-with-withings.png")" alt="darkblurbg" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
-            </a>
-            Login with your Withings account, you will be able to see your year to date measures.
-        </div>
-    }
     @if(context.account.isEmpty) {
         <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
             <a href="@controllers.auth.routes.StravaController.login(request.host)">

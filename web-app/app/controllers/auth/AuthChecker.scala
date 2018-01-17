@@ -45,7 +45,13 @@ trait AuthChecker {
     override protected def executionContext: ExecutionContext = ec
     override def parser: BodyParser[AnyContent] = BodyParsers.parse.default
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
-      proceed(request)(block)
+      implicit val r = request
+      val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
+      maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
+        val richReq = maybeUser.map(u => request.addAttr(OAuth2AttrKey, u)).getOrElse(request)
+        val eventualResult = block(richReq)
+        eventualResult.map(cookieUpdater)
+      }
     }
   }
 
@@ -54,10 +60,9 @@ trait AuthChecker {
 
   def loggedIn(implicit request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
 
-  private def extractToken(request: RequestHeader): Option[String] = tokenAccessor.extract(request)
   private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
     (for {
-      token  <- extractToken(request)
+      token  <- tokenAccessor.extract(request)
     } yield for {
       Some(userId) <- idContainer.get(token)
       Some(user)   <- resolveUser(userId)
@@ -68,15 +73,4 @@ trait AuthChecker {
       Future.successful(Option.empty -> identity)
     }
   }
-
-  def proceed[A](req: Request[A])(f: Request[A] => Future[Result]): Future[Result] = {
-    implicit val r = req
-    val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
-    maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
-      val richReq = maybeUser.map(u => req.addAttr(OAuth2AttrKey, u)).getOrElse(req)
-      val rr = f(richReq)
-      rr.map(cookieUpdater)
-    }
-  }
-
 }
