@@ -1,5 +1,3 @@
-import sbt._
-import Keys._
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.{BuildInfoKeys, _}
 import sbtrelease._
@@ -10,7 +8,6 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 
-object dependencies {
 
   val sparkVersion = "2.2.1"
   val logbackVersion = "1.2.3"
@@ -64,9 +61,7 @@ object dependencies {
     "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
-}
 
-object sbuild extends Build {
 
   lazy val runDist : ReleaseStep = ReleaseStep(
     action = { st: State =>
@@ -105,25 +100,24 @@ object sbuild extends Build {
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
 
-  lazy val dataProvider = Project(
-    id = "data-provider",
-    base = file("data-provider"),
-    settings = buildSettings ++ Seq(
+  lazy val dataProvider = (project in file("data-provider"))
+    .settings(
+      name := "data-provider"
+      buildSettings, 
       libraryDependencies ++= Seq(
-        dependencies.playJson, dependencies.playJsonJoda, dependencies.playWsAhcStandalone,
-        dependencies.ficus, dependencies.rx,
-        dependencies.scalaSpec, dependencies.apacheCommons
-      ) ++ dependencies.logging
-        ++ dependencies.storage
+        playJson, playJsonJoda, playWsAhcStandalone,
+        ficus, rx,
+        scalaSpec, apacheCommons
+      ) ++ logging
+        ++ storage
     )
-  )
 
   lazy val dataCruncher = Project(
     id = "data-cruncher",
     base = file("data-cruncher"),
     dependencies = Seq(dataProvider % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.spark
+      libraryDependencies ++= spark
     )
   )
 
@@ -132,15 +126,15 @@ object sbuild extends Build {
     base = file("data-search"),
     dependencies = Seq(dataProvider % "test->test;compile->compile"),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= dependencies.elastic4s
+      libraryDependencies ++= elastic4s
     )
   )
 
-  lazy val webApp = Project(
-    id = "web-app",
-    base = file("web-app"),
-    settings = buildSettings ++ Seq(
-      libraryDependencies ++= Seq(guice, ehcache, dependencies.playWsJsonStandalone, dependencies.playTest),
+  lazy val webApp = (project in file("web-app"))
+    .settings(
+      name := "web-app",
+      buildSettings ++ Seq(
+      libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest),
       routesGenerator := InjectedRoutesGenerator,
       BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
         name, version, scalaVersion, sbtVersion,
@@ -164,4 +158,3 @@ object sbuild extends Build {
     settings = buildSettings,
     aggregate = Seq(dataProvider, dataCruncher, dataSearch, webApp)
   )
-}
