@@ -7,7 +7,7 @@ import play.api.libs.json._
   * Represents a GetMeasures from the Withings feed:
   * https://developer.health.nokia.com/api/doc#api-Measure-get_measure
   *
-  * The model persisted in the storage is extracted from this response.
+  * The model Measurement is persisted in the storage and it is is extracted from this response.
   *
 
 {
@@ -102,12 +102,28 @@ case class MeasuresBody(
   measuregrps: List[MeasuresGroup]
 )
 
-object MeasuresResponse {
+object WithingsMeasureResponse {
 
-  implicit val format = Format[MeasuresResponse](Json.reads[MeasuresResponse], Json.writes[MeasuresResponse])
+  implicit val format = Format[WithingsMeasureResponse](Json.reads[WithingsMeasureResponse], Json.writes[WithingsMeasureResponse])
 }
 
-case class MeasuresResponse(
+case class WithingsMeasureResponse(
   status: Int,
   body: MeasuresBody
-)
+) {
+
+  def convert(athleteId: Int): List[Measurement] = {
+    require(status == 0, s"status is not ok, it is $status")
+    body.measuregrps.flatMap{mg =>
+      mg.measures.map{m =>
+        Measurement(
+          id = s"${mg.grpid}_${m.`type`}",
+          `type` = MeasurementType.value2Type.getOrElse(m.`type`, sys.error(s"unknown measurement type: ${m.`type`}")),
+          value = m.value * math.pow(10, m.unit),
+          athleteId = athleteId,
+          updateTime = mg.date
+        )
+      }
+    }
+  }
+}

@@ -20,22 +20,46 @@ package velocorner.model
   *  88 : Bone Mass
   *  91 : Pulse Wave Velocity
   */
-class MeasurementType(val name: String, val value: Int)
+object MeasurementType {
 
-case object Weight extends MeasurementType("Weight", 1)
-case object Height extends MeasurementType("Height", 4)
-case object FatFreeMass extends MeasurementType("FatFreeMass", 5)
-case object FatRatio extends MeasurementType("FatRatio", 6)
-case object FatMassWeight extends MeasurementType("FatMassWeight", 8)
-case object DiastolicBloodPressure extends MeasurementType("DiastolicBloodPressure", 9)
-case object SystolicBloodPressure extends MeasurementType("SystolicBloodPressure", 10)
-case object HeartPulse extends MeasurementType("HeartPulse", 11)
-case object Temperature extends MeasurementType("Temperature", 12)
-case object SP02 extends MeasurementType("SP02", 54)
-case object BodyTemperature extends MeasurementType("BodyTemperature", 71)
-case object SkinTemperature extends MeasurementType("BodyTemperature", 73)
-case object MuscleMass extends MeasurementType("MuscleMass", 76)
-case object Hydration extends MeasurementType("Hydration", 77)
-case object BoneMass extends MeasurementType("BoneMass", 88)
-case object PulseWaveVelocity extends MeasurementType("PulseWaveVelocity", 91)
+  val all = Seq(Weight, Height, FatFreeMass, FatRatio, FatMassWeight, DiastolicBloodPressure, SystolicBloodPressure,
+    HeartPulse, Temperature, SP02, BodyTemperature, SkinTemperature, MuscleMass, Hydration, BoneMass, PulseWaveVelocity)
+
+  val value2Type = all.map(o => (o.value, o)).toMap
+
+  sealed class Entry(val name: String, val value: Int)
+
+  case object Weight extends Entry("Weight", 1)
+
+  case object Height extends Entry("Height", 4)
+
+  case object FatFreeMass extends Entry("FatFreeMass", 5)
+
+  case object FatRatio extends Entry("FatRatio", 6)
+
+  case object FatMassWeight extends Entry("FatMassWeight", 8)
+
+  case object DiastolicBloodPressure extends Entry("DiastolicBloodPressure", 9)
+
+  case object SystolicBloodPressure extends Entry("SystolicBloodPressure", 10)
+
+  case object HeartPulse extends Entry("HeartPulse", 11)
+
+  case object Temperature extends Entry("Temperature", 12)
+
+  case object SP02 extends Entry("SP02", 54)
+
+  case object BodyTemperature extends Entry("BodyTemperature", 71)
+
+  case object SkinTemperature extends Entry("BodyTemperature", 73)
+
+  case object MuscleMass extends Entry("MuscleMass", 76)
+
+  case object Hydration extends Entry("Hydration", 77)
+
+  case object BoneMass extends Entry("BoneMass", 88)
+
+  case object PulseWaveVelocity extends Entry("PulseWaveVelocity", 91)
+
+}
 
