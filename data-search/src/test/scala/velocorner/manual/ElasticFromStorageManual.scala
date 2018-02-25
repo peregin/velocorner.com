@@ -1,9 +1,9 @@
 package velocorner.manual
 
-import com.sksamuel.elastic4s.ElasticDsl.{bulk, _}
-import org.slf4s.Logging
 import velocorner.storage.Storage
 import velocorner.util.ElasticSupport
+import org.slf4s.Logging
+import com.sksamuel.elastic4s.http.ElasticDsl._
 
 /**
   * Created by levi on 24.12.16.

@@ -1,6 +1,6 @@
 package velocorner.manual
 
-import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.http.ElasticDsl._
 import org.slf4s.Logging
 import velocorner.model.Activity
 import velocorner.util.{ElasticSupport, JsonIo}
@@ -24,10 +24,11 @@ object ElasticManual extends App with ElasticSupport with Logging {
   client.execute(bulk(indices)).await
 
   log.info("searching...")
-  val res = client.execute(search in "velocorner"->"Ride" query "Uetli" limit 5).await
+  val res = client.execute(searchWithType("velocorner"->"Ride") query "Uetli" limit 5).await
   log.info(s"found $res")
-  res.original.getHits.getHits.headOption.foreach{first =>
-    log.info(s"first entry: $first")
+  res match {
+    case Left(failure) => println("We failed " + failure.error)
+    case Right(results) => println(results.result.hits)
   }
 
   //log.info("counting...")

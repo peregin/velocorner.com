@@ -60,8 +60,9 @@ object dependencies {
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib)
   def elastic4s = Seq(
-    "com.sksamuel.elastic4s" %% "elastic4s-tcp" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-streams" % elasticVersion
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 }
