@@ -21,6 +21,7 @@ object dependencies {
   val slf4sVersion = "1.7.25"
   val playWsVersion = "1.1.3" // standalone version
   val playJsonVersion = "2.6.8"
+  val jacksonVersion = "2.9.4" // Spark / Elastic conflict
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -54,11 +55,17 @@ object dependencies {
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
   val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 
+  def jackson = Seq(
+    "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % jacksonVersion
+  )
   def logging = Seq(logback, slf4s,
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib) ++ jackson
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
@@ -99,9 +106,7 @@ object sbuild extends Build {
       setNextVersion,
       commitNextVersion
     ),
-//    dependencyOverrides ++= Set(
-//      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark / ES5
-//    ),
+    dependencyOverrides ++= dependencies.jackson.toSet, // because of spark / ES5
     dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
