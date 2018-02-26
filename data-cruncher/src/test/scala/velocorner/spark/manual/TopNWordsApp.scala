@@ -1,4 +1,4 @@
-package velocorner.manual.spark
+package velocorner.spark.manual
 
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD

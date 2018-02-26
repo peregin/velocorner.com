@@ -1,4 +1,4 @@
-package velocorner.util
+package velocorner.search
 
 import com.sksamuel.elastic4s.ElasticsearchClientUri
 import com.sksamuel.elastic4s.http.HttpClient

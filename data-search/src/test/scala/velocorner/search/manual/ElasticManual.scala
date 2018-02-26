@@ -1,9 +1,10 @@
-package velocorner.manual
+package velocorner.search.manual
 
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import org.slf4s.Logging
 import velocorner.model.Activity
-import velocorner.util.{ElasticSupport, JsonIo}
+import velocorner.search.ElasticSupport
+import velocorner.util.JsonIo
 
 import scala.io.Source
 

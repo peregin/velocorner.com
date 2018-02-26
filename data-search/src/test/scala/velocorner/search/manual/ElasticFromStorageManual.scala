@@ -1,9 +1,10 @@
-package velocorner.manual
+package velocorner.search.manual
 
-import velocorner.storage.Storage
-import velocorner.util.ElasticSupport
-import org.slf4s.Logging
 import com.sksamuel.elastic4s.http.ElasticDsl._
+import org.slf4s.Logging
+import velocorner.manual.MyMacConfig
+import velocorner.search.ElasticSupport
+import velocorner.storage.Storage
 
 /**
   * Created by levi on 24.12.16.
