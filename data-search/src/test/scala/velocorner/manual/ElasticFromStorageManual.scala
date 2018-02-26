@@ -24,4 +24,5 @@ object ElasticFromStorageManual extends App with ElasticSupport with Logging wit
   client.execute(bulk(indices)).await
   log.info("done...")
 
+  client.close()
 }

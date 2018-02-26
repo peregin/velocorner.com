@@ -31,11 +31,7 @@ object ElasticManual extends App with ElasticSupport with Logging {
     case Right(results) => println(results.result.hits)
   }
 
-  //log.info("counting...")
-  //val cres = client.execute(search("velocorner").size(0)).await
-  //log.info(s"found ${cres.totalHits}")
-
-  //client.close()
+  client.close()
 
   def read(name: String*): Seq[Activity] = {
     name.map{ resourceName =>
