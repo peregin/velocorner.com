@@ -1,9 +1,9 @@
-package velocorner.manual.spark
+package velocorner.spark.manual
 
 import org.apache.spark.SparkContext
-import org.apache.spark.ml.regression.LinearRegression
-import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.feature.LabeledPoint
+import org.apache.spark.ml.linalg.Vectors
+import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
 import org.slf4s.Logging

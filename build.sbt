@@ -11,13 +11,14 @@ import play.sbt.PlayImport._
 
   val sparkVersion = "2.2.1"
   val logbackVersion = "1.2.3"
-  val elasticVersion = "6.1.2"
+  val elasticVersion = "6.1.4"
   val specsVersion = "3.7"
-  val orientDbVersion = "2.2.31"
+  val orientDbVersion = "2.2.32"
   val log4jVersion = "2.10.0"
   val slf4sVersion = "1.7.25"
   val playWsVersion = "1.1.3" // standalone version
   val playJsonVersion = "2.6.8"
+  val jacksonVersion = "2.9.4" // Spark / Elastic conflict
 
   val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
   val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -51,14 +52,22 @@ import play.sbt.PlayImport._
   val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
   val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 
+  def jackson = Seq(
+    "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % jacksonVersion
+  )
   def logging = Seq(logback, slf4s,
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
   )
-  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib)
+  def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib) ++ jackson
   def elastic4s = Seq(
-    "com.sksamuel.elastic4s" %% "elastic4s-tcp" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion % "test"
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 
@@ -93,10 +102,8 @@ import play.sbt.PlayImport._
       setNextVersion,
       commitNextVersion
     ),
-    dependencyOverrides ++= Set(
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5" // because of spark
-    ),
-    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.6.2", // because of ES 5
+    dependencyOverrides ++= dependencies.jackson.toSet, // because of spark / ES5
+    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.9.1", // because of ES 5
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
 

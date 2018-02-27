@@ -27,8 +27,8 @@ object Account {
 }
 
 /**
-  * Represents a generic account used in the storage layer.
-  */
+ * Represents a generic account used in the storage layer.
+ */
 case class Account(
   athleteId: Int,
   displayName: String,

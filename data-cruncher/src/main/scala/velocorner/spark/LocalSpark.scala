@@ -17,13 +17,14 @@ trait LocalSpark[T] extends Logging {
 
   def spark(sc: SparkContext): T
 
-  def resulted(result: T) = {
+  def resulted(result: T): T = {
     log.info("--------------------------------------------------------------")
     log.info(s"resulted $result")
     log.info("--------------------------------------------------------------")
+    result
   }
 
-  def runSpark() = {
+  def runSpark(): T = {
     val result = try {
       spark(sc)
     } finally {
