@@ -84,7 +84,7 @@ object sbuild extends Build {
     }
   )
 
-  lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq (
+  lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     version := (version in ThisBuild).value,
     scalaVersion := "2.11.12",
     organization := "com.github.peregin",
@@ -108,7 +108,6 @@ object sbuild extends Build {
       commitNextVersion
     ),
     dependencyOverrides ++= dependencies.jackson.toSet, // because of spark / ES5
-    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.9.1", // because of ES 5
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
 
