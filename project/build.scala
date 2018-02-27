@@ -41,8 +41,7 @@ object dependencies {
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
   def slf4s = Seq(
-    "org.slf4s" %% "slf4s-api" % slf4sVersion,
-    "org.slf4j" % "log4j-over-slf4j" % slf4sVersion
+    "org.slf4s" %% "slf4s-api" % slf4sVersion
   )
 
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
@@ -111,6 +110,7 @@ object sbuild extends Build {
       commitNextVersion
     ),
     dependencyOverrides ++= dependencies.jackson.toSet, // because of spark / ES5
+    dependencyOverrides += "org.apache.logging.log4j" % "log4j" % "2.9.1", // because of ES 5
     dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
   )
 
