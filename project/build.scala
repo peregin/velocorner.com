@@ -155,7 +155,9 @@ object sbuild extends Build {
         name, version, scalaVersion, sbtVersion,
         BuildInfoKey.action("buildTime") {
           java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-        }
+        },
+        "elasticVersion" -> dependencies.elasticVersion,
+        "playVersion" -> play.core.PlayVersion.current
       ),
       maintainer := "velocorner.com@gmail.com",
       packageName in Docker := "velocorner.com",
