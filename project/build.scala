@@ -69,7 +69,8 @@ object dependencies {
   def elastic4s = Seq(
     "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
     "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion
+    "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion % "test"
   )
   def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 }
