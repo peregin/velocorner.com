@@ -40,9 +40,6 @@ object dependencies {
   val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 
   val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
-  def slf4s = Seq(
-    "org.slf4s" %% "slf4s-api" % slf4sVersion
-  )
 
   val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
   val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
@@ -63,9 +60,9 @@ object dependencies {
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
     "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % jacksonVersion
   )
-  def logging = slf4s ++ Seq(logback,
-    "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
-    "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
+  def logging = Seq(logback,
+    "org.slf4s" %% "slf4s-api" % slf4sVersion,
+    "org.apache.logging.log4j" % "log4j-api" % log4jVersion
   )
   def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib) ++ jackson
   def elastic4s = Seq(
