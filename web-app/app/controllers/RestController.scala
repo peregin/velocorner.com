@@ -4,11 +4,12 @@ import javax.inject.Inject
 
 import controllers.auth.AuthChecker
 import highcharts._
+import io.swagger.annotations._
 import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
-import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import velocorner.model._
 
 import scala.concurrent.Future
@@ -16,11 +17,21 @@ import scala.concurrent.Future
 /**
   * Created by levi on 06/10/16.
   */
+@Api("statistics")
 class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker {
 
   // mapped to /rest/club/:action
-  def recentClub(action: String) = Action.async { implicit request =>
+  @ApiOperation(value = "List recent daily club activities",
+    notes = "Returns daily aggregated activities",
+    responseContainer = "List",
+    response = classOf[highcharts.DailySeries],
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 404, message = "Invalid action"),
+    new ApiResponse(code = 500, message = "Internal error")))
+  def recentClub(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
+                 action: String) = Action.async { implicit request =>
     Logger.info(s"recent club action for $action")
 
     // sync, load if needed
@@ -48,6 +59,12 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
   // def mapped to /rest/athlete/progress
   // current year's progress
+  @ApiOperation(value = "List the current year's statistics for the logged in athlete",
+    notes = "Returns the yearly statistics",
+    response = classOf[Progress],
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 500, message = "Internal error")))
   def statistics = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
@@ -64,7 +81,16 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   }
 
   // def mapped to /rest/athlete/yearly/:action
-  def yearly(action: String) = AuthAsyncAction { implicit request =>
+  @ApiOperation(value = "List yearly series for the logged in athlete",
+    notes = "Returns the yearly series",
+    responseContainer = "List",
+    response = classOf[highcharts.DailySeries],
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 404, message = "Invalid action"),
+    new ApiResponse(code = 500, message = "Internal error")))
+  def yearly(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation")
+             action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
@@ -85,7 +111,16 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
   // year to date aggregation
   // def mapped to /rest/athlete/ytd/:action
-  def ytd(action: String) = AuthAsyncAction { implicit request =>
+  @ApiOperation(value = "List year to date series for the logged in athlete",
+    notes = "Returns the year to date series",
+    responseContainer = "List",
+    response = classOf[highcharts.DailySeries],
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 404, message = "Invalid action"),
+    new ApiResponse(code = 500, message = "Internal error")))
+  def ytd(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
+          action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     val now = LocalDate.now()
     Logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")

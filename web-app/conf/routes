@@ -2,16 +2,18 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# WEB
 GET     /                            controllers.ApplicationController.index
 GET     /refresh                     controllers.ApplicationController.refresh
 GET     /about                       controllers.AboutController.about
 
+# STRAVA AUTH
 GET     /login/strava                controllers.auth.StravaController.login(scope: String)
 GET     /link/strava                 controllers.auth.StravaController.link(scope: String)
 GET     /authorize/strava            controllers.auth.StravaController.authorize
 GET     /logout/strava               controllers.auth.StravaController.logout
 
+# WITHINGS AUTH
 GET     /login/withings              controllers.auth.WithingsController.login(scope: String)
 GET     /authorize/withings          controllers.auth.WithingsController.authorize
 
@@ -21,6 +23,10 @@ GET     /rest/athlete/statistics     controllers.RestController.statistics
 GET     /rest/athlete/yearly/:action controllers.RestController.yearly(action: String)
 GET     /rest/athlete/ytd/:action    controllers.RestController.ytd(action: String)
 
+# DOC
+GET     /swagger.json                controllers.ApiHelpController.getResources
+GET     /docs                        controllers.Assets.at(path="/public", file="swagger-ui/index.html")
+
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                controllers.Assets.at(path="/public", file)
 GET     /counter                     controllers.Assets.at(path="/public", file="html/counter.html")
+GET     /assets/*file                controllers.Assets.at(path="/public", file)

@@ -34,6 +34,7 @@ val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
+val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
 val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
 val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
@@ -135,7 +136,7 @@ lazy val webApp = (project in file("web-app") withId("web-app"))
   .settings(
     buildSettings,
     name := "web-app",
-    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest),
+    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, playSwagger),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
       name, version, scalaVersion, sbtVersion,
