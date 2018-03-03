@@ -15,7 +15,7 @@ trait ElasticSupport extends IndexApi {
 
   def map2Indices(activities: Iterable[Activity]): Iterable[IndexDefinition] = {
     activities.map { a =>
-      val ixDefinition = indexInto("velocorner" / a.`type`)
+      val ixDefinition = indexInto("velocorner" / "activity")
       extractIndices(a, ixDefinition).withId(a.id.toString)
     }
   }

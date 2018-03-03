@@ -39,12 +39,12 @@ class ElasticSupportSpec extends Specification with ElasticSupport with Logging 
       val indices = map2Indices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
       val res = indices.map(ix => client.execute(ix).await)  // or client.execute(bulk(indices)).await // bulk is not immediate
       val statuses = res.flatMap(_.right.toOption.map(_.status))
-      statuses must haveSize(24) // it has 6 skiing events
+      statuses must haveSize(30) // it has 6 skiing events
       statuses must contain(201)
     }
 
     "search" in {
-      val res = client.execute(search("velocorner") query "Uetli" limit 5).await
+      val res = client.execute(searchWithType("velocorner" / "activity") matchQuery("name", "Uetli") limit 5).await
       log.info(s"found $res")
       res match {
         case Left(failure) => log.info(s"failed ${failure.error}")
