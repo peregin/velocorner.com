@@ -35,9 +35,6 @@ val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % pl
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 
-val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
-val slf4s = "org.slf4s" %% "slf4s-api" % slf4sVersion
-
 val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
 val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
 val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
@@ -57,9 +54,10 @@ def jackson = Seq(
   "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % jacksonVersion
 )
-def logging = Seq(logback, slf4s,
-  "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
-  "org.apache.logging.log4j" % "log4j-to-slf4j" % log4jVersion
+def logging = Seq(
+  "ch.qos.logback" % "logback-classic" % logbackVersion,
+  "org.slf4s" %% "slf4s-api" % slf4sVersion,
+  "org.apache.logging.log4j" % "log4j-api" % log4jVersion
 )
 def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib) ++ jackson
 def elastic4s = Seq(
@@ -83,7 +81,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   scalaVersion := "2.11.12",
   organization := "com.github.peregin",
   description := "The Cycling Platform",
-  javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-XX:MaxMetaspaceSize=2048M"),
+  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   scalacOptions := Seq("-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
   resolvers ++= Seq(
     "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
@@ -143,7 +141,9 @@ lazy val webApp = (project in file("web-app") withId("web-app"))
       name, version, scalaVersion, sbtVersion,
       BuildInfoKey.action("buildTime") {
         java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-      }
+      },
+      "elasticVersion" -> elasticVersion,
+      "playVersion" -> play.core.PlayVersion.current
     ),
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
