@@ -8,15 +8,15 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 
-val sparkVersion = "2.2.1"
+val sparkVersion = "2.3.0"
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.1.4"
 val specsVersion = "3.7"
 val orientDbVersion = "2.2.32"
 val log4jVersion = "2.10.0"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "1.1.3" // standalone version
-val playJsonVersion = "2.6.8"
+val playWsVersion = "1.1.6" // standalone version
+val playJsonVersion = "2.6.9"
 val jacksonVersion = "2.9.4" // Spark / Elastic conflict
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
