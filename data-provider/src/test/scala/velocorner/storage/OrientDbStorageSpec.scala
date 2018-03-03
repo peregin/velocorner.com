@@ -54,13 +54,13 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     val serverPort = FreePortFinder.find()
     log.info(s"running OrientDb on port $serverPort")
     storage = new OrientDbStorage("orientdb_data_test", "memory", serverPort)
+    FileUtils.deleteDirectory(new File(storage.rootDir)) // cleanup previous incomplete test remainders
     storage.initialize()
   }
 
   override def afterAll() {
-    val dir = storage.rootDir
     storage.destroy()
+    FileUtils.deleteDirectory(new File(storage.rootDir))
     storage = null
-    FileUtils.deleteDirectory(new File(dir))
   }
 }
