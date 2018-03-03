@@ -4,6 +4,7 @@ import com.sksamuel.elastic4s.ElasticsearchClientUri
 import com.sksamuel.elastic4s.http.HttpClient
 import com.sksamuel.elastic4s.indexes.{IndexApi, IndexDefinition}
 import velocorner.model.Activity
+import com.sksamuel.elastic4s.http.ElasticDsl._
 
 /**
   * Created by levi on 21.03.17.
@@ -14,7 +15,7 @@ trait ElasticSupport extends IndexApi {
 
   def map2Indices(activities: Iterable[Activity]): Iterable[IndexDefinition] = {
     activities.map { a =>
-      val ixDefinition = indexInto(s"velocorner/${a.`type`}")
+      val ixDefinition = indexInto("velocorner" / a.`type`)
       extractIndices(a, ixDefinition).withId(a.id.toString)
     }
   }
