@@ -11,7 +11,7 @@ class MonteCarloPiSpec extends Specification with LocalSpark[Double] {
 
     "calculate PI" in {
       val pi = runSpark()
-      pi must beCloseTo(3.1415, .01)
+      pi must beCloseTo(3.1415, .1)
     }
   }
 
