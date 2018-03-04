@@ -10,10 +10,9 @@
 
 # velocorner.com
 The web application provides metrics for cycling (or for other kind of sports) activities, trail descriptions, biking videos.
-The metrics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to date series as well.
+The statistics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to date series as well.
 The yearly data is also presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
-Currently I'm using [Strava](http://www.strava.com) and [Garmin Connect](https://connect.garmin.com/) to track my activities,
-the data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
+The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 
 ![latest screenshot](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "latest screenshot")
 
