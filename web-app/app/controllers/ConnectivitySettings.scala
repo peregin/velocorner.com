@@ -16,7 +16,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   val secretConfig = SecretConfig(configuration.underlying)
 
-  private val storageType = configuration.getString("storage").getOrElse("or")
+  private val storageType = configuration.getOptional[String]("storage").getOrElse("or")
   Logger.info(s"initializing storage $storageType ...")
   private val storage = Storage.create(storageType, secretConfig)
   storage.initialize

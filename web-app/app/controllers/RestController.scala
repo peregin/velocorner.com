@@ -17,7 +17,7 @@ import scala.concurrent.Future
 /**
   * Created by levi on 06/10/16.
   */
-@Api("statistics")
+@Api(value = "statistics", protocols = "http")
 class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker {
 
