@@ -13,6 +13,7 @@ import play.api.mvc.{AbstractController, ControllerComponents}
 import velocorner.model._
 
 import scala.concurrent.Future
+import scala.util.Try
 
 /**
   * Created by levi on 06/10/16.
@@ -22,8 +23,8 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   extends AbstractController(components) with AuthChecker {
 
   // mapped to /rest/club/:action
-  @ApiOperation(value = "List recent daily club activities",
-    notes = "Returns daily aggregated activities",
+  @ApiOperation(value = "List daily club activities",
+    notes = "Returns daily aggregated activities submitted recently",
     responseContainer = "List",
     response = classOf[highcharts.DailySeries],
     httpMethod = "GET")
@@ -46,15 +47,19 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
     val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
 
-    val dataSeries = action.toLowerCase match {
-      case "distance" => toAthleteDistanceSeries(mostRecentAthleteProgress)
-      case "elevation" => toAthleteElevationSeries(mostRecentAthleteProgress)
-      case other => sys.error(s"not supported action: $action")
-    }
-    val series = dataSeries.map(_.aggregate).map(seriesId2Name)
-    Future.successful(
+    val result = Try {
+      val dataSeries = action.toLowerCase match {
+        case "distance" => toAthleteDistanceSeries(mostRecentAthleteProgress)
+        case "elevation" => toAthleteElevationSeries(mostRecentAthleteProgress)
+        case other => sys.error(s"not supported action: $action")
+      }
+      val series = dataSeries.map(_.aggregate).map(seriesId2Name)
       Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))
-    )
+    }.recover{ case a =>
+      Logger.error("failed to retrieve daily club activities", a)
+      NotFound
+    }
+    Future.successful(result.getOrElse(InternalServerError))
   }
 
   // def mapped to /rest/athlete/progress
