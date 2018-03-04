@@ -14,7 +14,8 @@ The statistics page compares yearly aggregated data, such as distance, hours rid
 The yearly data is also presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
 The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 
-Please visit the page at [http://velocorner.com](http://velocorner.com)
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
+
+Please visit the page at [http://velocorner.com](http://velocorner.com)
 
 The project is also used to experiment with the technologies.
