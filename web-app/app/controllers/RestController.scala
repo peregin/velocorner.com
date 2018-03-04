@@ -59,6 +59,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
       Logger.error("failed to retrieve daily club activities", a)
       NotFound
     }
+
     Future.successful(result.getOrElse(InternalServerError))
   }
 
@@ -74,15 +75,16 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = connectivity.getStorage
-    val currentYear = LocalDate.now().getYear
-    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-    val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-    val currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
-
-    Future.successful(
+    val result = Try {
+      val storage = connectivity.getStorage
+      val currentYear = LocalDate.now().getYear
+      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+      val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
+      val currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
       Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(currentYearProgress)))
-    )
+    }
+
+    Future.successful(result.getOrElse(InternalServerError))
   }
 
   // def mapped to /rest/athlete/yearly/:action
