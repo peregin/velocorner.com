@@ -1,18 +1,18 @@
 @(implicit assets: AssetsFinder)
 @common.main("About") {
 
-    <h1>Welcome to the cycling site!</h1>
+<h1 xmlns="http://www.w3.org/1999/html">Welcome to the cycling site!</h1>
     <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
         <p>
-            The intent of the site is to provide some simple metrics for cycling
-            (or other kind of sporting) activities, trail descriptions, biking videos.
+            The site provides metrics for cycling (or for other kind of sports) activities, trail descriptions, biking videos.
         </p>
         <p>
-            The metrics page compares yearly aggregated data, such as distance, hours ridden, elevation gained.
+            The metrics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows
+            year to date series as well.
             The yearly data is also presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
             Currently I'm using <a href="http://www.strava.com">Strava</a> and <a href="https://connect.garmin.com/">Garmin Connect</a>
-            to track my activities, so the data feed is collected via the Strava API. Let me know if you are interested to see
-            other kind of metrics useful to analyze the riding data.
+            to track my activities, the data feed is collected via the <a href="https://developers.strava.com/docs/reference/">Strava API</a>.
+            Let me know if you are interested to see other kind of metrics useful to analyze the riding data.
         </p>
     </div>
     <h2>Stay connected!</h2>
