@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Swagger Validator](https://img.shields.io/swagger/valid/2.0/https/raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json.svg)](http://velocorner.com/docs)
 
-![Build Stats](https://buildstats.info/travisci/chart/peregin/velocorner.com?branch=master&buildCount=20)
+![Build Stats](https://buildstats.info/travisci/chart/peregin/velocorner.com?branch=master&buildCount=25)
 
 # velocorner.com
 The cycling platform.
