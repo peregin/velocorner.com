@@ -3,9 +3,7 @@
 [![codecov.io](https://codecov.io/github/peregin/velocorner.com/coverage.svg?branch=master)](https://codecov.io/github/peregin/velocorner.com?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Swagger Validator](https://img.shields.io/swagger/valid/2.0/https/raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json.svg)](http://velocorner.com/docs)
-
-
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/fb859d66691e27cb4295/maintainability)](https://codeclimate.com/github/peregin/velocorner.com/maintainability)
 
 
 # velocorner.com
