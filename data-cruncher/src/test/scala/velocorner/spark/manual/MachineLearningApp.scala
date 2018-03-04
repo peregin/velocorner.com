@@ -63,11 +63,11 @@ object MachineLearningApp extends App with LocalSpark[String] with Logging with 
 
   object FeatureExtractor {
 
-    def from(start_date: DateTime): Array[Double] = {
+    def from(startDate: DateTime): Array[Double] = {
       Array(
-        start_date.getMonthOfYear.toDouble,
-        start_date.getDayOfMonth.toDouble,
-        start_date.getDayOfWeek.toDouble
+        startDate.getMonthOfYear.toDouble,
+        startDate.getDayOfMonth.toDouble,
+        startDate.getDayOfWeek.toDouble
       )
     }
   }

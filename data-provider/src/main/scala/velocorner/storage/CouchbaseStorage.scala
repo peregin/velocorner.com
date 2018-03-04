@@ -11,13 +11,14 @@ import velocorner.util.{Metrics, JsonIo}
 
 import scala.collection.JavaConversions._
 
+import CouchbaseStorage._
+
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
 
   lazy val uri = URI.create("http://localhost:8091/pools")
   lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
 
-  import CouchbaseStorage._
 
   // activities
   override def store(activities: Iterable[Activity]) {
