@@ -101,19 +101,20 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = connectivity.getStorage
-    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+    val result = Try {
+      val storage = connectivity.getStorage
+      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
 
-    val dataSeries = action.toLowerCase match {
-      case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
-      case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
-      case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
-      case other => sys.error(s"not supported action: $other")
+      val dataSeries = action.toLowerCase match {
+        case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
+        case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
+        case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
+        case other => sys.error(s"not supported action: $other")
+      }
+      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
     }
 
-    Future.successful(
-      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
-    )
+    Future.successful(result.getOrElse(InternalServerError))
   }
 
   // year to date aggregation
@@ -132,19 +133,20 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     val now = LocalDate.now()
     Logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
 
-    val storage = connectivity.getStorage
-    val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-    val ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
-      YearlyProgress(ytd.year, Seq(DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))))
+    val result = Try {
+      val storage = connectivity.getStorage
+      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
+      val ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
+        YearlyProgress(ytd.year, Seq(DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))))
 
-    val dataSeries = action.toLowerCase match {
-      case "distance" => toDistanceSeries(ytdProgress)
-      case "elevation" => toElevationSeries(ytdProgress)
-      case other => sys.error(s"not supported action: $other")
+      val dataSeries = action.toLowerCase match {
+        case "distance" => toDistanceSeries(ytdProgress)
+        case "elevation" => toElevationSeries(ytdProgress)
+        case other => sys.error(s"not supported action: $other")
+      }
+      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
     }
 
-    Future.successful(
-      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
-    )
+    Future.successful(result.getOrElse(InternalServerError))
   }
 }
