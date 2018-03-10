@@ -35,19 +35,19 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
                  action: String) = Action.async { implicit request =>
     Logger.info(s"recent club action for $action")
 
-    // sync, load if needed
-    strategy.refreshClubActivities(Club.Velocorner)
-
-    val storage = connectivity.getStorage
-    val dailyAthleteProgress = storage.dailyProgressForAll(200)
-    val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
-
-    val clubAthleteIds = storage.getClub(Club.Velocorner).map(_.memberIds).getOrElse(List.empty)
-    val clubAthletes = clubAthleteIds.flatMap(id => storage.getAthlete(id))
-    val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
-    val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
-
     val result = Try {
+      // sync, load if needed
+      strategy.refreshClubActivities(Club.Velocorner)
+
+      val storage = connectivity.getStorage
+      val dailyAthleteProgress = storage.dailyProgressForAll(200)
+      val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
+
+      val clubAthleteIds = storage.getClub(Club.Velocorner).map(_.memberIds).getOrElse(List.empty)
+      val clubAthletes = clubAthleteIds.flatMap(id => storage.getAthlete(id))
+      val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
+      val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
+
       val dataSeries = action.toLowerCase match {
         case "distance" => toAthleteDistanceSeries(mostRecentAthleteProgress)
         case "elevation" => toAthleteElevationSeries(mostRecentAthleteProgress)
@@ -55,7 +55,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
       }
       val series = dataSeries.map(_.aggregate).map(seriesId2Name)
       Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))
-    }.recover{ case a =>
+    }.recover{ case a if a.getMessage.startsWith("not supported") =>
       Logger.error("failed to retrieve daily club activities", a)
       NotFound
     }

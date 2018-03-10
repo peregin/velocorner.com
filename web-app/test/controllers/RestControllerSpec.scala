@@ -63,7 +63,8 @@ class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory w
       when(settingsMock.getStorage).thenReturn(storageMock)
 
       val controller = new RestController(cacheApiMock, settingsMock, refreshMock, stubControllerComponents())
-      an [IllegalArgumentException] should be thrownBy(controller.recentClub("blablabla").apply(FakeRequest()))
+      val result = controller.recentClub("blablabla").apply(FakeRequest())
+      Await.result(result.map(_.header.status), 30 seconds) mustEqual Status.INTERNAL_SERVER_ERROR
     }
   }
 }
