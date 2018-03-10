@@ -4,7 +4,6 @@ package controllers
 import javax.inject.Inject
 
 import controllers.auth.AuthChecker
-import org.slf4s
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
@@ -16,8 +15,6 @@ class ApplicationController @Inject()
 (components: ControllerComponents, val cache: SyncCacheApi,
  val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
 (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker with Metrics {
-
-  override val log = new slf4s.Logger(Logger.underlying()) // because of the Metrics
 
   def index = AuthAction { implicit request =>
     val maybeAccount = loggedIn

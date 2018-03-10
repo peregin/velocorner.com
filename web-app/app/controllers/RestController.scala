@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
+import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
 import io.swagger.annotations._
@@ -9,7 +10,7 @@ import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import velocorner.model._
 
 import scala.concurrent.Future
@@ -20,7 +21,7 @@ import scala.util.Try
   */
 @Api(value = "statistics", protocols = "http")
 class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker {
+  extends AbstractController(components) with AuthChecker with OriginChecker {
 
   // mapped to /rest/club/:action
   @ApiOperation(value = "List daily club activities",
@@ -148,5 +149,21 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     }
 
     Future.successful(result.getOrElse(InternalServerError))
+  }
+
+  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
+    Logger.info(s"websocket with request: $request")
+    // origin checker?
+
+    // Log events to the console
+    val in = Sink.foreach[String](println)
+
+    // Send a single 'Hello!' message and then leave the socket open
+    val out = Source.single("Hello!").concat(Source.maybe)
+
+    val flow = Flow.fromSinkAndSource(in, out)
+
+    //Future.successful(Left(NotImplemented))
+    Future.successful(Right(flow))
   }
 }
