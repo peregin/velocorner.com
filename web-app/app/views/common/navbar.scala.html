@@ -14,14 +14,22 @@
                 <a class="navbar-brand VC_nopadding" href="/">
                     <img id="logo-header" class="VC_logo_size" src="@assets.path("images/logo50.png")" alt="Logo1">
                 </a>
-                &nbsp;
                 <a class="navbar-brand" href="/">VELOCORNER</a>
             </h2>
+        </div>
+
+        <!--  Search input form -->
+        <div class="input-group" style="width: 50%; float: left; margin: 10px;">
+            <input type="text" class="form-control" placeholder="Search for activities ...">
+            <span class="input-group-btn">
+                <button class="btn-u" type="button"><i class="fa fa-search"></i></button>
+            </span>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
+
                 <!-- Home -->
                 <li class="@(if (title == "Home") "active" else "")"><a href="/">Home</a></li>
 
