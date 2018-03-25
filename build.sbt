@@ -12,7 +12,7 @@ val sparkVersion = "2.3.0"
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.1.4"
 val specsVersion = "3.7"
-val orientDbVersion = "2.2.32"
+val orientDbVersion = "2.2.33"
 val log4jVersion = "2.10.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.6" // standalone version
@@ -49,7 +49,7 @@ val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 
-val mockito = "org.mockito" % "mockito-core" % "2.15.0" % "test"
+val mockito = "org.mockito" % "mockito-core" % "2.16.0" % "test"
 
 def jackson = Seq(
   "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
