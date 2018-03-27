@@ -20,7 +20,7 @@
 
         <!--  Search input form -->
         <div class="input-group" style="width: 50%; float: left; margin: 10px;">
-            <input type="text" class="form-control" placeholder="Search for activities ...">
+            <input id="search" name="search" type="text" class="form-control" placeholder="Search for activities ...">
             <span class="input-group-btn">
                 <button class="btn-u" type="button"><i class="fa fa-search"></i></button>
             </span>
@@ -29,29 +29,25 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
-
                 <!-- Home -->
                 <li class="@(if (title == "Home") "active" else "")"><a href="/">Home</a></li>
-
                 <!-- About -->
                 <li class="@(if (title == "About") "active" else "")"><a href="/about">About Us</a></li>
-                <!-- End Contacts -->
-
-                <!-- Search Block -->
-                <!--<li>-->
-                    <!--<i class="search fa fa-search search-btn"></i>-->
-                    <!--<div class="search-open">-->
-                        <!--<div class="input-group animated fadeInDown">-->
-                            <!--<input type="text" class="form-control" placeholder="Search">-->
-                            <!--<span class="input-group-btn">-->
-                                <!--<button class="btn-u" type="button">Go</button>-->
-                            <!--</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</li>-->
-                <!-- End Search Block -->
             </ul>
         </div><!--/navbar-collapse-->
     </div>
 </div>
 <!-- End Navbar -->
+
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript">//<![CDATA[
+    $(document).ready(function() {
+        $("#search").autocomplete({
+             source: {
+                 "Apple": null,
+                 "Microsoft": null,
+                 "Google": null
+             }});
+    });
+//]]>
+</script>
