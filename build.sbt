@@ -49,7 +49,7 @@ val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 
-val mockito = "org.mockito" % "mockito-core" % "2.16.0" % "test"
+val mockito = "org.mockito" % "mockito-core" % "2.17.0" % "test"
 
 def jackson = Seq(
   "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
