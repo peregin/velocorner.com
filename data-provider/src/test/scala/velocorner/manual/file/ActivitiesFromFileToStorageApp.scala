@@ -6,13 +6,9 @@ import velocorner.model.Activity
 import velocorner.storage.Storage
 import velocorner.util.{JsonIo, Metrics}
 
-import scala.io.Source
-
-
 object ActivitiesFromFileToStorageApp extends App with AggregateActivities with Metrics with Logging with MyMacConfig {
 
-  val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
-  val list = JsonIo.read[List[Activity]](json)
+  val list = JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
   log.info(s"found ${list.size} activities")
 
   val storage = Storage.create("or") // re, co, mo, dy, or
