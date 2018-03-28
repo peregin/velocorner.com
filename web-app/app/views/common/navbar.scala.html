@@ -42,12 +42,10 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
-        $("#search").autocomplete({
-             source: {
-                 "Apple": null,
-                 "Microsoft": null,
-                 "Google": null
-             }});
+        $("#search").keyup(function() {
+             var txt = $(this).val();
+             console.log(txt);
+        });
     });
 //]]>
 </script>
