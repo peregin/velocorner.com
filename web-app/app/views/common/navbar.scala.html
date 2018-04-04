@@ -42,9 +42,15 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
-        $("#search").keyup(function() {
-             var txt = $(this).val();
-             console.log(txt);
+        var countries = [
+           { value: 'Andorra', data: 'AD' },
+           { value: 'Zimbabwe', data: 'ZZ' }
+        ];
+        $('#search').autocomplete({
+            lookup: countries,
+            onSelect: function (suggestion) {
+                console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+            }
         });
     });
 //]]>
