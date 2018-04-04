@@ -42,12 +42,8 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
-        var countries = [
-           { value: 'Andorra', data: 'AD' },
-           { value: 'Zimbabwe', data: 'ZZ' }
-        ];
         $('#search').autocomplete({
-            lookup: countries,
+            serviceUrl: '/rest/suggest',
             onSelect: function (suggestion) {
                 console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
             }
