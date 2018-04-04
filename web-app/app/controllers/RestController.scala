@@ -1,7 +1,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
@@ -9,7 +8,7 @@ import io.swagger.annotations._
 import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import velocorner.model._
 
@@ -149,6 +148,12 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     }
 
     Future.successful(result.getOrElse(InternalServerError))
+  }
+
+  // suggestions when searching, mapped to /rest/suggest
+  def suggest(query: String) = AuthAsyncAction { implicit request =>
+    Logger.debug(s"suggesting for $query")
+    Future.successful(Ok(Json.arr(JsString("Hungary"))))
   }
 
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>

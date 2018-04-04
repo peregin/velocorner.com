@@ -22,6 +22,7 @@ GET     /rest/club/:action           controllers.RestController.recentClub(actio
 GET     /rest/athlete/statistics     controllers.RestController.statistics
 GET     /rest/athlete/yearly/:action controllers.RestController.yearly(action: String)
 GET     /rest/athlete/ytd/:action    controllers.RestController.ytd(action: String)
+GET     /rest/suggest                controllers.RestController.suggest(query: String)
 GET     /ws                          controllers.RestController.ws
 
 # DOC
