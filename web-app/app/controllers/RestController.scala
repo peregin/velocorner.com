@@ -153,7 +153,12 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   // suggestions when searching, mapped to /rest/suggest
   def suggest(query: String) = AuthAsyncAction { implicit request =>
     Logger.debug(s"suggesting for $query")
-    Future.successful(Ok(Json.arr(JsString("Hungary"))))
+    Future.successful(Ok(
+      Json.obj("suggestions" -> Json.arr(
+        Json.obj("value" -> "Hungary", "data" -> "HU"),
+        Json.obj("value" -> "Switzerland", "data" -> "CH")
+      ))
+    ))
   }
 
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
