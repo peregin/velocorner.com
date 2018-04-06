@@ -1,4 +1,4 @@
-@(chartId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+@(chartId: String, chartTitle: String, unit: String, restUrl: String)(implicit assets: AssetsFinder)
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
@@ -52,7 +52,7 @@ $(function () {
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} km'
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} @unit'
         },
         series: []
     });
