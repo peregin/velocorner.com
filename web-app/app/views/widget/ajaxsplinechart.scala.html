@@ -60,7 +60,8 @@ $(function () {
     chart.showLoading('Loading @chartTitle Data...');
     var fetchStatistics = $.ajax({
         type: "GET",
-        url: "@restUrl"
+        url: "@restUrl",
+        timeout: 10000
     });
     fetchStatistics.done(function(statisticsData) {
         console.log("got the data for @chartId");
