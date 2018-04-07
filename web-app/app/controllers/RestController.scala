@@ -150,8 +150,15 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     Future.successful(result.getOrElse(InternalServerError))
   }
 
-  // suggestions when searching, mapped to /rest/suggest
-  def suggest(query: String) = AuthAsyncAction { implicit request =>
+  // suggestions when searching
+  // def mapped to /rest/suggest
+  @ApiOperation(value = "Suggests a list of activities based on the query parameter",
+    notes = "Returns a list of activities",
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 500, message = "Internal error")))
+  def suggest(@ApiParam(value = "partial input matched for activities")
+              query: String) = AuthAsyncAction { implicit request =>
     Logger.debug(s"suggesting for $query")
     Future.successful(Ok(
       Json.obj("suggestions" -> Json.arr(
@@ -161,6 +168,8 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     ))
   }
 
+  @ApiOperation(value = "Initiates a websocket connection",
+    httpMethod = "GET")
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
     Logger.info(s"websocket with request: $request")
     // origin checker?
