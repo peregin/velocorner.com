@@ -11,6 +11,8 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import velocorner.model._
+import velocorner.storage.OrientDbStorage
+import velocorner.util.JsonIo
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -160,11 +162,20 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   def suggest(@ApiParam(value = "partial input matched for activities")
               query: String) = AuthAsyncAction { implicit request =>
     Logger.debug(s"suggesting for $query")
+
+    // FIXME: workaround until elastic access
+    val activities = connectivity.getStorage match {
+      case orientDb: OrientDbStorage => orientDb.suggest(query, 10)
+      case _ => List.empty
+    }
+    Logger.debug(s"found ${activities.size} activities ...")
+
+    val jsonSuggestions = activities.map{ a =>
+      Json.obj("value" -> a.name, "data" -> JsonIo.write(a))
+    }
+
     Future.successful(Ok(
-      Json.obj("suggestions" -> Json.arr(
-        Json.obj("value" -> "Hungary", "data" -> "HU"),
-        Json.obj("value" -> "Switzerland", "data" -> "CH")
-      ))
+      Json.obj("suggestions" -> jsonSuggestions)
     ))
   }
 
@@ -182,7 +193,6 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
     val flow = Flow.fromSinkAndSource(in, out)
 
-    //Future.successful(Left(NotImplemented))
     Future.successful(Right(flow))
   }
 }

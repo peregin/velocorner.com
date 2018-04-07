@@ -14,11 +14,16 @@ import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
 /**
-  * Created by levi on 14.11.16.
-  */
+ * Created by levi on 14.11.16.
+ */
 class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serverPort: Int = 2480) extends Storage with Logging {
 
   var server: Option[OServer] = None
+
+  // FIXME: workaround until elastic is in place
+  def suggest(query: String, max: Int): Iterable[Activity] = {
+    activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND name like '%$query%' ORDER BY start_date DESC LIMIT $max")
+  }
 
   // insert all activities, new ones are added, previous ones are overridden
   override def store(activities: Iterable[Activity]) = inTx { db =>
