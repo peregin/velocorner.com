@@ -1,14 +1,14 @@
 package controllers
 
-import javax.inject.Inject
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
 import io.swagger.annotations._
+import javax.inject.Inject
 import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import velocorner.model._
 
