@@ -22,7 +22,7 @@
         <div class="input-group" style="width: 50%; float: left; margin: 10px;">
             <input id="search" name="search" type="text" class="form-control" placeholder="Search for activities ...">
             <span class="input-group-btn">
-                <button class="btn-u" type="button"><i class="fa fa-search"></i></button>
+                <button id="search_button" name=""search_button" class="btn-u" type="button"><i class="fa fa-search"></i></button>
             </span>
         </div>
 
@@ -41,11 +41,24 @@
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
+    function triggerSearch() {
+        var query = $('#search').val();
+        alert('search for ' + query);
+    }
+
     $(document).ready(function() {
         $('#search').autocomplete({
             serviceUrl: '/rest/suggest',
             onSelect: function (suggestion) {
-                console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                console.log('You have selected: ' + suggestion.value + ', ' + suggestion.data);
+            }
+        });
+        $('#search_button').click(function() {
+            triggerSearch();
+        });
+        $('#search').keypress(function(e) {
+            if (e.which == 13) {
+                triggerSearch()
             }
         });
     });
