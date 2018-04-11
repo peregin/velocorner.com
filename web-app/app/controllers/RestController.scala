@@ -165,8 +165,15 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
     // FIXME: workaround until elastic access
     val activities = connectivity.getStorage match {
-      case orientDb: OrientDbStorage => orientDb.suggest(query, 10)
-      case _ => List.empty
+      // implemented only in OrientDb instance
+      case orientDb: OrientDbStorage =>
+        // suggest for club members
+        val clubMemberIds = orientDb.getClub(Club.Velocorner).flatMap(_.memberIds).toSet
+        // and logged in users
+        val athleteIds = loggedIn.map(account => clubMemberIds + account.athleteId).getOrElse(clubMemberIds)
+        orientDb.suggest(query, athleteIds, 10)
+      case _ =>
+        List.empty
     }
     Logger.debug(s"found ${activities.size} activities ...")
 
