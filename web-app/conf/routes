@@ -18,7 +18,6 @@ GET     /login/withings              controllers.auth.WithingsController.login(s
 GET     /authorize/withings          controllers.auth.WithingsController.authorize
 
 # REST API
-GET     /rest/club/:action           controllers.RestController.recentClub(action: String)
 GET     /rest/athlete/statistics     controllers.RestController.statistics
 GET     /rest/athlete/yearly/:action controllers.RestController.yearly(action: String)
 GET     /rest/athlete/ytd/:action    controllers.RestController.ytd(action: String)

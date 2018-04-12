@@ -18,52 +18,11 @@ import scala.concurrent.Future
 import scala.util.Try
 
 /**
-  * Created by levi on 06/10/16.
-  */
+ * Created by levi on 06/10/16.
+ */
 @Api(value = "statistics", protocols = "http")
-class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, strategy: RefreshStrategy, components: ControllerComponents)
+class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker {
-
-  // mapped to /rest/club/:action
-  @ApiOperation(value = "List daily club activities",
-    notes = "Returns daily aggregated activities submitted recently",
-    responseContainer = "List",
-    response = classOf[highcharts.DailySeries],
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 404, message = "Invalid action"),
-    new ApiResponse(code = 500, message = "Internal error")))
-  def recentClub(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
-                 action: String) = Action.async { implicit request =>
-    Logger.info(s"recent club action for $action")
-
-    val result = Try {
-      // sync, load if needed
-      strategy.refreshClubActivities(Club.Velocorner)
-
-      val storage = connectivity.getStorage
-      val dailyAthleteProgress = storage.dailyProgressForAll(200)
-      val mostRecentAthleteProgress = AthleteDailyProgress.keepMostRecentDays(dailyAthleteProgress, 14)
-
-      val clubAthleteIds = storage.getClub(Club.Velocorner).map(_.memberIds).getOrElse(List.empty)
-      val clubAthletes = clubAthleteIds.flatMap(id => storage.getAthlete(id))
-      val id2Members = clubAthletes.map(a => (a.id.toString, a.firstname.getOrElse(a.id.toString))).toMap
-      val seriesId2Name = (ds: DailySeries) => ds.copy(name = id2Members.getOrElse(ds.name, ds.name))
-
-      val dataSeries = action.toLowerCase match {
-        case "distance" => toAthleteDistanceSeries(mostRecentAthleteProgress)
-        case "elevation" => toAthleteElevationSeries(mostRecentAthleteProgress)
-        case other => sys.error(s"not supported action: $action")
-      }
-      val series = dataSeries.map(_.aggregate).map(seriesId2Name)
-      Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))
-    }.recover{ case a if a.getMessage.startsWith("not supported") =>
-      Logger.error("failed to retrieve daily club activities", a)
-      NotFound
-    }
-
-    Future.successful(result.getOrElse(InternalServerError))
-  }
 
   // def mapped to /rest/athlete/progress
   // current year's progress
@@ -165,22 +124,15 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
     // FIXME: workaround until elastic access
     val activities = connectivity.getStorage match {
-      // implemented only in OrientDb instance
-      case orientDb: OrientDbStorage =>
-        // suggest for club members
-        val clubMemberIds = orientDb.getClub(Club.Velocorner).flatMap(_.memberIds).toSet
-        // and logged in users
-        val athleteIds = loggedIn.map(account => clubMemberIds + account.athleteId).getOrElse(clubMemberIds)
-        orientDb.suggest(query, athleteIds, 10)
-      case _ =>
-        List.empty
+      // implemented only in OrientDb instance and suggest for logged in user only
+      case orientDb: OrientDbStorage => loggedIn.map(account => orientDb.suggest(query, account.athleteId, 10)).getOrElse(List.empty)
+      case _ => List.empty
     }
     Logger.debug(s"found ${activities.size} activities ...")
 
     val jsonSuggestions = activities.map{ a =>
       Json.obj("value" -> a.name, "data" -> JsonIo.write(a))
     }
-
     Future.successful(Ok(
       Json.obj("suggestions" -> jsonSuggestions)
     ))
@@ -194,7 +146,6 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
 
     // Log events to the console
     val in = Sink.foreach[String](println)
-
     // Send a single 'Hello!' message and then leave the socket open
     val out = Source.single("Hello!").concat(Source.maybe)
 

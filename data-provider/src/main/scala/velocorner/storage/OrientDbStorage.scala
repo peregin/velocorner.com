@@ -21,8 +21,8 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
   var server: Option[OServer] = None
 
   // FIXME: workaround until elastic is in place
-  def suggest(snippet: String, athleteIds: Set[Int], max: Int): Iterable[Activity] = {
-    activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id IN [${athleteIds.mkString(",")}] AND name like '%$snippet%' ORDER BY start_date DESC LIMIT $max")
+  def suggest(snippet: String, athleteId: Int, max: Int): Iterable[Activity] = {
+    activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name like '%$snippet%' ORDER BY start_date DESC LIMIT $max")
   }
 
   // insert all activities, new ones are added, previous ones are overridden

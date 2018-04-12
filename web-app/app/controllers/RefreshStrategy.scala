@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import org.slf4s
 import org.slf4s.Logging
 import play.Logger
-import velocorner.model.{Account, Activity, Club}
+import velocorner.model.{Account, Activity}
 import velocorner.feed.StravaActivityFeed
 import velocorner.util.CloseableResource
 
@@ -19,33 +19,6 @@ import scala.annotation.tailrec
 class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logging with CloseableResource {
 
   override val log = new slf4s.Logger(Logger.underlying())
-
-  @volatile var lastClubUpdateTs = 0L
-  private val clubLockCache = new collection.mutable.HashMap[Int, Object]
-
-  def refreshClubActivities(clubId: Int) {
-    val clubLock = clubLockCache.getOrElseUpdate(clubId, new Object)
-    clubLock.synchronized {
-      val nowInMillis = DateTime.now().getMillis
-      val diffInMillis = nowInMillis - lastClubUpdateTs
-      lastClubUpdateTs = nowInMillis
-
-      if (diffInMillis > 1200000) {
-        log.info(s"REFRESHING club[$clubId] information from Stava")
-        // update from Strava
-        withCloseable(connectivity.getFeed) { feed =>
-          val storage = connectivity.getStorage
-          val clubActivities = feed.listRecentClubActivities(clubId)
-          log.info(s"Retrieved ${clubActivities.size} club activities from Stava")
-          storage.store(clubActivities)
-          val clubAthletes = feed.listClubAthletes(clubId)
-          clubAthletes.foreach(storage.store)
-          val club = Club(clubId, clubAthletes.map(_.id))
-          storage.store(club)
-        }
-      }
-    }
-  }
 
   def refreshAccountActivities(account: Account) {
     // allow refresh after some time only

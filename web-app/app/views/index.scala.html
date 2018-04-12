@@ -44,19 +44,10 @@
             Login with your Strava account, you will be able to see your yearly progress and various statistics.
             <img src="@assets.path("images/yearly-heatmap200.png")" alt="Heatmap">
         </div>
-    }
 
-    <div class="tag-box">
-        <div class="headline"><h2>Recent Club Progress</h2></div>
-        <div class="row">
-            <div class="col-md-6 md-margin-bottom-50" style="padding-left: 0;">
-                @widget.ajaxsplinechart("recentClubDistance", "Distance", "km", "/rest/club/distance")
-            </div>
-            <div class="col-md-6 md-margin-bottom-50" style="padding-right: 0;">
-                @widget.ajaxsplinechart("recentClubElevation", "Elevation", "meter", "/rest/club/elevation")
-            </div>
+        <div class="tag-box">
         </div>
-    </div>
+    }
 
 }
 <!-- end of common main section -->

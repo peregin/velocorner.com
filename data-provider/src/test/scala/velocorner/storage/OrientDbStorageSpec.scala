@@ -49,12 +49,12 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     }
 
     "suggest activities for a specific athlete" in {
-      val activities = storage.suggest("Stallikon", Set(432909), 10)
+      val activities = storage.suggest("Stallikon", 432909, 10)
       activities must haveSize(3)
     }
 
     "suggest no activities when athletes are not specified" in {
-      val activities = storage.suggest("Stallikon", Set.empty, 10)
+      val activities = storage.suggest("Stallikon", 1, 10)
       activities must beEmpty
     }
   }
