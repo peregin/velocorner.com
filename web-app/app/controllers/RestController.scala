@@ -12,7 +12,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import velocorner.model._
 import velocorner.storage.OrientDbStorage
-import velocorner.util.JsonIo
+import velocorner.util.{JsonIo, Metrics}
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -22,7 +22,7 @@ import scala.util.Try
  */
 @Api(value = "statistics", protocols = "http")
 class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker with OriginChecker {
+  extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   // def mapped to /rest/athlete/progress
   // current year's progress
@@ -119,7 +119,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   @ApiResponses(Array(
     new ApiResponse(code = 500, message = "Internal error")))
   def suggest(@ApiParam(value = "partial input matched for activities")
-              query: String) = AuthAsyncAction { implicit request =>
+              query: String) = timed(s"suggest for $query") { AuthAsyncAction { implicit request =>
     Logger.debug(s"suggesting for $query")
 
     // FIXME: workaround until elastic access
@@ -136,7 +136,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     Future.successful(Ok(
       Json.obj("suggestions" -> jsonSuggestions)
     ))
-  }
+  }}
 
   @ApiOperation(value = "Initiates a websocket connection",
     httpMethod = "GET")
