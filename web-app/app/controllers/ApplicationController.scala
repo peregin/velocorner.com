@@ -31,6 +31,10 @@ class ApplicationController @Inject()
     Future.successful(Redirect(routes.ApplicationController.index()))
   }
 
+  def search = Action {
+    Ok(views.html.search(assets))
+  }
+
   def about = Action {
     Ok(views.html.about(assets))
   }

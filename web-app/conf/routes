@@ -5,6 +5,7 @@
 # WEB
 GET     /                            controllers.ApplicationController.index
 GET     /refresh                     controllers.ApplicationController.refresh
+GET     /search                      controllers.ApplicationController.search
 GET     /about                       controllers.ApplicationController.about
 
 # STRAVA AUTH
