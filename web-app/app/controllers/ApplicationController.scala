@@ -1,6 +1,5 @@
 package controllers
 
-
 import javax.inject.Inject
 
 import controllers.auth.AuthChecker
@@ -19,20 +18,20 @@ class ApplicationController @Inject()
   def index = AuthAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"rendering landing page for $maybeAccount")
-
     val context = timed("building page context") {
       PageContext(maybeAccount, connectivity.secretConfig.isWithingsEnabled())
     }
-
     Ok(views.html.index(context))
   }
 
   def refresh = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"refreshing for $maybeAccount")
-
     maybeAccount.foreach(strategy.refreshAccountActivities)
-
     Future.successful(Redirect(routes.ApplicationController.index()))
+  }
+
+  def about = Action {
+    Ok(views.html.about(assets))
   }
 }
