@@ -17,7 +17,7 @@ val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.7" // standalone version
 val playJsonVersion = "2.6.9"
-val jacksonVersion = "2.9.4" // Spark / Elastic conflict
+val jacksonVersion = "2.9.5" // Spark / Elastic conflict
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
