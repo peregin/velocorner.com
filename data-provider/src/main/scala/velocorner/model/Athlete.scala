@@ -22,6 +22,13 @@ import play.api.libs.json._
   * "premium": true,
   * "created_at": "2011-03-19T21:59:57Z",
   * "updated_at": "2013-09-05T16:46:54Z"
+  * "bikes" : [ {
+  * "id" : "b12345678987655",
+  * "primary" : true,
+  * "name" : "EMC",
+  * "resource_state" : 2,
+  * "distance" : 0
+  * } ],
   *
   */
 object Athlete {

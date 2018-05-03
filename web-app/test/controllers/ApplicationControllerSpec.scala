@@ -10,6 +10,8 @@ import velocorner.SecretConfig
 
 import scala.concurrent.duration._
 
+import scala.language.postfixOps
+
 class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "controller" should {
