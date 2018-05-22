@@ -15,7 +15,7 @@ val specsVersion = "3.7"
 val orientDbVersion = "3.0.1"
 val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "1.1.8" // standalone version
+val playWsVersion = "1.1.9" // standalone version
 val playJsonVersion = "2.6.9"
 val jacksonVersion = "2.9.5" // Spark / Elastic conflict
 
