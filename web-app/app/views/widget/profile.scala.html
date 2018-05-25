@@ -15,6 +15,7 @@
                         <img class="img-responsive rounded" src="@account.avatarUrl" alt="">
                         <ul class="list-unstyled">
                             <li><i class="fa-fw fa fa-map-marker"></i> @account.displayLocation</li>
+                            <li><i class="fa-fw fa fa-history"></i> Last refresh: @account.lastUpdate.map(u => org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:MM").print(u)).getOrElse("not yet")</li>
                         </ul>
                     </div>
                     <div class="col-md-4">
