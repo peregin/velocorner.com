@@ -1,6 +1,6 @@
-@(implicit assets: AssetsFinder)
+@(context: PageContext)(implicit assets: AssetsFinder)
 
-@common.main("Not Found") {
+@common.main(context) {
 
     <!--Error Block-->
     <div class="row">

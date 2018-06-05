@@ -1,5 +1,5 @@
-@(implicit assets: AssetsFinder)
-@common.main("Search") {
+@(context: PageContext)(implicit assets: AssetsFinder)
+@common.main(context) {
 
 <!--=== Search Results ===-->
 <div class="container s-results margin-bottom-50">

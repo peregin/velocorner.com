@@ -1,5 +1,5 @@
 @(context: PageContext)(implicit request: play.api.mvc.Request[Any], assets: AssetsFinder)
-@common.main("Home") {
+@common.main(context) {
 
     @if(context.isWithingsEnabled) {
         <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
