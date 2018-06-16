@@ -46,13 +46,19 @@
     function triggerSearch() {
         var query = $('#search').val();
         console.log('search for ' + query);
+        window.open('search');
+    }
+
+    function useSuggestion(suggestion) {
+        console.log('You have selected: ' + suggestion);
+        window.open('search');
     }
 
     $(document).ready(function() {
         $('#search').autocomplete({
             serviceUrl: '/rest/suggest',
             onSelect: function (suggestion) {
-                console.log('You have selected: ' + suggestion.value + ', ' + suggestion.data);
+                useSuggestion(suggestion.data);
             }
         });
         $('#search_button').click(function() {
