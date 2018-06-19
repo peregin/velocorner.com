@@ -45,13 +45,25 @@
 <script type="text/javascript">//<![CDATA[
     function triggerSearch() {
         var query = $('#search').val();
-        console.log('search for ' + query);
-        window.open('search', '_self');
+        console.log('searching for ' + query);
+        searchPage(null);
     }
 
     function useSuggestion(suggestion) {
-        console.log('You have selected: ' + suggestion);
-        window.open('search', '_self');
+        console.log('selected suggestion: ' + suggestion);
+        searchPage(suggestion);
+    }
+
+    function searchPage(activity) {
+        // open search page if the table is not present
+        if ($('#activity-result').length <= 0) {
+            window.open('search', '_self');
+        }
+        // clean up existing entries
+        // mark search in progress
+        // trigger search or take suggested activity
+        // populate table
+        // hide search activities
     }
 
     $(document).ready(function() {
