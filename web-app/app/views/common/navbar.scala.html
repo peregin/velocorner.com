@@ -57,9 +57,29 @@
     function searchPage(activity) {
         // open search page if the table is not present
         if ($('#activity-result').length <= 0) {
-            window.open('search', '_self');
+            console.log('redirecting to the search page')
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        document.open();
+                        document.write(httpRequest.responseText);
+                        document.close();
+                        //$("html").html(httpRequest.responseText);
+                    }
+                }
+            };
+            httpRequest.open('GET', 'search');
+            httpRequest.send();
+        } else {
+            populateSearch(activity);
         }
+    }
+
+    function populateSearch(activity) {
         // clean up existing entries
+        $('#activity-result tbody tr').remove();
+
         // mark search in progress
         // trigger search or take suggested activity
         // populate table
