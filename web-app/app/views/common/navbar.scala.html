@@ -46,37 +46,29 @@
     function triggerSearch() {
         var query = $('#search').val();
         console.log('searching for ' + query);
-        searchPage(null);
+        searchPage(null, query);
     }
 
-    function useSuggestion(suggestion) {
-        console.log('selected suggestion: ' + suggestion);
-        searchPage(suggestion);
+    function triggerSuggestion(suggestion) {
+        var activity = JSON.parse(suggestion);
+        console.log('selected suggestion\'s activity id: ' + activity.id);
+        searchPage(activity);
     }
 
-    function searchPage(activity) {
+    // either suggested activity or queryToSearch
+    function searchPage(suggestedActivity, queryToSearch) {
         // open search page if the table is not present
         if ($('#activity-result').length <= 0) {
-            console.log('redirecting to the search page')
-            var httpRequest = new XMLHttpRequest();
-            httpRequest.onreadystatechange = function() {
-                if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                    if (httpRequest.status === 200) {
-                        document.open();
-                        document.write(httpRequest.responseText);
-                        document.close();
-                        //$("html").html(httpRequest.responseText);
-                    }
-                }
-            };
-            httpRequest.open('GET', 'search');
-            httpRequest.send();
+            console.log('redirecting to the search page');
+            var queryParameter = suggestedActivity ? 'qid='+suggestedActivity.id : 'q='+queryToSearch;
+            window.open('search?'+queryParameter, '_self');
         } else {
-            populateSearch(activity);
+            var activities = suggestedActivity ? Array.from(suggestedActivity) : null;
+            populateSearch(activities, queryToSearch, null);
         }
     }
 
-    function populateSearch(activity) {
+    function populateSearch(activities, queryToSearch, activityIdToSearch) {
         // clean up existing entries
         $('#activity-result tbody tr').remove();
 
@@ -90,7 +82,7 @@
         $('#search').autocomplete({
             serviceUrl: '/rest/suggest',
             onSelect: function (suggestion) {
-                useSuggestion(suggestion.data);
+                triggerSuggestion(suggestion.data);
             }
         });
         $('#search_button').click(function() {
@@ -101,6 +93,12 @@
                 triggerSearch()
             }
         });
+
+        var urlParams = new URLSearchParams(window.location.search);
+        if ($('#activity-result') && (urlParams.has('qid') || urlParams.has('q'))) {
+            console.log('triggering search');
+            // call populateSearch with proper parameters
+        }
     });
 //]]>
 </script>
