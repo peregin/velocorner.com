@@ -63,7 +63,7 @@
             var queryParameter = suggestedActivity ? 'aid='+suggestedActivity.id : 'q='+queryToSearch;
             window.open('search?'+queryParameter, '_self');
         } else {
-            var activities = suggestedActivity ? Array.from(suggestedActivity) : null;
+            var activities = suggestedActivity ? Array.of(suggestedActivity) : null;
             startSearch(activities, queryToSearch, null);
         }
     }
