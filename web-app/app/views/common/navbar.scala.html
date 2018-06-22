@@ -52,7 +52,7 @@
     function triggerSuggestion(suggestion) {
         var activity = JSON.parse(suggestion);
         console.log('selected suggestion\'s activity id: ' + activity.id);
-        searchPage(activity);
+        searchPage(activity, null);
     }
 
     // either suggested activity or queryToSearch
@@ -60,22 +60,50 @@
         // open search page if the table is not present
         if ($('#activity-result').length <= 0) {
             console.log('redirecting to the search page');
-            var queryParameter = suggestedActivity ? 'qid='+suggestedActivity.id : 'q='+queryToSearch;
+            var queryParameter = suggestedActivity ? 'aid='+suggestedActivity.id : 'q='+queryToSearch;
             window.open('search?'+queryParameter, '_self');
         } else {
             var activities = suggestedActivity ? Array.from(suggestedActivity) : null;
-            populateSearch(activities, queryToSearch, null);
+            startSearch(activities, queryToSearch, null);
         }
     }
 
-    function populateSearch(activities, queryToSearch, activityIdToSearch) {
+    // TODO: do the search by activity id
+    // TODO: use search instead of suggest
+    function startSearch(activities, queryToSearch, activityIdToSearch) {
+        // mark search in progress
+        $('#search-progress').show();
+
         // clean up existing entries
         $('#activity-result tbody tr').remove();
 
-        // mark search in progress
-        // trigger search or take suggested activity
-        // populate table
+        if (activities) {
+            // take suggested activity
+            finishSearch(activities);
+        } else {
+            // trigger asynchronous search
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/rest/suggest?query=queryToSearch",
+                timeout: 10000,
+                success: function(result) {
+                    finishSearch(result.data);
+                }
+            });
+        }
+    }
+
+    function finishSearch(activities) {
+        // populate table with the results
+        console.log('populating with '+activities.length+' result(s)');
+        $.each(activities, function(ix, entry) {
+            // TODO: extract data per column
+            $("#activity-result tbody").append("<tr><td>" + entry + "</td></tr>");
+        });
+
         // hide search activities
+        $('#search-progress').hide();
     }
 
     $(document).ready(function() {
@@ -95,9 +123,9 @@
         });
 
         var urlParams = new URLSearchParams(window.location.search);
-        if ($('#activity-result') && (urlParams.has('qid') || urlParams.has('q'))) {
+        if ($('#activity-result') && (urlParams.has('aid') || urlParams.has('q'))) {
             console.log('triggering search');
-            // call populateSearch with proper parameters
+            startSearch(null, urlParams.get('q'), urlParams.get('aid'));
         }
     });
 //]]>
