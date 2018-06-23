@@ -81,11 +81,12 @@
             // take suggested activity
             finishSearch(activities);
         } else {
+            var urlPath = queryToSearch ? "/api/activities/suggest?query=queryToSearch" : "/rest/activities/"+activityIdToSearch
             // trigger asynchronous search
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "/rest/suggest?query=queryToSearch",
+                url: urlPath,
                 timeout: 10000,
                 success: function(result) {
                     finishSearch(result.data);
@@ -108,7 +109,7 @@
 
     $(document).ready(function() {
         $('#search').autocomplete({
-            serviceUrl: '/rest/suggest',
+            serviceUrl: '/api/activities/suggest',
             onSelect: function (suggestion) {
                 triggerSuggestion(suggestion.data);
             }

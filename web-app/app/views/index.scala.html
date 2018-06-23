@@ -12,24 +12,24 @@
 
     @context.account.map { user =>
         <div class="tag-box">
-            @widget.profile(user, "/rest/athlete/statistics")
+            @widget.profile(user, "/api/athletes/statistics")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
-            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", "/rest/athlete/yearly/heatmap")
+            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", "/api/athletes/statistics/yearly/heatmap")
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">
-                    @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", "km", "/rest/athlete/ytd/distance")
+                    @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", "km", "/api/athletes/statistics/ytd/distance")
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "km", "/rest/athlete/yearly/distance")
+                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "km", "/api/athletes/statistics/yearly/distance")
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">
-                    @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", "meter", "/rest/athlete/ytd/elevation")
+                    @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", "meter", "/api/athletes/statistics/ytd/elevation")
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "meter", "/rest/athlete/yearly/elevation")
+                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "meter", "/api/athletes/statistics/yearly/elevation")
                 </div>
             </div>
         </div>

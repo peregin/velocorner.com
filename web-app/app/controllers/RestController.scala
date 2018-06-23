@@ -24,7 +24,7 @@ import scala.util.Try
 class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
-  // def mapped to /rest/athlete/progress
+  // def mapped to /api/athletes/progress
   // current year's progress
   @ApiOperation(value = "List the current year's statistics for the logged in athlete",
     notes = "Returns the yearly statistics",
@@ -48,7 +48,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     Future.successful(result.getOrElse(InternalServerError))
   }
 
-  // def mapped to /rest/athlete/yearly/:action
+  // def mapped to /api/athletes/statistics/yearly/:action
   @ApiOperation(value = "List yearly series for the logged in athlete",
     notes = "Returns the yearly series",
     responseContainer = "List",
@@ -79,7 +79,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   }
 
   // year to date aggregation
-  // def mapped to /rest/athlete/ytd/:action
+  // def mapped to /api/athletes/statistics/ytd/:action
   @ApiOperation(value = "List year to date series for the logged in athlete",
     notes = "Returns the year to date series",
     responseContainer = "List",
@@ -112,7 +112,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   }
 
   // suggestions when searching
-  // def mapped to /rest/suggest
+  // def mapped to /api/activities/suggest
   @ApiOperation(value = "Suggests a list of activities based on the query parameter",
     notes = "Returns a list of activities",
     httpMethod = "GET")
