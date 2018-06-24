@@ -90,7 +90,7 @@
                     url: "/api/activities/suggest?query="+queryToSearch,
                     timeout: 10000,
                     success: function(result) {
-                        finishSearch(result.data);
+                        finishSearch(result.suggestions);
                     }
                 });
             } else {
