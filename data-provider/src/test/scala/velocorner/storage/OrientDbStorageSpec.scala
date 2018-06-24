@@ -53,6 +53,11 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       activities must beEmpty
     }
 
+    "suggest activities case insensitive" in {
+      val activities = storage.suggestActivities("stAlLIkon", 432909, 10)
+      activities must haveSize(3)
+    }
+
     "retrieve existing activity" in {
       val activity = storage.getActivity(244993130).getOrElse(sys.error("not found"))
       activity.id === 244993130
