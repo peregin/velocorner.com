@@ -70,7 +70,10 @@
 
     function startSearch(activities, queryToSearch, activityIdToSearch) {
         // mark search in progress
-        $('#search-progress').show();
+        $('#search-progress-bar').attr('aria-valuenow', 50);
+        $('#search-progress-bar').css('width', '50%');
+        $('#search-progress-bar').text('50% Searching...');
+        $('#search-progress').fadeIn();
 
         // clean up existing entries
         $('#activity-result tbody tr').remove();
@@ -123,11 +126,15 @@
         });
 
         // hide search activities
-        $('#search-progress').hide();
+        $('#search-progress-bar').attr('aria-valuenow', 100);
+        $('#search-progress-bar').css('width', '100%');
+        $('#search-progress-bar').text('Done');
+        $('#search-progress').fadeOut();
     }
 
     $(document).ready(function() {
-        $('#search').autocomplete({
+        var searchField = $('#search')
+        searchField.autocomplete({
             serviceUrl: '/api/activities/suggest',
             onSelect: function (suggestion) {
                 triggerSuggestion(suggestion.data);
@@ -136,7 +143,7 @@
         $('#search_button').click(function() {
             triggerSearch();
         });
-        $('#search').keypress(function(e) {
+        searchField.keypress(function(e) {
             if (e.which == 13) {
                 triggerSearch()
             }
@@ -144,7 +151,8 @@
 
         var urlParams = new URLSearchParams(window.location.search);
         if ($('#activity-result') && (urlParams.has('aid') || urlParams.has('q'))) {
-            console.log('triggering search');
+            console.log('triggering search or suggestion');
+            searchField.val(urlParams.get('q') || urlParams.get('aid'));
             startSearch(null, urlParams.get('q'), urlParams.get('aid'));
         }
     });
