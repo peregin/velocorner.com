@@ -68,8 +68,6 @@
         }
     }
 
-    // TODO: do the search by activity id
-    // TODO: use search instead of suggest
     function startSearch(activities, queryToSearch, activityIdToSearch) {
         // mark search in progress
         $('#search-progress').show();
@@ -90,7 +88,7 @@
                     url: "/api/activities/suggest?query="+queryToSearch,
                     timeout: 10000,
                     success: function(result) {
-                        finishSearch(result.suggestions);
+                        finishSearch(result.suggestions.map(s => JSON.parse(s.data)));
                     }
                 });
             } else {
@@ -112,7 +110,16 @@
         console.log('populating with '+activities.length+' result(s)');
         $.each(activities, function(ix, entry) {
             // TODO: extract data per column
-            $("#activity-result tbody").append("<tr><td>" + entry + "</td></tr>");
+            $("#activity-result tbody").append(
+              '<tr><td><a href="http://www.strava.com/activities/'+entry.id+'">'+entry.start_date_local+'</a></td>'+
+              '<td class="td-width"><a href="http://www.strava.com/activities/'+entry.id+'">'+entry.name+'</a></td>'+
+              '<td>'+entry.distance+'</td>'+
+              '<td>'+entry.total_elevation_gain+'</td>'+
+              '<td><span>'+entry.moving_time+'</span><span>'+entry.elapsed_time+'</span></td>'+
+              '<td>'+entry.average_speed+'</td>'+
+              '<td>'+entry.average_watts+'</td>'+
+              '<td>'+entry.average_temp+'</td>'+
+              '</tr>');
         });
 
         // hide search activities
