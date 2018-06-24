@@ -51,6 +51,8 @@ class MongoDbStorage extends Storage with Logging {
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
+  override def getActivity(id: Int): Option[Activity] = getJsonById(id, ACTIVITY_TABLE, "id").map(JsonIo.read[Activity])
+
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
     val coll = db.getCollection(ACTIVITY_TABLE)

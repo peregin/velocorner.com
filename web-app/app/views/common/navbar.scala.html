@@ -81,17 +81,29 @@
             // take suggested activity
             finishSearch(activities);
         } else {
-            var urlPath = queryToSearch ? "/api/activities/suggest?query=queryToSearch" : "/rest/activities/"+activityIdToSearch
+            var urlPath = queryToSearch ? "/api/activities/suggest?query=queryToSearch" : "/api/activities/"+activityIdToSearch
             // trigger asynchronous search
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: urlPath,
-                timeout: 10000,
-                success: function(result) {
-                    finishSearch(result.data);
-                }
-            });
+            if (queryToSearch) {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "/api/activities/suggest?query="+queryToSearch,
+                    timeout: 10000,
+                    success: function(result) {
+                        finishSearch(result.data);
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "/api/activities/"+activityIdToSearch,
+                    timeout: 10000,
+                    success: function(result) {
+                        finishSearch(Array.of(result));
+                    }
+                });
+            }
         }
     }
 

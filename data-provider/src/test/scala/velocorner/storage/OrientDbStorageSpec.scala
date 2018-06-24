@@ -44,13 +44,22 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     }
 
     "suggest activities for a specific athlete" in {
-      val activities = storage.suggest("Stallikon", 432909, 10)
+      val activities = storage.suggestActivities("Stallikon", 432909, 10)
       activities must haveSize(3)
     }
 
     "suggest no activities when athletes are not specified" in {
-      val activities = storage.suggest("Stallikon", 1, 10)
+      val activities = storage.suggestActivities("Stallikon", 1, 10)
       activities must beEmpty
+    }
+
+    "retrieve existing activity" in {
+      val activity = storage.getActivity(244993130).getOrElse(sys.error("not found"))
+      activity.id === 244993130
+    }
+
+    "return empty on non existent activity" in {
+      storage.getActivity(111) must beNone
     }
   }
 

@@ -41,8 +41,17 @@ class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory w
       doThrow(new IllegalArgumentException("unexpected server error")).when(settingsMock).getStorage
 
       val controller = new RestController(cacheApiMock, settingsMock, stubControllerComponents())
-      val result = controller.yearly("distance").apply(FakeRequest())
+      val result = controller.yearlyStatistics("distance").apply(FakeRequest())
       Await.result(result.map(_.header.status), 30 seconds) mustEqual Status.INTERNAL_SERVER_ERROR
+    }
+
+    "return with forbidden when asking for activities without being logged in" in {
+      val cacheApiMock = mock[SyncCacheApi]
+      val settingsMock = mock[ConnectivitySettings]
+
+      val controller = new RestController(cacheApiMock, settingsMock, stubControllerComponents())
+      val result = controller.activity(100).apply(FakeRequest())
+      Await.result(result.map(_.header.status), 30 seconds) mustEqual Status.FORBIDDEN
     }
   }
 }

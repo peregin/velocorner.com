@@ -57,6 +57,8 @@ class RethinkDbStorage extends Storage with Logging {
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
+  override def getActivity(id: Int): Option[Activity] = getJsonById(id, ACTIVITY_TABLE).map(JsonIo.read[Activity])
+
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
     val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>

@@ -12,6 +12,7 @@ trait Storage {
   def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress]
   def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress]
 
+  def getActivity(id: Int): Option[Activity]
   // summary on the landing page
   def listRecentActivities(limit: Int): Iterable[Activity]
   // to check how much needs to be imported from the feed

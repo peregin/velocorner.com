@@ -57,7 +57,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Invalid action"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def yearly(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation")
+  def yearlyStatistics(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation")
              action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
@@ -88,7 +88,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Invalid action"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def ytd(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
+  def ytdStatistics(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
           action: String) = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     val now = LocalDate.now()
@@ -125,7 +125,7 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     // FIXME: workaround until elastic access
     val activities = connectivity.getStorage match {
       // implemented only in OrientDb instance and suggest for logged in user only
-      case orientDb: OrientDbStorage => loggedIn.map(account => orientDb.suggest(query, account.athleteId, 10)).getOrElse(List.empty)
+      case orientDb: OrientDbStorage => loggedIn.map(account => orientDb.suggestActivities(query, account.athleteId, 10)).getOrElse(List.empty)
       case _ => List.empty
     }
     Logger.debug(s"found ${activities.size} activities ...")
@@ -138,6 +138,29 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     ))
   }}
 
+  // retrieves the activity with the given id
+  // def mapped to /api/activities/:id
+  @ApiOperation(value = "Retrieves an activity",
+    notes = "Returns an activity based on id",
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 403, message = "Forbidden"),
+    new ApiResponse(code = 404, message = "Not found"),
+    new ApiResponse(code = 500, message = "Internal error")))
+  def activity(@ApiParam(value = "identifier of the activity")
+              id: Int) = timed(s"query for acticity $id") { AuthAsyncAction { implicit request =>
+
+    val result = loggedIn.map{account =>
+      Logger.debug(s"querying activity $id")
+      connectivity.getStorage.getActivity(id)
+        .map(a => Ok(JsonIo.write(a)))
+        .getOrElse(NotFound)
+    }.getOrElse(Forbidden)
+
+    Future.successful(result)
+  }}
+
+  // WebSocket to update the client
   @ApiOperation(value = "Initiates a websocket connection",
     httpMethod = "GET")
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>

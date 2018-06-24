@@ -21,7 +21,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
   var server: Option[OServer] = None
 
   // FIXME: workaround until elastic is in place
-  def suggest(snippet: String, athleteId: Int, max: Int): Iterable[Activity] = {
+  def suggestActivities(snippet: String, athleteId: Int, max: Int): Iterable[Activity] = {
     activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name like '%$snippet%' ORDER BY start_date DESC LIMIT $max")
   }
 
@@ -48,6 +48,8 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
     log.debug(s"found activities ${activities.size}")
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
+
+  override def getActivity(id: Int): Option[Activity] = lookup(ACTIVITY_CLASS, "id", id).map(JsonIo.read[Activity])
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {

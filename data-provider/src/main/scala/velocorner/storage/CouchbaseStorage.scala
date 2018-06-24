@@ -51,6 +51,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
   }
 
+  override def getActivity(id: Int): Option[Activity] = ???
+
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
     val view = client.getView(listDesignName, allActivitiesByDateViewName)
     orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
