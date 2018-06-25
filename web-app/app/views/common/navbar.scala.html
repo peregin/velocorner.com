@@ -89,7 +89,7 @@
                     type: "GET",
                     dataType: "json",
                     url: "/api/activities/suggest?query="+queryToSearch,
-                    timeout: 10000,
+                    timeout: 20000,
                     success: function(result) {
                         finishSearch(result.suggestions.map(s => JSON.parse(s.data)));
                     }
@@ -99,7 +99,7 @@
                     type: "GET",
                     dataType: "json",
                     url: "/api/activities/"+activityIdToSearch,
-                    timeout: 10000,
+                    timeout: 20000,
                     success: function(result) {
                         finishSearch(Array.of(result));
                     }
@@ -111,7 +111,7 @@
     function elapsedInSeconds(secs) {
         var elapsed = moment.duration(secs, "seconds");
         var tenthOfMins = elapsed.minutes() > 9 ? '' : '0';
-        return elapsed.hours()+':'+tenthOfMins + elapsed.minutes();
+        return elapsed.hours()+'h:'+tenthOfMins+elapsed.minutes()+'m';
     }
 
     function wholeNumber(n, unit) {
