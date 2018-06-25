@@ -61,7 +61,7 @@ $(function () {
     var fetchStatistics = $.ajax({
         type: "GET",
         url: "@restUrl",
-        timeout: 10000
+        timeout: 20000
     });
     fetchStatistics.done(function(statisticsData) {
         console.log("got the data for @chartId");

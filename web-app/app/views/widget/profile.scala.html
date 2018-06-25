@@ -58,7 +58,7 @@
         type: "GET",
         dataType: "json",
         url: "@restUrl",
-        timeout: 10000,
+        timeout: 20000,
         success: function(data) {
             $('#profile-rides').html(data.progress.rides)
             $('#profile-distance').html(Math.round(data.progress.distance))
