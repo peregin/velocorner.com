@@ -10,7 +10,7 @@ import play.sbt.PlayImport._
 
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.2.9"
-val specsVersion = "3.7"
+val specsVersion = "3.8.9"
 val orientDbVersion = "3.0.2"
 val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
@@ -66,7 +66,7 @@ lazy val runDist: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := "2.11.12",
+  scalaVersion := "2.12.6",
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
