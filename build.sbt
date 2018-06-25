@@ -8,7 +8,6 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 
-val sparkVersion = "2.3.1"
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.2.9"
 val specsVersion = "3.7"
@@ -17,7 +16,6 @@ val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.9" // standalone version
 val playJsonVersion = "2.6.9"
-val jacksonVersion = "2.9.5" // Spark / Elastic conflict
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -36,11 +34,6 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
-val sparkCore = "org.apache.spark" %% "spark-core" % sparkVersion
-val sparkStreaming = "org.apache.spark" %% "spark-streaming" % sparkVersion
-val sparkSQL = "org.apache.spark" %% "spark-sql" % sparkVersion
-val sparkMlLib = "org.apache.spark" %% "spark-mllib" % sparkVersion
-
 val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
 
 val rx = "io.reactivex" %% "rxscala" % "0.26.5"
@@ -50,18 +43,11 @@ val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
 val mockito = "org.mockito" % "mockito-core" % "2.18.3" % "test"
 
-def jackson = Seq(
-  "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
-  "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
-  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
-  "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % jacksonVersion
-)
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion
 )
-def spark = Seq(sparkCore, sparkStreaming, sparkSQL, sparkMlLib) ++ jackson
 def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
@@ -100,9 +86,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     runDist,
     setNextVersion,
     commitNextVersion
-  ),
-  dependencyOverrides ++= jackson, // because of spark / ES5
-  dependencyOverrides += "com.google.guava" % "guava" % "16.0" // because of Hadoop MR Client
+  )
 )
 
 lazy val dataProvider = (project in file("data-provider") withId("data-provider"))
@@ -116,14 +100,6 @@ lazy val dataProvider = (project in file("data-provider") withId("data-provider"
     ) ++ logging
       ++ storage
   )
-
-lazy val dataCruncher = (project in file("data-cruncher") withId("data-cruncher"))
-  .settings(
-    buildSettings,
-    name := "data-cruncher",
-    libraryDependencies ++= spark
-  )
-  .dependsOn(dataProvider % "test->test;compile->compile")
 
 lazy val dataSearch = (project in file("data-search") withId("data-search"))
   .settings(
@@ -158,7 +134,7 @@ lazy val webApp = (project in file("web-app") withId("web-app"))
 
 // top level aggregate
 lazy val root = (project in file(".") withId("velocorner"))
-  .aggregate(dataProvider, dataCruncher, dataSearch, webApp)
+  .aggregate(dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
     buildSettings
