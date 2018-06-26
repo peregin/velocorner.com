@@ -10,12 +10,13 @@ import play.sbt.PlayImport._
 
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.2.9"
-val specsVersion = "3.8.9"
 val orientDbVersion = "3.0.2"
 val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.9" // standalone version
 val playJsonVersion = "2.6.9"
+val specsVersion = "4.3.0"
+val mockitoVersion = "2.19.0"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -34,14 +35,12 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
-val ficus = "net.ceedubs" %% "ficus" % "1.1.2"
-
 val rx = "io.reactivex" %% "rxscala" % "0.26.5"
 
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-val scalaSpec = "org.specs2" %% "specs2" % specsVersion % "test"
+val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
-val mockito = "org.mockito" % "mockito-core" % "2.18.3" % "test"
+val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
@@ -71,9 +70,9 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   scalacOptions := Seq("-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+  scalacOptions in Test ++= Seq("-Yrangepos"),
   resolvers ++= Seq(
-    "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
-    "Amazon Repository" at "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release"
+    "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
   ),
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -95,7 +94,7 @@ lazy val dataProvider = (project in file("data-provider") withId("data-provider"
     name := "data-provider",
     libraryDependencies ++= Seq(
       playJson, playJsonJoda, playWsAhcStandalone,
-      ficus, rx,
+      rx,
       scalaSpec, apacheCommons
     ) ++ logging
       ++ storage

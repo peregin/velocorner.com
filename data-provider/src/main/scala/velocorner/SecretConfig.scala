@@ -1,7 +1,7 @@
 package velocorner
 
 import com.typesafe.config.{Config, ConfigFactory}
-import net.ceedubs.ficus.Ficus._
+import SecretConfig.PimpMyConfig
 
 /**
  * Created by levi on 29/03/15.
@@ -11,6 +11,15 @@ object SecretConfig {
   def load(config: Config): SecretConfig = new SecretConfig(config)
 
   def load(): SecretConfig = load(ConfigFactory.load())
+
+
+  implicit class PimpMyConfig(config: Config) {
+
+    def getAs[T](path: String): Option[T] = {
+      val maybePath = if (config.hasPath(path)) Some(path) else None
+      maybePath.map(config.getAnyRef).map(_.asInstanceOf[T])
+    }
+  }
 }
 
 case class SecretConfig(config: Config) {
