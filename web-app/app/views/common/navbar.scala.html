@@ -114,7 +114,7 @@
         return elapsed.hours()+'h:'+tenthOfMins+elapsed.minutes()+'m';
     }
 
-    function wholeNumber(n, unit) {
+    function wholeValueAndUnit(n, unit) {
         return n ? n.toFixed(0) + ' ' + unit : ""
     }
 
@@ -126,11 +126,11 @@
               '<tr><td><a href="http://www.strava.com/activities/'+entry.id+'">'+moment(entry.start_date_local).format('DD MMM, YYYY, ddd HH:mm A')+'</a></td>'+
               '<td class="td-width"><a href="http://www.strava.com/activities/'+entry.id+'">'+entry.name+'</a></td>'+
               '<td class="text-right">'+(entry.distance/1000).toFixed(1)+' km</td>'+
-              '<td class="text-right">'+entry.total_elevation_gain+' m</td>'+
+              '<td class="text-right">'+wholeValueAndUnit(entry.total_elevation_gain, 'm')+'</td>'+
               '<td>'+elapsedInSeconds(entry.moving_time)+' / '+elapsedInSeconds(entry.elapsed_time)+'</td>'+
               '<td class="text-right">'+(entry.average_speed*3.6).toFixed(1) +' km/h</td>'+
-              '<td class="text-right">'+wholeNumber(entry.average_watts, 'W')+'</td>'+
-              '<td class="text-right">'+wholeNumber(entry.average_temp, '˚C')+'</td>'+
+              '<td class="text-right">'+wholeValueAndUnit(entry.average_watts, 'W')+'</td>'+
+              '<td class="text-right">'+wholeValueAndUnit(entry.average_temp, '˚C')+'</td>'+
               '</tr>');
         });
 
