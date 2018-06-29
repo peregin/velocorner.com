@@ -16,14 +16,28 @@
 
 @media (max-width: 992px) {
     .counters span {
+        font-size: 17px;
+    }
+    .counters span.counter-icon i {
+        padding: 12px;
+        min-width: 28px;
+        font-size: 20px;
+    }
+    h4, .h4 {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .counters {
+        display: inline-table;
+    }
+    .counters span {
         font-size: 15px;
     }
     .counters span.counter-icon i {
         padding: 5px;
         min-width: 25px;
         font-size: 15px;
-    }
-    h4, .h4 {
-        font-size: 12px;
     }
 }
