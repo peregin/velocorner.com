@@ -1,6 +1,7 @@
 
 /**
  * Overwrites
+ *
  * header image is 1920x300
  */
 .VC_nopadding {padding: 0;}
@@ -12,3 +13,17 @@
 .VC_margin_right20 {margin-right: 20px;}
 .VC_padding_right20 {padding-right: 20px;}
 
+
+@media (max-width: 992px) {
+    .counters span {
+        font-size: 15px;
+    }
+    .counters span.counter-icon i {
+        padding: 5px;
+        min-width: 25px;
+        font-size: 15px;
+    }
+    h4, .h4 {
+        font-size: 12px;
+    }
+}
