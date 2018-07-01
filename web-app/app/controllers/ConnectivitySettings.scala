@@ -30,7 +30,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
     actorSystem.scheduler.schedule(FiniteDuration(1, "second"), frequency, () => {
       val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH.mm.ss")
       val now = DateTime.now(DateTimeZone.UTC).toString(timeFormatter)
-      val file = s"$directory/$now.zip"
+      val file = s"$directory/velocorner-$now.zip"
       storage.backup(file)
     })
   }
