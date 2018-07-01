@@ -1,5 +1,8 @@
 package velocorner.storage
 
+import java.io.FileOutputStream
+
+import com.orientechnologies.orient.core.command.OCommandOutputListener
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
@@ -8,15 +11,17 @@ import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
 import velocorner.model._
 import velocorner.storage.OrientDbStorage._
-import velocorner.util.JsonIo
+import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
+import scala.util.control.Exception._
 
 /**
  * Created by levi on 14.11.16.
  */
-class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serverPort: Int = 2480) extends Storage with Logging {
+class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStorage, serverPort: Int = 2480)
+  extends Storage with CloseableResource with Metrics with Logging {
 
   var server: Option[OServer] = None
 
@@ -26,7 +31,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
   }
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]) = inTx { db =>
+  override def store(activities: Iterable[Activity]) = inTx() { db =>
     activities.foreach{ a =>
       // upsert
       val sql = s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}"
@@ -61,12 +66,12 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
     activitiesFor(s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
-  private def activitiesFor(sql: String): Seq[Activity] = inTx { db =>
+  private def activitiesFor(sql: String): Seq[Activity] = inTx() { db =>
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     results.asScala.map(d => JsonIo.read[Activity](d.toJSON))
   }
 
-  private def upsert(json: String, className: String, propertyName: String, propertyValue: Int) = inTx { db =>
+  private def upsert(json: String, className: String, propertyName: String, propertyValue: Int) = inTx() { db =>
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     val doc = results.asScala.headOption.getOrElse(new ODocument(className))
@@ -74,7 +79,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
     doc.save()
   }
 
-  private def lookup(className: String, propertyName: String, propertyValue: Int): Option[String] = inTx { db =>
+  private def lookup(className: String, propertyName: String, propertyValue: Int): Option[String] = inTx() { db =>
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     results.asScala.headOption.map(_.toJSON)
@@ -129,7 +134,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
          |        </listeners>
          |    </network>
          |    <storages>
-         |        <storage name="velocorner" path="$storageType:$rootDir/velocorner" userName="admin" userPassword="admin" loaded-at-startup="true"/>
+         |        <storage name="velocorner" path="${storageType.name}:$rootDir/$DATABASE_NAME" userName="admin" userPassword="admin" loaded-at-startup="true"/>
          |    </storages>
          |    <users>
          |        <user name="admin" password="admin" resources="*"/>
@@ -149,7 +154,7 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
     oserver.startup(config).activate()
     server = Some(oserver)
 
-    inTx { odb =>
+    inTx() { odb =>
       if (!odb.exists()) {
         odb.create()
         odb.close()
@@ -177,18 +182,44 @@ class OrientDbStorage(val rootDir: String, storageType: String = "plocal", serve
     log.info("database has been closed...")
   }
 
-  def inTx[T](body:ODatabaseDocument => T): T = {
-    import scala.util.control.Exception._
-    val dbDoc = new ODatabaseDocumentTx(s"remote:localhost/$rootDir/velocorner")
+  override def backup(fileName: String) = timed("backup") {
+    val listener = new OCommandOutputListener {
+      override def onMessage(iText: String)= log.debug(s"backup $iText")
+    }
+    withCloseable(new FileOutputStream(fileName)) { fos =>
+      server.foreach { s =>
+        val internal = s.openDatabase("velocorner")
+        internal.backup(fos, null, null, listener, 1, 4096)
+      }
+    }
+  }
+
+
+  def inTx[T](storageType: StorageType = RemoteStorage)(body:ODatabaseDocument => T): T = {
+    val url = storageType match {
+      case RemoteStorage => s"${storageType.name}:localhost/$rootDir/$DATABASE_NAME"
+      case _ => s"${storageType.name}:$rootDir/$DATABASE_NAME"
+    }
+    val dbDoc = new ODatabaseDocumentTx(url)
     if (!dbDoc.isActiveOnCurrentThread) dbDoc.activateOnCurrentThread()
-    dbDoc.open("admin", "admin")
+    dbDoc.open(ADMIN_USER, ADMIN_PASSWORD)
     ultimately(dbDoc.close()).apply {
       body(dbDoc)
     }
   }
 }
 
+sealed abstract class StorageType(val name: String)
+case object RemoteStorage extends StorageType("remote")
+case object LocalStorage extends StorageType("plocal")
+case object MemoryStorage extends StorageType("memory")
+
 object OrientDbStorage {
+
+  val ADMIN_USER = "admin"
+  val ADMIN_PASSWORD = "admin"
+
+  val DATABASE_NAME = "velocorner"
 
   val ACTIVITY_CLASS = "Activity"
   val ACCOUNT_CLASS = "Account"

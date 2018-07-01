@@ -1,7 +1,11 @@
 package velocorner
 
+import java.util.concurrent.TimeUnit
+
 import com.typesafe.config.{Config, ConfigFactory}
 import SecretConfig.PimpMyConfig
+
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 /**
  * Created by levi on 29/03/15.
@@ -30,8 +34,15 @@ case class SecretConfig(config: Config) {
   def getSecret(application: String) = config.getString(s"$application.application.secret")
   def getCallbackUrl(application: String) = config.getString(s"$application.application.callback.url")
 
+  def getStorageType: Option[String] = config.getAs[String]("storage")
   def getBucketPassword = config.getString("couchbase.bucket.password")
   def getOrientDbPath = config.getString("orientdb.path")
+
+  def getBackupDirectory: Option[String] = config.getAs[String]("storage.backup.directory")
+  def getBackupFrequency: FiniteDuration = {
+    val duration = Duration(config.getString("storage.backup.frequency"))
+    FiniteDuration(duration.toMillis, TimeUnit.MILLISECONDS)
+  }
 
   def getProxyHost: Option[String] = config.getAs[String]("proxy.host")
   def getProxyPort: Option[Int] = config.getAs[Int]("proxy.port")

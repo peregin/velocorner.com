@@ -39,7 +39,7 @@ val rx = "io.reactivex" %% "rxscala" % "0.26.5"
 
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
-val apacheCommons = "commons-io" % "commons-io" % "2.6" % "test"
+val apacheCommons = "commons-io" % "commons-io" % "2.6"
 val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 
 def logging = Seq(
@@ -94,8 +94,8 @@ lazy val dataProvider = (project in file("data-provider") withId("data-provider"
     name := "data-provider",
     libraryDependencies ++= Seq(
       playJson, playJsonJoda, playWsAhcStandalone,
-      rx,
-      scalaSpec, apacheCommons
+      rx, apacheCommons,
+      scalaSpec
     ) ++ logging
       ++ storage
   )

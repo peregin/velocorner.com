@@ -205,6 +205,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   override def destroy() {
     client.shutdown(1, TimeUnit.SECONDS)
   }
+
+  override def backup(fileName: String) = ???
 }
 
 

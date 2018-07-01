@@ -114,6 +114,8 @@ class MongoDbStorage extends Storage with Logging {
   override def destroy() {
     client.close()
   }
+
+  override def backup(fileName: String) = ???
 }
 
 object MongoDbStorage {

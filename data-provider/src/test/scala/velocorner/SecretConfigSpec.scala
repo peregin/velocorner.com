@@ -43,5 +43,16 @@ class SecretConfigSpec extends Specification {
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
       conf.isWithingsEnabled() must beTrue
     }
+
+    "read backup configuration" in {
+      val testConfig =
+        """
+          |storage.backup.frequency="60 seconds"
+          |storage.backup.directory="/Users/levi/Downloads/velo/velocorner/backup"
+        """.stripMargin
+      val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
+      conf.getBackupDirectory must beSome("/Users/levi/Downloads/velo/velocorner/backup")
+      conf.getBackupFrequency.toSeconds === 60
+    }
   }
 }

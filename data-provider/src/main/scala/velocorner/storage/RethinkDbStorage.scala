@@ -143,6 +143,8 @@ class RethinkDbStorage extends Storage with Logging {
   override def destroy() {
     maybeConn.close
   }
+
+  override def backup(fileName: String) = ???
 }
 
 object RethinkDbStorage {

@@ -35,6 +35,9 @@ trait Storage {
 
   // releases any connections, resources used
   def destroy()
+
+  // backup database content into the given file
+  def backup(fileName: String)
 }
 
 object Storage extends Logging {
@@ -42,6 +45,7 @@ object Storage extends Logging {
   def create(dbType: String): Storage = create(dbType, SecretConfig.load())
 
   def create(dbType: String, config: SecretConfig): Storage = {
+    log.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
       case any if dbType.startsWith("co") => new CouchbaseStorage(config.getBucketPassword)
       case any if dbType.startsWith("re") => new RethinkDbStorage
