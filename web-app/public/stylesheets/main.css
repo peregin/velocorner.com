@@ -11,7 +11,10 @@
 
 .VC_height300 {height: 300px;}
 .VC_margin_right20 {margin-right: 20px;}
-.VC_padding_right20 {padding-right: 20px;}
+.VC_social_icon {
+    padding-right: 20px;
+    font-size: 75%;
+}
 
 
 @media (max-width: 992px) {
