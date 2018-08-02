@@ -9,14 +9,14 @@ import play.sbt.PlayImport._
 
 
 val logbackVersion = "1.2.3"
-val elasticVersion = "6.2.9"
-val orientDbVersion = "3.0.3"
+val elasticVersion = "6.2.10"
+val orientDbVersion = "3.0.4"
 val log4jVersion = "2.11.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.9" // standalone version
 val playJsonVersion = "2.6.9"
-val specsVersion = "4.3.1"
-val mockitoVersion = "2.19.0"
+val specsVersion = "4.3.2"
+val mockitoVersion = "2.19.1"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
