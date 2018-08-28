@@ -17,6 +17,8 @@ import velocorner.util.{JsonIo, Metrics}
 import scala.concurrent.Future
 import scala.util.Try
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 /**
  * Created by levi on 06/10/16.
  */
@@ -165,15 +167,26 @@ class RestController @Inject()(val cache: SyncCacheApi, val connectivity: Connec
     httpMethod = "GET")
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
     Logger.info(s"websocket with request: $request")
-    // origin checker?
 
-    // Log events to the console
-    val in = Sink.foreach[String](println)
-    // Send a single 'Hello!' message and then leave the socket open
-    val out = Source.single("Hello!").concat(Source.maybe)
+    request match {
+      case rh if sameOriginCheck(request) =>
+        // Log events to the console
+        val in = Sink.foreach[String](println)
+        // Send a single 'Hello!' message and then leave the socket open
+        val out = Source.single("Hello!").concat(Source.maybe)
 
-    val flow = Flow.fromSinkAndSource(in, out)
+        val flow = Flow.fromSinkAndSource(in, out)
 
-    Future.successful(Right(flow))
+        Future.successful(Right(flow)).recover{ case e =>
+          Logger.error("failed to create websocket", e)
+          Left(InternalServerError(s"Can't create websocket, ${e.getMessage}"))
+        }
+
+      case rejected =>
+        Logger.error(s"same origin check failed for $rejected")
+        Future.successful {
+          Left(Forbidden)
+        }
+    }
   }
 }

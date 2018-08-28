@@ -10,7 +10,6 @@ import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
 import play.api.libs.typedmap.TypedKey
-import play.api.mvc.Results.{BadRequest, Redirect, Unauthorized}
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.util.CloseableResource
