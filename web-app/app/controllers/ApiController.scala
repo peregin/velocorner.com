@@ -23,7 +23,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * Created by levi on 06/10/16.
  */
 @Api(value = "statistics", protocols = "http")
-class RestController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
+class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   // def mapped to /api/athletes/progress

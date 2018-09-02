@@ -19,12 +19,12 @@ GET     /login/withings                          controllers.auth.WithingsContro
 GET     /authorize/withings                      controllers.auth.WithingsController.authorize
 
 # API
-GET     /api/athletes/statistics                 controllers.RestController.statistics
-GET     /api/athletes/statistics/yearly/:action  controllers.RestController.yearlyStatistics(action: String)
-GET     /api/athletes/statistics/ytd/:action     controllers.RestController.ytdStatistics(action: String)
-GET     /api/activities/suggest                  controllers.RestController.suggest(query: String)
-GET     /api/activities/:id                      controllers.RestController.activity(id: Int)
-GET     /ws                                      controllers.RestController.ws
+GET     /api/athletes/statistics                 controllers.ApiController.statistics
+GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
+GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
+GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
+GET     /api/activities/:id                      controllers.ApiController.activity(id: Int)
+GET     /ws                                      controllers.ApiController.ws
 
 # DOC
 GET     /swagger.json                            controllers.ApiHelpController.getResources

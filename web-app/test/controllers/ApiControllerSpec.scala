@@ -14,7 +14,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
+class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
 
   "rest controller for club activity series" should {
@@ -29,7 +29,7 @@ class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory w
       when(storageMock.getClub(Club.Velocorner)).thenReturn(None)
       when(storageMock.getAthlete(anyLong())).thenReturn(None)
 
-      val controller = new RestController(cacheApiMock, settingsMock, stubControllerComponents())
+      val controller = new ApiController(cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.statistics().apply(FakeRequest())
       Await.result(result.map(_.header.status), 30 seconds) mustEqual  Status.OK
     }
@@ -40,7 +40,7 @@ class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory w
 
       doThrow(new IllegalArgumentException("unexpected server error")).when(settingsMock).getStorage
 
-      val controller = new RestController(cacheApiMock, settingsMock, stubControllerComponents())
+      val controller = new ApiController(cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.yearlyStatistics("distance").apply(FakeRequest())
       Await.result(result.map(_.header.status), 30 seconds) mustEqual Status.INTERNAL_SERVER_ERROR
     }
@@ -49,7 +49,7 @@ class RestControllerSpec extends PlaySpec with StubControllerComponentsFactory w
       val cacheApiMock = mock[SyncCacheApi]
       val settingsMock = mock[ConnectivitySettings]
 
-      val controller = new RestController(cacheApiMock, settingsMock, stubControllerComponents())
+      val controller = new ApiController(cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.activity(100).apply(FakeRequest())
       Await.result(result.map(_.header.status), 30 seconds) mustEqual Status.FORBIDDEN
     }
