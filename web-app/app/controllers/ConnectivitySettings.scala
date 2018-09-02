@@ -7,13 +7,13 @@ import org.joda.time.{DateTime, DateTimeZone}
 import play.Logger
 import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
+import play.filters.hosts.AllowedHostsConfig
 import velocorner.SecretConfig
 import velocorner.feed.StravaActivityFeed
 import velocorner.storage.Storage
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
@@ -47,6 +47,8 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
     getStorage.destroy
     Logger.info("stopped...")
   }
+
+  def allowedHosts: Seq[String] = AllowedHostsConfig.fromConfiguration(configuration).allowed
 
   lifecycle.addStopHook(() => Future.successful(disconnect()))
 }

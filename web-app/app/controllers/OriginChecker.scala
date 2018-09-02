@@ -9,6 +9,8 @@ trait OriginChecker {
 
   private val logger = Logger(getClass)
 
+  def allowedHosts: Seq[String]
+
   /**
     * Checks that the WebSocket comes from the same origin.  This is necessary to protect
     * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
@@ -44,7 +46,7 @@ trait OriginChecker {
   private def originMatches(origin: String): Boolean = {
     try {
       val url = new URI(origin)
-      url.getHost == "localhost" && url.getPort == 9000
+      allowedHosts.exists(_.equalsIgnoreCase(url.getHost))
     } catch {
       case e: Exception => false
     }

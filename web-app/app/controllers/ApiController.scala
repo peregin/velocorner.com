@@ -26,6 +26,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
+  val allowedHosts: Seq[String] = connectivity.allowedHosts
+
   // def mapped to /api/athletes/progress
   // current year's progress
   @ApiOperation(value = "List the current year's statistics for the logged in athlete",
