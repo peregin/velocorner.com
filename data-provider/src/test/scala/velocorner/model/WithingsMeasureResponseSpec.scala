@@ -4,14 +4,11 @@ import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
 
-import scala.io.Source
-
 class WithingsMeasureResponseSpec extends Specification {
 
   "Withings response" should {
 
-    val json = Source.fromURL(getClass.getResource("/data/withings/measures.json")).mkString
-    val measures = JsonIo.read[WithingsMeasureResponse](json)
+    val measures = JsonIo.readReadFromResource[WithingsMeasureResponse]("/data/withings/measures.json")
 
     "be loaded from reference file" in {
       measures.status === 0

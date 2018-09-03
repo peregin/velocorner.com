@@ -17,9 +17,16 @@ object JsonIo {
     read(raw)
   }
 
+  def readStringFromResource(resourceName: String): String = Source.fromURL(getClass.getResource(resourceName)).mkString
+
+  def readReadFromResource[T](resourceName: String)(implicit fjs: Reads[T]): T = {
+    val json = readStringFromResource(resourceName)
+    read[T](json)
+  }
+
   def readFromFile[T](fileName: String)(implicit fjs: Reads[T]): T = {
     val json = Source.fromFile(fileName).mkString
-    read(json)
+    read[T](json)
   }
   
   def read[T](json: String)(implicit fjs: Reads[T]): T = {

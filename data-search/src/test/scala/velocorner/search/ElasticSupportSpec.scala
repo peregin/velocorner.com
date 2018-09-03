@@ -11,7 +11,6 @@ import org.specs2.mutable.Specification
 import velocorner.model.Activity
 import velocorner.util.JsonIo
 
-import scala.io.Source
 
 class ElasticSupportSpec extends Specification with ElasticSupport with Logging {
 
@@ -33,8 +32,7 @@ class ElasticSupportSpec extends Specification with ElasticSupport with Logging 
     val client = localNode.http(true)
 
     "create indices" in {
-      val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
-      val activities = JsonIo.read[List[Activity]](json)
+      val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
       activities must haveSize(30)
       val indices = map2Indices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
       val res = indices.map(ix => client.execute(ix).await)  // or client.execute(bulk(indices)).await // bulk is not immediate

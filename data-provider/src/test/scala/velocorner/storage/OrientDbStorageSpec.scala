@@ -9,7 +9,6 @@ import org.specs2.specification.BeforeAfterAll
 import velocorner.model.Activity
 import velocorner.util.{FreePortFinder, JsonIo}
 
-import scala.io.Source
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging {
 
@@ -25,8 +24,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     }
 
     "add items" in {
-      val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
-      val activities = JsonIo.read[List[Activity]](json).filter(_.`type` == "Ride")
+      val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json").filter(_.`type` == "Ride")
       storage.store(activities)
       storage.listRecentActivities(50) must haveSize(24)
     }
