@@ -56,3 +56,30 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/counter/jquery.counterup.min.js")"></script>
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/circles-master/circles.js")"></script>
 <script type="text/javascript" src="@assets.path("unify/assets/js/plugins/circles-master.js")"></script>
+<script type="text/javascript">//<![CDATA[
+    $(document).ready(function() {
+        websocket = new WebSocket('ws://' + window.location.host + '/ws');
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+    });
+
+    function onOpen(evt) {
+        console.log('CONNECTED ' + evt);
+    }
+
+    function onClose(evt) {
+        console.log('DISCONNECTED ' + evt);
+    }
+
+    function onMessage(evt) {
+        console.log('RESPONSE: ' + evt.data);
+    }
+
+    function onError(evt) {
+        console.log('ERROR: ' + evt.data);
+    }
+
+//]]>
+</script>
