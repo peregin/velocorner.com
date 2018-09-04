@@ -26,6 +26,10 @@ Apache
 add VirtualHost in httpd.conf
 exclude proxy for static content
 server alias for www
+websocket setup
+LoadModule proxy_wstunnel_module /usr/lib64/httpd/modules/mod_proxy_wstunnel.so
+ProxyPass /ws ws://localhost:9000/ws retry=4
+ProxyPassReverse /ws ws://localhost:9000/ws retry=4
 
 Email
 =====
