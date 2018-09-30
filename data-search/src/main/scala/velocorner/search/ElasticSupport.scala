@@ -1,26 +1,25 @@
 package velocorner.search
 
-import com.sksamuel.elastic4s.ElasticsearchClientUri
-import com.sksamuel.elastic4s.http.HttpClient
-import com.sksamuel.elastic4s.indexes.{IndexApi, IndexDefinition}
-import velocorner.model.Activity
 import com.sksamuel.elastic4s.http.ElasticDsl._
+import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
+import com.sksamuel.elastic4s.indexes.{IndexApi, IndexRequest}
+import velocorner.model.Activity
 
 /**
   * Created by levi on 21.03.17.
   */
 trait ElasticSupport extends IndexApi {
 
-  def elasticCluster() = HttpClient(ElasticsearchClientUri("localhost", 9200))
+  def elasticCluster() = ElasticClient(ElasticProperties("http://localhost:9000"))
 
-  def map2Indices(activities: Iterable[Activity]): Iterable[IndexDefinition] = {
+  def map2Indices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
     activities.map { a =>
       val ixDefinition = indexInto("velocorner" / "activity")
       extractIndices(a, ixDefinition).withId(a.id.toString)
     }
   }
 
-  def extractIndices(a: Activity, id: IndexDefinition): IndexDefinition = id.fields(
+  def extractIndices(a: Activity, id: IndexRequest): IndexRequest = id.fields(
     "name" -> a.name,
     "start_date" -> a.start_date,
     "distance" -> a.distance / 1000,

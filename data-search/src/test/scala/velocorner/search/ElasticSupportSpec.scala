@@ -29,14 +29,14 @@ class ElasticSupportSpec extends Specification with ElasticSupport with Logging 
       .put("path.repo", path.resolve("repo").toString)
       .put("cluster.name", "test-velocorner")
     val localNode = LocalNode(localSettings.build())
-    val client = localNode.http(true)
+    val client = localNode.client(shutdownNodeOnClose =  true)
 
     "create indices" in {
       val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
       activities must haveSize(30)
       val indices = map2Indices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
-      val res = indices.map(ix => client.execute(ix).await)  // or client.execute(bulk(indices)).await // bulk is not immediate
-      val statuses = res.flatMap(_.right.toOption.map(_.status))
+      val res = indices.map(ix => client.execute(ix).await)
+      val statuses = res.map(_.status)
       statuses must haveSize(30) // it has 6 skiing events
       statuses must contain(201)
     }
@@ -44,14 +44,12 @@ class ElasticSupportSpec extends Specification with ElasticSupport with Logging 
     "search" in {
       val res = client.execute(searchWithType("velocorner" / "activity") matchQuery("name", "Uetli") limit 5).await
       log.info(s"found $res")
-      res match {
-        case Left(failure) => log.info(s"failed ${failure.error}")
-        case Right(results) => log.info(s"${results.result.hits}")
-      }
-      val maybeResult = res.right.toOption
-      maybeResult.map(_.status) must beSome(200)
-      log.info(s"search results ${maybeResult.map(_.result.hits.hits.mkString(","))}")
-      maybeResult.map(_.result.hits.hits.length) must beSome(5)
+
+      res.status === 200
+      val hits = res.result.hits.hits
+
+      log.info(s"search results ${hits.mkString(",")}")
+      hits.length === 5
     }
 
     step {

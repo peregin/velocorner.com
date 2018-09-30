@@ -9,15 +9,15 @@ import org.slf4s.Logging
 import velocorner.model._
 import velocorner.util.{Metrics, JsonIo}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 import CouchbaseStorage._
 
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
 
-  lazy val uri = URI.create("http://localhost:8091/pools")
-  lazy val client = new CouchbaseClient(List(uri), "velocorner", password)
+  lazy private val uri = URI.create("http://localhost:8091/pools")
+  lazy val client = new CouchbaseClient(List(uri).asJava, "velocorner", password)
 
 
   // activities
@@ -35,7 +35,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setRange(s"[$athleteId, [2000, 1, 1]]", s"[$athleteId, [3000, 12, 31]]")
-    val response = client.query(view, query)
+    val response = client.query(view, query).asScala
     for (entry <- response) yield DailyProgress.fromStorageByIdDay(entry.getKey, entry.getValue)
   }
 
@@ -47,7 +47,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     query.setInclusiveEnd(true)
     query.setLimit(limit)
     query.setDescending(true)
-    val response = client.query(view, query)
+    val response = client.query(view, query).asScala
     for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
   }
 
@@ -71,7 +71,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     query.setLimit(limit)
     query.setRange(rangeFrom, rangeTo)
     query.setIncludeDocs(true)
-    val response = client.query(view, query)
+    val response = client.query(view, query).asScala
     for (entry <- response) yield JsonIo.read[Activity](entry.getDocument.toString)
   }
 
@@ -105,7 +105,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
-    val response = client.query(view, query)
+    val response = client.query(view, query).asScala
     for (entry <- response) yield entry.getId
   }
 

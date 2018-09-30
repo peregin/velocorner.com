@@ -8,7 +8,7 @@ import velocorner.SecretConfig
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import collection.JavaConversions._
+import collection.JavaConverters._
 
 /**
 * Implementation to connect with Withings REST API
@@ -25,12 +25,12 @@ class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretC
 
   log.info(s"connecting to withings with token [${token.token}]...")
 
-  lazy val timeout = 10 seconds
+  lazy private val timeout = 10 seconds
 
   private def signer = new OAuthCalculator(WithingsMeasureFeed.consumerKey(config), token) {
     override def calculateAndAddSignature(request: Request, requestBuilder: RequestBuilderBase[_]): Unit = {
       super.calculateAndAddSignature(request, requestBuilder)
-      val maybeAuthHeader = request.getHeaders.toSeq.filter(m => m.getKey.compareToIgnoreCase("Authorization") == 0).headOption
+      val maybeAuthHeader = request.getHeaders.asScala.toSeq.filter(m => m.getKey.compareToIgnoreCase("Authorization") == 0).headOption
       maybeAuthHeader.foreach{h =>
         val auth = h.getValue
         log.info(s"auth header: $auth")

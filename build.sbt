@@ -9,7 +9,7 @@ import play.sbt.PlayImport._
 
 
 val logbackVersion = "1.2.3"
-val elasticVersion = "6.2.10"
+val elasticVersion = "6.3.7"
 val orientDbVersion = "3.0.8"
 val log4jVersion = "2.11.1"
 val slf4sVersion = "1.7.25"
@@ -45,13 +45,15 @@ val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
-  "org.apache.logging.log4j" % "log4j-api" % log4jVersion
+  "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
+  "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion
 )
 def elastic4s = Seq(
-  "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion % "test"
+  "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion % "test",
+  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
 )
 def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 
@@ -88,7 +90,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   )
 )
 
-lazy val dataProvider = (project in file("data-provider") withId("data-provider"))
+lazy val dataProvider = (project in file("data-provider") withId "data-provider")
   .settings(
     buildSettings,
     name := "data-provider",
@@ -100,7 +102,7 @@ lazy val dataProvider = (project in file("data-provider") withId("data-provider"
       ++ storage
   )
 
-lazy val dataSearch = (project in file("data-search") withId("data-search"))
+lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
     name := "data-search",
@@ -108,7 +110,7 @@ lazy val dataSearch = (project in file("data-search") withId("data-search"))
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
-lazy val webApp = (project in file("web-app") withId("web-app"))
+lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
     name := "web-app",
@@ -132,7 +134,7 @@ lazy val webApp = (project in file("web-app") withId("web-app"))
 
 
 // top level aggregate
-lazy val root = (project in file(".") withId("velocorner"))
+lazy val root = (project in file(".") withId "velocorner")
   .aggregate(dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
