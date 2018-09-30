@@ -10,13 +10,13 @@ import play.sbt.PlayImport._
 
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.2.10"
-val orientDbVersion = "3.0.6"
+val orientDbVersion = "3.0.8"
 val log4jVersion = "2.11.1"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.10" // standalone version
 val playJsonVersion = "2.6.10"
 val specsVersion = "4.3.4"
-val mockitoVersion = "2.21.0"
+val mockitoVersion = "2.22.0"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -65,7 +65,7 @@ lazy val runDist: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := "2.12.6",
+  scalaVersion := "2.12.7",
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
