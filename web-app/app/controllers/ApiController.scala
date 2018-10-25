@@ -171,7 +171,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     Logger.info(s"websocket with request: $request")
 
     request match {
-      case rh if sameOriginCheck(request) =>
+      case _ if sameOriginCheck(request) =>
         // Log events to the console
         val in = Sink.foreach[String](println)
         // Send a single 'Hello!' message and then leave the socket open
@@ -179,10 +179,11 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
         val flow = Flow.fromSinkAndSource(in, out)
 
-        Future.successful(Right(flow)).recover{ case e =>
+        val result = Future.successful(Right(flow)).recover{ case e =>
           Logger.error("failed to create websocket", e)
-          Left(InternalServerError(s"Can't create websocket, ${e.getMessage}"))
+          Left(InternalServerError(s"can't create websocket, ${e.getMessage}"))
         }
+        result
 
       case rejected =>
         Logger.error(s"same origin check failed for $rejected")
