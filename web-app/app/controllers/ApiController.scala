@@ -1,5 +1,6 @@
 package controllers
 
+import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
@@ -9,14 +10,13 @@ import org.joda.time.LocalDate
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
-import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
+import play.api.mvc._
 import velocorner.model._
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{JsonIo, Metrics}
 
 import scala.concurrent.Future
 import scala.util.Try
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -165,31 +165,30 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }}
 
   // WebSocket to update the client
+  // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
   @ApiOperation(value = "Initiates a websocket connection",
     httpMethod = "GET")
-  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
-    Logger.info(s"websocket with request: $request")
-
-    request match {
-      case _ if sameOriginCheck(request) =>
-        // Log events to the console
-        val in = Sink.foreach[String](println)
-        // Send a single 'Hello!' message and then leave the socket open
-        val out = Source.single("Hello!").concat(Source.maybe)
-
-        val flow = Flow.fromSinkAndSource(in, out)
-
-        val result = Future.successful(Right(flow)).recover{ case e =>
+  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { rh =>
+    rh match {
+      case _ if sameOriginCheck(rh) =>
+        Logger.info(s"ws with request header: $rh")
+        val flow = wsFlow(rh)
+        Future.successful[Either[Result, Flow[String, String, _]]](Right(flow)).recover{ case e =>
           Logger.error("failed to create websocket", e)
-          Left(InternalServerError(s"can't create websocket, ${e.getMessage}"))
+          Left(InternalServerError(s"failed to create websocket, ${e.getMessage}"))
         }
-        result
-
       case rejected =>
         Logger.error(s"same origin check failed for $rejected")
-        Future.successful {
-          Left(Forbidden)
-        }
+        Future.successful(Left(Forbidden))
     }
+  }
+
+  private def wsFlow(rh: RequestHeader): Flow[String, String, NotUsed] = {
+    // Log events to the console
+    val in = Sink.foreach[String](println)
+    // Send a single 'Hello!' message and then leave the socket open
+    val out = Source.single("Welcome").concat(Source.maybe)
+
+    Flow.fromSinkAndSource(in, out)
   }
 }
