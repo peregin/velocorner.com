@@ -7,6 +7,7 @@ import highcharts._
 import io.swagger.annotations._
 import javax.inject.Inject
 import org.joda.time.LocalDate
+import org.reactivestreams.{Publisher, Subscriber}
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
@@ -183,11 +184,16 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     }
   }
 
+  var counter = 1
   private def wsFlow(rh: RequestHeader): Flow[String, String, NotUsed] = {
-    // Log events to the console
+    // echo input
     val in = Sink.foreach[String](println)
-    // Send a single 'Hello!' message and then leave the socket open
-    val out = Source.single("Welcome").concat(Source.maybe)
+    //send messages from the publisher and then leave the socket open
+    //val out1 = Source.single("Welcome").concat(Source.maybe)
+    val out = Source.fromPublisher((s: Subscriber[_ >: String]) => {
+      s.onNext(s"hello $counter")
+      counter = counter + 1
+    })
 
     Flow.fromSinkAndSource(in, out)
   }
