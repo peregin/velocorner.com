@@ -186,14 +186,18 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   var counter = 1
   private def wsFlow(rh: RequestHeader): Flow[String, String, NotUsed] = {
-    // echo input
+    // input, just echo the input
     val in = Sink.foreach[String](println)
-    //send messages from the publisher and then leave the socket open
+
+    // output, use a publisher
     //val out1 = Source.single("Welcome").concat(Source.maybe)
     val out = Source.fromPublisher((s: Subscriber[_ >: String]) => {
+      Logger.info(s"PUBLISH $counter")
       s.onNext(s"hello $counter")
       counter = counter + 1
-    })
+    }).watchTermination() { (_, terminated) =>
+      terminated.onComplete(_ => Logger.info("DISCONNECTED"))
+    }
 
     Flow.fromSinkAndSource(in, out)
   }
