@@ -60,7 +60,7 @@
         <!--=== End Header ===-->
 
         <!--=== Slider ===-->
-        <div class="tp-banner-container VC_height300 hidden-sm hidden-xs">
+        <div class="tp-banner-container @{if (context.account.isDefined) "VC_height200" else "VC_height300"} hidden-sm hidden-xs">
             <div class="tp-banner">
                 <ul>
                     @slide_item("images/background/davos.jpg", "Davos")
