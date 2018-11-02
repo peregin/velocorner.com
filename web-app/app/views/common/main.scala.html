@@ -153,7 +153,15 @@
         jQuery(document).ready(function() {
             App.init();
             OwlCarousel.initOwlCarousel();
-            RevolutionSlider.initRSfullWidth();
+            jQuery('.tp-banner').revolution(
+	            {
+	                delay:9000,
+	                startwidth:1170,
+	                startheight:@{if (context.account.isDefined) "200" else "300"},
+	                hideThumbs:10,
+					navigationStyle:"preview4"
+	            });
+            //RevolutionSlider.initRSfullWidth();
         });
     </script>
     <!--[if lt IE 9]>
