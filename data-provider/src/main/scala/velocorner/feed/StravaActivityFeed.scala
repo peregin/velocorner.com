@@ -16,7 +16,7 @@ import scala.language.postfixOps
  */
 object StravaActivityFeed {
 
-  val baseUrl = "https://www.strava.com"
+  val baseUrl = "https://www.strava.com/api/v3"
   val accessTokenUrl = s"${StravaActivityFeed.baseUrl}/oauth/token"
   val authorizationUrl = s"${StravaActivityFeed.baseUrl}/oauth/authorize"
 
@@ -45,19 +45,19 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
 
   // clubs
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/activities").withHttpHeaders(("Authorization", authHeader)).get())
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/activities").withHttpHeaders(("Authorization", authHeader)).get())
     extractActivities(response)
   }
 
   override def listClubAthletes(clubId: Long): List[Athlete] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/clubs/$clubId/members").withHttpHeaders(("Authorization", authHeader)).get())
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/members").withHttpHeaders(("Authorization", authHeader)).get())
     val json = Await.result(response, timeout).body
     JsonIo.read[List[Athlete]](json)
   }
 
   // activities
   override def listAthleteActivities(page: Int, pageSize: Int = StravaActivityFeed.maxItemsPerPage): List[Activity] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete/activities"))
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete/activities"))
       .withHttpHeaders(("Authorization", authHeader))
       .withQueryStringParameters(("page", page.toString), ("per_page", pageSize.toString))
       .get()
@@ -71,7 +71,7 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
 
   // athlete
   override def getAthlete: Athlete = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/api/v3/athlete").withHttpHeaders(("Authorization", authHeader)).get())
+    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete").withHttpHeaders(("Authorization", authHeader)).get())
     val json = Await.result(response, timeout).body
     JsonIo.read[Athlete](json)
   }
