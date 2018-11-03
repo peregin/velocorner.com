@@ -31,16 +31,17 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   val clientId: String = connectivity.secretConfig.getId("strava")
   val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
 
-   def getAuthorizationUrl(scope: String, state: String): String = {
-    Logger.info(s"authorization url for scope[$scope]")
+   def getAuthorizationUrl(host: String, state: String): String = {
+    Logger.info(s"authorization url for scope[$host]")
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     // scope is the host name localhost:9000 or www.velocorner.com
     val uri = new URI(callbackUrl)
-    val adjustedCallbackUrl = s"${uri.getScheme}://$scope${uri.getPath}"
+    val adjustedCallbackUrl = s"${uri.getScheme}://$host${uri.getPath}"
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
     //val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
-    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=read"
+    val authScope = "read"
+    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$authScope"
   }
 
    def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {

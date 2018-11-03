@@ -14,6 +14,7 @@ object ActivitiesFromStravaAndAggregateApp extends App with Logging with Metrics
   val storage = Storage.create("or")
   storage.initialize()
   val activities = StravaActivityFeed.listRecentAthleteActivities
+  log.info(s"retrieved ${activities.size} activities")
   storage.store(activities)
 
   val progress = timed("aggregation")(storage.dailyProgressForAthlete(432909))

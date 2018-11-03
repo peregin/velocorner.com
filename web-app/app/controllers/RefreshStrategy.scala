@@ -51,8 +51,16 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
           val newActivities = list(1, List.empty)
           log.info(s"found ${newActivities.size} new activities")
           newActivities
+
+        case _ =>
+          log.info("was already refreshed in the last minute")
+          Iterable.empty
       }
     }
+
+    // log the most recent activity
+    val maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
+    log.info(s"most recent activity retrieved is from $maybeMostRecent")
 
     storage.store(newActivities)
     storage.store(account.copy(lastUpdate = Some(now)))
