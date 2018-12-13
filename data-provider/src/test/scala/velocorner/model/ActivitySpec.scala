@@ -11,5 +11,10 @@ class ActivitySpec extends Specification {
       hr.average_heartrate must beSome(159.6f)
       hr.max_heartrate must beSome(182.0f)
     }
+
+    "read ice skating activities" in {
+      val ice = JsonIo.readReadFromResource[Activity]("/data/strava/ice_skating.json")
+      ice.id === 2006731126
+    }
   }
 }

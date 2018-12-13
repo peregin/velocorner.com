@@ -1,0 +1,185 @@
+{
+  "achievement_count": 0,
+  "athlete": {
+    "id": 432909,
+    "resource_state": 1
+  },
+  "athlete_count": 1,
+  "available_zones": [],
+  "average_speed": 1.709,
+  "calories": 396.0,
+  "comment_count": 0,
+  "commute": false,
+  "description": "",
+  "device_name": "Strava Android App",
+  "display_hide_heartrate_option": false,
+  "distance": 4475.8,
+  "elapsed_time": 5787,
+  "elev_high": 541.0,
+  "elev_low": 540.0,
+  "embed_token": "30377df6fc864a3fd28053c52510b1c1ff7c8229",
+  "end_latlng": [
+    47.29,
+    8.55
+  ],
+  "external_id": "8a4a9133a340a60cd6598afd18eaf4d6",
+  "flagged": false,
+  "from_accepted_tag": false,
+  "gear_id": null,
+  "has_heartrate": false,
+  "has_kudoed": false,
+  "heartrate_opt_out": false,
+  "id": 2006731126,
+  "kudos_count": 12,
+  "laps": [
+    {
+      "activity": {
+        "id": 2006731126,
+        "resource_state": 1
+      },
+      "athlete": {
+        "id": 432909,
+        "resource_state": 1
+      },
+      "average_speed": 0.77,
+      "distance": 4475.8,
+      "elapsed_time": 5787,
+      "end_index": 1067,
+      "id": 6481285911,
+      "lap_index": 1,
+      "max_speed": 7.7,
+      "moving_time": 2619,
+      "name": "Lap 1",
+      "resource_state": 2,
+      "split": 1,
+      "start_date": "2018-12-08T14:39:51Z",
+      "start_date_local": "2018-12-08T15:39:51Z",
+      "start_index": 0,
+      "total_elevation_gain": 0.0
+    }
+  ],
+  "location_city": null,
+  "location_country": "Switzerland",
+  "location_state": null,
+  "manual": false,
+  "map": {
+    "id": "a2006731126",
+    "polyline": "qjs_Ha`es@@FD@KR?LF?@YEF?JHV?LBHD@@MWk@?GD@AP?KDENNBFD\\CDUMKCE_@BM@HBBBHCRFPDA?GFI@IKIEQFh@FTAi@CGGABGDD@HLR?RK@Ea@MKEK?OF`@JRB\\DK@_@?IGECI?QCJPd@?JAFCGSACEESDOHv@BBJEAOEAK@CK?QDCHK?JPL?FM^?]SBGO?QDOCDHPDBNb@AFEa@GO@SANDP?RHNO?CYK[HKBBBHAJGPPR?IYu@D^PZF?@GIOECI@GG?GDOD@Ln@BGW[COBJCJ@FLL@HHNDEMBCEFKKU?KGGDDD?DBBZHNAFE@OEOy@BEFV@JNRENE@?_@COMGD?NFAZBHAFB?J_@KYC[BDKV?HDPHPl@S@GSi@MCO@HFE]LLKTSHED?HHRNCDGPEDI?IIa@CCIJKZEHE?JSHGGJKOGLFb@BDJDEDCM?[GUE@@LBDCBFCISBE@XLX@PMEAGEAE?G[?INDBFBb@DABWIWECG?AF@b@@FFFF?FGC@?OEII@EI?K@GD@JND@DD@JE@INA[E@EYCFDD@HFBFA@HAN@MEEIADDBVIWIGAQ?RBDD?BEAFBFIKDE@SVSBHODGJAGLEFGFABD@FGG@IGGUHIJ@IBJDMDADB@FAHEEMFEDF\\FB@FEGI@BIFE@GL?BG?QDAEAG@@IHS]LGFEX@PFFIIPSFQL?AINH@N@QBF?HCDEUDGAICEGA]PGHBh@DHF?HCVUBK?MCKIDCF@TFG?GGKECCGNQBBD@?HIDBHDE?GICIFAR@\\?KK?QFGTEADOLQBKDEF?BGGAD?BQHMEDI\\IDER@JBFGC?WCF@FF@DIIAJNB@?IEGCBOMBG?FDBDADDEF@GFEBMFEECEDSZDEBF?IHWE?CFEDCFAPBNCLBFD?JM?IG@BKI@GFEMDHF@\\MFG@KEMSOGBCFFJBCFQF@BFKJAJQHBHNI@KEIGEDCDBBRAHQRQHK]HSVGG@AHFNFGDOAKBMEAGDAHDD@LBFBGCEAFWKG@AHHED?AJHFHAJI?IGEC]EBJGD@ADDDIBCEMT@RHLBNGDEAO?CDEO?IJW?IAH@LPNHJ?KGY@GAMBG@FK?SDAJDZFDDE?IIYGBCFJf@HLBENGE@KDEACYBE?GGOABN^L@@FOIGIGAGS?OFXDf@DA@GIOGWCGCJFTDBb@@HGDS?UIKM@SVEN?NDH`@IKDGs@RMKFO@MJI@APBHLNN@\\EBG@MKe@GAGDSFOXDXJJFAHMDMAKSQ?IJICCEFBBCDK@MHEJD`@DFFADE?KKIESEA@TDHF@HADE@[GAEDARE@@GJ?FX?HICDGF@@FGBGAYQCYDXFD?GRSDUJI@GCCE?DE",
+    "resource_state": 3,
+    "summary_polyline": "qjs_Ha`es@R~ATiB"
+  },
+  "max_speed": 7.7,
+  "moving_time": 2619,
+  "name": "Ice Skating",
+  "photo_count": 0,
+  "photos": {
+    "count": 1,
+    "primary": {
+      "id": null,
+      "source": 1,
+      "unique_id": "37d1c828-74ee-461d-8427-95e3cd4e4364",
+      "urls": {
+        "100": "https://dgtzuqphqg23d.cloudfront.net/3ZD25xDu4cmch0iPxo7XXVbTf4ia1w9TQ55V3sBkHts-96x128.jpg",
+        "600": "https://dgtzuqphqg23d.cloudfront.net/3ZD25xDu4cmch0iPxo7XXVbTf4ia1w9TQ55V3sBkHts-576x768.jpg"
+      }
+    },
+    "use_primary_photo": true
+  },
+  "pr_count": 0,
+  "private": false,
+  "resource_state": 3,
+  "segment_efforts": [],
+  "splits_metric": [
+    {
+      "average_speed": 1.33,
+      "distance": 1001.3,
+      "elapsed_time": 900,
+      "elevation_difference": 0.5,
+      "moving_time": 755,
+      "pace_zone": 0,
+      "split": 1
+    },
+    {
+      "average_speed": 1.76,
+      "distance": 1002.3,
+      "elapsed_time": 3202,
+      "elevation_difference": -0.1,
+      "moving_time": 568,
+      "pace_zone": 0,
+      "split": 2
+    },
+    {
+      "average_speed": 1.63,
+      "distance": 999.5,
+      "elapsed_time": 792,
+      "elevation_difference": -0.1,
+      "moving_time": 612,
+      "pace_zone": 0,
+      "split": 3
+    },
+    {
+      "average_speed": 1.97,
+      "distance": 1000.7,
+      "elapsed_time": 653,
+      "elevation_difference": -0.4,
+      "moving_time": 508,
+      "pace_zone": 0,
+      "split": 4
+    },
+    {
+      "average_speed": 2.68,
+      "distance": 472.0,
+      "elapsed_time": 240,
+      "elevation_difference": -0.1,
+      "moving_time": 176,
+      "pace_zone": 0,
+      "split": 5
+    }
+  ],
+  "splits_standard": [
+    {
+      "average_speed": 1.45,
+      "distance": 1609.5,
+      "elapsed_time": 3796,
+      "elevation_difference": 0.1,
+      "moving_time": 1111,
+      "pace_zone": 0,
+      "split": 1
+    },
+    {
+      "average_speed": 1.8,
+      "distance": 1612.8,
+      "elapsed_time": 1171,
+      "elevation_difference": -0.1,
+      "moving_time": 897,
+      "pace_zone": 0,
+      "split": 2
+    },
+    {
+      "average_speed": 2.05,
+      "distance": 1253.5,
+      "elapsed_time": 820,
+      "elevation_difference": -0.2,
+      "moving_time": 611,
+      "pace_zone": 0,
+      "split": 3
+    }
+  ],
+  "start_date": "2018-12-08T14:39:51Z",
+  "start_date_local": "2018-12-08T15:39:51Z",
+  "start_latitude": 47.29,
+  "start_latlng": [
+    47.29,
+    8.55
+  ],
+  "start_longitude": 8.55,
+  "suffer_score": null,
+  "timezone": "(GMT+01:00) Europe/Zurich",
+  "total_elevation_gain": 0.0,
+  "total_photo_count": 1,
+  "trainer": false,
+  "type": "IceSkate",
+  "upload_id": 2144904949,
+  "utc_offset": 3600.0,
+  "visibility": "everyone"
+}
