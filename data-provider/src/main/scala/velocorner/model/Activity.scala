@@ -83,10 +83,10 @@ object Activity {
 }
 
 case class Activity(
-  id: Int,
+  id: Long,
   resource_state: Int,
   external_id: Option[String],
-  upload_id: Option[Int],
+  upload_id: Option[Long],
   athlete: Athlete,
   name: String,
   distance: Float,
