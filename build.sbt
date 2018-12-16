@@ -8,6 +8,7 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 
+val scalazVersion = "7.2.27"
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.5.0"
 val orientDbVersion = "3.0.12"
@@ -57,6 +58,10 @@ def elastic4s = Seq(
 )
 def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
 
+def scalaz = Seq(
+  "org.scalaz" %% "scalaz-core" % scalazVersion
+)
+
 
 lazy val runDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
@@ -100,6 +105,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       scalaSpec
     ) ++ logging
       ++ storage
+      ++ scalaz
   )
 
 lazy val dataSearch = (project in file("data-search") withId "data-search")
@@ -122,7 +128,8 @@ lazy val webApp = (project in file("web-app") withId "web-app")
         java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
       },
       "elasticVersion" -> elasticVersion,
-      "playVersion" -> play.core.PlayVersion.current
+      "playVersion" -> play.core.PlayVersion.current,
+      "scalazVersion" -> scalazVersion,
     ),
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
