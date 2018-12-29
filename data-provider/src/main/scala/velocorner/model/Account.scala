@@ -32,7 +32,7 @@ object Account {
 case class Account(
   athleteId: Int,
   displayName: String,
-  displayLocation: String,
+  displayLocation: String, // city, country
   avatarUrl: String,
   accessToken: String,
   lastUpdate: Option[DateTime]
