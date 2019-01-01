@@ -2,18 +2,7 @@
 @common.main(context) {
 
     @if(context.isWeatherEnabled) {
-        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-            <div class="row">
-                <span aria-hidden="true" class="icon-weather-001"></span>
-                Weather forecast
-                <div class="input-group animated fadeInDown">
-                    <input type="text" class="form-control" placeholder="Location">
-                    <span class="input-group-btn">
-                        <button class="btn-u" type="button">Weather</button>
-                    </span>
-                </div>
-            </div>
-        </div>
+        @widget.weather("Zurich, CH", "/api/weather")
     }
 
     @if(context.isWithingsEnabled) {

@@ -54,19 +54,21 @@
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        url: "@restUrl",
-        timeout: 20000,
-        success: function(data) {
-            $('#profile-rides').html(data.progress.rides)
-            $('#profile-distance').html(Math.round(data.progress.distance))
-            $('#profile-elevation').html(Math.round(data.progress.elevation))
-            $('#profile-hours').html(Math.round(data.progress.movingTime/3600))
-            App.initCounter();
-            console.log(data.progress);
-       }
+    $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "@restUrl",
+            timeout: 20000,
+            success: function(data) {
+                $('#profile-rides').html(data.progress.rides)
+                $('#profile-distance').html(Math.round(data.progress.distance))
+                $('#profile-elevation').html(Math.round(data.progress.elevation))
+                $('#profile-hours').html(Math.round(data.progress.movingTime/3600))
+                App.initCounter();
+                console.log(data.progress);
+           }
+        });
     });
 //]]>
 </script>
