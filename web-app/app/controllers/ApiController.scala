@@ -165,6 +165,24 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     Future.successful(result)
   }}
 
+  // retrieves the weather forecast for a given place
+  // def mapped to /api/weather/:place
+  @ApiOperation(value = "Retrieves the weather forecast for a specific place",
+    notes = "Returns a list of locations forecast for the next 5 days",
+    httpMethod = "GET")
+  @ApiResponses(Array(
+    new ApiResponse(code = 403, message = "Forbidden"),
+    new ApiResponse(code = 404, message = "Not found"),
+    new ApiResponse(code = 500, message = "Internal error")))
+  def forecast(@ApiParam(value = "identifier of the place")
+               place: String) = timed(s"query weather forecast for $place") { AuthAsyncAction { implicit request =>
+
+    // TODO: read from db and manage cookie
+    Logger.debug(s"querying weather forecast for $place")
+
+    Future.successful(Ok)
+  }}
+
   // WebSocket to update the client
   // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
   @ApiOperation(value = "Initiates a websocket connection",

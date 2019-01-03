@@ -30,20 +30,25 @@
             }
         });
 
-        //weatherForecast();
+        weatherForecast();
     });
 
     function triggerForecast() {
         var place = $('#weather').val();
-        console.log('forecast for ' + place);
-        weatherForecast(place);
+        if (place) {
+            console.log('forecast for ' + place);
+            weatherForecast(place);
+        } else {
+            console.log('place is not set for weather forecast');
+        }
     }
 
     function weatherForecast(place) {
+        var uri = "@restUrl/" + place
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@restUrl/place",
+            url: uri,
             timeout: 20000,
             success: function(data) {
                 console.log("weather forecast " + data.progress);
