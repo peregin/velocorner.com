@@ -30,7 +30,7 @@
             }
         });
 
-        weatherForecast();
+        triggerForecast();
     });
 
     function triggerForecast() {
@@ -51,7 +51,7 @@
             url: uri,
             timeout: 20000,
             success: function(data) {
-                console.log("weather forecast " + data.progress);
+                console.log("weather forecast " + data);
            }
         });
     }

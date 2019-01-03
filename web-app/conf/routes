@@ -24,7 +24,7 @@ GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearl
 GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
 GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
 GET     /api/activities/:id                      controllers.ApiController.activity(id: Int)
-GET     /api/forecast/:place                     controllers.ApiController.forecast(place: String)
+GET     /api/weather/:place                      controllers.ApiController.weather(place: String)
 GET     /ws                                      controllers.ApiController.ws
 
 # DOC

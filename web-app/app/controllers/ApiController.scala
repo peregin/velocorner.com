@@ -7,7 +7,7 @@ import highcharts._
 import io.swagger.annotations._
 import javax.inject.Inject
 import org.joda.time.LocalDate
-import org.reactivestreams.{Publisher, Subscriber}
+import org.reactivestreams.Subscriber
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
@@ -36,7 +36,8 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     response = classOf[Progress],
     httpMethod = "GET")
   @ApiResponses(Array(
-    new ApiResponse(code = 500, message = "Internal error")))
+    new ApiResponse(code = 500, message = "Internal error")
+  ))
   def statistics = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
@@ -62,8 +63,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Invalid action"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def yearlyStatistics(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation")
-             action: String) = AuthAsyncAction { implicit request =>
+  def yearlyStatistics(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation") action: String) = AuthAsyncAction {
+    implicit request =>
+
     val maybeAccount = loggedIn
     Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
@@ -93,8 +95,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Invalid action"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def ytdStatistics(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation")
-          action: String) = AuthAsyncAction { implicit request =>
+  def ytdStatistics(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation") action: String) = AuthAsyncAction {
+    implicit request =>
+
     val maybeAccount = loggedIn
     val now = LocalDate.now()
     Logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
@@ -123,8 +126,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     httpMethod = "GET")
   @ApiResponses(Array(
     new ApiResponse(code = 500, message = "Internal error")))
-  def suggest(@ApiParam(value = "partial input matched for activities")
-              query: String) = timed(s"suggest for $query") { AuthAsyncAction { implicit request =>
+  def suggest(@ApiParam(value = "partial input matched for activities") query: String) = timed(s"suggest for $query") { AuthAsyncAction {
+    implicit request =>
+
     Logger.debug(s"suggesting for $query")
 
     // FIXME: workaround until elastic access
@@ -152,10 +156,10 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     new ApiResponse(code = 403, message = "Forbidden"),
     new ApiResponse(code = 404, message = "Not found"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def activity(@ApiParam(value = "identifier of the activity")
-              id: Int) = timed(s"query for acticity $id") { AuthAsyncAction { implicit request =>
+  def activity(@ApiParam(value = "identifier of the activity") id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
+    implicit request =>
 
-    val result = loggedIn.map{account =>
+    val result = loggedIn.map{ _ =>
       Logger.debug(s"querying activity $id")
       connectivity.getStorage.getActivity(id)
         .map(a => Ok(JsonIo.write(a)))
@@ -168,17 +172,16 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   // retrieves the weather forecast for a given place
   // def mapped to /api/weather/:place
   @ApiOperation(value = "Retrieves the weather forecast for a specific place",
-    notes = "Returns a list of locations forecast for the next 5 days",
+    notes = "Weather forecast for the next 5 days",
     httpMethod = "GET")
   @ApiResponses(Array(
-    new ApiResponse(code = 403, message = "Forbidden"),
     new ApiResponse(code = 404, message = "Not found"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def forecast(@ApiParam(value = "identifier of the place")
-               place: String) = timed(s"query weather forecast for $place") { AuthAsyncAction { implicit request =>
+  def weather(@ApiParam(value = "identifier of the place") place: String) = timed(s"query weather forecast for $place") { AuthAsyncAction {
+    implicit request =>
 
     // TODO: read from db and manage cookie
-    Logger.debug(s"querying weather forecast for $place")
+    Logger.debug(s"collecting weather forecast for [$place]")
 
     Future.successful(Ok)
   }}
