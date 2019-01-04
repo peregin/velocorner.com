@@ -28,6 +28,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
+  lazy val country2Code = CountryIso.fromResources()
 
   // def mapped to /api/athletes/progress
   // current year's progress
@@ -177,10 +178,16 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Not found"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def weather(@ApiParam(value = "identifier of the location") location: String) = timed(s"query weather forecast for $location") { AuthAsyncAction {
+  def weather(@ApiParam(value = "identifier of the location") location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
     implicit request =>
 
-      Logger.debug(s"collecting weather forecast for [$location]")
+      val ix = location.indexWhere(_ == ',')
+      val isoLocation = if (ix > -1) {
+        val country = location.substring(ix+1).trim.toLowerCase
+        country2Code.get(country).map(iso => s"${location.substring(0, ix)},$iso").getOrElse(location)
+      } else location
+
+      Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
 
       // after a successful query and storage, save the location on the client side (user might be not authenticated)
       Future.successful(Ok.withCookies(WeatherCookie.create(location)))
