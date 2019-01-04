@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.http.ElasticDsl._
 import org.elasticsearch.common.settings.Settings
 import org.slf4s.Logging
 import org.specs2.mutable.Specification
-import velocorner.model.Activity
+import velocorner.model.strava.Activity
 import velocorner.util.JsonIo
 
 

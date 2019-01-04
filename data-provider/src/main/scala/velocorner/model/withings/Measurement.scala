@@ -1,13 +1,12 @@
-package velocorner.model
+package velocorner.model.withings
 
 import org.joda.time.DateTime
-import velocorner.model.MeasurementType.Entry
 
 // Extracted from the Withings feed and persisted in the storage layer.
 // Represents a generic measurement entry.
 case class Measurement(
                         id: String,
-                        `type`: Entry,
+                        `type`: MeasurementType.Entry,
                         value: Double,
                         athleteId: Int,
                         updateTime: DateTime

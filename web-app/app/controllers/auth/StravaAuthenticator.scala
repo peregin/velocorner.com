@@ -10,11 +10,12 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.feed.StravaActivityFeed
-import velocorner.model.{Account, Athlete}
+import velocorner.model.Account
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import play.api.libs.ws.DefaultBodyWritables._
+import velocorner.model.strava.Athlete
 
 case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
 

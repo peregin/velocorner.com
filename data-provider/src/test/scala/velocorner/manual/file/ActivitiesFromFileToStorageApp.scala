@@ -2,7 +2,7 @@ package velocorner.manual.file
 
 import org.slf4s.Logging
 import velocorner.manual.{AggregateActivities, MyMacConfig}
-import velocorner.model.Activity
+import velocorner.model.strava.Activity
 import velocorner.storage.Storage
 import velocorner.util.{JsonIo, Metrics}
 

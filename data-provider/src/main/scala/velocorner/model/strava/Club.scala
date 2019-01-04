@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.model.strava
 
 import play.api.libs.json._
 

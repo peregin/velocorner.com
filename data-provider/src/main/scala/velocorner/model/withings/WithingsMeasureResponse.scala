@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.model.withings
 
 import org.joda.time.DateTime
 import play.api.libs.json._

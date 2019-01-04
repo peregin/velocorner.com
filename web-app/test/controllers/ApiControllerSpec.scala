@@ -7,7 +7,7 @@ import play.api.cache.SyncCacheApi
 import play.api.test.{FakeRequest, StubControllerComponentsFactory}
 import org.mockito.Mockito._
 import play.api.http.Status
-import velocorner.model.Club
+import velocorner.model.strava.Club
 import velocorner.storage.Storage
 
 import scala.concurrent.Await

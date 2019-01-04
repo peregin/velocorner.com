@@ -1,7 +1,8 @@
-package velocorner.model
+package velocorner.model.strava
 
 import org.joda.time.DateTime
 import play.api.libs.json._
+import velocorner.model.DateTimePattern
 
 /**
  * Represents an Activity from the Strava feed and storage layer:

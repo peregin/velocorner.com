@@ -7,11 +7,11 @@ import com.couchbase.client.CouchbaseClient
 import com.couchbase.client.protocol.views._
 import org.slf4s.Logging
 import velocorner.model._
-import velocorner.util.{Metrics, JsonIo}
+import velocorner.util.{JsonIo, Metrics}
 
 import scala.collection.JavaConverters._
-
 import CouchbaseStorage._
+import velocorner.model.strava.{Activity, Athlete, Club}
 
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {

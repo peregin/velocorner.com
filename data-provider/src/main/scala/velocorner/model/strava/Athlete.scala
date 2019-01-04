@@ -1,7 +1,6 @@
-package velocorner.model
+package velocorner.model.strava
 
-import play.api.libs.json.{Format, Json}
-import play.api.libs.json._
+import play.api.libs.json.{Format, Json, _}
 
 /**
   * Represents an athlete from the Strava feed and storage layer.

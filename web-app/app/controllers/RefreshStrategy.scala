@@ -1,13 +1,13 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-
 import org.joda.time.DateTime
 import org.slf4s
 import org.slf4s.Logging
 import play.Logger
-import velocorner.model.{Account, Activity}
+import velocorner.model.Account
 import velocorner.feed.StravaActivityFeed
+import velocorner.model.strava.Activity
 import velocorner.util.CloseableResource
 
 import scala.annotation.tailrec

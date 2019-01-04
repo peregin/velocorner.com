@@ -6,7 +6,7 @@ import org.apache.commons.io.FileUtils
 import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
-import velocorner.model.Activity
+import velocorner.model.strava.Activity
 import velocorner.util.{FreePortFinder, JsonIo}
 
 

@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.model.withings
 
 /**
   *  Measurement type is one of the following:
@@ -62,4 +62,3 @@ object MeasurementType {
   case object PulseWaveVelocity extends Entry("PulseWaveVelocity", 91)
 
 }
-

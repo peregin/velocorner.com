@@ -5,6 +5,7 @@ import com.rethinkdb.net.{Connection, Cursor}
 import org.json.simple.JSONObject
 import org.slf4s.Logging
 import velocorner.model._
+import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 

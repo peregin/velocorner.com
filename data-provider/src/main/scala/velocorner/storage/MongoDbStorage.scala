@@ -8,6 +8,7 @@ import com.mongodb.casbah.{MongoClient, MongoDB}
 import com.mongodb.util.JSON
 import com.mongodb.casbah.query.Imports._
 import org.slf4s.Logging
+import velocorner.model.strava.{Activity, Athlete, Club}
 
 import scala.language.implicitConversions
 import collection.JavaConverters._

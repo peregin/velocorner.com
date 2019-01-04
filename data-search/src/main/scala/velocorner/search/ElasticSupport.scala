@@ -3,7 +3,7 @@ package velocorner.search
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import com.sksamuel.elastic4s.indexes.{IndexApi, IndexRequest}
-import velocorner.model.Activity
+import velocorner.model.strava.Activity
 
 /**
   * Created by levi on 21.03.17.

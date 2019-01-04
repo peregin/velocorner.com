@@ -1,7 +1,7 @@
 package velocorner.manual
 
 import org.slf4s.Logging
-import velocorner.model.Activity
+import velocorner.model.strava.Activity
 import velocorner.util.JsonIo
 
 

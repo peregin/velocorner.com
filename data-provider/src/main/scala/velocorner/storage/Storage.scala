@@ -3,6 +3,7 @@ package velocorner.storage
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model._
+import velocorner.model.strava.{Activity, Athlete, Club}
 
 trait Storage {
 

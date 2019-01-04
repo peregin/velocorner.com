@@ -2,6 +2,7 @@ package velocorner.model
 
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
+import velocorner.model.withings.{MeasurementType, WithingsMeasureResponse}
 import velocorner.util.JsonIo
 
 class WithingsMeasureResponseSpec extends Specification {

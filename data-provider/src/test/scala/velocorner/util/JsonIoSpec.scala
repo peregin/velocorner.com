@@ -1,7 +1,7 @@
 package velocorner.util
 
 import org.specs2.mutable.Specification
-import velocorner.model.{Activity, Athlete}
+import velocorner.model.strava.{Activity, Athlete}
 
 import scala.io.Source
 

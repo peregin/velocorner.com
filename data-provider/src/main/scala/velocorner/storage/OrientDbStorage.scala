@@ -10,6 +10,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
 import velocorner.model._
+import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 

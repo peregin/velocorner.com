@@ -188,6 +188,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       } else location
 
       Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
+      // 1. check location last timestamp or generally to throttle the request
+      // 2. read and store if needed
+      // 3. return the forecast
 
       // after a successful query and storage, save the location on the client side (user might be not authenticated)
       Future.successful(Ok.withCookies(WeatherCookie.create(location)))

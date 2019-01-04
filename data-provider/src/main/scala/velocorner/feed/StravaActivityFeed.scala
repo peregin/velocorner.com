@@ -3,7 +3,7 @@ package velocorner.feed
 import org.slf4s.Logging
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.SecretConfig
-import velocorner.model.{Activity, Athlete}
+import velocorner.model.strava.{Activity, Athlete}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec

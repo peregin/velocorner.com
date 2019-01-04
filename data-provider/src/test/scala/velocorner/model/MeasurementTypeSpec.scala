@@ -1,7 +1,7 @@
 package velocorner.model
 
 import org.specs2.mutable.Specification
-import MeasurementType._
+import velocorner.model.withings.MeasurementType._
 
 class MeasurementTypeSpec extends Specification {
 

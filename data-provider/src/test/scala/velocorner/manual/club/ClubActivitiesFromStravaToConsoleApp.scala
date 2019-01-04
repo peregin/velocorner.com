@@ -3,8 +3,8 @@ package velocorner.manual.club
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.manual.MyMacConfig
-import velocorner.model.Club
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
+import velocorner.model.strava.Club
 import velocorner.util.CloseableResource
 
 object ClubActivitiesFromStravaToConsoleApp extends App with Logging with CloseableResource with MyMacConfig {

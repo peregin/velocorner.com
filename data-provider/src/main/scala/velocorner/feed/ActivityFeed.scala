@@ -1,6 +1,6 @@
 package velocorner.feed
 
-import velocorner.model.{Activity, Athlete}
+import velocorner.model.strava.{Activity, Athlete}
 
 
 trait ActivityFeed {
@@ -10,7 +10,7 @@ trait ActivityFeed {
 
   def listClubAthletes(clubId: Long): List[Athlete]
 
-  // activities - page starts from 1 and pageSize cannot be greater than StravaFeed.maxItemsPerPage
+  // activities - page starts from 1 and pageSize cannot be greater than StravaActivityFeed.maxItemsPerPage
   def listAthleteActivities(page: Int, pageSize: Int): List[Activity]
 
   // athlete
