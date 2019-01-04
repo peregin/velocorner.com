@@ -2,7 +2,7 @@
 @common.main(context) {
 
     @if(context.isWeatherEnabled) {
-        @widget.weather("Zurich, CH", "/api/weather")
+        @widget.weather(context.weatherLocation, "/api/weather")
     }
 
     @if(context.isWithingsEnabled) {

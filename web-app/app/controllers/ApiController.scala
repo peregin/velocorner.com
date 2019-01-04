@@ -159,31 +159,31 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   def activity(@ApiParam(value = "identifier of the activity") id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
     implicit request =>
 
-    val result = loggedIn.map{ _ =>
-      Logger.debug(s"querying activity $id")
-      connectivity.getStorage.getActivity(id)
-        .map(a => Ok(JsonIo.write(a)))
-        .getOrElse(NotFound)
-    }.getOrElse(Forbidden)
+      val result = loggedIn.map{ _ =>
+        Logger.debug(s"querying activity $id")
+        connectivity.getStorage.getActivity(id)
+          .map(a => Ok(JsonIo.write(a)))
+          .getOrElse(NotFound)
+      }.getOrElse(Forbidden)
 
-    Future.successful(result)
+      Future.successful(result)
   }}
 
   // retrieves the weather forecast for a given place
-  // def mapped to /api/weather/:place
+  // def mapped to /api/weather/:location
   @ApiOperation(value = "Retrieves the weather forecast for a specific place",
     notes = "Weather forecast for the next 5 days",
     httpMethod = "GET")
   @ApiResponses(Array(
     new ApiResponse(code = 404, message = "Not found"),
     new ApiResponse(code = 500, message = "Internal error")))
-  def weather(@ApiParam(value = "identifier of the place") place: String) = timed(s"query weather forecast for $place") { AuthAsyncAction {
+  def weather(@ApiParam(value = "identifier of the location") location: String) = timed(s"query weather forecast for $location") { AuthAsyncAction {
     implicit request =>
 
-    // TODO: read from db and manage cookie
-    Logger.debug(s"collecting weather forecast for [$place]")
+      Logger.debug(s"collecting weather forecast for [$location]")
 
-    Future.successful(Ok)
+      // after a successful query and storage, save the location on the client side (user might be not authenticated)
+      Future.successful(Ok.withCookies(WeatherCookie.create(location)))
   }}
 
   // WebSocket to update the client
