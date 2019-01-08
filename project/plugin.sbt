@@ -19,7 +19,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.8")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.21")
 
 // Library to fetch dependencies from Maven / Ivy repositories super fast - 1.1.0-M4
 addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.3")

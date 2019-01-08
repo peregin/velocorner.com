@@ -11,7 +11,7 @@ import play.sbt.PlayImport._
 val scalazVersion = "7.2.27"
 val logbackVersion = "1.2.3"
 val elasticVersion = "6.5.0"
-val orientDbVersion = "3.0.12"
+val orientDbVersion = "3.0.13"
 val log4jVersion = "2.11.1"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "1.1.12" // standalone version
