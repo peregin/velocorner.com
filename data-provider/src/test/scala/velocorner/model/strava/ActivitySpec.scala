@@ -1,7 +1,6 @@
-package velocorner.model
+package velocorner.model.strava
 
 import org.specs2.mutable.Specification
-import velocorner.model.strava.Activity
 import velocorner.util.JsonIo
 
 class ActivitySpec extends Specification {

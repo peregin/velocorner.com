@@ -2,25 +2,28 @@ package velocorner.feed
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
+import velocorner.model.weather.WeatherResponse
+import velocorner.util.JsonIo
 
-import scala.concurrent.Await
+import scala.concurrent.Future
 
 object OpenWeatherFeed {
 
   val baseUrl = "https://api.openweathermap.org/data/2.5"
 }
 
-// baseUrl/forecast?q=city,iso&appid=x
 class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
 
-  def query(location: String): String = {
-    val response = ws{_.url(s"${WithingsMeasureFeed.baseUrl}/forecast")
+  def query(location: String): Future[WeatherResponse] = {
+    val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/forecast")
       .withQueryStringParameters(
-        ("q", "location"),
-        ("appid", config.getId("weather"))
+        ("q", location),
+        ("appid", config.getId("weather")),
+        ("units", "metric"),
+        ("lang", "en")
       )
       .get()
     }
-    Await.result(response, timeout).body
+    response.map(_.body).map(JsonIo.read[WeatherResponse])
   }
 }

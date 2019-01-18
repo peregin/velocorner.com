@@ -1,6 +1,7 @@
 package velocorner.feed
 
 import java.io.Closeable
+import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
@@ -12,13 +13,15 @@ import velocorner.SecretConfig
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
-
 import HttpFeed._
+
+import scala.concurrent.ExecutionContext
 
 object HttpFeed {
 
   implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()
+  implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(10))
 
   def shutdown() {
     materializer.shutdown()
@@ -36,6 +39,8 @@ trait HttpFeed extends Closeable {
   val httpConfigBuilder = new DefaultAsyncHttpClientConfig.Builder()
 
   lazy val timeout = 10 seconds
+  lazy implicit val executors = HttpFeed.executors
+
 
   // setup secure proxy if it is configured w/o authentication
   for (proxyHost <- config.getProxyHost; proxyPort <- config.getProxyPort) {

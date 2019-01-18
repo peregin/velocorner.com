@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.model.withings
 
 import org.specs2.mutable.Specification
 import velocorner.model.withings.MeasurementType._

@@ -7,7 +7,6 @@ import velocorner.model.strava.{Activity, Athlete}
 import velocorner.util.JsonIo
 
 import scala.annotation.tailrec
-import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 

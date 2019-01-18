@@ -6,7 +6,6 @@ import play.shaded.ahc.org.asynchttpclient.{Request, RequestBuilderBase}
 import velocorner.SecretConfig
 
 import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.language.postfixOps
 import collection.JavaConverters._
 
