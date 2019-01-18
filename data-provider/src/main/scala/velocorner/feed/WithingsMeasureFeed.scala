@@ -25,8 +25,6 @@ class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretC
 
   log.info(s"connecting to withings with token [${token.token}]...")
 
-  lazy private val timeout = 10 seconds
-
   private def signer = new OAuthCalculator(WithingsMeasureFeed.consumerKey(config), token) {
     override def calculateAndAddSignature(request: Request, requestBuilder: RequestBuilderBase[_]): Unit = {
       super.calculateAndAddSignature(request, requestBuilder)

@@ -11,6 +11,8 @@ import play.shaded.ahc.org.asynchttpclient.{DefaultAsyncHttpClient, DefaultAsync
 import velocorner.SecretConfig
 
 import scala.collection.JavaConverters._
+import scala.concurrent.duration._
+
 import HttpFeed._
 
 object HttpFeed {
@@ -32,6 +34,8 @@ trait HttpFeed extends Closeable {
   val config: SecretConfig
 
   val httpConfigBuilder = new DefaultAsyncHttpClientConfig.Builder()
+
+  lazy val timeout = 10 seconds
 
   // setup secure proxy if it is configured w/o authentication
   for (proxyHost <- config.getProxyHost; proxyPort <- config.getProxyPort) {

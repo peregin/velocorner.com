@@ -41,7 +41,6 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
   val clientId = config.getId("strava")
   log.info(s"connecting to strava with token [$token] and clientId[$clientId]...")
   val authHeader = s"Bearer $token"
-  val timeout = 10 seconds
 
   // clubs
   override def listRecentClubActivities(clubId: Long): List[Activity] = {
