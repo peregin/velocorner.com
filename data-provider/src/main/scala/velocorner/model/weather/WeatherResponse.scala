@@ -7,6 +7,28 @@ import velocorner.model.EpochFormatter
 /**
   * https://openweathermap.org/forecast5#format
   */
+object WeatherDescription {
+  implicit val responseFormat = Format[WeatherDescription](Json.reads[WeatherDescription], Json.writes[WeatherDescription])
+}
+
+case class WeatherDescription(
+  id: Long,
+  main: String,
+  description: String,
+  icon: String
+)
+
+object WeatherInfo {
+  implicit val responseFormat = Format[WeatherInfo](Json.reads[WeatherInfo], Json.writes[WeatherInfo])
+}
+
+case class WeatherInfo(
+  temp: Float,
+  temp_min: Float,
+  temp_max: Float,
+  humidity: Float
+)
+
 object Weather {
 
   implicit val dateTimeFormat = EpochFormatter.create
@@ -21,8 +43,20 @@ object Weather {
 }
 
 case class Weather(
-                    dt: DateTime
-                  )
+  dt: DateTime,
+  main: WeatherInfo,
+  weather: List[WeatherDescription]
+)
+
+object City {
+  implicit val responseFormat = Format[City](Json.reads[City], Json.writes[City])
+}
+
+case class City(
+   id: Long,
+   name: String, // plain name, such as Zurich, Budapest
+   country: String // ISO code 2 letter
+)
 
 object WeatherResponse {
 
@@ -30,6 +64,7 @@ object WeatherResponse {
 }
 
 case class WeatherResponse(
-                            cod: String,
-                            list: List[Weather]
-                          )
+  cod: String,
+  list: List[Weather],
+  city: City
+)

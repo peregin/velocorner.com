@@ -13,15 +13,17 @@ import velocorner.SecretConfig
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
-import HttpFeed._
+import org.slf4s.Logging
 
 import scala.concurrent.ExecutionContext
 
-object HttpFeed {
+object HttpFeed extends Logging {
 
   implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()
-  implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(10))
+  val processors = sys.runtime.availableProcessors()
+  //log.info(s"available processors $processors")
+  implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
 
   def shutdown() {
     materializer.shutdown()
@@ -33,6 +35,8 @@ object HttpFeed {
   * Created by levi on 25.10.16.
   */
 trait HttpFeed extends Closeable {
+
+  import HttpFeed._
 
   val config: SecretConfig
 
