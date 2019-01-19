@@ -4,12 +4,11 @@ import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
 
-class WeatherResponseSpec extends Specification {
+class WeatherSpec extends Specification {
 
-  "Withings response" should {
+  val forecast = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json")
 
-    val forecast = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json")
-
+  "openweathermap.org response" should {
     "be loaded from reference file" in {
       forecast.cod === "200"
       forecast.list must haveSize(40)
@@ -25,6 +24,17 @@ class WeatherResponseSpec extends Specification {
       val info = first.weather.head
       info.main === "Clear"
       info.icon === "01n"
+    }
+  }
+
+  "storage model" should {
+
+    "read and written" in {
+      val weather = forecast.list.head
+      val storageEntry = WeatherForecast("Zurich, CH", weather)
+      val json = JsonIo.write(storageEntry)
+      val entity = JsonIo.read[WeatherForecast](json)
+      entity === storageEntry
     }
   }
 }
