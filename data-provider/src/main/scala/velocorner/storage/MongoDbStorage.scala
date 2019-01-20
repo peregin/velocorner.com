@@ -9,6 +9,7 @@ import com.mongodb.util.JSON
 import com.mongodb.casbah.query.Imports._
 import org.slf4s.Logging
 import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.weather.WeatherForecast
 
 import scala.language.implicitConversions
 import collection.JavaConverters._
@@ -24,7 +25,7 @@ class MongoDbStorage extends Storage with Logging {
 
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]) {
+  override def storeActivity(activities: Iterable[Activity]) {
     val coll = db.getCollection(ACTIVITY_TABLE)
     // TODO: bulk store
     activities.foreach{ a =>
@@ -101,6 +102,11 @@ class MongoDbStorage extends Storage with Logging {
   override def store(club: Club) = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
 
   override def getClub(id: Long): Option[Club] = getJsonById(id, CLUB_TABLE).map(JsonIo.read[Club])
+
+  // weather
+  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
+
+  override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

@@ -12,6 +12,7 @@ import velocorner.util.{JsonIo, Metrics}
 import scala.collection.JavaConverters._
 import CouchbaseStorage._
 import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.weather.WeatherForecast
 
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
@@ -21,7 +22,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
 
 
   // activities
-  override def store(activities: Iterable[Activity]) {
+  override def storeActivity(activities: Iterable[Activity]) {
     // TODO: bulk store
     activities.foreach{a =>
       client.set(a.id.toString, 0, JsonIo.write(a))
@@ -101,6 +102,11 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   override def getClub(id: Long): Option[Club] = {
     Option(client.get(s"club_$id")).map(json => JsonIo.read[Club](json.toString))
   }
+
+  // weather
+  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
+
+  override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
 
   private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()

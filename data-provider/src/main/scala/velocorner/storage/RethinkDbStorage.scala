@@ -6,6 +6,7 @@ import org.json.simple.JSONObject
 import org.slf4s.Logging
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.weather.WeatherForecast
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
@@ -26,7 +27,7 @@ class RethinkDbStorage extends Storage with Logging {
   @volatile var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def store(activities: Iterable[Activity]) {
+  override def storeActivity(activities: Iterable[Activity]) {
     activities.map{ a =>
       val json = JsonIo.write(a)
       client.json(json)
@@ -116,6 +117,11 @@ class RethinkDbStorage extends Storage with Logging {
   override def store(club: Club) = store(JsonIo.write(club), CLUB_TABLE)
 
   override def getClub(id: Long): Option[Club] = getJsonById(id, CLUB_TABLE).map(JsonIo.read[Club])
+
+  // weather
+  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
+
+  override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

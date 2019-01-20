@@ -14,7 +14,7 @@ object AthleteFromStravaToStorageApp extends App with Logging with MyMacConfig {
   storage.initialize()
   //val activities = StravaFeed.listRecentAthleteActivities
   val activities = StravaActivityFeed.listAllAthleteActivities
-  storage.store(activities)
+  storage.storeActivity(activities)
 
   log.info("done...")
   storage.destroy()

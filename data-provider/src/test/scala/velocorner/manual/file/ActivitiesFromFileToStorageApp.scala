@@ -15,7 +15,7 @@ object ActivitiesFromFileToStorageApp extends App with AggregateActivities with 
   storage.initialize()
   log.info("initialized...")
 
-  storage.store(list)
+  storage.storeActivity(list)
   log.info(s" ${list.size} documents persisted...")
   val progress = timed("aggregation")(storage.dailyProgressForAthlete(432909))
   printAllProgress(progress)

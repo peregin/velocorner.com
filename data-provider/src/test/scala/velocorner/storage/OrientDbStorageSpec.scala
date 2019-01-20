@@ -7,6 +7,7 @@ import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.model.strava.Activity
+import velocorner.model.weather.{WeatherForecast, WeatherResponse}
 import velocorner.util.{FreePortFinder, JsonIo}
 
 
@@ -19,13 +20,15 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
 
   "storage" should {
 
+    val zhLocation = "Zurich,CH"
+
     "check that is empty" in {
       storage.dailyProgressForAll(10) must beEmpty
     }
 
     "add items" in {
       val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json").filter(_.`type` == "Ride")
-      storage.store(activities)
+      storage.storeActivity(activities)
       storage.listRecentActivities(50) must haveSize(24)
     }
 
@@ -70,6 +73,23 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       storage.backup(file.getAbsolutePath)
       file.length() must beGreaterThan(10L)
       file.delete()
+    }
+
+    "read empty list of weather forecast" in {
+      val list = storage.listRecentForecast(zhLocation)
+      list must beEmpty
+    }
+
+    "store weather forecast items" in {
+      val entries = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json").list
+      entries must haveSize(40)
+      storage.storeWeather(entries.map(WeatherForecast(zhLocation, _)))
+      storage.listRecentForecast(zhLocation) must haveSize(40)
+      storage.listRecentForecast("Budapest,HU") must beEmpty
+
+      // storing entries are idempotent (upsert the same entries, we should have still 40 items in the storage)
+      storage.storeWeather(entries.map(WeatherForecast(zhLocation, _)))
+      storage.listRecentForecast(zhLocation) must haveSize(40)
     }
   }
 

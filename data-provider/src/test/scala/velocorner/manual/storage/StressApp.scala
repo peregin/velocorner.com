@@ -42,7 +42,7 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
           "query"
         } else {
           log.info(s"start[$i] store activity...")
-          storage.store(activities)
+          storage.storeActivity(activities)
           "store"
         }
         log.info(s"done[$i] $activity activity...")

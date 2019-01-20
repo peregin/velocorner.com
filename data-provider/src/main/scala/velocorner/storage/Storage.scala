@@ -4,11 +4,13 @@ import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.weather.WeatherForecast
+
 
 trait Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
-  def store(activities: Iterable[Activity])
+  def storeActivity(activities: Iterable[Activity])
 
   def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress]
   def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress]
@@ -30,6 +32,11 @@ trait Storage {
   // clubs
   def store(club: Club)
   def getClub(id: Long): Option[Club]
+
+  // weather - location is <city[,countryISO2letter]>
+  // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
+  def listRecentForecast(location: String, limit: Int = 40): Iterable[WeatherForecast]
+  def storeWeather(forecast: Iterable[WeatherForecast])
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

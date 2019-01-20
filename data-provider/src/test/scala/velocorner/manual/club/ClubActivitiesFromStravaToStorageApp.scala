@@ -18,7 +18,7 @@ object ClubActivitiesFromStravaToStorageApp extends App with Logging with Closea
     log.info("retrieving...")
     val activities = feed.listRecentClubActivities(Club.Velocorner)
     log.info("storing...")
-    storage.store(activities)
+    storage.storeActivity(activities)
     log.info("done...")
 
     storage.destroy()
