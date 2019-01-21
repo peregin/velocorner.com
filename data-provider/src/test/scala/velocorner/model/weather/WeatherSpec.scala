@@ -2,6 +2,7 @@ package velocorner.model.weather
 
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
+import velocorner.model.DailyWeather
 import velocorner.util.JsonIo
 
 class WeatherSpec extends Specification {
@@ -35,6 +36,15 @@ class WeatherSpec extends Specification {
       val json = JsonIo.write(storageEntry)
       val entity = JsonIo.read[WeatherForecast](json)
       entity === storageEntry
+    }
+  }
+
+  "list of entries" should {
+
+    "be grouped by day" in {
+      val entries = forecast.list.map(w => WeatherForecast("Zurich,CH", w.dt.getMillis, w))
+      val dailyForecast = DailyWeather.list(entries)
+      dailyForecast must haveSize(5)
     }
   }
 }
