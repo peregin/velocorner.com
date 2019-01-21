@@ -26,8 +26,12 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       storage.dailyProgressForAll(10) must beEmpty
     }
 
-    "add items" in {
+    "add items as idempotent operation" in {
       val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json").filter(_.`type` == "Ride")
+      storage.storeActivity(activities)
+      storage.listRecentActivities(50) must haveSize(24)
+
+      // is it idempotent
       storage.storeActivity(activities)
       storage.listRecentActivities(50) must haveSize(24)
     }
@@ -80,16 +84,22 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       list must beEmpty
     }
 
-    "store weather forecast items" in {
+    "store weather forecast items as idempotent operation" in {
       val entries = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json").list
       entries must haveSize(40)
-      storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt, e)))
+      storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e)))
       storage.listRecentForecast(zhLocation) must haveSize(40)
       storage.listRecentForecast("Budapest,HU") must beEmpty
 
       // storing entries are idempotent (upsert the same entries, we should have still 40 items in the storage)
-      storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt, e)))
-      storage.listRecentForecast(zhLocation) must haveSize(40)
+      val first = entries.head
+      storage.storeWeather(Seq(WeatherForecast(zhLocation, first.dt.getMillis, first)))
+      storage.listRecentForecast(zhLocation, limit = 50) must haveSize(40)
+
+      // different location, same timestamp
+      storage.storeWeather(Seq(WeatherForecast("Budapest,HU", first.dt.getMillis, first)))
+      storage.listRecentForecast(zhLocation, limit = 50) must haveSize(40)
+      storage.listRecentForecast("Budapest,HU", limit = 50) must haveSize(1)
     }
   }
 

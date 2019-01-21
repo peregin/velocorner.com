@@ -31,7 +31,7 @@ class WeatherSpec extends Specification {
 
     "read and written" in {
       val weather = forecast.list.head
-      val storageEntry = WeatherForecast("Zurich, CH", weather.dt, weather)
+      val storageEntry = WeatherForecast("Zurich, CH", weather.dt.getMillis, weather)
       val json = JsonIo.write(storageEntry)
       val entity = JsonIo.read[WeatherForecast](json)
       entity === storageEntry

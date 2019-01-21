@@ -105,12 +105,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = {
-    listFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location = '$location' ORDER BY weather.dt DESC LIMIT $limit")
+    listFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
   }
 
   override def storeWeather(forecast: Iterable[WeatherForecast]) {
     forecast.foreach(a =>
-      upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location = '${a.location}' AND timestamp = '${a.timestamp}'")
+      upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
     )
   }
 
@@ -188,7 +188,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       createIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.INTEGER))
       createIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
       createIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.INTEGER))
-      createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.STRING))
+      createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
     }
   }
 
