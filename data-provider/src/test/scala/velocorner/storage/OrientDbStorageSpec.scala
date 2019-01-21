@@ -83,12 +83,12 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     "store weather forecast items" in {
       val entries = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json").list
       entries must haveSize(40)
-      storage.storeWeather(entries.map(WeatherForecast(zhLocation, _)))
+      storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt, e)))
       storage.listRecentForecast(zhLocation) must haveSize(40)
       storage.listRecentForecast("Budapest,HU") must beEmpty
 
       // storing entries are idempotent (upsert the same entries, we should have still 40 items in the storage)
-      storage.storeWeather(entries.map(WeatherForecast(zhLocation, _)))
+      storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt, e)))
       storage.listRecentForecast(zhLocation) must haveSize(40)
     }
   }

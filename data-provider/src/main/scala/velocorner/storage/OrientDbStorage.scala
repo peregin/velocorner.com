@@ -34,18 +34,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     results.asScala.map(d => JsonIo.read[T](d.toJSON))
   }
 
-  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]) = inTx() { db =>
+  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): ODocument = inTx() { db =>
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
     val doc = results.asScala.headOption.getOrElse(new ODocument(className))
     doc.fromJSON(JsonIo.write(payload))
-    doc.save()
-  }
-
-  private def upsert1(json: String, className: String, propertyName: String, propertyValue: Long) = inTx() { db =>
-    val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
-    val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
-    val doc = results.asScala.headOption.getOrElse(new ODocument(className))
-    doc.fromJSON(json)
     doc.save()
   }
 
@@ -118,7 +110,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   override def storeWeather(forecast: Iterable[WeatherForecast]) {
     forecast.foreach(a =>
-      upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location = '${a.location}' AND weather.dt = '${a.forecast.dt}'")
+      upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location = '${a.location}' AND timestamp = '${a.timestamp}'")
     )
   }
 
@@ -187,7 +179,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           if (!clazz.existsProperty(ix.indexField)) clazz.createProperty(ix.indexField, ix.indexType)
         )
 
-        val ixName = index.map(_.indexField).sorted.mkString("/")
+        val ixName = index.map(_.indexField).sorted.mkString("-").replace(".", "_")
 
         if (!clazz.areIndexed(ixName)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, index.map(_.indexField):_*)
       }
@@ -196,7 +188,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       createIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.INTEGER))
       createIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
       createIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.INTEGER))
-      createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("weather.dt", OType.DATETIME))
+      createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.STRING))
     }
   }
 
