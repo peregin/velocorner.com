@@ -120,8 +120,11 @@ class RethinkDbStorage extends Storage with Logging {
 
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
-
   override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
+
+  // attributes
+  override def storeAttribute(key: String, `type`: String, value: String): Unit = ???
+  override def getAttribute(key: String, `type`: String): Option[String] = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

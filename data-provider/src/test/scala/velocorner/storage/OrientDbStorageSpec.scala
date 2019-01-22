@@ -101,6 +101,18 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       storage.listRecentForecast(zhLocation, limit = 50) must haveSize(40)
       storage.listRecentForecast("Budapest,HU", limit = 50) must haveSize(1)
     }
+
+    "store/lookup attributes" in {
+      storage.getAttribute("key", "test") must beNone
+
+      storage.storeAttribute("key", "test", "value")
+      storage.getAttribute("key", "test") must beSome("value")
+
+      storage.getAttribute("key", "test2") must beNone
+
+      storage.storeAttribute("key", "test", "value2")
+      storage.getAttribute("key", "test") must beSome("value2")
+    }
   }
 
   override def beforeAll() {

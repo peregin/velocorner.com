@@ -38,6 +38,10 @@ trait Storage {
   def listRecentForecast(location: String, limit: Int = 40): Iterable[WeatherForecast]
   def storeWeather(forecast: Iterable[WeatherForecast])
 
+  // key value pairs - generic attribute storage
+  def storeAttribute(key: String, `type`: String, value: String)
+  def getAttribute(key: String, `type`: String): Option[String]
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
 

@@ -114,6 +114,18 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     )
   }
 
+  // attributes
+  override def storeAttribute(key: String, `type`: String, value: String) {
+    val attr = KeyValue(key, `type`, value)
+    upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
+  }
+
+  override def getAttribute(key: String, `type`: String): Option[String] = {
+    listFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
+      .headOption
+      .map(_.value)
+  }
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     val config =
@@ -189,6 +201,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       createIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
       createIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.INTEGER))
       createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
+      createIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
     }
   }
 
@@ -243,5 +256,6 @@ object OrientDbStorage {
   val CLUB_CLASS = "Club"
   val ATHLETE_CLASS = "Athlete"
   val WEATHER_CLASS = "Weather"
+  val ATTRIBUTE_CLASS = "Attribute"
 
 }

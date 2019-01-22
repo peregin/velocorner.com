@@ -105,8 +105,11 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
 
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
-
   override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
+
+  // attributes
+  override def storeAttribute(key: String, `type`: String, value: String): Unit = ???
+  override def getAttribute(key: String, `type`: String): Option[String] = ???
 
   private def queryForIds(view: View): Iterable[String] = {
     val query = new Query()
