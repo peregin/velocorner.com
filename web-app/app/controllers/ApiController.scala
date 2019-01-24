@@ -191,28 +191,26 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
 
       // TODO: inject time iterator
-      val now = DateTime.now()
+      // TODO: make refresh param configurable
       // check location last timestamp and throttle the request
       if (isoLocation.nonEmpty) {
-        val forecastEntries = for {
-          timestamp <- OptionT(Future(
-            connectivity
-              .getStorage
-              .getAttribute(isoLocation, "location")
-              .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
-              .orElse(now.minusYears(1).some)
-          ))
-          elapsedInMinutes = new Duration(timestamp, now).getStandardMinutes // should be more than 15 mins to execute the query
-          forecastEntries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w))).liftM[OptionT]
+        val now = DateTime.now()
+        val maybeLastUpdate = connectivity
+          .getStorage
+          .getAttribute(isoLocation, "location")
+          .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
+        Logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate")
+        val lastUpdate = maybeLastUpdate.getOrElse(now.minusYears(1))
+        val elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
+        val forecastEntriesF = if (elapsedInMinutes > 15) {
+          connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
           //_ <- connectivity.getStorage.storeWeather(forecastEntries)
           //_ <- connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat))
-        } yield forecastEntries
-
-        // TODO: separate live entries and caching functionalities
-
-        forecastEntries
-        // after a successful query and storage, save the location on the client side (user might be not authenticated)
-        Future.successful(Ok.withCookies(WeatherCookie.create(location)))
+        } else {
+          Future(connectivity.getStorage.listRecentForecast(isoLocation))
+        }
+        // after a successful query , save the location on the client side (even if the user is not authenticated)
+        forecastEntriesF.map(entries => Ok(JsonIo.write(entries)).withCookies(WeatherCookie.create(location)))
       } else {
         Future.successful(BadRequest)
       }
