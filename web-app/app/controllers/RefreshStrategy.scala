@@ -24,7 +24,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
     // allow refresh after some time only
     val now = DateTime.now()
     val storage = connectivity.getStorage
-    val newActivities = withCloseable(connectivity.getFeed(account.accessToken)) { feed =>
+    val newActivities = withCloseable(connectivity.getStravaFeed(account.accessToken)) { feed =>
 
       log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
 

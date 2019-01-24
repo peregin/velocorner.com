@@ -9,7 +9,7 @@ import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import play.filters.hosts.AllowedHostsConfig
 import velocorner.SecretConfig
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{OpenWeatherFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
 import scala.concurrent.Future
@@ -38,9 +38,11 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def getStorage = storage
 
-  def getFeed = new StravaActivityFeed(None, secretConfig)
+  def getStravaFeed = new StravaActivityFeed(None, secretConfig)
 
-  def getFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
+  def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
+
+  def getWeatherFeed = new OpenWeatherFeed(secretConfig)
 
   def disconnect() {
     Logger.info("releasing storage connections...")

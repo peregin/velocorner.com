@@ -112,7 +112,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     val token = accessToken.toString
     Logger.info(s"retrieve provider user for $token")
-    val athlete = withCloseable(connectivity.getFeed(token))(_.getAthlete)
+    val athlete = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
     Logger.info(s"got provided athlete for user $athlete")
     Future.successful(Account.from(athlete, token, None))
   }

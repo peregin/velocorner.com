@@ -47,7 +47,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
    def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
     Logger.info(s"retrieve token for code[$code]")
-     val feed = connectivity.getFeed
+     val feed = connectivity.getStravaFeed
      val resp = feed.ws(_.url(accessTokenUrl))
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
       .post(Map(

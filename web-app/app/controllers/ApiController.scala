@@ -6,13 +6,17 @@ import controllers.auth.AuthChecker
 import highcharts._
 import io.swagger.annotations._
 import javax.inject.Inject
-import org.joda.time.LocalDate
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.joda.time.{DateTime, Duration, LocalDate}
 import org.reactivestreams.Subscriber
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
+import scalaz._
+import Scalaz._
 import velocorner.model._
+import velocorner.model.weather.{WeatherForecast, WeatherLocation}
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{JsonIo, Metrics}
 
@@ -176,24 +180,42 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     notes = "Weather forecast for the next 5 days",
     httpMethod = "GET")
   @ApiResponses(Array(
+    new ApiResponse(code = 400, message = "Bad request"),
     new ApiResponse(code = 404, message = "Not found"),
     new ApiResponse(code = 500, message = "Internal error")))
   def weather(@ApiParam(value = "identifier of the location") location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
     implicit request =>
 
-      val ix = location.indexWhere(_ == ',')
-      val isoLocation = if (ix > -1) {
-        val country = location.substring(ix+1).trim.toLowerCase
-        country2Code.get(country).map(iso => s"${location.substring(0, ix)},$iso").getOrElse(location)
-      } else location
-
+      // convert city[,country] to city[,isoCountry]
+      val isoLocation = WeatherLocation.iso(location)
       Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
-      // 1. check location last timestamp or generally to throttle the request
-      // 2. read and store if needed
-      // 3. return the forecast
 
-      // after a successful query and storage, save the location on the client side (user might be not authenticated)
-      Future.successful(Ok.withCookies(WeatherCookie.create(location)))
+      // TODO: inject time iterator
+      val now = DateTime.now()
+      // check location last timestamp and throttle the request
+      if (isoLocation.nonEmpty) {
+        val forecastEntries = for {
+          timestamp <- OptionT(Future(
+            connectivity
+              .getStorage
+              .getAttribute(isoLocation, "location")
+              .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
+              .orElse(now.minusYears(1).some)
+          ))
+          elapsedInMinutes = new Duration(timestamp, now).getStandardMinutes // should be more than 15 mins to execute the query
+          forecastEntries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w))).liftM[OptionT]
+          //_ <- connectivity.getStorage.storeWeather(forecastEntries)
+          //_ <- connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat))
+        } yield forecastEntries
+
+        // TODO: separate live entries and caching functionalities
+
+        forecastEntries
+        // after a successful query and storage, save the location on the client side (user might be not authenticated)
+        Future.successful(Ok.withCookies(WeatherCookie.create(location)))
+      } else {
+        Future.successful(BadRequest)
+      }
   }}
 
   // WebSocket to update the client
