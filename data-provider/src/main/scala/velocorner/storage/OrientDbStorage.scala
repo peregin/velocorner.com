@@ -191,9 +191,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           if (!clazz.existsProperty(ix.indexField)) clazz.createProperty(ix.indexField, ix.indexType)
         )
 
-        val ixName = index.map(_.indexField).sorted.mkString("-").replace(".", "_")
+        val ixFields = index.map(_.indexField).sorted
+        val ixName = ixFields.mkString("-").replace(".", "_")
 
-        if (!clazz.areIndexed(ixName)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, index.map(_.indexField):_*)
+        if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
       }
 
       createIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.INTEGER))

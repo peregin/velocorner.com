@@ -6,15 +6,13 @@ import controllers.auth.AuthChecker
 import highcharts._
 import io.swagger.annotations._
 import javax.inject.Inject
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
 import org.reactivestreams.Subscriber
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-import scalaz._
-import Scalaz._
 import velocorner.model._
 import velocorner.model.weather.{WeatherForecast, WeatherLocation}
 import velocorner.storage.OrientDbStorage
@@ -167,7 +165,8 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       val result = loggedIn.map{ _ =>
         Logger.debug(s"querying activity $id")
         connectivity.getStorage.getActivity(id)
-          .map(a => Ok(JsonIo.write(a)))
+          .map(JsonIo.write(_))
+          .map(Ok(_))
           .getOrElse(NotFound)
       }.getOrElse(Forbidden)
 
@@ -199,18 +198,25 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
           .getStorage
           .getAttribute(isoLocation, "location")
           .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
-        Logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate")
         val lastUpdate = maybeLastUpdate.getOrElse(now.minusYears(1))
         val elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
+        Logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate, $elapsedInMinutes minutes ago")
         val forecastEntriesF = if (elapsedInMinutes > 15) {
-          connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
-          //_ <- connectivity.getStorage.storeWeather(forecastEntries)
-          //_ <- connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat))
+          Logger.info("querying latest weather forecast")
+          for {
+            entries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
+            _ <- Future(connectivity.getStorage.storeWeather(entries))
+            _ <- Future(connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat)))
+          } yield entries
         } else {
           Future(connectivity.getStorage.listRecentForecast(isoLocation))
         }
         // after a successful query , save the location on the client side (even if the user is not authenticated)
-        forecastEntriesF.map(entries => Ok(JsonIo.write(entries)).withCookies(WeatherCookie.create(location)))
+        forecastEntriesF
+          .map(DailyWeather.list)
+          .map(JsonIo.write(_))
+          .map(Ok(_).withCookies(WeatherCookie.create(location)))
+          .recover{case _ => NotFound}
       } else {
         Future.successful(BadRequest)
       }
