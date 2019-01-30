@@ -12,10 +12,9 @@ object WeatherDescription {
 }
 
 case class WeatherDescription(
-  id: Long,
-  main: String,
-  description: String,
-  icon: String
+  id: Long, // 800 - weather condition code
+  main: String, // "Clear"
+  description: String // "clear sky"
 )
 
 object WeatherInfo {

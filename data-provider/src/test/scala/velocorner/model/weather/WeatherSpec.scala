@@ -24,7 +24,6 @@ class WeatherSpec extends Specification {
 
       val info = first.weather.head
       info.main === "Clear"
-      info.icon === "01n"
     }
   }
 
