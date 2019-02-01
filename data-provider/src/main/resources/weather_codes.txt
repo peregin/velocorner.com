@@ -74,6 +74,6 @@
 # Group 80x: Clouds
 # ID	Meaning	                    Icon BootstrapIcon
 801	few clouds	                    02d icon-weather-001
-802	scattered clouds	            03d icon-weather-
-803	broken clouds	                04d icon-weather-
-804	overcast clouds	                04d icon-weather-
+802	scattered clouds	            03d icon-weather-003
+803	broken clouds	                04d icon-weather-022
+804	overcast clouds	                04d icon-weather-022
