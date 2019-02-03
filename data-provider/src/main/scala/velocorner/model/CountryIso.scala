@@ -8,9 +8,4 @@ case class CountryIso(name: String, code: String)
 object CountryIso {
 
   implicit val countryFormat = Format[CountryIso](Json.reads[CountryIso], Json.writes[CountryIso])
-
-  def fromResources(): Map[String, String] = {
-    val countries = JsonIo.readReadFromResource[List[CountryIso]]("/countries.json")
-    countries.map(ci => (ci.name.toLowerCase, ci.code)).toMap
-  }
 }

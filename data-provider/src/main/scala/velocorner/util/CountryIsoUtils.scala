@@ -1,4 +1,4 @@
-package velocorner.model.weather
+package velocorner.util
 
 import velocorner.model.CountryIso
 
@@ -9,9 +9,14 @@ import velocorner.model.CountryIso
   * Zurich,Switzerland = Zurich,CH
   * London = London
   */
-object WeatherLocation {
+object CountryIsoUtils {
 
-  lazy val country2Code = CountryIso.fromResources()
+  lazy val country2Code = fromResources()
+
+  def fromResources(): Map[String, String] = {
+    val countries = JsonIo.readReadFromResource[List[CountryIso]]("/countries.json")
+    countries.map(ci => (ci.name.toLowerCase, ci.code)).toMap
+  }
 
   def iso(location: String): String = {
     val ix = location.indexWhere(_ == ',')

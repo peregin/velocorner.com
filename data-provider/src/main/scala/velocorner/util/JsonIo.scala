@@ -6,9 +6,6 @@ import play.api.libs.json._
 
 import scala.io.Source
 
-/**
- * Created by levi on 08/02/15.
- */
 object JsonIo {
 
   def readFromGzipResource[T](resourceName: String)(implicit fjs: Reads[T]): T = {

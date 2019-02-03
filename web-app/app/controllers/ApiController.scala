@@ -14,9 +14,9 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.model._
-import velocorner.model.weather.{WeatherForecast, WeatherLocation}
+import velocorner.model.weather.WeatherForecast
 import velocorner.storage.OrientDbStorage
-import velocorner.util.{JsonIo, Metrics}
+import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -30,7 +30,6 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
-  lazy val country2Code = CountryIso.fromResources()
 
   // def mapped to /api/athletes/progress
   // current year's progress
@@ -186,7 +185,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     implicit request =>
 
       // convert city[,country] to city[,isoCountry]
-      val isoLocation = WeatherLocation.iso(location)
+      val isoLocation = CountryIsoUtils.iso(location)
       Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
 
       // TODO: inject time iterator
