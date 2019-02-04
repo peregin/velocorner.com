@@ -19,6 +19,8 @@ object WeatherCodeUtils extends Logging {
 
   lazy val code2Model = fromResources()
 
+  val clearSkyCode = 800
+
   def fromResources(): Map[Int, WeatherCode] = {
     val entries = Source
       .fromURL(getClass.getResource("/weather_codes.txt"))
@@ -40,6 +42,8 @@ object WeatherCodeUtils extends Logging {
       .map(e => (e.code, e))
       .toMap
   }
+
+  def icon(code: Long): String = code2Model.get(code.toInt).map(_.icon).getOrElse(sys.error(s"invalid weather code $code"))
 
   def parse(line: String): WeatherCode = {
     val sepFun = (c: Char) => c == ' ' || c == '\t'
