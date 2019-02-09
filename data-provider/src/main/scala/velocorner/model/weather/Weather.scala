@@ -7,6 +7,39 @@ import velocorner.model.EpochFormatter
 /**
   * https://openweathermap.org/forecast5#format
   */
+object WindDescription {
+  implicit val responseFormat = Format[WindDescription](Json.reads[WindDescription], Json.writes[WindDescription])
+}
+
+case class WindDescription(
+  speed: Double,
+  deg: Double
+)
+
+object CloudDescription {
+  implicit val responseFormat = Format[CloudDescription](Json.reads[CloudDescription], Json.writes[CloudDescription])
+}
+
+case class CloudDescription(
+  all: Int // %
+)
+
+object RainDescription {
+  implicit val responseFormat = Format[RainDescription](Json.reads[RainDescription], Json.writes[RainDescription])
+}
+
+case class RainDescription(
+  `3h`: Option[Double] // mm
+)
+
+object SnowDescription {
+  implicit val responseFormat = Format[SnowDescription](Json.reads[SnowDescription], Json.writes[SnowDescription])
+}
+
+case class SnowDescription(
+  `3h`: Option[Double] // volume
+)
+
 object WeatherDescription {
   implicit val responseFormat = Format[WeatherDescription](Json.reads[WeatherDescription], Json.writes[WeatherDescription])
 }
@@ -41,12 +74,18 @@ object Weather {
   implicit val weatherFormat = Format[Weather](Json.reads[Weather], writes)
 }
 
+// one of the entry points, the response contains a list of Weather structures
 case class Weather(
   dt: DateTime,
   main: WeatherInfo,
-  weather: List[WeatherDescription]
+  weather: List[WeatherDescription],
+  snow: Option[SnowDescription],
+  rain: Option[RainDescription],
+  clouds: CloudDescription,
+  wind: WindDescription
 )
 
+// the list of Weather structures is associated with a city as well
 object City {
   implicit val responseFormat = Format[City](Json.reads[City], Json.writes[City])
 }

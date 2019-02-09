@@ -1,7 +1,7 @@
 package velocorner.util
 
 import org.slf4s.Logging
-import velocorner.model.weather.WeatherCode
+import velocorner.model.weather.{Weather, WeatherCode}
 
 import scala.io.Source
 import scala.util.{Failure, Try}
@@ -20,6 +20,18 @@ object WeatherCodeUtils extends Logging {
   lazy val code2Model = fromResources()
 
   val clearSkyCode = 800
+
+  /**
+    * Based on the measures for a given day return a weather code which can be napped to an icon.
+    * @param pointsForThisDay measures for a given day
+    */
+  def dailyWeatherCode(pointsForThisDay: Iterable[Weather]): Int = {
+    val codes = pointsForThisDay.flatMap(_.weather).map(_.id)
+    // the current implementation assumes that the min code is the worst weather and the max is a clear sky
+    // it returns the worst expected weather
+    // eventually can be changed to return the majority forecast for the given day or forecast to a specific time (as now or noon)
+    if (codes.isEmpty) clearSkyCode else codes.min.toInt
+  }
 
   def fromResources(): Map[Int, WeatherCode] = {
     val entries = Source

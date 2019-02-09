@@ -20,9 +20,7 @@ object DailyWeather {
   def from(day: LocalDate, pointsForThisDay: Iterable[Weather]): DailyWeather = {
     val min = pointsForThisDay.map(_.main.temp_min).min
     val max = pointsForThisDay.map(_.main.temp_max).max
-    val codes = pointsForThisDay.flatMap(_.weather).map(_.id)
-    val minCode = if (codes.isEmpty) WeatherCodeUtils.clearSkyCode else codes.min
-    val icon = WeatherCodeUtils.icon(minCode)
+    val icon = WeatherCodeUtils.icon(WeatherCodeUtils.dailyWeatherCode(pointsForThisDay))
     new DailyWeather(day, pointsForThisDay, min, max, icon)
   }
 }
