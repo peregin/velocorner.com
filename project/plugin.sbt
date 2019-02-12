@@ -24,3 +24,6 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.21")
 // Library to fetch dependencies from Maven / Ivy repositories super fast - 1.1.0-M4
 addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.3")
 
+// Report the licenses used in the project
+addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
+
