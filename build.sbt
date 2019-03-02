@@ -36,8 +36,6 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % "test"
 val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
-val rx = "io.reactivex" %% "rxscala" % "0.26.5"
-
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6"
@@ -101,7 +99,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     name := "data-provider",
     libraryDependencies ++= Seq(
       playJson, playJsonJoda, playWsAhcStandalone,
-      rx, apacheCommons,
+      apacheCommons,
       scalaSpec
     ) ++ logging
       ++ storage
