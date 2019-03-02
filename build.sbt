@@ -14,10 +14,10 @@ val elasticVersion = "6.5.1"
 val orientDbVersion = "3.0.16"
 val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "1.1.12" // standalone version
-val playJsonVersion = "2.6.13"
-val specsVersion = "4.3.6"
-val mockitoVersion = "2.24.0"
+val playWsVersion = "2.0.1" // standalone version
+val playJsonVersion = "2.7.1"
+val specsVersion = "4.4.1"
+val mockitoVersion = "2.24.5"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -33,7 +33,7 @@ val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
-val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
+val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % "test"
 val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
 val rx = "io.reactivex" %% "rxscala" % "0.26.5"
