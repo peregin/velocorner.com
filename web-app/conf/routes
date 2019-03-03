@@ -3,26 +3,41 @@
 # ~~~~
 
 # WEB
+### NoDocs ###
 GET     /                                        controllers.ApplicationController.index
+### NoDocs ###
 GET     /refresh                                 controllers.ApplicationController.refresh
+### NoDocs ###
 GET     /search                                  controllers.ApplicationController.search
+### NoDocs ###
 GET     /about                                   controllers.ApplicationController.about
 
 # STRAVA AUTH
+### NoDocs ###
 GET     /login/strava                            controllers.auth.StravaController.login(scope: String)
+### NoDocs ###
 GET     /link/strava                             controllers.auth.StravaController.link(scope: String)
+### NoDocs ###
 GET     /authorize/strava                        controllers.auth.StravaController.authorize
+### NoDocs ###
 GET     /logout/strava                           controllers.auth.StravaController.logout
 
 # WITHINGS AUTH
+### NoDocs ###
 GET     /login/withings                          controllers.auth.WithingsController.login(scope: String)
+### NoDocs ###
 GET     /authorize/withings                      controllers.auth.WithingsController.authorize
 
-# DOC
-GET     /swagger.json                            controllers.ApiHelpController.getResources
-GET     /docs                                    controllers.Assets.at(path="/public", file="swagger-ui/index.html")
-
-# API
+###
+#  summary: Retrieves current year's statistics for the logged in athlete
+#  responses:
+#    200:
+#      description: Returns the yearly statistics
+#      schema:
+#        $ref: '#/definitions/velcorner.model.Progress'
+#    500:
+#      description: Internal error
+###
 GET     /api/athletes/statistics                 controllers.ApiController.statistics
 GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
 GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
@@ -31,6 +46,14 @@ GET     /api/activities/:id                      controllers.ApiController.activ
 GET     /api/weather/:location                   controllers.ApiController.weather(location: String)
 GET     /ws                                      controllers.ApiController.ws
 
+# DOC
+### NoDocs ###
+GET     /swagger.json                            controllers.Assets.at(path="/public", file="swagger.json")
+### NoDocs ###
+GET     /docs                                    controllers.Assets.at(path="/public", file="swagger-ui/index.html")
+
 # Map static resources from the /public folder to the /assets URL path
+### NoDocs ###
 GET     /counter                                 controllers.Assets.at(path="/public", file="html/counter.html")
+### NoDocs ###
 GET     /assets/*file                            controllers.Assets.at(path="/public", file)

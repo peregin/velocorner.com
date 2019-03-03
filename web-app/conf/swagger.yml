@@ -1,0 +1,9 @@
+---
+  swagger: "2.0"
+  info:
+    title: "Velocorner API"
+    description: "public API to cycling statistics"
+  consumes:
+    - application/json
+  produces:
+    - application/json

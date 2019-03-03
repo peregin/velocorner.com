@@ -4,7 +4,6 @@ import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
-import io.swagger.annotations._
 import javax.inject.Inject
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
@@ -25,7 +24,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by levi on 06/10/16.
  */
-@Api(value = "statistics", protocols = "http")
 class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
@@ -33,15 +31,8 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   private val logger = Logger.of(this.getClass)
 
-  // def mapped to /api/athletes/progress
+  // def mapped to /api/athletes/statistics
   // current year's progress
-  @ApiOperation(value = "List the current year's statistics for the logged in athlete",
-    notes = "Returns the yearly statistics",
-    response = classOf[Progress],
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 500, message = "Internal error")
-  ))
   def statistics = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
@@ -59,15 +50,15 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }
 
   // def mapped to /api/athletes/statistics/yearly/:action
-  @ApiOperation(value = "List yearly series for the logged in athlete",
-    notes = "Returns the yearly series",
-    responseContainer = "List",
-    response = classOf[highcharts.DailySeries],
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 404, message = "Invalid action"),
-    new ApiResponse(code = 500, message = "Internal error")))
-  def yearlyStatistics(@ApiParam(value = "heatmap, distance or elevation to fetch", allowableValues = "heatmap, distance, elevation") action: String) = AuthAsyncAction {
+//  @ApiOperation(value = "List yearly series for the logged in athlete",
+//    notes = "Returns the yearly series",
+//    responseContainer = "List",
+//    response = classOf[highcharts.DailySeries],
+//    httpMethod = "GET")
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 404, message = "Invalid action"),
+//    new ApiResponse(code = 500, message = "Internal error")))
+  def yearlyStatistics(action: String) = AuthAsyncAction {
     implicit request =>
 
     val maybeAccount = loggedIn
@@ -91,15 +82,15 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // year to date aggregation
   // def mapped to /api/athletes/statistics/ytd/:action
-  @ApiOperation(value = "List year to date series for the logged in athlete",
-    notes = "Returns the year to date series",
-    responseContainer = "List",
-    response = classOf[highcharts.DailySeries],
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 404, message = "Invalid action"),
-    new ApiResponse(code = 500, message = "Internal error")))
-  def ytdStatistics(@ApiParam(value = "distance or elevation to fetch", allowableValues = "distance, elevation") action: String) = AuthAsyncAction {
+//  @ApiOperation(value = "List year to date series for the logged in athlete",
+//    notes = "Returns the year to date series",
+//    responseContainer = "List",
+//    response = classOf[highcharts.DailySeries],
+//    httpMethod = "GET")
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 404, message = "Invalid action"),
+//    new ApiResponse(code = 500, message = "Internal error")))
+  def ytdStatistics(action: String) = AuthAsyncAction {
     implicit request =>
 
     val maybeAccount = loggedIn
@@ -125,12 +116,12 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // suggestions when searching
   // def mapped to /api/activities/suggest
-  @ApiOperation(value = "Suggests a list of activities based on the query parameter",
-    notes = "Returns a list of activities",
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 500, message = "Internal error")))
-  def suggest(@ApiParam(value = "partial input matched for activities") query: String) = timed(s"suggest for $query") { AuthAsyncAction {
+//  @ApiOperation(value = "Suggests a list of activities based on the query parameter",
+//    notes = "Returns a list of activities",
+//    httpMethod = "GET")
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 500, message = "Internal error")))
+  def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction {
     implicit request =>
 
     logger.debug(s"suggesting for $query")
@@ -153,14 +144,14 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // retrieves the activity with the given id
   // def mapped to /api/activities/:id
-  @ApiOperation(value = "Retrieves an activity",
-    notes = "Returns an activity based on id",
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 403, message = "Forbidden"),
-    new ApiResponse(code = 404, message = "Not found"),
-    new ApiResponse(code = 500, message = "Internal error")))
-  def activity(@ApiParam(value = "identifier of the activity") id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
+//  @ApiOperation(value = "Retrieves an activity",
+//    notes = "Returns an activity based on id",
+//    httpMethod = "GET")
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 403, message = "Forbidden"),
+//    new ApiResponse(code = 404, message = "Not found"),
+//    new ApiResponse(code = 500, message = "Internal error")))
+  def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
     implicit request =>
 
       val result = loggedIn.map{ _ =>
@@ -176,14 +167,14 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // retrieves the weather forecast for a given place
   // def mapped to /api/weather/:location
-  @ApiOperation(value = "Retrieves the weather forecast for a specific place",
-    notes = "Weather forecast for the next 5 days",
-    httpMethod = "GET")
-  @ApiResponses(Array(
-    new ApiResponse(code = 400, message = "Bad request"),
-    new ApiResponse(code = 404, message = "Not found"),
-    new ApiResponse(code = 500, message = "Internal error")))
-  def weather(@ApiParam(value = "identifier of the location") location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
+//  @ApiOperation(value = "Retrieves the weather forecast for a specific place",
+//    notes = "Weather forecast for the next 5 days",
+//    httpMethod = "GET")
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 400, message = "Bad request"),
+//    new ApiResponse(code = 404, message = "Not found"),
+//    new ApiResponse(code = 500, message = "Internal error")))
+  def weather(location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
     implicit request =>
 
       // convert city[,country] to city[,isoCountry]
@@ -225,8 +216,8 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // WebSocket to update the client
   // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
-  @ApiOperation(value = "Initiates a websocket connection",
-    httpMethod = "GET")
+//  @ApiOperation(value = "Initiates a websocket connection",
+//    httpMethod = "GET")
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { rh =>
     rh match {
       case _ if sameOriginCheck(rh) =>

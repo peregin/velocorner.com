@@ -20,7 +20,6 @@
     <logger name="net.sf.ehcache" level="INFO"/>
     <logger name="akka.stream.impl" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
-    <logger name="io.swagger" level="INFO"/>
     <logger name="unknown.jul.logger" level="WARN"/>
 
 </configuration>

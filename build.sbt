@@ -34,7 +34,6 @@ val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % "test"
-val playSwagger = "io.swagger" %% "swagger-play2" % "1.6.0"
 
 val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
@@ -118,7 +117,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
     name := "web-app",
-    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, mockito, playSwagger),
+    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, mockito),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
       name, version, scalaVersion, sbtVersion,
@@ -132,9 +131,10 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
-    dockerBaseImage in Docker := "java:8"
+    dockerBaseImage in Docker := "java:8",
+    swaggerDomainNameSpaces := Seq("models")
   )
-  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
+  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider)
 
 

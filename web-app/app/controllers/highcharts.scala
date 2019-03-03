@@ -1,4 +1,3 @@
-import io.swagger.annotations.ApiModelProperty
 import org.joda.time.LocalDate
 import play.api.libs.json._
 import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, YearlyProgress}
@@ -13,9 +12,7 @@ package object highcharts {
     implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
   }
 
-  case class DailyPoint(
-      @ApiModelProperty(value = "The date of the sample") day: LocalDate,
-      @ApiModelProperty(value = "The value of the series") value: Double) {
+  case class DailyPoint(day: LocalDate, value: Double) {
 
     def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
     def getDay = day.getDayOfMonth
@@ -26,9 +23,7 @@ package object highcharts {
     implicit val seriesFormat = Format[DailySeries](Json.reads[DailySeries], Json.writes[DailySeries])
   }
 
-  case class DailySeries(
-      @ApiModelProperty(value = "Name of the series") name: String,
-      @ApiModelProperty(value = "List of daily values") series: Iterable[DailyPoint]) {
+  case class DailySeries(name: String, series: Iterable[DailyPoint]) {
 
     def aggregate() = {
       val aggregatedSeries = series.toSeq.reverse.scanLeft(DailyPoint(LocalDate.now(), 0))((accu, i) =>
