@@ -21,12 +21,13 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   val secretConfig = SecretConfig(configuration.underlying)
 
+  private val logger = Logger.of(this.getClass)
   private val storage = Storage.create("or", secretConfig)
   storage.initialize
 
   configuration.getOptional[String]("storage.backup.directory")foreach{ directory =>
     val frequency = secretConfig.getBackupFrequency
-    Logger.info(s"backup at $frequency basis into $directory")
+    logger.info(s"backup at $frequency basis into $directory")
     actorSystem.scheduler.schedule(FiniteDuration(1, "second"), frequency, () => {
       val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH.mm.ss")
       val now = DateTime.now(DateTimeZone.UTC).toString(timeFormatter)
@@ -34,7 +35,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
       storage.backup(file)
     })
   }
-  Logger.info("ready...")
+  logger.info("ready...")
 
   def getStorage = storage
 
@@ -45,9 +46,9 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   def getWeatherFeed = new OpenWeatherFeed(secretConfig)
 
   def disconnect() {
-    Logger.info("releasing storage connections...")
+    logger.info("releasing storage connections...")
     getStorage.destroy
-    Logger.info("stopped...")
+    logger.info("stopped...")
   }
 
   def allowedHosts: Seq[String] = AllowedHostsConfig.fromConfiguration(configuration).allowed

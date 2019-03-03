@@ -14,13 +14,15 @@ class ApplicationController @Inject()
  val connectivity: ConnectivitySettings, strategy: RefreshStrategy)
 (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker {
 
+  private val logger = Logger.of(this.getClass)
+
   def index = AuthAction { implicit request =>
     Ok(views.html.index(getPageContext("Home")))
   }
 
   def refresh = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
-    Logger.info(s"refreshing page for $maybeAccount")
+    logger.info(s"refreshing page for $maybeAccount")
     maybeAccount.foreach(strategy.refreshAccountActivities)
     Future.successful(Redirect(routes.ApplicationController.index()))
   }
@@ -39,7 +41,7 @@ class ApplicationController @Inject()
       connectivity.secretConfig.isWithingsEnabled(),
       connectivity.secretConfig.isWeatherEnabled(), WeatherCookie.retrieve
     )
-    Logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
+    logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context
   }
 }

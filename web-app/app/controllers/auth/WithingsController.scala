@@ -23,6 +23,8 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
     "https://developer.health.nokia.com/account/authorize", KEY),
     true)
 
+  private val logger = Logger.of(this.getClass)
+
   def login(scope: String) = Action { implicit request =>
     loggedIn(request) match {
       case Some(a) =>
@@ -33,7 +35,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
   }
 
   def authorize = Action { implicit request =>
-    Logger.info(s"withings callback with $request request")
+    logger.info(s"withings callback with $request request")
     process(request)
   }
 
@@ -57,7 +59,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
         case Right(t) => {
           // We received the authorized tokens in the OAuth object - store it before we proceed
           val maybeUserId = request.getQueryString("userid")
-          Logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
+          logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
           maybeUserId match {
             case Some(userId) =>
               Redirect(controllers.routes.ApplicationController.index)
@@ -72,7 +74,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
       oauth.retrieveRequestToken(callbackUrl) match {
         case Right(t) => {
           // We received the unauthorized tokens in the OAuth object - store it before we proceed
-          Logger.info(s"received request token $t")
+          logger.info(s"received request token $t")
           Redirect(oauth.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
         }
         case Left(e) => throw e

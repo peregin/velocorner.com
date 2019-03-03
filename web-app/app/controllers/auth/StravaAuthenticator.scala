@@ -4,7 +4,7 @@ import java.net.{URI, URLEncoder}
 
 import StravaController.{AccessToken, ProviderUser}
 import controllers.ConnectivitySettings
-import play.api.Logger
+import play.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.JsValue
 import play.api.libs.ws.JsonBodyReadables._
@@ -32,8 +32,10 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   val clientId: String = connectivity.secretConfig.getId("strava")
   val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
 
-   def getAuthorizationUrl(host: String, state: String): String = {
-    Logger.info(s"authorization url for scope[$host]")
+  private val logger = Logger.of(this.getClass)
+
+  def getAuthorizationUrl(host: String, state: String): String = {
+    logger.info(s"authorization url for scope[$host]")
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     // scope is the host name localhost:9000 or www.velocorner.com
     val uri = new URI(callbackUrl)
@@ -45,8 +47,8 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$authScope"
   }
 
-   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
-    Logger.info(s"retrieve token for code[$code]")
+  def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
+     logger.info(s"retrieve token for code[$code]")
      val feed = connectivity.getStravaFeed
      val resp = feed.ws(_.url(accessTokenUrl))
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
@@ -61,12 +63,12 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   }
 
   def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
-    Logger.info(s"parsing token from $response")
+    logger.info(s"parsing token from $response")
     try {
       val json = response.body[JsValue]
       val athlete = (json \ "athlete").as[Athlete]
       val token = (json \ "access_token").as[String]
-      Logger.info(s"got token[$token] for athlete $athlete")
+      logger.info(s"got token[$token] for athlete $athlete")
       AccessTokenResponse(token, Some(Account.from(athlete, token, None)))
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)

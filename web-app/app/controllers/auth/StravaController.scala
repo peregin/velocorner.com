@@ -48,6 +48,8 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
+  private val logger = Logger.of(this.getClass)
+
   def login(scope: String) = Action { implicit request =>
     loggedIn(request) match {
       case Some(a) =>
@@ -73,7 +75,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
         "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
       )
     ).bindFromRequest
-    Logger.info(s"authorize request with ${form.data}")
+    logger.info(s"authorize request with ${form.data}")
 
     def formSuccess(v: (String, String)): Future[Result] = {
       val (code, state) = v
@@ -111,14 +113,14 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   // the original API distinguishes between provider and consumer users
   def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     val token = accessToken.toString
-    Logger.info(s"retrieve provider user for $token")
+    logger.info(s"retrieve provider user for $token")
     val athlete = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
-    Logger.info(s"got provided athlete for user $athlete")
+    logger.info(s"got provided athlete for user $athlete")
     Future.successful(Account.from(athlete, token, None))
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    Logger.info(s"oauth link succeeded with token[${resp.token}]")
+    logger.info(s"oauth link succeeded with token[${resp.token}]")
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.map{providerUser =>
       connectivity.getStorage.store(providerUser)
@@ -127,12 +129,12 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   }
 
   def onOAuthLoginSucceeded(resp: AccessTokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    Logger.info(s"oauth login succeeded with token[${resp.token}]")
+    logger.info(s"oauth login succeeded with token[${resp.token}]")
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.flatMap { providerUser =>
       val storage = connectivity.getStorage
       val maybeAccount = storage.getAccount(providerUser.athleteId)
-      Logger.info(s"account for token[${resp.token}] is $maybeAccount")
+      logger.info(s"account for token[${resp.token}] is $maybeAccount")
       if (maybeAccount.isEmpty) storage.store(providerUser)
       gotoLoginSucceeded(providerUser.athleteId)
     }

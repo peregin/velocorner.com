@@ -31,6 +31,8 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
 
+  private val logger = Logger.of(this.getClass)
+
   // def mapped to /api/athletes/progress
   // current year's progress
   @ApiOperation(value = "List the current year's statistics for the logged in athlete",
@@ -42,7 +44,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   ))
   def statistics = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
-    Logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
+    logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
 
     val result = Try {
       val storage = connectivity.getStorage
@@ -69,7 +71,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     implicit request =>
 
     val maybeAccount = loggedIn
-    Logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
+    logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
 
     val result = Try {
       val storage = connectivity.getStorage
@@ -102,7 +104,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
     val maybeAccount = loggedIn
     val now = LocalDate.now()
-    Logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
+    logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
 
     val result = Try {
       val storage = connectivity.getStorage
@@ -131,7 +133,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   def suggest(@ApiParam(value = "partial input matched for activities") query: String) = timed(s"suggest for $query") { AuthAsyncAction {
     implicit request =>
 
-    Logger.debug(s"suggesting for $query")
+    logger.debug(s"suggesting for $query")
 
     // FIXME: workaround until elastic access
     val activities = connectivity.getStorage match {
@@ -139,7 +141,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       case orientDb: OrientDbStorage => loggedIn.map(account => orientDb.suggestActivities(query, account.athleteId, 10)).getOrElse(List.empty)
       case _ => List.empty
     }
-    Logger.debug(s"found ${activities.size} activities ...")
+    logger.debug(s"found ${activities.size} activities ...")
 
     val jsonSuggestions = activities.map{ a =>
       Json.obj("value" -> a.name, "data" -> JsonIo.write(a))
@@ -162,7 +164,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     implicit request =>
 
       val result = loggedIn.map{ _ =>
-        Logger.debug(s"querying activity $id")
+        logger.debug(s"querying activity $id")
         connectivity.getStorage.getActivity(id)
           .map(JsonIo.write(_))
           .map(Ok(_))
@@ -186,7 +188,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
       // convert city[,country] to city[,isoCountry]
       val isoLocation = CountryIsoUtils.iso(location)
-      Logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
+      logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
 
       // TODO: inject time iterator
       // TODO: make refresh param configurable
@@ -199,9 +201,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
           .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
         val lastUpdate = maybeLastUpdate.getOrElse(now.minusYears(1))
         val elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
-        Logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate, $elapsedInMinutes minutes ago")
+        logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate, $elapsedInMinutes minutes ago")
         val forecastEntriesF = if (elapsedInMinutes > 15) {
-          Logger.info("querying latest weather forecast")
+          logger.info("querying latest weather forecast")
           for {
             entries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
             _ <- Future(connectivity.getStorage.storeWeather(entries))
@@ -228,14 +230,14 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { rh =>
     rh match {
       case _ if sameOriginCheck(rh) =>
-        Logger.info(s"ws with request header: $rh")
+        logger.info(s"ws with request header: $rh")
         val flow = wsFlow(rh)
         Future.successful[Either[Result, Flow[String, String, _]]](Right(flow)).recover{ case e =>
-          Logger.error("failed to create websocket", e)
+          logger.error("failed to create websocket", e)
           Left(InternalServerError(s"failed to create websocket, ${e.getMessage}"))
         }
       case rejected =>
-        Logger.error(s"same origin check failed for $rejected")
+        logger.error(s"same origin check failed for $rejected")
         Future.successful(Left(Forbidden))
     }
   }
@@ -249,15 +251,15 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     //val out1 = Source.single("Welcome").concat(Source.maybe)
     val out = Source.fromPublisher((s: Subscriber[_ >: String]) => {
       (1 to 3).foreach { ix =>
-        Logger.info(s"PUBLISH $counter, ix = $ix")
+        logger.info(s"PUBLISH $counter, ix = $ix")
         s.onNext(s"hello $counter, ix = $ix")
         counter = counter + 1
       }
     }).mapMaterializedValue{a =>
-      Logger.info(s"CONNECTED $a")
+      logger.info(s"CONNECTED $a")
       a
     }.watchTermination() { (_, terminated) =>
-      terminated.onComplete(_ => Logger.info("DISCONNECTED"))
+      terminated.onComplete(_ => logger.info("DISCONNECTED"))
     }
 
     Flow.fromSinkAndSource(in, out)

@@ -215,7 +215,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   override def backup(fileName: String) = timed("backup") {
     val listener = new OCommandOutputListener {
-      override def onMessage(iText: String)= log.debug(s"backup $iText")
+      override def onMessage(iText: String)= log.trace(s"backup $iText")
     }
     withCloseable(new FileOutputStream(fileName)) { fos =>
       server.foreach { s =>
