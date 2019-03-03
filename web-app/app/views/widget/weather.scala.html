@@ -21,33 +21,22 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-sm-12">
-            <div class="row text-center">
-                <div>
-                    <i class="icon-weather-002" style="font-size: 2em;"></i>
-                </div>
-                <span style="color: #e74c3c;">20° C</span>
-                <span>/</span>
-                <span style="color:#3498db;">7° C</span>
-                <p class="font-size-14 mb-0">MONDAY 11.11.2017</p>
-            </div>
-        </div>
 
         <div class="col-md-7 col-sm-12">
 
             <div class="row no-space text-center">
 
                 @* 5 days forecast creates 5 boxes for each day *@
-                @for(ix <- 1 to 5) {
+                @for(ix <- 0 to 4) {
                 <div class="col-md-2">
                     <div class="weather-day vertical-align">
                         <div class="vertical-align-middle font-size-16">
-                            <div class="mb-10">TUE</div>
-                            <i class="icon-weather-001 font-size-24 mb-10"></i>
+                            <div id="date-@ix" class="mb-10">-</div>
+                            <i id="icon-@ix" class="icon-weather-001 font-size-24 mb-10"></i>
                             <div>
-                                <span style="color: #e74c3c;">20° C</span>
+                                <span id="temp-max-@ix" style="color: #e74c3c;">-</span>°
                                 <span>/</span>
-                                <span style="color:#3498db;">7° C</span>
+                                <span id="temp-min-@ix" style="color:#3498db;">-</span>°
                             </div>
                         </div>
                     </div>
@@ -96,7 +85,19 @@
             timeout: 20000,
             success: function(data) {
                 $('#weather-progress').fadeOut();
-                console.log("weather forecast " + data);
+                console.log("weather forecast with %d items", data.length);
+                var weekday = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+                data.slice(0, 5).forEach(function (item, i) {
+                    console.log('%d: %s', i, item.day);
+                    var parts = item.day.split('-');
+                    var date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    var day = weekday[date.getDay()] + " " + parts[2] + "/" + parts[1];
+
+                    $('#date-'+i).html(day);
+                    $('#icon-'+i).addClass(item.icon).removeClass('icon-weather-001');
+                    $('#temp-min-'+i).html(item.temp_min.toFixed(1));
+                    $('#temp-max-'+i).html(item.temp_max.toFixed(1));
+                });
            }
         });
     }

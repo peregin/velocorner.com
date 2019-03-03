@@ -18,6 +18,10 @@ GET     /logout/strava                           controllers.auth.StravaControll
 GET     /login/withings                          controllers.auth.WithingsController.login(scope: String)
 GET     /authorize/withings                      controllers.auth.WithingsController.authorize
 
+# DOC
+GET     /swagger.json                            controllers.ApiHelpController.getResources
+GET     /docs                                    controllers.Assets.at(path="/public", file="swagger-ui/index.html")
+
 # API
 GET     /api/athletes/statistics                 controllers.ApiController.statistics
 GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
@@ -26,10 +30,6 @@ GET     /api/activities/suggest                  controllers.ApiController.sugge
 GET     /api/activities/:id                      controllers.ApiController.activity(id: Int)
 GET     /api/weather/:location                   controllers.ApiController.weather(location: String)
 GET     /ws                                      controllers.ApiController.ws
-
-# DOC
-GET     /swagger.json                            controllers.ApiHelpController.getResources
-GET     /docs                                    controllers.Assets.at(path="/public", file="swagger-ui/index.html")
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /counter                                 controllers.Assets.at(path="/public", file="html/counter.html")
