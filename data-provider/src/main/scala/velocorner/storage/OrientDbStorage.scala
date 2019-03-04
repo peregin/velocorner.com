@@ -208,12 +208,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         Option(clazz).foreach(_.dropProperty(ixName))
       }
 
-      dropIx(ACTIVITY_CLASS, "id")
+      //dropIx(ACTIVITY_CLASS, "id")
       createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
-      dropIx(ACCOUNT_CLASS, "athleteId")
+      //dropIx(ACCOUNT_CLASS, "athleteId")
       createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      dropIx(ATHLETE_CLASS, "id")
+      //dropIx(ATHLETE_CLASS, "id")
       createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
