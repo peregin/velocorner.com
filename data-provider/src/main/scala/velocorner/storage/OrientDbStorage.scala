@@ -197,7 +197,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
       }
 
-      def updateIx(className: String, ixName: String) {
+      def dropIx(className: String, ixName: String) {
         val ixManager = odb.getMetadata.getIndexManager
         val names = Seq(s"$ixName$className", s"$ixName-$className")
         names.foreach{n =>
@@ -205,15 +205,15 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         }
         val schema = odb.getMetadata.getSchema
         val clazz = schema.getClass(className)
-        clazz.dropProperty(ixName)
+        Option(clazz).foreach(_.dropProperty(ixName))
       }
 
-      updateIx(ACTIVITY_CLASS, "id")
+      dropIx(ACTIVITY_CLASS, "id")
       createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
-      updateIx(ACCOUNT_CLASS, "athleteId")
+      dropIx(ACCOUNT_CLASS, "athleteId")
       createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      updateIx(ATHLETE_CLASS, "id")
+      dropIx(ATHLETE_CLASS, "id")
       createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))

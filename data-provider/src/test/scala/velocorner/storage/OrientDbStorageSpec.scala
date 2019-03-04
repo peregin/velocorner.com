@@ -10,7 +10,6 @@ import velocorner.model.strava.Activity
 import velocorner.model.weather.{WeatherForecast, WeatherResponse}
 import velocorner.util.{FreePortFinder, JsonIo}
 
-
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging {
 
   sequential
