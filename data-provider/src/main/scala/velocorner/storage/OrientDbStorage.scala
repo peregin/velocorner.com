@@ -41,13 +41,13 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     doc.save()
   }
 
-  private def lookup[T](className: String, propertyName: String, propertyValue: Int)(implicit fjs: Reads[T]): Option[T] = {
+  private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Option[T] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     listFor[T](sql).headOption
   }
 
   // FIXME: workaround until elastic is in place
-  def suggestActivities(snippet: String, athleteId: Int, max: Int): Iterable[Activity] = {
+  def suggestActivities(snippet: String, athleteId: Long, max: Int): Iterable[Activity] = {
     listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max")
   }
 
@@ -58,7 +58,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     )
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
     val activities = listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
     log.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
@@ -70,7 +70,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
-  override def getActivity(id: Int): Option[Activity] = lookup[Activity](ACTIVITY_CLASS, "id", id)
+  override def getActivity(id: Long): Option[Activity] = lookup[Activity](ACTIVITY_CLASS, "id", id)
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
@@ -78,7 +78,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
     listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
@@ -87,21 +87,21 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = ${account.athleteId}")
   }
 
-  override def getAccount(id: Long): Option[Account] = lookup[Account](ACCOUNT_CLASS, "athleteId", id.toInt)
+  override def getAccount(id: Long): Option[Account] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
 
   // athletes
   override def store(athlete: Athlete) {
     upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = ${athlete.id}")
   }
 
-  override def getAthlete(id: Long): Option[Athlete] = lookup[Athlete](ATHLETE_CLASS, "id", id.toInt)
+  override def getAthlete(id: Long): Option[Athlete] = lookup[Athlete](ATHLETE_CLASS, "id", id)
 
   // clubs
   override def store(club: Club) {
     upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = ${club.id}")
   }
 
-  override def getClub(id: Long): Option[Club] = lookup[Club](CLUB_CLASS, "id", id.toInt)
+  override def getClub(id: Long): Option[Club] = lookup[Club](CLUB_CLASS, "id", id)
 
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = {
@@ -182,7 +182,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
       case class IndexSetup(indexField: String, indexType: OType)
 
-      def createIfNeeded(className: String, index: IndexSetup*) {
+      def createIxIfNeeded(className: String, index: IndexSetup*) {
         val schema = odb.getMetadata.getSchema
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
@@ -197,12 +197,26 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
       }
 
-      createIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.INTEGER))
-      createIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.INTEGER))
-      createIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      createIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.INTEGER))
-      createIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
-      createIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
+      def updateIx(className: String, ixName: String) {
+        val ixManager = odb.getMetadata.getIndexManager
+        val names = Seq(s"$ixName$className", s"$ixName-$className")
+        names.foreach{n =>
+          if (ixManager.existsIndex(n)) ixManager.dropIndex(n)
+        }
+        val schema = odb.getMetadata.getSchema
+        val clazz = schema.getClass(className)
+        clazz.dropProperty(ixName)
+      }
+
+      updateIx(ACTIVITY_CLASS, "id")
+      createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
+      updateIx(ACCOUNT_CLASS, "athleteId")
+      createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
+      createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
+      updateIx(ATHLETE_CLASS, "id")
+      createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
+      createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
+      createIxIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
     }
   }
 

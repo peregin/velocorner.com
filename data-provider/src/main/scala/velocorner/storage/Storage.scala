@@ -12,14 +12,14 @@ trait Storage {
   // insert all activities, new ones are added, previous ones are overridden
   def storeActivity(activities: Iterable[Activity])
 
-  def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress]
+  def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress]
   def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress]
 
-  def getActivity(id: Int): Option[Activity]
+  def getActivity(id: Long): Option[Activity]
   // summary on the landing page
   def listRecentActivities(limit: Int): Iterable[Activity]
   // to check how much needs to be imported from the feed
-  def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity]
+  def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity]
 
   // accounts
   def store(account: Account)

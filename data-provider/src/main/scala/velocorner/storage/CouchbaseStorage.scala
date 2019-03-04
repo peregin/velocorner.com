@@ -29,7 +29,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
     val view = client.getView(progressDesignName, athleteProgressByDayViewName)
     val query = new Query()
     query.setGroup(true)
@@ -52,14 +52,14 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
   }
 
-  override def getActivity(id: Int): Option[Activity] = ???
+  override def getActivity(id: Long): Option[Activity] = ???
 
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
     val view = client.getView(listDesignName, allActivitiesByDateViewName)
     orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
   }
 
-  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
     val view = client.getView(listDesignName, athleteActivitiesByDateViewName)
     orderedActivitiesInRange(view, s"[$athleteId, [3000, 1, 1]]", s"[$athleteId, [2000, 12, 31]]", limit)
   }

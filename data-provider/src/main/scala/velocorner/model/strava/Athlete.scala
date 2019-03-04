@@ -42,7 +42,7 @@ object Athlete {
 }
 
 case class Athlete(
-  id:	Int,
+  id:	Long,
   resource_state:	Int,
   firstname: Option[String],
   lastname: Option[String],

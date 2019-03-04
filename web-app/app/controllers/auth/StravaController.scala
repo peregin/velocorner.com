@@ -140,7 +140,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     }
   }
 
-  def gotoLoginSucceeded(athleteId: Int)(implicit request: RequestHeader): Future[Result] = {
+  def gotoLoginSucceeded(athleteId: Long)(implicit request: RequestHeader): Future[Result] = {
     for {
       token <- idContainer.startNewSession(athleteId, sessionTimeoutInSeconds)
       r     <- loginSucceeded(request)

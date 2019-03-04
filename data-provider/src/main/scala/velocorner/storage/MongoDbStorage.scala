@@ -35,7 +35,7 @@ class MongoDbStorage extends Storage with Logging {
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
     val results = coll.find(query)
@@ -53,7 +53,7 @@ class MongoDbStorage extends Storage with Logging {
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
-  override def getActivity(id: Int): Option[Activity] = getJsonById(id, ACTIVITY_TABLE, "id").map(JsonIo.read[Activity])
+  override def getActivity(id: Long): Option[Activity] = getJsonById(id, ACTIVITY_TABLE, "id").map(JsonIo.read[Activity])
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
@@ -67,7 +67,7 @@ class MongoDbStorage extends Storage with Logging {
 
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
     val results = coll.find(query).sort("{start_date:-1}").limit(limit)

@@ -38,7 +38,7 @@ class RethinkDbStorage extends Storage with Logging {
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Int): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
@@ -59,7 +59,7 @@ class RethinkDbStorage extends Storage with Logging {
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
-  override def getActivity(id: Int): Option[Activity] = getJsonById(id, ACTIVITY_TABLE).map(JsonIo.read[Activity])
+  override def getActivity(id: Long): Option[Activity] = getJsonById(id, ACTIVITY_TABLE).map(JsonIo.read[Activity])
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
@@ -73,7 +73,7 @@ class RethinkDbStorage extends Storage with Logging {
   }
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Int, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
     val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")

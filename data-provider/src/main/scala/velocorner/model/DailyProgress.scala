@@ -82,4 +82,4 @@ object AthleteDailyProgress {
   }
 }
 
-case class AthleteDailyProgress(athleteId: Int, dailyProgress: DailyProgress)
+case class AthleteDailyProgress(athleteId: Long, dailyProgress: DailyProgress)
