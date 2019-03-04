@@ -199,6 +199,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
       def dropIx(className: String, ixName: String) {
         val ixManager = odb.getMetadata.getIndexManager
+        // old name was without hyphen, try both versions
         val names = Seq(s"$ixName$className", s"$ixName-$className")
         names.foreach{n =>
           if (ixManager.existsIndex(n)) ixManager.dropIndex(n)

@@ -3,7 +3,7 @@
 <!-- Wather widget with 5 days forecast -->
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
     <div class="row">
-        <div class="col-md-3 col-sm-12">
+        <div class="col-md-4 col-sm-12">
             <span>
                 <img style="width: 16px; height:16px;" src="@assets.path("images/icons/sun-64.png")" alt="Forecast">
                 Forecast
@@ -22,28 +22,25 @@
             </div>
         </div>
 
-        <div class="col-md-7 col-sm-12">
+        <div class="col-md-8 col-sm-12">
 
-            <div class="row no-space text-center">
-
-                @* 5 days forecast creates 5 boxes for each day *@
-                @for(ix <- 0 to 4) {
-                <div class="col-md-2">
-                    <div class="weather-day vertical-align">
-                        <div class="vertical-align-middle font-size-16">
-                            <div id="date-@ix" class="mb-10">-</div>
-                            <i id="icon-@ix" class="icon-weather-001 font-size-24 mb-10"></i>
-                            <div>
-                                <span id="temp-max-@ix" style="color: #e74c3c;">-</span>°
-                                <span>/</span>
-                                <span id="temp-min-@ix" style="color:#3498db;">-</span>°
-                            </div>
+            @* 5 days forecast creates 5 boxes for each day *@
+            @for(ix <- 0 to 4) {
+            <div class="col-md-2 text-center">
+                <div class="weather-day vertical-align">
+                    <div class="vertical-align-middle font-size-16">
+                        <div id="date-@ix" class="mb-10">-</div>
+                        <i id="icon-@ix" class="icon-weather-001 font-size-24 mb-10"></i>
+                        <div>
+                            <span id="temp-max-@ix" style="color: #e74c3c;">-</span>°
+                            <span>/</span>
+                            <span id="temp-min-@ix" style="color:#3498db;">-</span>°
                         </div>
                     </div>
                 </div>
-                }
-
             </div>
+            }
+
         </div>
 
     </div>
