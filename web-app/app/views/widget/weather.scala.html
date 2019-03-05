@@ -30,11 +30,16 @@
                 <div class="weather-day vertical-align">
                     <div class="vertical-align-middle font-size-16">
                         <div id="date-@ix" class="mb-10">-</div>
-                        <i id="icon-@ix" class="icon-weather-001 font-size-24 mb-10"></i>
+                        <i id="icon-@ix" class="icon-weather-001 mb-10" style="font-size: 2em;"></i>
                         <div>
                             <span id="temp-max-@ix" style="color: #e74c3c;">-</span>°
                             <span>/</span>
                             <span id="temp-min-@ix" style="color:#3498db;">-</span>°
+                        </div>
+                        <div>
+                            <i class="icon-weather-040" style="font-size: 1em;"></i>
+                            <span id="wind-max-@ix" class="font-size-12">-</span>
+                            <span style="font-size:8px;">km/h</span>
                         </div>
                     </div>
                 </div>
@@ -94,6 +99,7 @@
                     $('#icon-'+i).addClass(item.icon).removeClass('icon-weather-001');
                     $('#temp-min-'+i).html(item.temp_min.toFixed(1));
                     $('#temp-max-'+i).html(item.temp_max.toFixed(1));
+                    $('#wind-max-'+i).html(item.wind_max.toFixed(0));
                 });
            }
         });
