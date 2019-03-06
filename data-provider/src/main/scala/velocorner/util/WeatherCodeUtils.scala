@@ -55,7 +55,7 @@ object WeatherCodeUtils extends Logging {
       .toMap
   }
 
-  def icon(code: Long): String = code2Model.get(code.toInt).map(_.icon).getOrElse(sys.error(s"invalid weather code $code"))
+  def bootstrapIcon(code: Long): String = code2Model.get(code.toInt).map(_.bootstrapIcon).getOrElse(sys.error(s"invalid weather code $code"))
 
   def parse(line: String): WeatherCode = {
     val sepFun = (c: Char) => c == ' ' || c == '\t'
@@ -70,6 +70,6 @@ object WeatherCodeUtils extends Logging {
     val ixMeaning = remainder2.lastIndexWhere(sepFun)
     if (ixMeaning < 0) throw new IllegalArgumentException(s"line has no separator in $remainder2")
     val meaning = remainder2.substring(0, ixMeaning).trim
-    WeatherCode(code = code, meaning = meaning, icon = bootstrapIcon)
+    WeatherCode(code = code, meaning = meaning, bootstrapIcon = bootstrapIcon)
   }
 }

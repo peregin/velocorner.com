@@ -47,7 +47,8 @@ object WeatherDescription {
 case class WeatherDescription(
   id: Long, // 800 - weather condition code
   main: String, // "Clear"
-  description: String // "clear sky"
+  description: String, // "clear sky"
+  icon: String // weather icon 04d
 )
 
 object WeatherInfo {
@@ -55,10 +56,11 @@ object WeatherInfo {
 }
 
 case class WeatherInfo(
-  temp: Float,
-  temp_min: Float,
-  temp_max: Float,
-  humidity: Float
+  temp: Float, // C
+  temp_min: Float, // C
+  temp_max: Float, // C
+  humidity: Float, // %
+  pressure: Float // hPa
 )
 
 object Weather {

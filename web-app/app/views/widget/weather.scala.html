@@ -96,12 +96,16 @@
                     var day = weekday[date.getDay()] + " " + parts[2] + "/" + parts[1];
 
                     $('#date-'+i).html(day);
-                    $('#icon-'+i).addClass(item.icon).removeClass('icon-weather-001');
+                    $('#icon-'+i).addClass(item.bootstrapIcon).removeClass('icon-weather-001');
                     $('#temp-min-'+i).html(item.temp_min.toFixed(1));
                     $('#temp-max-'+i).html(item.temp_max.toFixed(1));
                     $('#wind-max-'+i).html(item.wind_max.toFixed(0));
                 });
-           }
+            },
+            error: function(xhr, status, error) {
+                console.error("failed with " + error);
+                $('#weather-progress').fadeOut();
+            }
         });
     }
 //]]>
