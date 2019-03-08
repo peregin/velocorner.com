@@ -1,12 +1,13 @@
 /*
- Highcharts JS v4.0.4 (2014-09-02)
+ Highcharts JS v7.0.3 (2019-02-06)
  Plugin for displaying a message when there is no data visible in chart.
 
- (c) 2010-2014 Highsoft AS
+ (c) 2010-2019 Highsoft AS
  Author: Oystein Moseng
 
  License: www.highcharts.com/license
 */
-(function(c){function f(){return!!this.points.length}function g(){this.hasData()?this.hideNoData():this.showNoData()}var d=c.seriesTypes,e=c.Chart.prototype,h=c.getOptions(),i=c.extend;i(h.lang,{noData:"No data to display"});h.noData={position:{x:0,y:0,align:"center",verticalAlign:"middle"},attr:{},style:{fontWeight:"bold",fontSize:"12px",color:"#60606a"}};if(d.pie)d.pie.prototype.hasData=f;if(d.gauge)d.gauge.prototype.hasData=f;if(d.waterfall)d.waterfall.prototype.hasData=f;c.Series.prototype.hasData=
-function(){return this.dataMax!==void 0&&this.dataMin!==void 0};e.showNoData=function(a){var b=this.options,a=a||b.lang.noData,b=b.noData;if(!this.noDataLabel)this.noDataLabel=this.renderer.label(a,0,0,null,null,null,null,null,"no-data").attr(b.attr).css(b.style).add(),this.noDataLabel.align(i(this.noDataLabel.getBBox(),b.position),!1,"plotBox")};e.hideNoData=function(){if(this.noDataLabel)this.noDataLabel=this.noDataLabel.destroy()};e.hasData=function(){for(var a=this.series,b=a.length;b--;)if(a[b].hasData()&&
-!a[b].options.isInternal)return!0;return!1};e.callbacks.push(function(a){c.addEvent(a,"load",g);c.addEvent(a,"redraw",g)})})(Highcharts);
+(function(a){"object"===typeof module&&module.exports?(a["default"]=a,module.exports=a):"function"===typeof define&&define.amd?define(function(){return a}):a("undefined"!==typeof Highcharts?Highcharts:void 0)})(function(a){(function(a){var d=a.seriesTypes,c=a.Chart.prototype,e=a.getOptions(),f=a.extend;f(e.lang,{noData:"No data to display"});e.noData={position:{x:0,y:0,align:"center",verticalAlign:"middle"},style:{fontWeight:"bold",fontSize:"12px",color:"#666666"}};"bubble gauge heatmap networkgraph pie sankey treemap waterfall".split(" ").forEach(function(a){d[a]&&
+(d[a].prototype.hasData=function(){return!!this.points.length})});a.Series.prototype.hasData=function(){return this.visible&&void 0!==this.dataMax&&void 0!==this.dataMin||this.visible&&this.yData&&0<this.yData.length};c.showNoData=function(a){var b=this.options;a=a||b&&b.lang.noData;b=b&&b.noData;!this.noDataLabel&&this.renderer&&(this.noDataLabel=this.renderer.label(a,0,0,null,null,null,b.useHTML,null,"no-data"),this.styledMode||this.noDataLabel.attr(b.attr).css(b.style),this.noDataLabel.add(),this.noDataLabel.align(f(this.noDataLabel.getBBox(),
+b.position),!1,"plotBox"))};c.hideNoData=function(){this.noDataLabel&&(this.noDataLabel=this.noDataLabel.destroy())};c.hasData=function(){for(var a=this.series||[],b=a.length;b--;)if(a[b].hasData()&&!a[b].options.isInternal)return!0;return this.loadingShown};a.addEvent(a.Chart,"render",function(){this.hasData()?this.hideNoData():this.showNoData()})})(a)});
+//# sourceMappingURL=no-data-to-display.js.map
