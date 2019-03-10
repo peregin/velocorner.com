@@ -3,7 +3,7 @@
 <!-- Wather widget with 5 days forecast -->
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
     <div class="row">
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-3 col-sm-12">
             <span>
                 <img style="width: 16px; height:16px;" src="@assets.path("images/icons/sun-64.png")" alt="Forecast">
                 Forecast
@@ -22,50 +22,20 @@
             </div>
         </div>
 
-        <div class="col-md-8 col-sm-12">
-
-            @* 5 days forecast creates 5 boxes for each day *@
-            @for(ix <- 0 to 4) {
-            <div class="col-md-2 text-center">
-                <div class="weather-day vertical-align">
-                    <div class="vertical-align-middle font-size-16">
-                        <div id="date-@ix" class="mb-10">-</div>
-                        <i id="icon-@ix" class="icon-weather-001 mb-10" style="font-size: 2em;"></i>
-                        <div>
-                            <span id="temp-max-@ix" style="color: #e74c3c;">-</span>°
-                            <span>/</span>
-                            <span id="temp-min-@ix" style="color:#3498db;">-</span>°
-                        </div>
-                        <div>
-                            <img style="width: 12px; height:12px;" src="@assets.path("images/icons/wind-speed.png")" alt="Wind">
-                            <span id="wind-max-@ix" class="font-size-12">-</span>
-                            <span style="font-size:8px;">km/h</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            }
-
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <div id="weather_container" style="max-width: 800px; min-width: 380px; height: 310px; margin: 0 auto">
-                <div style="margin-top: 100px; text-align: center" id="loading">
-                    <i class="fa fa-spinner fa-spin"></i> Loading data from external source
+        <div class="col-md-9 col-sm-12">
+            <div id="weather_container" style="max-width: 800px; min-width: 300px; height: 250px; margin: 0 auto; display: none;">
+                <div style="margin-top: 0px; text-align: center" id="loading">
+                    <i class="fa fa-spinner fa-spin"></i> Loading meteo data
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
 <script type="text/javascript" src="@routes.Assets.at("javascripts/meteogram.js")"></script>
-<script type="text/javascript" src="@routes.Assets.at("highcharts/highcharts.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/windbarb.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/pattern-fill.js")"></script>
-<script type="text/javascript" src="@routes.Assets.at("highcharts/modules/exporting.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
         $('#weather_button').click(function() {
@@ -94,42 +64,16 @@
     function weatherForecast(place) {
         $('#weather-progress').fadeIn();
 
-        var uri = "@restUrl/" + place
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: uri,
-            timeout: 20000,
-            success: function(data) {
-                $('#weather-progress').fadeOut();
-                console.log("weather forecast with %d items", data.length);
-                var weekday = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
-                data.slice(0, 5).forEach(function (item, i) {
-                    console.log('weather[%d]: %s', i, item.day);
-                    var parts = item.day.split('-');
-                    var date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    var day = weekday[date.getDay()] + " " + parts[2] + "/" + parts[1];
-
-                    $('#date-'+i).html(day);
-                    $('#icon-'+i).addClass(item.bootstrapIcon).removeClass('icon-weather-001');
-                    $('#temp-min-'+i).html(item.temp_min.toFixed(1));
-                    $('#temp-max-'+i).html(item.temp_max.toFixed(1));
-                    $('#wind-max-'+i).html(item.wind_max.toFixed(0));
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("failed with " + error);
-                $('#weather-progress').fadeOut();
-            }
-        });
-
         $.ajax({
             dataType: 'xml',
             url: "@restUrl/" + place + "?mode=xml",
             success: function (xml) {
+                $('#weather-progress').fadeOut();
+                $('#weather_container').css('display', 'block');
                 window.meteogram = new Meteogram(xml, 'weather_container');
             },
             error: function(e) {
+                $('#weather-progress').fadeOut();
                 console.error("meteogram with " + e);
             }
         });

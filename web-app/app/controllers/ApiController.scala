@@ -203,6 +203,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
         }
         // after a successful query, save the location on the client side (even if the user is not authenticated)
         forecastEntriesF
+          .map(_.toList.sortBy(_.timestamp))
           .map(contentGenerator)
           .map(Ok(_).withCookies(WeatherCookie.create(location)))
           .recover{case _ => NotFound}
