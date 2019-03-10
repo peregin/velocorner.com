@@ -49,7 +49,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     Future.successful(result.getOrElse(InternalServerError))
   }
 
-  // def mapped to /api/athletes/statistics/yearly/:action
+  // route mapped to /api/athletes/statistics/yearly/:action
 //  @ApiOperation(value = "List yearly series for the logged in athlete",
 //    notes = "Returns the yearly series",
 //    responseContainer = "List",
@@ -81,7 +81,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }
 
   // year to date aggregation
-  // def mapped to /api/athletes/statistics/ytd/:action
+  // route mapped to /api/athletes/statistics/ytd/:action
 //  @ApiOperation(value = "List year to date series for the logged in athlete",
 //    notes = "Returns the year to date series",
 //    responseContainer = "List",
@@ -115,7 +115,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }
 
   // suggestions when searching
-  // def mapped to /api/activities/suggest
+  // route mapped to /api/activities/suggest
 //  @ApiOperation(value = "Suggests a list of activities based on the query parameter",
 //    notes = "Returns a list of activities",
 //    httpMethod = "GET")
@@ -143,7 +143,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }}
 
   // retrieves the activity with the given id
-  // def mapped to /api/activities/:id
+  // route mapped to /api/activities/:id
 //  @ApiOperation(value = "Retrieves an activity",
 //    notes = "Returns an activity based on id",
 //    httpMethod = "GET")
@@ -166,14 +166,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }}
 
   // retrieves the weather forecast for a given place
-  // def mapped to /api/weather/:location
-//  @ApiOperation(value = "Retrieves the weather forecast for a specific place",
-//    notes = "Weather forecast for the next 5 days",
-//    httpMethod = "GET")
-//  @ApiResponses(Array(
-//    new ApiResponse(code = 400, message = "Bad request"),
-//    new ApiResponse(code = 404, message = "Not found"),
-//    new ApiResponse(code = 500, message = "Internal error")))
+  // route mapped to /api/weather/:location
   def weather(location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
     implicit request =>
 
@@ -181,11 +174,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       val isoLocation = CountryIsoUtils.iso(location)
       logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
 
-      // TODO: inject time iterator
-      // TODO: make refresh param configurable
       // check location last timestamp and throttle the request
       if (isoLocation.nonEmpty) {
-        val now = DateTime.now()
+        val now = DateTime.now() // inject time iterator instead
         val maybeLastUpdate = connectivity
           .getStorage
           .getAttribute(isoLocation, "location")
@@ -193,7 +184,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
         val lastUpdate = maybeLastUpdate.getOrElse(now.minusYears(1))
         val elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
         logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate, $elapsedInMinutes minutes ago")
-        val forecastEntriesF = if (elapsedInMinutes > 15) {
+        val forecastEntriesF = if (elapsedInMinutes > 15) { // make it configurable instead
           logger.info("querying latest weather forecast")
           for {
             entries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
@@ -203,10 +194,16 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
         } else {
           Future(connectivity.getStorage.listRecentForecast(isoLocation))
         }
-        // after a successful query , save the location on the client side (even if the user is not authenticated)
+
+        // generate json or xml content
+        type transform2Content = Iterable[WeatherForecast] => String
+        val contentGenerator: transform2Content = request.getQueryString("mode") match {
+          case Some("xml") => wt => toMeteoGramXml(wt).toString()
+          case _ => wt => JsonIo.write(DailyWeather.list(wt))
+        }
+        // after a successful query, save the location on the client side (even if the user is not authenticated)
         forecastEntriesF
-          .map(DailyWeather.list)
-          .map(JsonIo.write(_))
+          .map(contentGenerator)
           .map(Ok(_).withCookies(WeatherCookie.create(location)))
           .recover{case _ => NotFound}
       } else {
