@@ -6,12 +6,12 @@ import play.api.libs.json._
   * The response structure from openweathermap.
   * https://openweathermap.org/forecast5#format
   */
-object WeatherResponse {
+object ForecastResponse {
 
-  implicit val responseFormat = Format[WeatherResponse](Json.reads[WeatherResponse], Json.writes[WeatherResponse])
+  implicit val responseFormat = Format[ForecastResponse](Json.reads[ForecastResponse], Json.writes[ForecastResponse])
 }
 
-case class WeatherResponse(
+case class ForecastResponse(
   cod: String,
   list: List[Weather],
   city: City

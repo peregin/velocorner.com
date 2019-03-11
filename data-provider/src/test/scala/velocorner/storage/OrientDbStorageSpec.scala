@@ -7,7 +7,7 @@ import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.model.strava.Activity
-import velocorner.model.weather.{WeatherForecast, WeatherResponse}
+import velocorner.model.weather.{WeatherForecast, ForecastResponse}
 import velocorner.util.{FreePortFinder, JsonIo}
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging {
@@ -84,7 +84,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     }
 
     "store weather forecast items as idempotent operation" in {
-      val entries = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/weather.json").list
+      val entries = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/weather.json").list
       entries must haveSize(40)
       storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e)))
       storage.listRecentForecast(zhLocation) must haveSize(40)
