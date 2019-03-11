@@ -65,7 +65,7 @@ package object highcharts {
     def toXML: Elem = {
       val from = dateFormat.print(weather.dt)
       val to = dateFormat.print(weather.dt.plusHours(3))
-      val precipitation = weather.rain.flatMap(_.`3h`).orElse(weather.snow.flatMap(_.`3h`)).getOrElse(0d)
+      val precipitation = List(weather.rain.flatMap(_.`3h`), weather.snow.flatMap(_.`3h`), Some(0d)).flatten.sum
       <time from={from} to={to}>
         <symbol name={weather.weather.head.description} var={weather.weather.head.icon}/>
         <precipitation value={to1DecimalPlace(precipitation)}/>
