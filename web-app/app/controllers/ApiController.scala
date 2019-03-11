@@ -187,7 +187,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
         val forecastEntriesF = if (elapsedInMinutes > 15) { // make it configurable instead
           logger.info("querying latest weather forecast")
           for {
-            entries <- connectivity.getWeatherFeed.query(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
+            entries <- connectivity.getWeatherFeed.forecast(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
             _ <- Future(connectivity.getStorage.storeWeather(entries))
             _ <- Future(connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat)))
           } yield entries

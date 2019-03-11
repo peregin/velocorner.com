@@ -1,0 +1,45 @@
+{
+  "coord": {
+    "lon": 8.54,
+    "lat": 47.37
+  },
+  "weather": [
+    {
+      "id": 600,
+      "main": "Snow",
+      "description": "light snow",
+      "icon": "13n"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 1.08,
+    "pressure": 1028,
+    "humidity": 86,
+    "temp_min": -1.11,
+    "temp_max": 3.33
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 1,
+    "deg": 240
+  },
+  "snow": {
+    "1h": 0.03
+  },
+  "clouds": {
+    "all": 20
+  },
+  "dt": 1552336541,
+  "sys": {
+    "type": 1,
+    "id": 6941,
+    "message": 0.0059,
+    "country": "CH",
+    "sunrise": 1552283157,
+    "sunset": 1552325173
+  },
+  "id": 2657896,
+  "name": "Zurich",
+  "cod": 200
+}

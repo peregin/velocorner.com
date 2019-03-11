@@ -2,7 +2,7 @@ package velocorner.feed
 
 import org.slf4s.Logging
 import velocorner.SecretConfig
-import velocorner.model.weather.ForecastResponse
+import velocorner.model.weather.{ForecastResponse, WeatherResponse}
 import velocorner.util.JsonIo
 
 import scala.concurrent.Future
@@ -14,7 +14,8 @@ object OpenWeatherFeed {
 
 class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
 
-  def query(location: String): Future[ForecastResponse] = {
+  // for 5 days
+  def forecast(location: String): Future[ForecastResponse] = {
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/forecast")
       .withQueryStringParameters(
         ("q", location),
@@ -25,5 +26,18 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       .get()
     }
     response.map(_.body).map(JsonIo.read[ForecastResponse])
+  }
+
+  def current(location: String): Future[WeatherResponse] = {
+    val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/weather")
+      .withQueryStringParameters(
+        ("q", location),
+        ("appid", config.getId("weather")),
+        ("units", "metric"),
+        ("lang", "en")
+      )
+      .get()
+    }
+    response.map(_.body).map(JsonIo.read[WeatherResponse])
   }
 }

@@ -7,7 +7,7 @@ import velocorner.util.JsonIo
 
 class WeatherSpec extends Specification {
 
-  val forecast = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/weather.json")
+  val forecast = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json")
 
   "openweathermap.org response" should {
     "be loaded from reference file" in {
