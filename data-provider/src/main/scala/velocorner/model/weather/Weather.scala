@@ -12,8 +12,8 @@ object WindDescription {
 }
 
 case class WindDescription(
-  speed: Double,
-  deg: Double
+  speed: Double, // m/s
+  deg: Double    // degrees
 )
 
 object CloudDescription {

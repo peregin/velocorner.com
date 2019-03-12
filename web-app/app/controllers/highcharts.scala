@@ -70,7 +70,7 @@ package object highcharts {
         <symbol name={weather.weather.head.description} var={weather.weather.head.icon}/>
         <precipitation value={to1DecimalPlace(precipitation)}/>
         <windDirection deg={weather.wind.deg.toInt.toString}/>
-        <windSpeed mps={to1DecimalPlace(weather.wind.speed)}/>
+        <windSpeed mps={to1DecimalPlace(weather.wind.speed * 3.6)}/>
         <temperature unit="celsius" value={to1DecimalPlace(weather.main.temp)}/>
         <pressure unit="hPa" value={to1DecimalPlace(weather.main.pressure)}/>
       </time>

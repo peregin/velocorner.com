@@ -282,8 +282,8 @@
                     'Gentle breeze', 'Moderate breeze', 'Fresh breeze',
                     'Strong breeze', 'Near gale', 'Gale', 'Strong gale', 'Storm',
                     'Violent storm', 'Hurricane'],
-                beaufortFloor: [0, 0.3, 1.6, 3.4, 5.5, 8.0, 10.8, 13.9, 17.2, 20.8,
-                    24.5, 28.5, 32.7],
+                beaufortFloor: [0, 0.9, 4.8, 10.2, 16.5, 24.0, 32.4, 41.7, 51.6, 62.4,
+                    73.5, 85.5, 98.1],
                 trackerGroups: ['markerGroup'],
 
                 // Get presentational attributes.

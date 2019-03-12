@@ -380,7 +380,7 @@ Meteogram.prototype.getChartOptions = function () {
             vectorLength: 18,
             yOffset: -15,
             tooltip: {
-                valueSuffix: ' m/s'
+                valueSuffix: ' km/h'
             }
         }]
     };
