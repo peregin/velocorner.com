@@ -88,10 +88,12 @@
 
         // sunrise and sunset
         $.ajax({
-            dataType: 'xml',
+            dataType: 'json',
             url: "@restUrl/sunrise/" + place,
-            success: function (xml) {
+            success: function (data) {
                 $('#sunrise-sunset').css("visibility","visible");
+                $('#weather-sunrise').html(moment.unix(data.sunrise).format('H:mm'));
+                $('#weather-sunset').html(moment.unix(data.sunset).format('H:mm'));
             }
         });
 

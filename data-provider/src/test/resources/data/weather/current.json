@@ -1,45 +1,45 @@
 {
   "coord": {
-    "lon": 8.54,
-    "lat": 47.37
+    "lon": 8.52,
+    "lat": 47.31
   },
   "weather": [
     {
-      "id": 600,
-      "main": "Snow",
-      "description": "light snow",
-      "icon": "13n"
+      "id": 500,
+      "main": "Rain",
+      "description": "light rain",
+      "icon": "10n"
     }
   ],
   "base": "stations",
   "main": {
-    "temp": 1.08,
-    "pressure": 1028,
-    "humidity": 86,
-    "temp_min": -1.11,
-    "temp_max": 3.33
+    "temp": 5.17,
+    "pressure": 1012,
+    "humidity": 42,
+    "temp_min": 2.78,
+    "temp_max": 8
   },
   "visibility": 10000,
   "wind": {
-    "speed": 1,
-    "deg": 240
+    "speed": 4.1,
+    "deg": 200
   },
-  "snow": {
-    "1h": 0.03
+  "rain": {
+    "1h": 0.25
   },
   "clouds": {
-    "all": 20
+    "all": 40
   },
-  "dt": 1552336541,
+  "dt": 1552425475,
   "sys": {
     "type": 1,
     "id": 6941,
-    "message": 0.0059,
+    "message": 0.0058,
     "country": "CH",
-    "sunrise": 1552283157,
-    "sunset": 1552325173
+    "sunrise": 1552369439,
+    "sunset": 1552411668
   },
-  "id": 2657896,
-  "name": "Zurich",
+  "id": 2661861,
+  "name": "Adliswil",
   "cod": 200
 }

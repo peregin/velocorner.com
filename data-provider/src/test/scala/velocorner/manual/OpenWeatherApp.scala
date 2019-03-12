@@ -15,7 +15,7 @@ object OpenWeatherApp extends App with Logging with CloseableResource with MyMac
     log.info(s"result is $res")
     log.info(s"${res.points.size} items")
 
-    val cur = Await.result(feed.current("Adlis11wil"), feed.timeout)
+    val cur = Await.result(feed.current("Adliswil,CH"), feed.timeout)
     log.info(s"current weather is $cur")
   }
   HttpFeed.shutdown()

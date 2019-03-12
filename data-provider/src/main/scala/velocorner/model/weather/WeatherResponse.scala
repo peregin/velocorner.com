@@ -24,6 +24,6 @@ object WeatherResponse {
 }
 
 case class WeatherResponse(
-  cod: String,
+  cod: Int,
   sys: Option[SunriseSunsetInfo]
 )
