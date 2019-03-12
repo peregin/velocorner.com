@@ -1,10 +1,11 @@
 package velocorner.storage
 
+import org.joda.time.LocalDate
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
 
 trait Storage {
@@ -37,6 +38,8 @@ trait Storage {
   // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
   def listRecentForecast(location: String, limit: Int = 40): Iterable[WeatherForecast]
   def storeWeather(forecast: Iterable[WeatherForecast])
+  def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset]
+  def storeSunriseSunset(sunriseSunset: SunriseSunset)
 
   // key value pairs - generic attribute storage
   def storeAttribute(key: String, `type`: String, value: String)

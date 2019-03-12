@@ -6,7 +6,7 @@ import org.json.simple.JSONObject
 import org.slf4s.Logging
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
@@ -121,6 +121,8 @@ class RethinkDbStorage extends Storage with Logging {
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
   override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
+  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] = ???
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Unit = ???
 
   // attributes
   override def storeAttribute(key: String, `type`: String, value: String): Unit = ???

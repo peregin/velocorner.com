@@ -8,11 +8,12 @@ import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
 import com.orientechnologies.orient.server.OServer
+import org.joda.time.LocalDate
 import org.slf4s.Logging
 import play.api.libs.json.{Reads, Writes}
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
@@ -112,6 +113,13 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     forecast.foreach(a =>
       upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
     )
+  }
+
+  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] =
+    listFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'").headOption
+
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset) {
+    upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
   }
 
   // attributes
@@ -217,6 +225,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       //dropIx(ATHLETE_CLASS, "id")
       createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
+      createIxIfNeeded(SUN_CLASS, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
       createIxIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
     }
   }
@@ -272,6 +281,7 @@ object OrientDbStorage {
   val CLUB_CLASS = "Club"
   val ATHLETE_CLASS = "Athlete"
   val WEATHER_CLASS = "Weather"
+  val SUN_CLASS = "Sun"
   val ATTRIBUTE_CLASS = "Attribute"
 
 }

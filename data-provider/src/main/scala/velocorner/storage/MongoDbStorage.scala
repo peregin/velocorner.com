@@ -9,7 +9,7 @@ import com.mongodb.util.JSON
 import com.mongodb.casbah.query.Imports._
 import org.slf4s.Logging
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
 import scala.language.implicitConversions
 import collection.JavaConverters._
@@ -106,6 +106,8 @@ class MongoDbStorage extends Storage with Logging {
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
   override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
+  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] = ???
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Unit = ???
 
   // attributes
   override def storeAttribute(key: String, `type`: String, value: String): Unit = ???

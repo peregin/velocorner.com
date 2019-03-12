@@ -13,6 +13,8 @@ object ForecastResponse {
 
 case class ForecastResponse(
   cod: String,
-  list: List[Weather],
-  city: City
-)
+  list: Option[List[Weather]],
+  city: Option[City]
+) {
+  lazy val points = list.getOrElse(List.empty)
+}

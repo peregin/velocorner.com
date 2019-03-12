@@ -16,6 +16,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
 
   // for 5 days
   def forecast(location: String): Future[ForecastResponse] = {
+    log.debug(s"retrieving forecast for $location")
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/forecast")
       .withQueryStringParameters(
         ("q", location),
@@ -25,10 +26,13 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       )
       .get()
     }
-    response.map(_.body).map(JsonIo.read[ForecastResponse])
+    response
+      .map(_.body)
+      .map(JsonIo.read[ForecastResponse])
   }
 
   def current(location: String): Future[WeatherResponse] = {
+    log.debug(s"retrieving current weather for $location")
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/weather")
       .withQueryStringParameters(
         ("q", location),
@@ -38,6 +42,8 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       )
       .get()
     }
-    response.map(_.body).map(JsonIo.read[WeatherResponse])
+    response
+      .map(_.body)
+      .map(JsonIo.read[WeatherResponse])
   }
 }

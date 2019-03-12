@@ -39,9 +39,61 @@ GET     /authorize/withings                      controllers.auth.WithingsContro
 #      description: Internal error
 ###
 GET     /api/athletes/statistics                 controllers.ApiController.statistics
+
+###
+#  summary: List yearly series for the logged in athlete
+#  responses:
+#    200:
+#      description: Returns the yearly series
+#      schema:
+#        $ref: '#/definitions/velcorner.highcharts.DailySeries'
+#    404:
+#      description: Not found
+#    500:
+#      description: Internal error
+###
 GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
+
+###
+#  summary: List year to date series for the logged in athlete
+#  responses:
+#    200:
+#      description: Returns the year to date series
+#      schema:
+#        $ref: '#/definitions/velcorner.highcharts.DailySeries'
+#    404:
+#      description: Not found
+#    500:
+#      description: Internal error
+###
 GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
+
+###
+#  summary: Suggests a list of activities based on the query parameter
+#  responses:
+#    200:
+#      description: Returns a list of activities
+#      schema:
+#        $ref: '#/definitions/velcorner.model.strava.Activity'
+#    500:
+#      description: Internal error
+###
 GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
+
+###
+#  summary: Retrieves an activity
+#  responses:
+#    200:
+#      description: Returns an activity based on id
+#      schema:
+#        $ref: '#/definitions/velcorner.model.strava.Activity'
+#    403:
+#      description: Forbidden
+#    404:
+#      description: Not found
+#    500:
+#      description: Internal error
+###
 GET     /api/activities/:id                      controllers.ApiController.activity(id: Int)
 
 ###
@@ -59,6 +111,23 @@ GET     /api/activities/:id                      controllers.ApiController.activ
 #      description: Internal error
 ###
 GET     /api/weather/:location                   controllers.ApiController.weather(location: String)
+
+###
+#  summary: Retrieves the sunrise and sunset information for a specific place
+#  responses:
+#    200:
+#      description: Sunrise, sunset
+#      schema:
+#        $ref: '#/definitions/velcorner.model.weather.SunriseSunset'
+#    400:
+#      description: Bad request
+#    404:
+#      description: Place not found
+#    500:
+#      description: Internal error
+###
+GET     /api/sunrise/:location                   controllers.ApiController.sunrise(location: String)
+
 GET     /ws                                      controllers.ApiController.ws
 
 # DOC

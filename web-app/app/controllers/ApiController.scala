@@ -12,8 +12,11 @@ import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
+import scalaz.OptionT
+import scalaz._
+import Scalaz._
 import velocorner.model._
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
 
@@ -50,14 +53,6 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   }
 
   // route mapped to /api/athletes/statistics/yearly/:action
-//  @ApiOperation(value = "List yearly series for the logged in athlete",
-//    notes = "Returns the yearly series",
-//    responseContainer = "List",
-//    response = classOf[highcharts.DailySeries],
-//    httpMethod = "GET")
-//  @ApiResponses(Array(
-//    new ApiResponse(code = 404, message = "Invalid action"),
-//    new ApiResponse(code = 500, message = "Internal error")))
   def yearlyStatistics(action: String) = AuthAsyncAction {
     implicit request =>
 
@@ -82,14 +77,6 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // year to date aggregation
   // route mapped to /api/athletes/statistics/ytd/:action
-//  @ApiOperation(value = "List year to date series for the logged in athlete",
-//    notes = "Returns the year to date series",
-//    responseContainer = "List",
-//    response = classOf[highcharts.DailySeries],
-//    httpMethod = "GET")
-//  @ApiResponses(Array(
-//    new ApiResponse(code = 404, message = "Invalid action"),
-//    new ApiResponse(code = 500, message = "Internal error")))
   def ytdStatistics(action: String) = AuthAsyncAction {
     implicit request =>
 
@@ -116,11 +103,6 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // suggestions when searching
   // route mapped to /api/activities/suggest
-//  @ApiOperation(value = "Suggests a list of activities based on the query parameter",
-//    notes = "Returns a list of activities",
-//    httpMethod = "GET")
-//  @ApiResponses(Array(
-//    new ApiResponse(code = 500, message = "Internal error")))
   def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction {
     implicit request =>
 
@@ -144,13 +126,6 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
-//  @ApiOperation(value = "Retrieves an activity",
-//    notes = "Returns an activity based on id",
-//    httpMethod = "GET")
-//  @ApiResponses(Array(
-//    new ApiResponse(code = 403, message = "Forbidden"),
-//    new ApiResponse(code = 404, message = "Not found"),
-//    new ApiResponse(code = 500, message = "Internal error")))
   def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
     implicit request =>
 
@@ -187,7 +162,7 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
         val forecastEntriesF = if (elapsedInMinutes > 15) { // make it configurable instead
           logger.info("querying latest weather forecast")
           for {
-            entries <- connectivity.getWeatherFeed.forecast(isoLocation).map(res => res.list.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
+            entries <- connectivity.getWeatherFeed.forecast(isoLocation).map(res => res.points.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
             _ <- Future(connectivity.getStorage.storeWeather(entries))
             _ <- Future(connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat)))
           } yield entries
@@ -212,10 +187,42 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       }
   }}
 
+  // retrieves the sunrise and sunset information for a given place
+  // route mapped to /api/sunrise/:location
+  def sunrise(location: String)= timed(s"query sunrise sunset for $location") { AuthAsyncAction {
+    implicit request =>
+
+      // convert city[,country] to city[,isoCountry]
+      val isoLocation = CountryIsoUtils.iso(location)
+      logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation]")
+
+      if (isoLocation.nonEmpty) {
+        val now = LocalDate.now.toString
+        val sunriseF = connectivity.getStorage.getSunriseSunset(isoLocation, now) match {
+          case ss@Some(_) =>
+            Future(ss)
+          case _ =>
+            val resultTF = for {
+              response <- connectivity.getWeatherFeed.current(isoLocation).liftM[OptionT]
+              entry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
+              _ <- Future(connectivity.getStorage.storeSunriseSunset(entry)).liftM[OptionT]
+            } yield entry
+            resultTF.run
+        }
+
+        sunriseF
+          .map{
+              case Some(ss) => Ok(JsonIo.write(ss))
+              case None => NotFound
+          }
+          .recover{case _ => NotFound}
+      } else {
+        Future.successful(BadRequest)
+      }
+  }}
+
   // WebSocket to update the client
   // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
-//  @ApiOperation(value = "Initiates a websocket connection",
-//    httpMethod = "GET")
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { rh =>
     rh match {
       case _ if sameOriginCheck(rh) =>

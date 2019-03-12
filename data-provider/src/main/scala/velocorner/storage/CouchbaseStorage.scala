@@ -12,7 +12,7 @@ import velocorner.util.{JsonIo, Metrics}
 import scala.collection.JavaConverters._
 import CouchbaseStorage._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.WeatherForecast
+import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
@@ -106,6 +106,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
   override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
+  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] = ???
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Unit = ???
 
   // attributes
   override def storeAttribute(key: String, `type`: String, value: String): Unit = ???

@@ -14,16 +14,24 @@
                     <button id="weather_button" name="weather_button" class="btn-u rounded btn-block" type="button"><i class="fa fa-refresh"></i> Weather</button>
                 </span>
             </div>
-            <div id="weather-progress" class="progress progress-striped active">
+            <div id="weather-progress" class="progress progress-striped active" style="visibility:hidden;">
                 <div id="weather-progress-bar" class="progress-bar progress-bar-info"
                      role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                     Refreshing Weather Forecast ...
                 </div>
             </div>
+
+            <div id="sunrise-sunset" style="text-align: center; visibility:hidden;">
+                <i class="icon-weather-025 mb-10" style="font-size: 1.5em;"></i>
+                <span id="weather-sunrise" style="font-size: 1.8em;"></span>
+                &nbsp;&nbsp;
+                <i class="icon-weather-024 mb-10" style="font-size: 1.5em;"></i>
+                <span id="weather-sunset" style="font-size: 1.8em;"></span>
+            </div>
         </div>
 
         <div class="col-md-9 col-sm-12">
-            <div id="weather_container" style="max-width: 800px; min-width: 300px; height: 250px; margin: 0 auto; display: none;">
+            <div id="weather-container" style="max-width: 800px; min-width: 300px; height: 250px; margin: 0 auto; display: none;">
                 <div style="margin-top: 0px; text-align: center" id="loading">
                     <i class="fa fa-spinner fa-spin"></i> Loading meteo data
                 </div>
@@ -47,7 +55,6 @@
             }
         });
 
-        $('#weather-progress').fadeOut();
         triggerForecast();
     });
 
@@ -62,21 +69,32 @@
     }
 
     function weatherForecast(place) {
-        $('#weather-progress').fadeIn();
+        $('#weather-progress').css("visibility","visible");
 
+        // meteogram
         $.ajax({
             dataType: 'xml',
-            url: "@restUrl/" + place + "?mode=xml",
+            url: "@restUrl/weather/" + place + "?mode=xml",
             success: function (xml) {
-                $('#weather-progress').fadeOut();
-                $('#weather_container').css('display', 'block');
-                window.meteogram = new Meteogram(xml, 'weather_container');
+                $('#weather-progress').css("visibility","hidden");
+                $('#weather-container').css('display', 'block');
+                window.meteogram = new Meteogram(xml, 'weather-container');
             },
             error: function(e) {
-                $('#weather-progress').fadeOut();
+                $('#weather-progress').css("visibility","hidden");
                 console.error("meteogram with " + e);
             }
         });
+
+        // sunrise and sunset
+        $.ajax({
+            dataType: 'xml',
+            url: "@restUrl/sunrise/" + place,
+            success: function (xml) {
+                $('#sunrise-sunset').css("visibility","visible");
+            }
+        });
+
     }
 //]]>
 </script>

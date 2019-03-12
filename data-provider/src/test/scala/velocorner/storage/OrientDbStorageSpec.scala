@@ -3,11 +3,12 @@ package velocorner.storage
 import java.io.File
 
 import org.apache.commons.io.FileUtils
+import org.joda.time.DateTime
 import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.model.strava.Activity
-import velocorner.model.weather.{WeatherForecast, ForecastResponse}
+import velocorner.model.weather.{ForecastResponse, SunriseSunset, WeatherForecast}
 import velocorner.util.{FreePortFinder, JsonIo}
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging {
@@ -84,7 +85,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
     }
 
     "store weather forecast items as idempotent operation" in {
-      val entries = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").list
+      val entries = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
       entries must haveSize(40)
       storage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e)))
       storage.listRecentForecast(zhLocation) must haveSize(40)
@@ -99,6 +100,17 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Logging
       storage.storeWeather(Seq(WeatherForecast("Budapest,HU", first.dt.getMillis, first)))
       storage.listRecentForecast(zhLocation, limit = 50) must haveSize(40)
       storage.listRecentForecast("Budapest,HU", limit = 50) must haveSize(1)
+    }
+
+    "store/lookup sunrise/sunset" in {
+      val now = DateTime.now
+      val tomorrow = now.plusDays(1)
+      storage.getSunriseSunset("bla", "2019") must beNone
+      storage.storeSunriseSunset(SunriseSunset("Budapest", "2019-03-11", now, tomorrow))
+      storage.getSunriseSunset("Budapest", "2019-03-11").map(_.sunrise.toLocalDate) must beSome(now.toLocalDate)
+      storage.getSunriseSunset("Budapest", "2019-03-11").map(_.sunset.toLocalDate) must beSome(tomorrow.toLocalDate)
+      storage.getSunriseSunset("Zurich", "2019-03-11") must beNone
+      storage.getSunriseSunset("Budapest", "2019-03-12") must beNone
     }
 
     "store/lookup attributes" in {
