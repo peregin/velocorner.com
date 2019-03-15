@@ -2,13 +2,12 @@ package velocorner.storage
 
 import java.io.FileOutputStream
 
-import com.orientechnologies.orient.core.command.OCommandOutputListener
+import com.orientechnologies.orient.core.command.{OCommandOutputListener, OCommandResultListener}
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery
+import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery, OSQLSynchQuery}
 import com.orientechnologies.orient.server.OServer
-import org.joda.time.LocalDate
 import org.slf4s.Logging
 import play.api.libs.json.{Reads, Writes}
 import velocorner.model._
@@ -18,8 +17,10 @@ import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
 import scala.collection.JavaConverters._
+import scala.concurrent.{Future, Promise}
 import scala.language.implicitConversions
 import scala.util.control.Exception._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by levi on 14.11.16.
@@ -29,6 +30,24 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   var server: Option[OServer] = None
 
+  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx() { db =>
+    val prom = Promise[Seq[T]]()
+    db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
+      override def result(iRecord: Any): Boolean = {
+        log.info(s"result = $iRecord")
+        true
+      }
+
+      override def end() {
+        log.info(s"end")
+      }
+
+      override def getResult: AnyRef = null
+    }))
+    log.info(s"starting query for [$sql]")
+    //res.get()
+    prom.future
+  }
 
   private def listFor[T](sql: String)(implicit fjs: Reads[T]): Seq[T] = inTx() { db =>
     val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
