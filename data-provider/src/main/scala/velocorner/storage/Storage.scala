@@ -1,49 +1,50 @@
 package velocorner.storage
 
-import org.joda.time.LocalDate
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
+import scala.concurrent.Future
+
 
 trait Storage {
 
   // insert all activities, new ones are added, previous ones are overridden
-  def storeActivity(activities: Iterable[Activity])
+  def storeActivity(activities: Iterable[Activity]): Future[Unit]
 
-  def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress]
-  def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress]
+  def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]]
+  def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]]
 
-  def getActivity(id: Long): Option[Activity]
+  def getActivity(id: Long): Future[Option[Activity]]
   // summary on the landing page
-  def listRecentActivities(limit: Int): Iterable[Activity]
+  def listRecentActivities(limit: Int): Future[Iterable[Activity]]
   // to check how much needs to be imported from the feed
-  def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity]
+  def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]]
 
   // accounts
-  def store(account: Account)
-  def getAccount(id: Long): Option[Account]
+  def store(account: Account): Future[Unit]
+  def getAccount(id: Long): Future[Option[Account]]
 
   // athletes
-  def store(athlete: Athlete)
-  def getAthlete(id: Long): Option[Athlete]
+  def store(athlete: Athlete): Future[Unit]
+  def getAthlete(id: Long): Future[Option[Athlete]]
 
   // clubs
-  def store(club: Club)
-  def getClub(id: Long): Option[Club]
+  def store(club: Club): Future[Unit]
+  def getClub(id: Long): Future[Option[Club]]
 
   // weather - location is <city[,countryISO2letter]>
   // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
-  def listRecentForecast(location: String, limit: Int = 40): Iterable[WeatherForecast]
-  def storeWeather(forecast: Iterable[WeatherForecast])
-  def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset]
-  def storeSunriseSunset(sunriseSunset: SunriseSunset)
+  def listRecentForecast(location: String, limit: Int = 40): Future[Iterable[WeatherForecast]]
+  def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit]
+  def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]]
+  def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit]
 
   // key value pairs - generic attribute storage
-  def storeAttribute(key: String, `type`: String, value: String)
-  def getAttribute(key: String, `type`: String): Option[String]
+  def storeAttribute(key: String, `type`: String, value: String): Future[Unit]
+  def getAttribute(key: String, `type`: String): Future[Option[String]]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

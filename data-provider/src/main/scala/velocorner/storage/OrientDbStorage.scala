@@ -6,7 +6,7 @@ import com.orientechnologies.orient.core.command.{OCommandOutputListener, OComma
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
-import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery, OSQLSynchQuery}
+import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
 import play.api.libs.json.{Reads, Writes}
@@ -16,11 +16,17 @@ import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
-import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Future, Promise}
 import scala.language.implicitConversions
+import scala.util.Try
 import scala.util.control.Exception._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import scalaz._
+import Scalaz._
+import scalaz.syntax.traverse.ToTraverseOps
 
 /**
  * Created by levi on 14.11.16.
@@ -30,62 +36,31 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   var server: Option[OServer] = None
 
-  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx() { db =>
-    val prom = Promise[Seq[T]]()
-    db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
-      override def result(iRecord: Any): Boolean = {
-        log.info(s"result = $iRecord")
-        true
-      }
-
-      override def end() {
-        log.info(s"end")
-      }
-
-      override def getResult: AnyRef = null
-    }))
-    log.info(s"starting query for [$sql]")
-    //res.get()
-    prom.future
-  }
-
-  private def listFor[T](sql: String)(implicit fjs: Reads[T]): Seq[T] = inTx() { db =>
-    val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
-    results.asScala.map(d => JsonIo.read[T](d.toJSON))
-  }
-
-  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): ODocument = inTx() { db =>
-    val results: java.util.List[ODocument] = db.query(new OSQLSynchQuery[ODocument](sql))
-    val doc = results.asScala.headOption.getOrElse(new ODocument(className))
-    doc.fromJSON(JsonIo.write(payload))
-    doc.save()
-  }
-
-  private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Option[T] = {
+  private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
-    listFor[T](sql).headOption
+    queryFor[T](sql).map(_.headOption)
   }
 
   // FIXME: workaround until elastic is in place
-  def suggestActivities(snippet: String, athleteId: Long, max: Int): Iterable[Activity] = {
-    listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max")
+  def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = {
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max")
   }
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]) = {
-    activities.foreach( a =>
+  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
+    activities.toList.traverseU(a =>
       upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}")
-    )
+    ).map(_ => ())
   }
 
   override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
-    val activities = listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
+    val activities = queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
     log.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
   }
 
   override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
-    val activities = listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
+    val activities = queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
     log.debug(s"found activities ${activities.size}")
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
@@ -94,12 +69,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // summary on the landing page
   override def listRecentActivities(limit: Int): Iterable[Activity] = {
-    listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
-    listFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
   // accounts
@@ -125,7 +100,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // weather
   override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = {
-    listFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
+    queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
   }
 
   override def storeWeather(forecast: Iterable[WeatherForecast]) {
@@ -135,7 +110,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 
   override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] =
-    listFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'").headOption
+    queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'").headOption
 
   override def storeSunriseSunset(sunriseSunset: SunriseSunset) {
     upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
@@ -148,7 +123,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 
   override def getAttribute(key: String, `type`: String): Option[String] = {
-    listFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
+    queryFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
       .headOption
       .map(_.value)
   }
@@ -280,6 +255,53 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     ultimately(dbDoc.close()).apply {
       body(dbDoc)
     }
+  }
+
+  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx() { db =>
+    Try {
+      val promise = Promise[Seq[T]]()
+      db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
+        val accuResults = new ListBuffer[T]
+
+        override def result(iRecord: Any): Boolean = {
+          val doc = iRecord.asInstanceOf[ODocument]
+          accuResults += JsonIo.read[T](doc.toJSON)
+          true
+        }
+
+        override def end() {
+          promise.success(accuResults)
+        }
+
+        override def getResult: AnyRef = null
+      }))
+      promise.future
+    }.fold(err => Future.failed(err), res => res)
+  }
+
+  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): Future[Unit] = inTx() { db =>
+    Try {
+      val promise = Promise[Unit]()
+      db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
+        val accuResults = new ListBuffer[ODocument]
+
+        override def result(iRecord: Any): Boolean = {
+          val doc = iRecord.asInstanceOf[ODocument]
+          accuResults += doc
+          false
+        }
+
+        override def end() {
+          val doc = accuResults.headOption.getOrElse(new ODocument(className))
+          doc.fromJSON(JsonIo.write(payload))
+          doc.save()
+          promise.success(Unit)
+        }
+
+        override def getResult: AnyRef = null
+      }))
+      promise.future
+    }.fold(err => Future.failed(err), res => res)
   }
 }
 
