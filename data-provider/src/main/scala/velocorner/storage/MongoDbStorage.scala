@@ -13,10 +13,15 @@ import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
 import scala.language.implicitConversions
 import collection.JavaConverters._
+import scala.concurrent.Future
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by levi on 28/09/16.
   * Access layer to the MongoDb.
+  * TODO: use bulk upsert
+  * TODO: use async API
   */
 class MongoDbStorage extends Storage with Logging {
 
@@ -25,9 +30,8 @@ class MongoDbStorage extends Storage with Logging {
 
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]) {
+  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    // TODO: bulk store
     activities.foreach{ a =>
       val json = JsonIo.write(a)
       val upd = "id" $eq a.id
@@ -35,7 +39,7 @@ class MongoDbStorage extends Storage with Logging {
     }
   }
 
-  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
+  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
     val results = coll.find(query)
@@ -44,7 +48,7 @@ class MongoDbStorage extends Storage with Logging {
     DailyProgress.fromStorage(activities)
   }
 
-  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
+  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = "type" $eq "Ride"
     val results = coll.find(query).sort("{start_date:-1}").limit(limit)
@@ -53,10 +57,10 @@ class MongoDbStorage extends Storage with Logging {
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
   }
 
-  override def getActivity(id: Long): Option[Activity] = getJsonById(id, ACTIVITY_TABLE, "id").map(JsonIo.read[Activity])
+  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE, "id").map(_.map(JsonIo.read[Activity]))
 
   // summary on the landing page
-  override def listRecentActivities(limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = "type" $eq "Ride"
     val results = coll.find(query).sort("{start_date:-1}").limit(limit)
@@ -67,7 +71,7 @@ class MongoDbStorage extends Storage with Logging {
 
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
     val results = coll.find(query).sort("{start_date:-1}").limit(limit)
@@ -76,42 +80,42 @@ class MongoDbStorage extends Storage with Logging {
     activities
   }
 
-  private def upsert(json: String, id: Long, collName: String, idName: String = "id") {
+  private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = Future {
     val coll = db.getCollection(collName)
     val upd = idName $eq id
     coll.update(upd, json, true, false)
   }
 
-  private def getJsonById(id: Long, collName: String, idName: String = "id"): Option[String] = {
+  private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = Future {
     val coll = db.getCollection(collName)
     val query = idName $eq id
     coll.find(query).headOption
   }
 
   // accounts
-  override def store(account: Account) = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
+  override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
 
-  override def getAccount(id: Long): Option[Account] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(JsonIo.read[Account])
+  override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
 
   // athletes
-  override def store(athlete: Athlete) = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
+  override def store(athlete: Athlete): Future[Unit] = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
 
-  override def getAthlete(id: Long): Option[Athlete] = getJsonById(id, ATHLETE_TABLE).map(JsonIo.read[Athlete])
+  override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
 
   // clubs
-  override def store(club: Club) = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
+  override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
 
-  override def getClub(id: Long): Option[Club] = getJsonById(id, CLUB_TABLE).map(JsonIo.read[Club])
+  override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
 
   // weather
-  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
-  override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
-  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] = ???
-  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Unit = ???
+  override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = ???
+  override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = ???
+  override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] = ???
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = ???
 
   // attributes
-  override def storeAttribute(key: String, `type`: String, value: String): Unit = ???
-  override def getAttribute(key: String, `type`: String): Option[String] = ???
+  override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = ???
+  override def getAttribute(key: String, `type`: String): Future[Option[String]] = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

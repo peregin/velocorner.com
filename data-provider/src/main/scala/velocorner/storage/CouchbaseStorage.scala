@@ -14,6 +14,13 @@ import CouchbaseStorage._
 import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scalaz._
+import Scalaz._
+import scalaz.syntax.traverse.ToTraverseOps
+
 
 class CouchbaseStorage(password: String) extends Storage with Logging with Metrics {
 
@@ -22,15 +29,16 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
 
 
   // activities
-  override def storeActivity(activities: Iterable[Activity]) {
+  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     // TODO: bulk store
-    activities.foreach{a =>
-      client.set(a.id.toString, 0, JsonIo.write(a))
-    }
+    activities
+      .toList
+      .traverseU( a => client.set(a.id.toString, 0, JsonIo.write(a)))
+      .map(_ => ())
   }
 
-  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
-    val view = client.getView(progressDesignName, athleteProgressByDayViewName)
+  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
+    val view = client.asyncGetView(progressDesignName, athleteProgressByDayViewName)
     val query = new Query()
     query.setGroup(true)
     query.setStale(Stale.FALSE)
@@ -218,6 +226,8 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   }
 
   override def backup(fileName: String) = ???
+
+  implicit def toScalaFuture[T](javaFuture: java.util.concurrent.Future[T]): Future[T] = Future{ javaFuture.get() }
 }
 
 

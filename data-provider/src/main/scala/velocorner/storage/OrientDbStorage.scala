@@ -38,7 +38,8 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
-    queryFor[T](sql).map(_.headOption)
+    queryFor[T](sql)
+      .map(_.headOption)
   }
 
   // FIXME: workaround until elastic is in place
@@ -48,18 +49,20 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
-    activities.toList.traverseU(a =>
-      upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}")
-    ).map(_ => ())
+    activities
+      .toList
+      .traverseU(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}"))
+      .map(_ => ())
   }
 
-  override def dailyProgressForAthlete(athleteId: Long): Iterable[DailyProgress] = {
-    val activities = queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
-    log.debug(s"found activities ${activities.size} for $athleteId")
-    DailyProgress.fromStorage(activities)
+  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
+    for {
+      activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
+      _ = log.debug(s"found activities ${activities.size} for $athleteId")
+    } yield DailyProgress.fromStorage(activities)
   }
 
-  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
+  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = {
     val activities = queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
     log.debug(s"found activities ${activities.size}")
     AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse

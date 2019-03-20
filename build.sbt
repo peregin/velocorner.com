@@ -22,8 +22,7 @@ val mockitoVersion = "2.25.0"
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
-
-def orientDb = Seq(
+val orientDb = Seq(
   "com.orientechnologies" % "orientdb-core" % orientDbVersion,
   "com.orientechnologies" % "orientdb-client" % orientDbVersion,
   "com.orientechnologies" % "orientdb-server" % orientDbVersion
