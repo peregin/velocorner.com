@@ -14,10 +14,10 @@ val elasticVersion = "6.5.1"
 val orientDbVersion = "3.0.17"
 val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "2.0.1" // standalone version
-val playJsonVersion = "2.7.1"
+val playWsVersion = "2.0.2" // standalone version
+val playJsonVersion = "2.7.2"
 val specsVersion = "4.5.1"
-val mockitoVersion = "2.25.0"
+val mockitoVersion = "2.25.1"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
