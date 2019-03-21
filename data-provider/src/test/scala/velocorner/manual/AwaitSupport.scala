@@ -8,6 +8,6 @@ import scala.language.postfixOps
 trait AwaitSupport {
 
   def await[T](awaitable: Awaitable[T]): T = {
-    scala.concurrent.Await.result(awaitable, 10 seconds)
+    scala.concurrent.Await.result(awaitable, 30 seconds)
   }
 }

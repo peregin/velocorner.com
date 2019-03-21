@@ -4,21 +4,25 @@ import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import controllers.auth.AuthChecker
 import highcharts._
-import javax.inject.Inject
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
 import org.reactivestreams.Subscriber
+
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
+
 import velocorner.model._
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
 
+import javax.inject.Inject
+
 import scala.concurrent.Future
 import scala.util.Try
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scalaz.OptionT

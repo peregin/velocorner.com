@@ -6,14 +6,15 @@ import velocorner.SecretConfig
 import velocorner.model.strava.{Activity, Athlete}
 import velocorner.util.JsonIo
 
-import scala.annotation.tailrec
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.language.postfixOps
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Implementation to connect with Strava REST API
  */
-object StravaActivityFeed {
+object StravaActivityFeed extends Logging {
 
   val baseUrl = "https://www.strava.com/api/v3"
   val accessTokenUrl = s"${StravaActivityFeed.baseUrl}/oauth/token"
@@ -21,14 +22,16 @@ object StravaActivityFeed {
 
   val maxItemsPerPage = 200 // limitation from Strava
 
-  def listRecentAthleteActivities(implicit feed: StravaActivityFeed): List[Activity] = feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
+  def listRecentAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] = feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
 
-  def listAllAthleteActivities(implicit feed: StravaActivityFeed): List[Activity] = {
-    @tailrec
-    def list(page: Int, accu: List[Activity]): List[Activity] = {
-      val activities = feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
-      if (activities.size < StravaActivityFeed.maxItemsPerPage) activities ++ accu
-      else list(page + 1, activities ++ accu)
+  def listAllAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] = {
+
+    def list(page: Int, accu: List[Activity]): Future[List[Activity]] = {
+      for {
+        activities <- feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
+        _ = log.debug(s"page $page, activities ${activities.size}")
+        next <- if (activities.size < StravaActivityFeed.maxItemsPerPage) Future(activities ++ accu) else list(page + 1, activities ++ accu)
+      } yield next
     }
     list(1, List.empty)
   }
@@ -42,35 +45,28 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
   val authHeader = s"Bearer $token"
 
   // clubs
-  override def listRecentClubActivities(clubId: Long): List[Activity] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/activities").withHttpHeaders(("Authorization", authHeader)).get())
-    extractActivities(response)
-  }
+  override def listRecentClubActivities(clubId: Long): Future[List[Activity]] = for {
+    response <- ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/activities").withHttpHeaders(("Authorization", authHeader)).get())
+  } yield extractActivities(response)
 
-  override def listClubAthletes(clubId: Long): List[Athlete] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/members").withHttpHeaders(("Authorization", authHeader)).get())
-    val json = Await.result(response, timeout).body
-    JsonIo.read[List[Athlete]](json)
-  }
+  override def listClubAthletes(clubId: Long): Future[List[Athlete]] = for {
+    response <- ws(_.url(s"${StravaActivityFeed.baseUrl}/clubs/$clubId/members").withHttpHeaders(("Authorization", authHeader)).get())
+  } yield JsonIo.read[List[Athlete]](response.body)
 
   // activities
-  override def listAthleteActivities(page: Int, pageSize: Int = StravaActivityFeed.maxItemsPerPage): List[Activity] = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete/activities"))
+  override def listAthleteActivities(page: Int, pageSize: Int = StravaActivityFeed.maxItemsPerPage): Future[List[Activity]] = for {
+    response <- ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete/activities"))
       .withHttpHeaders(("Authorization", authHeader))
       .withQueryStringParameters(("page", page.toString), ("per_page", pageSize.toString))
       .get()
-    extractActivities(response)
-  }
+  } yield extractActivities(response)
 
-  private def extractActivities(response: Future[StandaloneWSResponse]): List[Activity] = {
-    val json = Await.result(response, timeout).body
-    JsonIo.read[List[Activity]](json)
+  private def extractActivities(response: StandaloneWSResponse): List[Activity] = {
+    JsonIo.read[List[Activity]](response.body)
   }
 
   // athlete
-  override def getAthlete: Athlete = {
-    val response = ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete").withHttpHeaders(("Authorization", authHeader)).get())
-    val json = Await.result(response, timeout).body
-    JsonIo.read[Athlete](json)
-  }
+  override def getAthlete: Future[Athlete] = for {
+    response <- ws(_.url(s"${StravaActivityFeed.baseUrl}/athlete").withHttpHeaders(("Authorization", authHeader)).get())
+  } yield JsonIo.read[Athlete](response.body)
 }

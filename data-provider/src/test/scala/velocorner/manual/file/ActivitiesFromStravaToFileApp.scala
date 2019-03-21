@@ -5,15 +5,15 @@ import java.io.PrintWriter
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
-import velocorner.manual.MyMacConfig
+import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.util.JsonIo
 
 
-object ActivitiesFromStravaToFileApp extends App with Logging with MyMacConfig {
+object ActivitiesFromStravaToFileApp extends App with AwaitSupport with Logging with MyMacConfig {
 
   implicit val feed = new StravaActivityFeed(None, SecretConfig.load())
-  //val activities = feed.recentClubActivities(Club.Velocorner)
-  val activities = StravaActivityFeed.listRecentAthleteActivities
+  //val activities = await(feed.recentClubActivities(Club.Velocorner))
+  val activities = await(StravaActivityFeed.listRecentAthleteActivities)
   log.info(s"got ${activities.size} athlete activities")
 
   val json = JsonIo.write(activities)

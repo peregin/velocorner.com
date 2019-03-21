@@ -2,17 +2,19 @@ package velocorner.feed
 
 import velocorner.model.strava.{Activity, Athlete}
 
+import scala.concurrent.Future
+
 
 trait ActivityFeed {
 
   // club
-  def listRecentClubActivities(clubId: Long): List[Activity]
+  def listRecentClubActivities(clubId: Long): Future[List[Activity]]
 
-  def listClubAthletes(clubId: Long): List[Athlete]
+  def listClubAthletes(clubId: Long): Future[List[Athlete]]
 
   // activities - page starts from 1 and pageSize cannot be greater than StravaActivityFeed.maxItemsPerPage
-  def listAthleteActivities(page: Int, pageSize: Int): List[Activity]
+  def listAthleteActivities(page: Int, pageSize: Int): Future[List[Activity]]
 
-  // athlete
-  def getAthlete: Athlete
+  // athlete, of the authenticated user
+  def getAthlete: Future[Athlete]
 }

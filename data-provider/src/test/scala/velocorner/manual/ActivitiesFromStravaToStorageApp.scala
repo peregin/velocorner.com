@@ -5,16 +5,16 @@ import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
-object AthleteFromStravaToStorageApp extends App with Logging with MyMacConfig {
+object AthleteFromStravaToStorageApp extends App with Logging with AwaitSupport with MyMacConfig {
 
   private val config = SecretConfig.load()
   implicit val feed = new StravaActivityFeed(None, config)
 
   val storage = Storage.create("or")
   storage.initialize()
-  //val activities = StravaFeed.listRecentAthleteActivities
-  val activities = StravaActivityFeed.listAllAthleteActivities
-  storage.storeActivity(activities)
+  //val activities = await(StravaFeed.listRecentAthleteActivities)
+  val activities = await(StravaActivityFeed.listAllAthleteActivities)
+  await(storage.storeActivity(activities))
 
   log.info("done...")
   storage.destroy()

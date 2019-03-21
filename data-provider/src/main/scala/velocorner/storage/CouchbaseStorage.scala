@@ -15,7 +15,9 @@ import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
 import scalaz._
 import Scalaz._
