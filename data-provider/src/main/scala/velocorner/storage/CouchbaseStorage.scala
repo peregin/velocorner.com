@@ -33,46 +33,52 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     // TODO: bulk store
     activities
       .toList
-      .traverseU( a => client.set(a.id.toString, 0, JsonIo.write(a)))
+      .traverseU(a => toScalaFuture(client.set(a.id.toString, 0, JsonIo.write(a))))
       .map(_ => ())
   }
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
-    val view = client.asyncGetView(progressDesignName, athleteProgressByDayViewName)
     val query = new Query()
     query.setGroup(true)
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setRange(s"[$athleteId, [2000, 1, 1]]", s"[$athleteId, [3000, 12, 31]]")
-    val response = client.query(view, query).asScala
-    for (entry <- response) yield DailyProgress.fromStorageByIdDay(entry.getKey, entry.getValue)
+    for {
+      view <- client.asyncGetView(progressDesignName, athleteProgressByDayViewName)
+      res <- client.asyncQuery(view, query)
+      list = res.asScala
+    } yield list
+      .map(entry => DailyProgress.fromStorageByIdDay(entry.getKey, entry.getValue))
   }
 
-  override def dailyProgressForAll(limit: Int): Iterable[AthleteDailyProgress] = {
-    val view = client.getView(progressDesignName, allProgressByDayViewName)
+  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = {
     val query = new Query()
     query.setGroup(true)
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
     query.setLimit(limit)
     query.setDescending(true)
-    val response = client.query(view, query).asScala
-    for (entry <- response) yield AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue)
+    for {
+      view <- client.asyncGetView(progressDesignName, allProgressByDayViewName)
+      res <- client.asyncQuery(view, query)
+      list = res.asScala
+    } yield list
+      .map(entry => AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue))
   }
 
-  override def getActivity(id: Long): Option[Activity] = ???
+  override def getActivity(id: Long): Future[Option[Activity]] = ???
 
-  override def listRecentActivities(limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = {
     val view = client.getView(listDesignName, allActivitiesByDateViewName)
     orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
   }
 
-  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
     val view = client.getView(listDesignName, athleteActivitiesByDateViewName)
     orderedActivitiesInRange(view, s"[$athleteId, [3000, 1, 1]]", s"[$athleteId, [2000, 12, 31]]", limit)
   }
 
-  private def orderedActivitiesInRange(view: View, rangeFrom: String, rangeTo: String, limit: Int): Iterable[Activity] = {
+  private def orderedActivitiesInRange(view: View, rangeFrom: String, rangeTo: String, limit: Int): Future[Iterable[Activity]] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
     query.setInclusiveEnd(true)
@@ -80,52 +86,63 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
     query.setLimit(limit)
     query.setRange(rangeFrom, rangeTo)
     query.setIncludeDocs(true)
-    val response = client.query(view, query).asScala
-    for (entry <- response) yield JsonIo.read[Activity](entry.getDocument.toString)
+    for {
+      res <- client.asyncQuery(view, query)
+      list = res.asScala
+    } yield list
+      .map(entry => JsonIo.read[Activity](entry.getDocument.toString))
   }
 
   // accounts
-  override def store(account: Account) {
-    client.set(s"account_${account.athleteId.toString}", 0, JsonIo.write(account))
+  override def store(account: Account): Future[Unit] = {
+    client
+      .set(s"account_${account.athleteId.toString}", 0, JsonIo.write(account))
+      .map(_ => ())
   }
 
-  override def getAccount(id: Long): Option[Account] = {
-    Option(client.get(s"account_$id")).map(json => JsonIo.read[Account](json.toString))
-  }
+  override def getAccount(id: Long): Future[Option[Account]] = for {
+    account <- client.asyncGet(s"account_$id").map(Option(_).map(json => JsonIo.read[Account](json.toString)))
+  } yield account
 
   // athletes
-  override def store(athlete: Athlete) {
-    client.set(athlete.id.toString, 0, JsonIo.write(athlete))
+  override def store(athlete: Athlete): Future[Unit] = {
+    client
+      .set(athlete.id.toString, 0, JsonIo.write(athlete))
+      .map(_ => ())
   }
 
-  override def getAthlete(id: Long): Option[Athlete] = {
-    Option(client.get(id.toString)).map(json => JsonIo.read[Athlete](json.toString))
-  }
+  override def getAthlete(id: Long): Future[Option[Athlete]] = for {
+    athlete <- client.asyncGet(id.toString).map(Option(_).map(json => JsonIo.read[Athlete](json.toString)))
+  } yield athlete
 
   // clubs
-  override def store(club: Club) {
-    client.set(s"club_${club.id.toString}", 0, JsonIo.write(club))
+  override def store(club: Club): Future[Unit] = {
+    client
+      .set(s"club_${club.id.toString}", 0, JsonIo.write(club))
+      .map(_ => ())
   }
 
-  override def getClub(id: Long): Option[Club] = {
-    Option(client.get(s"club_$id")).map(json => JsonIo.read[Club](json.toString))
-  }
+  override def getClub(id: Long): Future[Option[Club]] = for {
+    club <- client.asyncGet(s"club_$id").map(Option(_).map(json => JsonIo.read[Club](json.toString)))
+  } yield club
 
   // weather
-  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = ???
-  override def storeWeather(forecast: Iterable[WeatherForecast]) = ???
-  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] = ???
-  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Unit = ???
+  override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = ???
+  override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = ???
+  override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] = ???
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = ???
 
   // attributes
-  override def storeAttribute(key: String, `type`: String, value: String): Unit = ???
-  override def getAttribute(key: String, `type`: String): Option[String] = ???
+  override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = ???
+  override def getAttribute(key: String, `type`: String): Future[Option[String]] = ???
 
-  private def queryForIds(view: View): Iterable[String] = {
+  private def queryForIds(view: View): Future[Iterable[String]] = {
     val query = new Query()
     query.setStale(Stale.FALSE)
-    val response = client.query(view, query).asScala
-    for (entry <- response) yield entry.getId
+    for {
+      response <- client.asyncQuery(view, query)
+      list = response.asScala
+    } yield list.map(_.getId)
   }
 
   // initializes any connections, pools, resources needed to open a storage session, creates the design documents

@@ -55,80 +55,76 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       .map(_ => ())
   }
 
-  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
-    for {
-      activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
-      _ = log.debug(s"found activities ${activities.size} for $athleteId")
-    } yield DailyProgress.fromStorage(activities)
-  }
+  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = for {
+    activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
+    _ = log.debug(s"found activities ${activities.size} for $athleteId")
+  } yield DailyProgress.fromStorage(activities)
 
-  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = {
-    val activities = queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
-    log.debug(s"found activities ${activities.size}")
-    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
-  }
+  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = for {
+    activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
+    _ = log.debug(s"found activities ${activities.size}")
+  } yield AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
 
-  override def getActivity(id: Long): Option[Activity] = lookup[Activity](ACTIVITY_CLASS, "id", id)
+  override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
 
   // summary on the landing page
-  override def listRecentActivities(limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = {
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Long, limit: Int): Iterable[Activity] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
 
   // accounts
-  override def store(account: Account) {
+  override def store(account: Account): Future[Unit] = {
     upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = ${account.athleteId}")
   }
 
-  override def getAccount(id: Long): Option[Account] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
+  override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
 
   // athletes
-  override def store(athlete: Athlete) {
+  override def store(athlete: Athlete): Future[Unit] = {
     upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = ${athlete.id}")
   }
 
-  override def getAthlete(id: Long): Option[Athlete] = lookup[Athlete](ATHLETE_CLASS, "id", id)
+  override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
 
   // clubs
-  override def store(club: Club) {
+  override def store(club: Club): Future[Unit] = {
     upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = ${club.id}")
   }
 
-  override def getClub(id: Long): Option[Club] = lookup[Club](CLUB_CLASS, "id", id)
+  override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
 
   // weather
-  override def listRecentForecast(location: String, limit: Int): Iterable[WeatherForecast] = {
+  override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
     queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
   }
 
-  override def storeWeather(forecast: Iterable[WeatherForecast]) {
-    forecast.foreach(a =>
-      upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
-    )
+  override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
+    forecast.toList.traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
+      .map(_ => ())
   }
 
-  override def getSunriseSunset(location: String, localDate: String): Option[SunriseSunset] =
-    queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'").headOption
+  override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
+    queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
+      .map(_.headOption)
 
-  override def storeSunriseSunset(sunriseSunset: SunriseSunset) {
+  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
     upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
   }
 
   // attributes
-  override def storeAttribute(key: String, `type`: String, value: String) {
+  override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
     val attr = KeyValue(key, `type`, value)
     upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
   }
 
-  override def getAttribute(key: String, `type`: String): Option[String] = {
+  override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
     queryFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
-      .headOption
-      .map(_.value)
+      .map(_.headOption.map(_.value))
   }
 
   // initializes any connections, pools, resources needed to open a storage session

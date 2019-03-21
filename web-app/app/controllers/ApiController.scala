@@ -12,9 +12,6 @@ import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-import scalaz.OptionT
-import scalaz._
-import Scalaz._
 import velocorner.model._
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage
@@ -23,6 +20,10 @@ import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
 import scala.concurrent.Future
 import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import scalaz.OptionT
+import scalaz._
+import Scalaz._
 
 /**
  * Created by levi on 06/10/16.
