@@ -42,91 +42,91 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   // def mapped to /api/athletes/statistics
   // current year's progress
   def statistics = AuthAsyncAction { implicit request =>
-    val maybeAccount = loggedIn
-    logger.info(s"athlete statistics for ${maybeAccount.map(_.displayName)}")
+    val storage = connectivity.getStorage
+    val currentYear = LocalDate.now().getYear
 
-    val result = Try {
-      val storage = connectivity.getStorage
-      val currentYear = LocalDate.now().getYear
-      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-      val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-      val currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
-      Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(currentYearProgress)))
-    }
+    val result = for {
+      account <- OptionT(Future(loggedIn))
+      _ = logger.info(s"athlete statistics for ${account.displayName}")
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      yearlyProgress = YearlyProgress.from(dailyProgress)
+      aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
+      currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
+    } yield currentYearProgress
 
-    Future.successful(result.getOrElse(InternalServerError))
+    result
+      .getOrElse(Progress.zero)
+      .map(p => Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(p))))
   }
 
   // route mapped to /api/athletes/statistics/yearly/:action
-  def yearlyStatistics(action: String) = AuthAsyncAction {
-    implicit request =>
+  def yearlyStatistics(action: String) = AuthAsyncAction { implicit request =>
+    val storage = connectivity.getStorage
 
-    val maybeAccount = loggedIn
-    logger.info(s"athlete yearly statistics for ${maybeAccount.map(_.displayName)}")
+    val result = for {
+      account <- OptionT(Future(loggedIn))
+      _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      yearlyProgress = YearlyProgress.from(dailyProgress)
+    } yield yearlyProgress
 
-    val result = Try {
-      val storage = connectivity.getStorage
-      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-
-      val dataSeries = action.toLowerCase match {
+    result
+      .getOrElse(Iterable.empty)
+      .map{ yearlyProgress => action.toLowerCase match {
         case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
         case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
         case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
         case other => sys.error(s"not supported action: $other")
-      }
-      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
-    }
-
-    Future.successful(result.getOrElse(InternalServerError))
+      }}
+      .map(dataSeries => Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries))))
   }
 
   // year to date aggregation
   // route mapped to /api/athletes/statistics/ytd/:action
-  def ytdStatistics(action: String) = AuthAsyncAction {
-    implicit request =>
-
-    val maybeAccount = loggedIn
+  def ytdStatistics(action: String) = AuthAsyncAction { implicit request =>
     val now = LocalDate.now()
-    logger.info(s"athlete year to date $now statistics for ${maybeAccount.map(_.displayName)}")
+    val storage = connectivity.getStorage
 
-    val result = Try {
-      val storage = connectivity.getStorage
-      val yearlyProgress = maybeAccount.map(account => YearlyProgress.from(storage.dailyProgressForAthlete(account.athleteId))).getOrElse(Iterable.empty)
-      val ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
-        YearlyProgress(ytd.year, Seq(DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))))
+    val result = for {
+      account <- OptionT(Future(loggedIn))
+      _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      yearlyProgress = YearlyProgress.from(dailyProgress)
+      ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
+        YearlyProgress(ytd.year, Seq(
+          DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))
+        ))
+    } yield ytdProgress
 
-      val dataSeries = action.toLowerCase match {
+    result
+      .getOrElse(Iterable.empty)
+      .map{ ytdProgress => action.toLowerCase match {
         case "distance" => toDistanceSeries(ytdProgress)
         case "elevation" => toElevationSeries(ytdProgress)
         case other => sys.error(s"not supported action: $other")
-      }
-      Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries)))
-    }
-
-    Future.successful(result.getOrElse(InternalServerError))
+      }}
+      .map(dataSeries => Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries))))
   }
 
-  // suggestions when searching
+  // suggestions when searching, workaround until elastic access, use the storage directly
   // route mapped to /api/activities/suggest
-  def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction {
-    implicit request =>
-
+  def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction { implicit request =>
     logger.debug(s"suggesting for $query")
+    val storage = connectivity.getStorage
 
-    // FIXME: workaround until elastic access
-    val activities = connectivity.getStorage match {
-      // implemented only in OrientDb instance and suggest for logged in user only
-      case orientDb: OrientDbStorage => loggedIn.map(account => orientDb.suggestActivities(query, account.athleteId, 10)).getOrElse(List.empty)
-      case _ => List.empty
-    }
-    logger.debug(s"found ${activities.size} activities ...")
+    val activitiesTF = for {
+      account <- OptionT(Future(loggedIn))
+      orientDb <- OptionT(Future(storage.isInstanceOf[OrientDbStorage].fold(storage.asInstanceOf[OrientDbStorage].some, None)))
+      activities <- orientDb.suggestActivities(query, account.athleteId, 10).liftM[OptionT]
+    } yield activities
 
-    val jsonSuggestions = activities.map{ a =>
-      Json.obj("value" -> a.name, "data" -> JsonIo.write(a))
-    }
-    Future.successful(Ok(
-      Json.obj("suggestions" -> jsonSuggestions)
-    ))
+    activitiesTF
+      .getOrElse(Iterable.empty)
+      .map{ activities =>
+        logger.debug(s"found ${activities.size} suggested activities ...")
+        activities.map( a => Json.obj("value" -> a.name, "data" -> JsonIo.write(a)))
+      }
+      .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
   }}
 
   // retrieves the activity with the given id

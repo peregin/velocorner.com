@@ -24,7 +24,7 @@ object StravaActivityFeed extends Logging {
 
   def listRecentAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] = feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
 
-  def listAllAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] = {
+  def listAllAthleteActivities(implicit feed: ActivityFeed): Future[List[Activity]] = {
 
     def list(page: Int, accu: List[Activity]): Future[List[Activity]] = {
       for {

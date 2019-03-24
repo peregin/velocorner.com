@@ -114,9 +114,11 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     val token = accessToken.toString
     logger.info(s"retrieve provider user for $token")
-    val athlete = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
-    logger.info(s"got provided athlete for user $athlete")
-    Future.successful(Account.from(athlete, token, None))
+    val athleteF = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
+    athleteF.map{ athlete =>
+      logger.info(s"got provided athlete for user $athlete")
+      Account.from(athlete, token, None)
+    }
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
@@ -130,14 +132,13 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   def onOAuthLoginSucceeded(resp: AccessTokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth login succeeded with token[${resp.token}]")
-    val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
-    providerUserFuture.flatMap { providerUser =>
-      val storage = connectivity.getStorage
-      val maybeAccount = storage.getAccount(providerUser.athleteId)
-      logger.info(s"account for token[${resp.token}] is $maybeAccount")
-      if (maybeAccount.isEmpty) storage.store(providerUser)
-      gotoLoginSucceeded(providerUser.athleteId)
-    }
+    val storage = connectivity.getStorage
+    for {
+      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
+      notInStorage <- storage.getAccount(providerUser.athleteId).map(_.isEmpty)
+      _ <- if (notInStorage) storage.store(providerUser) else Future.unit
+      result <- gotoLoginSucceeded(providerUser.athleteId)
+    } yield result
   }
 
   def gotoLoginSucceeded(athleteId: Long)(implicit request: RequestHeader): Future[Result] = {

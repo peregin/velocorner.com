@@ -24,6 +24,8 @@ trait AuthChecker {
   // auth conf
   lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new CacheIdContainer[Id](cache))
 
+  private val logger = Logger.of(this.getClass)
+
   // auth conf
   lazy val tokenAccessor = new CookieTokenAccessor(
     cookieName = OAuth2CookieKey,
@@ -36,8 +38,8 @@ trait AuthChecker {
 
   // auth conf
   def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
-    Logger.info(s"resolving user[$id]")
-    Future.successful(connectivity.getStorage.getAccount(id))
+    logger.info(s"resolving user[$id]")
+    connectivity.getStorage.getAccount(id)
   }
 
   class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {

@@ -6,11 +6,13 @@ import org.slf4s
 import org.slf4s.Logging
 import play.Logger
 import velocorner.model.Account
-import velocorner.feed.StravaActivityFeed
+import velocorner.feed.{ActivityFeed, StravaActivityFeed}
 import velocorner.model.strava.Activity
+import velocorner.storage.Storage
 import velocorner.util.CloseableResource
 
-import scala.annotation.tailrec
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Isolate the update the logic to refresh club and account activities.
@@ -20,50 +22,56 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
 
   override val log = new slf4s.Logger(Logger.underlying())
 
-  def refreshAccountActivities(account: Account) {
+  // won't refresh from the feed if was updated within this time period
+  val stalePeriodInMillis = 60000 // more than a minute
+
+  // query from the storage and eventually from the activity feed
+  def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
     // allow refresh after some time only
     val now = DateTime.now()
     val storage = connectivity.getStorage
-    val newActivities = withCloseable(connectivity.getStravaFeed(account.accessToken)) { feed =>
-
-      log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
-
-      account.lastUpdate.map(_.getMillis) match {
-
-        case None => // it was never synched, do a full update
-          log.info(s"retrieving all activities for ${account.athleteId}")
-          val activities = StravaActivityFeed.listAllAthleteActivities(feed)
-          log.info(s"found ${activities.size} overall activities")
-          activities
-
-        case Some(lastUpdateInMillis) if now.getMillis - lastUpdateInMillis > 60000 => // more than a minute
-          log.info(s"retrieving latest activities for ${account.athleteId}")
-          val lastActivityIds = storage.listRecentActivities(account.athleteId, StravaActivityFeed.maxItemsPerPage).map(_.id).toSet
-
-          @tailrec
-          def list(page: Int, accu: Iterable[Activity]): Iterable[Activity] = {
-            val activities = feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
-            val activityIds = activities.map(_.id).toSet
-            if (activities.size < StravaActivityFeed.maxItemsPerPage || activityIds.intersect(lastActivityIds).nonEmpty) activities.filter(a => !lastActivityIds.contains(a.id)) ++ accu
-            else list(page + 1, activities ++ accu)
-          }
-
-          val newActivities = list(1, List.empty)
-          log.info(s"found ${newActivities.size} new activities")
-          newActivities
-
-        case _ =>
-          log.info("was already refreshed in the last minute")
-          Iterable.empty
+    for {
+      newActivities: Iterable[Activity] <- withCloseable(connectivity.getStravaFeed(account.accessToken)) { feed =>
+        log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
+        retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
       }
+      // log the most recent activity
+      maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
+      _ = log.info(s"most recent activity retrieved is from $maybeMostRecent")
+      _ <- storage.storeActivity(newActivities)
+      _ <- storage.store(account.copy(lastUpdate = Some(now)))
+    } yield newActivities
+  }
+
+  def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
+    lastUpdate.map(_.getMillis) match {
+
+      case None => // it was never synched, do a full update
+        log.info(s"retrieving all activities as it was never synched")
+        StravaActivityFeed.listAllAthleteActivities(feed)
+
+      case Some(lastUpdateInMillis) if now.getMillis - lastUpdateInMillis > stalePeriodInMillis =>
+        log.info(s"retrieving latest activities for $athleteId")
+
+        def list(page: Int, lastActivityIds: Set[Long], accu: Iterable[Activity]): Future[Iterable[Activity]] = for {
+          activities <- feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
+          _ = log.debug(s"refresh page $page, activities ${activities.size}")
+          activityIds = activities.map(_.id).toSet
+          isLastPage = activities.size < StravaActivityFeed.maxItemsPerPage || activityIds.intersect(lastActivityIds).nonEmpty
+          next <- if (isLastPage) Future(activities.filter(a => !lastActivityIds.contains(a.id)) ++ accu) else list(page + 1, lastActivityIds, activities ++ accu)
+        } yield next
+
+        for {
+          lastActivity <- storage.listRecentActivities(athleteId, StravaActivityFeed.maxItemsPerPage)
+          lastActivityIds = lastActivity.map(_.id).toSet
+          newActivities <- list(1, lastActivityIds, List.empty)
+          _ = log.info(s"found ${newActivities.size} new activities")
+        } yield newActivities
+
+      case _ =>
+        log.info(s"was already refreshed in the last $stalePeriodInMillis millis")
+        Future(Iterable.empty)
     }
-
-    // log the most recent activity
-    val maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
-    log.info(s"most recent activity retrieved is from $maybeMostRecent")
-
-    storage.storeActivity(newActivities)
-    storage.store(account.copy(lastUpdate = Some(now)))
   }
 
 }
