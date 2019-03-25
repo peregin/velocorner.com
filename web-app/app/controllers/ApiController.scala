@@ -133,16 +133,16 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
   // route mapped to /api/activities/:id
   def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
     implicit request =>
+      logger.debug(s"querying activity $id")
+      val resultET = for {
+        _ <- EitherT(Future(loggedIn.toRightDisjunction(Forbidden)))
+        activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRightDisjunction(NotFound)))
+      } yield activity
 
-      val result = loggedIn.map{ _ =>
-        logger.debug(s"querying activity $id")
-        connectivity.getStorage.getActivity(id)
-          .map(JsonIo.write(_))
-          .map(Ok(_))
-          .getOrElse(NotFound)
-      }.getOrElse(Forbidden)
-
-      Future.successful(result)
+      resultET
+        .map(JsonIo.write(_))
+        .map(Ok(_))
+        .merge
   }}
 
   // retrieves the weather forecast for a given place
