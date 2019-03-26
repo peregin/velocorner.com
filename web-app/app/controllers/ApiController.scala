@@ -7,27 +7,22 @@ import highcharts._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
 import org.reactivestreams.Subscriber
-
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-
 import velocorner.model._
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
-
 import javax.inject.Inject
 
 import scala.concurrent.Future
-import scala.util.Try
-
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scalaz.OptionT
 import scalaz._
 import Scalaz._
+
 
 /**
  * Created by levi on 06/10/16.
@@ -131,99 +126,92 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
-  def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction {
-    implicit request =>
-      logger.debug(s"querying activity $id")
-      val resultET = for {
-        _ <- EitherT(Future(loggedIn.toRightDisjunction(Forbidden)))
-        activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRightDisjunction(NotFound)))
-      } yield activity
+  def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction { implicit request =>
+    logger.debug(s"querying activity $id")
+    val resultET = for {
+      _ <- EitherT(Future(loggedIn.toRightDisjunction(Forbidden)))
+      activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRightDisjunction(NotFound)))
+    } yield activity
 
-      resultET
-        .map(JsonIo.write(_))
-        .map(Ok(_))
-        .merge
+    resultET
+      .map(JsonIo.write(_))
+      .map(Ok(_))
+      .merge
   }}
 
   // retrieves the weather forecast for a given place
   // route mapped to /api/weather/:location
-  def weather(location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction {
-    implicit request =>
+  def weather(location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction { implicit request =>
+    // convert city[,country] to city[,isoCountry]
+    val isoLocation = CountryIsoUtils.iso(location)
+    val now = DateTime.now() // inject time iterator instead
+    val refreshTimeoutInMinutes = 15 // make it configurable instead
+    logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
-      // convert city[,country] to city[,isoCountry]
-      val isoLocation = CountryIsoUtils.iso(location)
-      logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
+    // if not in storage use a one year old ts to trigger the query
+    def lastUpdateTime= OptionT(connectivity.getStorage.getAttribute(isoLocation, "location"))
+      .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
+      .getOrElse(now.minusYears(1))
 
-      // check location last timestamp and throttle the request
-      if (isoLocation.nonEmpty) {
-        val now = DateTime.now() // inject time iterator instead
-        val maybeLastUpdate = connectivity
-          .getStorage
-          .getAttribute(isoLocation, "location")
-          .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
-        val lastUpdate = maybeLastUpdate.getOrElse(now.minusYears(1))
-        val elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
-        logger.info(s"last weather update on $isoLocation was at $maybeLastUpdate, $elapsedInMinutes minutes ago")
-        val forecastEntriesF = if (elapsedInMinutes > 15) { // make it configurable instead
-          logger.info("querying latest weather forecast")
-          for {
-            entries <- connectivity.getWeatherFeed.forecast(isoLocation).map(res => res.points.map(w => WeatherForecast(isoLocation, w.dt.getMillis, w)))
-            _ <- Future(connectivity.getStorage.storeWeather(entries))
-            _ <- Future(connectivity.getStorage.storeAttribute(isoLocation,"location", now.toString(DateTimePattern.longFormat)))
-          } yield entries
-        } else {
-          Future(connectivity.getStorage.listRecentForecast(isoLocation))
-        }
+    def retrieveAndStore(place: String) = for {
+      entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
+      _ = logger.info(s"querying latest weather forecast for $place")
+      _ <- connectivity.getStorage.storeWeather(entries)
+      _ <- connectivity.getStorage.storeAttribute(place,"location", now.toString(DateTimePattern.longFormat))
+    } yield entries
 
-        // generate json or xml content
-        type transform2Content = Iterable[WeatherForecast] => String
-        val contentGenerator: transform2Content = request.getQueryString("mode") match {
-          case Some("xml") => wt => toMeteoGramXml(wt).toString()
-          case _ => wt => JsonIo.write(DailyWeather.list(wt))
-        }
-        // after a successful query, save the location on the client side (even if the user is not authenticated)
-        forecastEntriesF
-          .map(_.toList.sortBy(_.timestamp))
-          .map(contentGenerator)
-          .map(Ok(_).withCookies(WeatherCookie.create(location)))
-          .recover{case _ => NotFound}
-      } else {
-        Future.successful(BadRequest)
-      }
+    val resultET = for {
+      place <- EitherT(Future(Option(isoLocation)
+        .filter(_.nonEmpty)
+        .toRightDisjunction(BadRequest)))
+      lastUpdate <- EitherT.rightT(lastUpdateTime)
+      elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
+      _ = logger.info(s"last weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
+      entries <- EitherT.rightT(if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else connectivity.getStorage.listRecentForecast(place))
+    } yield entries
+
+    // generate json or xml content
+    type transform2Content = Iterable[WeatherForecast] => String
+    val contentGenerator: transform2Content = request.getQueryString("mode") match {
+      case Some("xml") => wt => toMeteoGramXml(wt).toString()
+      case _ => wt => JsonIo.write(DailyWeather.list(wt))
+    }
+
+    resultET
+      .map(_.toList.sortBy(_.timestamp))
+      .map(contentGenerator)
+      .map(Ok(_).withCookies(WeatherCookie.create(location)))
+      .merge
   }}
 
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/sunrise/:location
-  def sunrise(location: String)= timed(s"query sunrise sunset for $location") { AuthAsyncAction {
-    implicit request =>
+  def sunrise(location: String)= timed(s"query sunrise sunset for $location") { AuthAsyncAction { implicit request =>
+    // convert city[,country] to city[,isoCountry]
+    val isoLocation = CountryIsoUtils.iso(location)
+    val now = LocalDate.now.toString
+    logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")
 
-      // convert city[,country] to city[,isoCountry]
-      val isoLocation = CountryIsoUtils.iso(location)
-      logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation]")
+    def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
+      response <- connectivity.getWeatherFeed.current(isoLocation).liftM[OptionT]
+      newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
+      _ <- Future(connectivity.getStorage.storeSunriseSunset(newEntry)).liftM[OptionT]
+    } yield newEntry
 
-      if (isoLocation.nonEmpty) {
-        val now = LocalDate.now.toString
-        val sunriseF = connectivity.getStorage.getSunriseSunset(isoLocation, now) match {
-          case ss@Some(_) =>
-            Future(ss)
-          case _ =>
-            val resultTF = for {
-              response <- connectivity.getWeatherFeed.current(isoLocation).liftM[OptionT]
-              entry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-              _ <- Future(connectivity.getStorage.storeSunriseSunset(entry)).liftM[OptionT]
-            } yield entry
-            resultTF.run
-        }
+    val resultET = for {
+      place <- EitherT(Future(Option(isoLocation)
+        .filter(_.nonEmpty)
+        .toRightDisjunction(BadRequest)))
+      // it is in the storage or retrieve it and store it
+      sunrise <- OptionT(connectivity.getStorage.getSunriseSunset(place, now))
+        .orElse(retrieveAndStore)
+        .toRight(NotFound)
+    } yield sunrise
 
-        sunriseF
-          .map{
-              case Some(ss) => Ok(JsonIo.write(ss))
-              case None => NotFound
-          }
-          .recover{case _ => NotFound}
-      } else {
-        Future.successful(BadRequest)
-      }
+    resultET
+      .map(JsonIo.write(_))
+      .map(Ok(_))
+      .merge
   }}
 
   // WebSocket to update the client
