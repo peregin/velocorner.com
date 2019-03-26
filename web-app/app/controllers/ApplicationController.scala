@@ -1,13 +1,16 @@
 package controllers
 
 import javax.inject.Inject
-
 import controllers.auth.AuthChecker
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 
+import scalaz._
+import Scalaz._
+
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ApplicationController @Inject()
 (components: ControllerComponents, val cache: SyncCacheApi,
@@ -23,8 +26,12 @@ class ApplicationController @Inject()
   def refresh = AuthAsyncAction { implicit request =>
     val maybeAccount = loggedIn
     logger.info(s"refreshing page for $maybeAccount")
-    maybeAccount.foreach(strategy.refreshAccountActivities)
-    Future.successful(Redirect(routes.ApplicationController.index()))
+    val result = for {
+      account <- OptionT(Future(maybeAccount))
+      activities <- strategy.refreshAccountActivities(account).liftM[OptionT]
+      _ = logger.info(s"found ${activities.size} new activities")
+    } yield ()
+    result.run.map(_ => Redirect(routes.ApplicationController.index()))
   }
 
   def search = AuthAction { implicit request =>

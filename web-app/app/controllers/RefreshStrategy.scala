@@ -9,7 +9,6 @@ import velocorner.model.Account
 import velocorner.feed.{ActivityFeed, StravaActivityFeed}
 import velocorner.model.strava.Activity
 import velocorner.storage.Storage
-import velocorner.util.CloseableResource
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,7 +17,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Isolate the update the logic to refresh club and account activities.
   */
 @Singleton
-class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logging with CloseableResource {
+class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logging {
 
   override val log = new slf4s.Logger(Logger.underlying())
 
@@ -30,17 +29,20 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
     // allow refresh after some time only
     val now = DateTime.now()
     val storage = connectivity.getStorage
-    for {
-      newActivities: Iterable[Activity] <- withCloseable(connectivity.getStravaFeed(account.accessToken)) { feed =>
-        log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
-        retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
-      }
+    val feed = connectivity.getStravaFeed(account.accessToken)
+    log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
+
+    val actvivitesF = for {
+      newActivities: Iterable[Activity] <- retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
       // log the most recent activity
       maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
       _ = log.info(s"most recent activity retrieved is from $maybeMostRecent")
       _ <- storage.storeActivity(newActivities)
       _ <- storage.store(account.copy(lastUpdate = Some(now)))
     } yield newActivities
+
+    actvivitesF.onComplete(_ => feed.close)
+    actvivitesF
   }
 
   def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
