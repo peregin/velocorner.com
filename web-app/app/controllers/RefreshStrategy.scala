@@ -32,7 +32,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
     val feed = connectivity.getStravaFeed(account.accessToken)
     log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
 
-    val actvivitesF = for {
+    val activitiesF = for {
       newActivities: Iterable[Activity] <- retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
       // log the most recent activity
       maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
@@ -41,8 +41,8 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logg
       _ <- storage.store(account.copy(lastUpdate = Some(now)))
     } yield newActivities
 
-    actvivitesF.onComplete(_ => feed.close)
-    actvivitesF
+    activitiesF.onComplete(_ => feed.close)
+    activitiesF
   }
 
   def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
