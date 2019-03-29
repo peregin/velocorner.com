@@ -2,8 +2,6 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
-import org.slf4s
-import org.slf4s.Logging
 import play.Logger
 import velocorner.model.Account
 import velocorner.feed.{ActivityFeed, StravaActivityFeed}
@@ -17,9 +15,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Isolate the update the logic to refresh club and account activities.
   */
 @Singleton
-class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) extends Logging {
+class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
 
-  override val log = new slf4s.Logger(Logger.underlying())
+  val log = Logger.of(this.getClass)
 
   // won't refresh from the feed if was updated within this time period
   val stalePeriodInMillis = 60000 // more than a minute

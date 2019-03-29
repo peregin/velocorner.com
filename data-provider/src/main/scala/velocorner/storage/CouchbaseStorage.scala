@@ -39,6 +39,9 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
       .map(_ => ())
   }
 
+
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
+
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
     val query = new Query()
     query.setGroup(true)

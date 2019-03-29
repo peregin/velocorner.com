@@ -6,7 +6,7 @@ import com.orientechnologies.orient.core.command.{OCommandOutputListener, OComma
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
-import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
+import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery, OSQLSynchQuery}
 import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
 import play.api.libs.json.{Reads, Writes}
@@ -21,12 +21,11 @@ import scala.concurrent.{Future, Promise}
 import scala.language.implicitConversions
 import scala.util.Try
 import scala.util.control.Exception._
-
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scalaz._
 import Scalaz._
 import scalaz.syntax.traverse.ToTraverseOps
+import scala.collection.JavaConverters._
 
 /**
  * Created by levi on 14.11.16.
@@ -54,6 +53,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       .traverseU(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}"))
       .map(_ => ())
   }
+
+  // TODO: fix it
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx() { db =>
+    val results = db.query(s"SELECT DISTINCT type FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId")
+    Seq.empty
+  }}
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = for {
     activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
@@ -256,6 +261,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     }
   }
 
+  // asynch
   private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx() { db =>
     Try {
       val promise = Promise[Seq[T]]()
@@ -272,7 +278,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           promise.success(accuResults)
         }
 
-        override def getResult: AnyRef = null
+        override def getResult: AnyRef = accuResults
       }))
       promise.future
     }.fold(err => Future.failed(err), res => res)

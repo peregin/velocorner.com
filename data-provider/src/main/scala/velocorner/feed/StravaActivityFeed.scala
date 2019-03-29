@@ -61,9 +61,7 @@ class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) e
       .get()
   } yield extractActivities(response)
 
-  private def extractActivities(response: StandaloneWSResponse): List[Activity] = {
-    JsonIo.read[List[Activity]](response.body)
-  }
+  private def extractActivities(response: StandaloneWSResponse): List[Activity] = JsonIo.read[List[Activity]](response.body)
 
   // athlete
   override def getAthlete: Future[Athlete] = for {

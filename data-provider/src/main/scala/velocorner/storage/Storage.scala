@@ -14,6 +14,9 @@ trait Storage {
   // insert all activities, new ones are added, previous ones are overridden
   def storeActivity(activities: Iterable[Activity]): Future[Unit]
 
+  // e.g. Ride, Run, etc.
+  def listActivityTypes(athleteId: Long): Future[Iterable[String]]
+
   def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]]
   def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]]
 

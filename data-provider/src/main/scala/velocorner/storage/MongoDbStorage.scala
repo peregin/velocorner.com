@@ -39,6 +39,8 @@ class MongoDbStorage extends Storage with Logging {
     }
   }
 
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
+
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")

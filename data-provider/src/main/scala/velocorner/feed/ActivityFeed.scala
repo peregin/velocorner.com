@@ -17,4 +17,5 @@ trait ActivityFeed {
 
   // athlete, of the authenticated user
   def getAthlete: Future[Athlete]
+
 }

@@ -42,6 +42,9 @@ class RethinkDbStorage extends Storage with Logging {
     }
   }
 
+
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
+
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
