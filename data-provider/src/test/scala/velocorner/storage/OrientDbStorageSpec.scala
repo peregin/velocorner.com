@@ -24,21 +24,17 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     val zhLocation = "Zurich,CH"
 
     "check that is empty" in {
-      await(storage.dailyProgressForAll(10)) must beEmpty
+      await(storage.dailyProgressForAthlete(432909)) must beEmpty
     }
 
     "add items as idempotent operation" in {
       val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json").filter(_.`type` == "Ride")
       await(storage.storeActivity(activities))
-      await(storage.listRecentActivities(50)) must haveSize(24)
+      await(storage.listRecentActivities(432909, 50)) must haveSize(24)
 
       // is it idempotent
       await(storage.storeActivity(activities))
-      await(storage.listRecentActivities(50)) must haveSize(24)
-    }
-
-    "retrieve daily stats" in {
-      await(storage.dailyProgressForAll(50)) must haveSize(15)
+      await(storage.listRecentActivities(432909, 50)) must haveSize(24)
     }
 
     "retrieve recent activities for an athlete" in {

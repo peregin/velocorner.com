@@ -25,7 +25,6 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
       val storageMock = mock[Storage]
 
       when(settingsMock.getStorage).thenReturn(storageMock)
-      when(storageMock.dailyProgressForAll(200)).thenReturn(Future(Seq.empty))
       when(storageMock.getClub(Club.Velocorner)).thenReturn(Future(None))
       when(storageMock.getAthlete(anyLong())).thenReturn(Future(None))
 

@@ -64,17 +64,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     _ = log.debug(s"found activities ${activities.size} for $athleteId")
   } yield DailyProgress.fromStorage(activities)
 
-  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = for {
-    activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
-    _ = log.debug(s"found activities ${activities.size}")
-  } yield AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
-
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
-
-  // summary on the landing page
-  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = {
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
-  }
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {

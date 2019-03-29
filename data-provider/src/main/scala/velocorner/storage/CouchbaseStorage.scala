@@ -56,27 +56,7 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
       .map(entry => DailyProgress.fromStorageByIdDay(entry.getKey, entry.getValue))
   }
 
-  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = {
-    val query = new Query()
-    query.setGroup(true)
-    query.setStale(Stale.FALSE)
-    query.setInclusiveEnd(true)
-    query.setLimit(limit)
-    query.setDescending(true)
-    for {
-      view <- client.asyncGetView(progressDesignName, allProgressByDayViewName)
-      res <- client.asyncQuery(view, query)
-      list = res.asScala
-    } yield list
-      .map(entry => AthleteDailyProgress.fromStorageByDateId(entry.getKey, entry.getValue))
-  }
-
   override def getActivity(id: Long): Future[Option[Activity]] = ???
-
-  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = {
-    val view = client.getView(listDesignName, allActivitiesByDateViewName)
-    orderedActivitiesInRange(view, "[3000, 1, 1]", "[2000, 12, 31]", limit)
-  }
 
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
     val view = client.getView(listDesignName, athleteActivitiesByDateViewName)

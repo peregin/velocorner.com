@@ -38,7 +38,7 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
       Future {
         val activity = if (i % 2 == 0) {
           log.info(s"start[$i] query activity...")
-          storage.dailyProgressForAll(100)
+          storage.dailyProgressForAthlete(432909)
           "query"
         } else {
           log.info(s"start[$i] store activity...")

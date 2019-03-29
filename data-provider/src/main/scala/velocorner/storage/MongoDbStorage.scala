@@ -50,27 +50,7 @@ class MongoDbStorage extends Storage with Logging {
     DailyProgress.fromStorage(activities)
   }
 
-  override def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]] = Future {
-    val coll = db.getCollection(ACTIVITY_TABLE)
-    val query = "type" $eq "Ride"
-    val results = coll.find(query).sort("{start_date:-1}").limit(limit)
-    val activities = results.map(JsonIo.read[Activity])
-    log.debug(s"found activities ${activities.size}")
-    AthleteDailyProgress.fromStorage(activities).toList.sortBy(_.dailyProgress.day.toString).reverse
-  }
-
   override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE, "id").map(_.map(JsonIo.read[Activity]))
-
-  // summary on the landing page
-  override def listRecentActivities(limit: Int): Future[Iterable[Activity]] = Future {
-    val coll = db.getCollection(ACTIVITY_TABLE)
-    val query = "type" $eq "Ride"
-    val results = coll.find(query).sort("{start_date:-1}").limit(limit)
-    val activities = results.map(JsonIo.read[Activity])
-    log.debug(s"found recent activities ${activities.size}")
-    activities
-  }
-
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = Future {

@@ -18,11 +18,9 @@ trait Storage {
   def listActivityTypes(athleteId: Long): Future[Iterable[String]]
 
   def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]]
-  def dailyProgressForAll(limit: Int): Future[Iterable[AthleteDailyProgress]]
 
   def getActivity(id: Long): Future[Option[Activity]]
-  // summary on the landing page
-  def listRecentActivities(limit: Int): Future[Iterable[Activity]]
+
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]]
 
