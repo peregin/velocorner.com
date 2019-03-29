@@ -54,10 +54,9 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       .map(_ => ())
   }
 
-  // TODO: fix it
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx() { db =>
-    val results = db.query(s"SELECT DISTINCT type FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId")
-    Seq.empty
+    val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId GROUP BY name ORDER BY counter DESC")
+    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).toIterable
   }}
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = for {

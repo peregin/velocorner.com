@@ -35,8 +35,6 @@ GET     /authorize/withings                      controllers.auth.WithingsContro
 #      description: Returns the yearly statistics
 #      schema:
 #        $ref: '#/definitions/velcorner.model.Progress'
-#    500:
-#      description: Internal error
 ###
 GET     /api/athletes/statistics                 controllers.ApiController.statistics
 
@@ -49,8 +47,6 @@ GET     /api/athletes/statistics                 controllers.ApiController.stati
 #        $ref: '#/definitions/velcorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
-#    500:
-#      description: Internal error
 ###
 GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
 
@@ -63,8 +59,6 @@ GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearl
 #        $ref: '#/definitions/velcorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
-#    500:
-#      description: Internal error
 ###
 GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
 
@@ -75,10 +69,16 @@ GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdSt
 #      description: Returns a list of activities
 #      schema:
 #        $ref: '#/definitions/velcorner.model.strava.Activity'
-#    500:
-#      description: Internal error
 ###
 GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
+
+###
+#  summary: List all the distinct activity types for the logged in user. (Ride, Run, etc.)
+#  responses:
+#    200:
+#      description: Returns a list of activity types ordered by frequency
+###
+GET     /api/activities/type                     controllers.ApiController.activityTypes
 
 ###
 #  summary: Retrieves an activity

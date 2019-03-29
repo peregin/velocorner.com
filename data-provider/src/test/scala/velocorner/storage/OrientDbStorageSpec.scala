@@ -73,9 +73,9 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
       await(storage.getActivity(111)) must beNone
     }
 
-//    "list activity types" in {
-//      await(storage.listActivityTypes(432909)) should containTheSameElementsAs(Seq("Ride"))
-//    }
+    "list activity types" in {
+      await(storage.listActivityTypes(432909)) should containTheSameElementsAs(Seq("Ride"))
+    }
 
     "backup the database" in {
       val file = File.createTempFile("orientdb", "backup")

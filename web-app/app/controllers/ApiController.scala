@@ -124,6 +124,20 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
       .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
   }}
 
+  // route mapped to /api/activities/type
+  def activityTypes = { AuthAsyncAction { implicit request =>
+    val storage = connectivity.getStorage
+    val resultTF = for {
+      account <- OptionT(Future(loggedIn))
+      types <- storage.listActivityTypes(account.athleteId).liftM[OptionT]
+      _ = log.debug(s"account ${account.displayName} did ${types.mkString(",")}")
+    } yield types
+
+    resultTF
+      .map(ts => Ok(JsonIo.write(ts)))
+      .getOrElse(NotFound)
+  }}
+
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
   def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction { implicit request =>
