@@ -34,7 +34,7 @@ GET     /authorize/withings                      controllers.auth.WithingsContro
 #    200:
 #      description: Returns the yearly statistics
 #      schema:
-#        $ref: '#/definitions/velcorner.model.Progress'
+#        $ref: '#/definitions/velocorner.model.Progress'
 ###
 GET     /api/athletes/statistics                 controllers.ApiController.statistics
 
@@ -44,7 +44,7 @@ GET     /api/athletes/statistics                 controllers.ApiController.stati
 #    200:
 #      description: Returns the yearly series
 #      schema:
-#        $ref: '#/definitions/velcorner.highcharts.DailySeries'
+#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -56,7 +56,7 @@ GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearl
 #    200:
 #      description: Returns the year to date series
 #      schema:
-#        $ref: '#/definitions/velcorner.highcharts.DailySeries'
+#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -68,7 +68,7 @@ GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdSt
 #    200:
 #      description: Returns a list of activities
 #      schema:
-#        $ref: '#/definitions/velcorner.model.strava.Activity'
+#        $ref: '#/definitions/velocorner.model.strava.Activity'
 ###
 GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
 
@@ -86,7 +86,7 @@ GET     /api/activities/type                     controllers.ApiController.activ
 #    200:
 #      description: Returns an activity based on id
 #      schema:
-#        $ref: '#/definitions/velcorner.model.strava.Activity'
+#        $ref: '#/definitions/velocorner.model.strava.Activity'
 #    403:
 #      description: Forbidden
 #    404:
@@ -102,7 +102,7 @@ GET     /api/activities/:id                      controllers.ApiController.activ
 #    200:
 #      description: Weather forecast for the next 5 days
 #      schema:
-#        $ref: '#/definitions/velcorner.model.DailyWeather'
+#        $ref: '#/definitions/velocorner.model.DailyWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -118,7 +118,7 @@ GET     /api/weather/:location                   controllers.ApiController.weath
 #    200:
 #      description: Sunrise, sunset
 #      schema:
-#        $ref: '#/definitions/velcorner.model.weather.SunriseSunset'
+#        $ref: '#/definitions/velocorner.model.weather.SunriseSunset'
 #    400:
 #      description: Bad request
 #    404:
