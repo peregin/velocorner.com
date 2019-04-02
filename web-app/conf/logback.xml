@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%date{ISO8601} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            <pattern>%date{ISO8601} %coloredLevel [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
