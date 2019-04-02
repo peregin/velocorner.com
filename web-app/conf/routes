@@ -28,6 +28,8 @@ GET     /login/withings                          controllers.auth.WithingsContro
 ### NoDocs ###
 GET     /authorize/withings                      controllers.auth.WithingsController.authorize
 
+GET     /api/status                              controllers.ApiController.status
+
 ###
 #  summary: Retrieves current year's statistics for the logged in athlete
 #  responses:

@@ -34,6 +34,11 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
 
   private val logger = Logger.of(this.getClass)
 
+  // def mapped to /api/status
+  def status = Action { implicit request =>
+    Ok(Json.obj( "status" -> "ok"))
+  }
+
   // def mapped to /api/athletes/statistics
   // current year's progress
   def statistics = AuthAsyncAction { implicit request =>
