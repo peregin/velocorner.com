@@ -10,9 +10,23 @@
         </encoder>
     </appender>
 
+    <appender name="PAPERTRAIL" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>logs.papertrailapp.com</syslogHost>
+        <port>11477</port>
+        <facility>USER</facility>
+        <suffixPattern>velocorner: %logger %msg</suffixPattern>
+    </appender>
+
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
+
+        <if condition='p("log.mode").contains("papertrail")'>
+        <then>
+            <appender-ref ref="PAPERTRAIL" />
+        </then>
+        </if>
     </root>
+
     <logger name="play.shaded.ahc" level="INFO"/>
     <logger name="com.orientechnologies" level="WARN"/>
     <logger name="com.google.inject" level="INFO"/>
