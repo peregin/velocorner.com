@@ -128,6 +128,7 @@ GET     /api/weather/:location                   controllers.ApiController.weath
 ###
 GET     /api/sunrise/:location                   controllers.ApiController.sunrise(location: String)
 
+### NoDocs ###
 GET     /ws                                      controllers.ApiController.ws
 
 # DOC
