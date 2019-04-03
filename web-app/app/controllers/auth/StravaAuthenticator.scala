@@ -43,7 +43,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
     //val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
-    val authScope = "read"
+    val authScope = "activity:read_all"
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$authScope"
   }
 
