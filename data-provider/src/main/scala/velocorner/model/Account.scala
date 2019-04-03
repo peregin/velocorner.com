@@ -22,7 +22,7 @@ object Account {
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
     s"${athlete.city.mkString}, ${athlete.country.mkString}",
     athlete.profile_medium.getOrElse(""),
-    token,
+    accessToken = token,
     lastUpdate
   )
 }

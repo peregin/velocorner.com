@@ -135,8 +135,9 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     val storage = connectivity.getStorage
     for {
       providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
-      notInStorage <- storage.getAccount(providerUser.athleteId).map(_.isEmpty)
-      _ <- if (notInStorage) storage.store(providerUser) else Future.unit
+      consumerUser <- storage.getAccount(providerUser.athleteId)
+      _ = logger.debug(s"consumer user is $consumerUser")
+      _ <- if (consumerUser.isEmpty) storage.store(providerUser) else Future.unit
       result <- gotoLoginSucceeded(providerUser.athleteId)
     } yield result
   }
