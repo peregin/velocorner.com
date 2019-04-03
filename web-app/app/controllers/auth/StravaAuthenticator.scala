@@ -41,10 +41,9 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     val uri = new URI(callbackUrl)
     val adjustedCallbackUrl = s"${uri.getScheme}://$host${uri.getPath}"
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
-    //val encodedScope = URLEncoder.encode(scope, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
-    val authScope = "activity:read_all"
-    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$authScope"
+    val encodedScope = URLEncoder.encode("read,activity:read_all", "utf-8")
+    s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$encodedScope"
   }
 
   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
