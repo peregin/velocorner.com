@@ -258,11 +258,9 @@ class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: Connect
     // output, use a publisher
     //val out1 = Source.single("Welcome").concat(Source.maybe)
     val out = Source.fromPublisher((s: Subscriber[_ >: String]) => {
-      (1 to 3).foreach { ix =>
-        logger.info(s"PUBLISH $counter, ix = $ix")
-        s.onNext(s"hello $counter, ix = $ix")
-        counter = counter + 1
-      }
+      logger.info(s"PUBLISH counter $counter")
+      s.onNext(s"hello $counter")
+      counter = counter + 1
     }).mapMaterializedValue{a =>
       logger.info(s"CONNECTED $a")
       a

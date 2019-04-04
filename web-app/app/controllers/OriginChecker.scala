@@ -21,10 +21,7 @@ trait OriginChecker {
   def sameOriginCheck(implicit rh: RequestHeader): Boolean = {
     // The Origin header is the domain the request originates from.
     // https://tools.ietf.org/html/rfc6454#section-7
-
     val maybeOrigin = rh.headers.get("Origin")
-    logger.debug(s"Checking the Origin header $maybeOrigin")
-
     maybeOrigin match {
       case Some(originValue) if originMatches(originValue) =>
         logger.debug(s"originCheck: originValue = $originValue")
