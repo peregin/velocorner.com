@@ -133,8 +133,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
     dockerBaseImage in Docker := "java:8",
-    swaggerDomainNameSpaces := Seq("models"),
-    watchSources ++= (baseDirectory.value / "public/web-ui" ** "*").get
+    swaggerDomainNameSpaces := Seq("models")
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider)
