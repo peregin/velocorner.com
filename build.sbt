@@ -118,7 +118,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
     name := "web-app",
-    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, mockito),
+    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, mockito, scalaSpec),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
       name, version, scalaVersion, sbtVersion,
@@ -136,7 +136,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     swaggerDomainNameSpaces := Seq("models")
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
-  .dependsOn(dataProvider)
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 
 // top level aggregate

@@ -99,28 +99,30 @@
 
     $(document).ready(function() {
         var searchField = $('#search')
-        searchField.autocomplete({
-            serviceUrl: '/api/activities/suggest',
-            onSelect: function (suggestion) {
-                triggerSuggestion(suggestion.data);
-            }
-        });
-        $('#search_button').click(function() {
-            triggerSearch();
-        });
-        searchField.keypress(function(e) {
-            if (e.which == 13) {
-                triggerSearch()
-            }
-        });
+        if (searchField.length) {
+            searchField.autocomplete({
+                serviceUrl: '/api/activities/suggest',
+                onSelect: function (suggestion) {
+                    triggerSuggestion(suggestion.data);
+                }
+            });
+            $('#search_button').click(function() {
+                triggerSearch();
+            });
+            searchField.keypress(function(e) {
+                if (e.which == 13) {
+                    triggerSearch()
+                }
+            });
 
-        var urlParams = new URLSearchParams(window.location.search);
-        if ($('#activity-result') && (urlParams.has('aid') || urlParams.has('q'))) {
-            console.log('triggering search or suggestion');
-            searchField.val(urlParams.get('q') || "");
-            startSearch(null, urlParams.get('q'), urlParams.get('aid'));
-        } else {
-            // empty landing page, remove the progress bar
-            $('#search-progress').hide();
+            var urlParams = new URLSearchParams(window.location.search);
+            if ($('#activity-result') && (urlParams.has('aid') || urlParams.has('q'))) {
+                console.log('triggering search or suggestion');
+                searchField.val(urlParams.get('q') || "");
+                startSearch(null, urlParams.get('q'), urlParams.get('aid'));
+            } else {
+                // empty landing page, remove the progress bar
+                $('#search-progress').hide();
+            }
         }
     });

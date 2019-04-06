@@ -22,21 +22,24 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scalaz.OptionT
 import scalaz._
 import Scalaz._
+import model.StatusInfo
+import play.api.Environment
 
 
 /**
  * Created by levi on 06/10/16.
  */
-class ApiController @Inject()(val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
+class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
+  val statusInfo = StatusInfo.create(environment.mode)
 
   private val logger = Logger.of(this.getClass)
 
   // def mapped to /api/status
   def status = Action { implicit request =>
-    Ok(Json.obj( "status" -> "ok"))
+    Ok(Json.toJson(statusInfo))
   }
 
   // def mapped to /api/athletes/statistics

@@ -28,6 +28,14 @@ GET     /login/withings                          controllers.auth.WithingsContro
 ### NoDocs ###
 GET     /authorize/withings                      controllers.auth.WithingsController.authorize
 
+###
+#  summary: Retrieves the status of the system, versions of the libraries
+#  responses:
+#    200:
+#      description: status information about the system
+#      schema:
+#        $ref: '#/definitions/model.StatusInfo'
+###
 GET     /api/status                              controllers.ApiController.status
 
 ###

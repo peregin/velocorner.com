@@ -3,7 +3,6 @@ package controllers
 import controllers.auth.AuthChecker
 import javax.inject.Inject
 import play.Logger
-import play.api.{Environment, Mode}
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 import scalaz.Scalaz._
@@ -13,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ApplicationController @Inject()
-  (environment: Environment, components: ControllerComponents,
+  (components: ControllerComponents,
    val cache: SyncCacheApi, val connectivity: ConnectivitySettings,
    strategy: RefreshStrategy)
   (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker {
@@ -45,7 +44,7 @@ class ApplicationController @Inject()
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
-    val context = PageContext(title, maybeAccount, environment.mode,
+    val context = PageContext(title, maybeAccount,
       connectivity.secretConfig.isWithingsEnabled(),
       connectivity.secretConfig.isWeatherEnabled(), WeatherCookie.retrieve
     )

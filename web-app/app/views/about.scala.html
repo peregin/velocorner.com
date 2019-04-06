@@ -29,7 +29,7 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion-1" href="#collapse-One" aria-expanded="false">
-                        Version Information: @buildinfo.BuildInfo.version <small>click for more...</small>
+                        Version Information: <span id="status-title">X</span> <small>click for more...</small>
                     </a>
                 </h4>
             </div>
@@ -38,28 +38,28 @@
                     <span class="row">
                         <ul class="list-group sidebar-nav-v1" id="sidebar-nav-1">
                             <li class="list-group-item">
-                                <span class="badge badge-green rounded-2x">@buildinfo.BuildInfo.version</span>
+                                <span id="status-version" class="badge badge-green rounded-2x">X</span>
                                 <div class="VC_padding8">Build Version</div>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge badge-red rounded-2x">@buildinfo.BuildInfo.buildTime</span>
+                                <span id="status-build-time" class="badge badge-red rounded-2x">X</span>
                                 <div class="VC_padding8">Build Time</div>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge badge-yellow rounded-2x">@buildinfo.BuildInfo.scalaVersion</span>
+                                <span id="status-scala-version" class="badge badge-yellow rounded-2x">X</span>
                                 <div class="VC_padding8">Scala Version</div>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge badge-blue rounded-2x">@buildinfo.BuildInfo.scalazVersion</span>
+                                <span id="status-scalaz-version" class="badge badge-blue rounded-2x">X</span>
                                 <div class="VC_padding8">Scalaz Version</div>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge badge-orange rounded-2x">@buildinfo.BuildInfo.elasticVersion</span>
+                                <span id="status-elastic-version" class="badge badge-orange rounded-2x">X</span>
                                 <div class="VC_padding8">Elastic Version</div>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge badge-aqua rounded-2x">@buildinfo.BuildInfo.playVersion</span>
-                                <span class="badge badge-aqua rounded-2x">@context.applicationMode</span>
+                                <span id="status-play-version" class="badge badge-aqua rounded-2x">X</span>
+                                <span id="status-play-mode" class="badge badge-aqua rounded-2x">X</span>
                                 <div class="VC_padding8">Play Version</div>
                             </li>
                         </ul>
@@ -75,3 +75,30 @@
         </p>
     </div>
 }
+
+<!-- end of common main section -->
+
+<script type="text/javascript">//<![CDATA[
+    // self executing function
+    (function() {
+       $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/status",
+            timeout: 20000,
+            success: function(data) {
+                console.log(data);
+                $('#status-title').html(data.appVersion)
+                $('#status-version').html(data.appVersion)
+                $('#status-build-time').html(data.buildTime)
+                $('#status-scala-version').html(data.scalaVersion)
+                $('#status-scalaz-version').html(data.scalazVersion)
+                $('#status-elastic-version').html(data.elasticVersion)
+                $('#status-play-version').html(data.playVersion)
+                $('#status-play-mode').html(data.applicationMode)
+           }
+        });
+
+    })();
+//]]>
+</script>

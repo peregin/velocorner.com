@@ -4,7 +4,6 @@ import akka.util.Timeout
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.Environment
 import play.api.cache.SyncCacheApi
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
 import velocorner.SecretConfig
@@ -34,7 +33,7 @@ class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFa
 
     "render landing page" in {
       val controller = new ApplicationController(
-        Environment.simple(), stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
+        stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
       )(assetsFinder)
       val result = controller.index.apply(FakeRequest())
       val content = Helpers.contentAsString(result)
@@ -43,7 +42,7 @@ class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFa
 
     "render about page" in {
       val controller = new ApplicationController(
-        Environment.simple(), stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
+        stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
       )(assetsFinder)
       val result = controller.about.apply(FakeRequest())
       val content = Helpers.contentAsString(result)
