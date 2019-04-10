@@ -1,23 +1,28 @@
 package controllers
 
+import akka.util.Timeout
+import model.StatusInfo
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.Environment
+import play.api.{Environment, Mode}
 import play.api.cache.SyncCacheApi
 import play.api.http.Status
-import play.api.test.{FakeRequest, StubControllerComponentsFactory}
-import velocorner.manual.AwaitSupport
+import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
 import velocorner.model.strava.Club
 import velocorner.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
-class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar with AwaitSupport {
+class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {
+
+    implicit val timeout = new Timeout(10 seconds)
 
     "return with success" in {
       val cacheApiMock = mock[SyncCacheApi]
@@ -30,7 +35,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
       val controller = new ApiController(Environment.simple(), cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.statistics().apply(FakeRequest())
-      await(result.map(_.header.status)) mustEqual  Status.OK
+      Helpers.status(result) mustBe Status.OK
     }
 
     "return with forbidden when asking for activities without being logged in" in {
@@ -39,7 +44,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
       val controller = new ApiController(Environment.simple(), cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.activity(100).apply(FakeRequest())
-      await(result.map(_.header.status)) mustEqual Status.FORBIDDEN
+      Helpers.status(result) mustBe Status.FORBIDDEN
     }
 
     "return system status" in {
@@ -48,8 +53,9 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
       val controller = new ApiController(Environment.simple(), cacheApiMock, settingsMock, stubControllerComponents())
       val result = controller.status().apply(FakeRequest())
-      val response = await(result)
-      response.header.status mustEqual Status.OK
+      Helpers.status(result) mustBe Status.OK
+      val statusInfo = Helpers.contentAsJson(result).as[StatusInfo]
+      statusInfo.applicationMode mustBe Mode.Test
     }
   }
 }
