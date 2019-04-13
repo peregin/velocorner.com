@@ -31,7 +31,13 @@ class ApplicationController @Inject()
       activities <- strategy.refreshAccountActivities(account).liftM[OptionT]
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
-    result.run.map(_ => Redirect(routes.ApplicationController.index()))
+    result.run
+      .map(_ => Redirect(routes.ApplicationController.index()))
+      .recover{ case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
+        // if the feed fails with expired token, then logout
+        logger.warn(s"feed token has been expired, logging out ${ex.getMessage}")
+        Redirect(auth.routes.StravaController.logout())
+      }
   }
 
   def search = AuthAction { implicit request =>

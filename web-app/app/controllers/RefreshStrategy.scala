@@ -43,7 +43,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
     activitiesF
   }
 
-  def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
+  protected def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
     lastUpdate.map(_.getMillis) match {
 
       case None => // it was never synched, do a full update
