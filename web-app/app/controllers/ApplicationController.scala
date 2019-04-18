@@ -35,7 +35,7 @@ class ApplicationController @Inject()
       .map(_ => Redirect(routes.ApplicationController.index()))
       .recover{ case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
         // if the feed fails with expired token, then logout
-        logger.warn(s"feed token has been expired, logging out ${ex.getMessage}")
+        logger.debug(s"feed token has been expired, logging out ${ex.getMessage}")
         Redirect(auth.routes.StravaController.logout())
       }
   }

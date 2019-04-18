@@ -11,6 +11,9 @@ import velocorner.storage.Storage
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+// for kestrel combinator
+import scalaz.syntax.id._
+
 /**
   * Isolate the update the logic to refresh club and account activities.
   */
@@ -39,8 +42,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
       _ <- storage.store(account.copy(lastUpdate = Some(now)))
     } yield newActivities
 
-    activitiesF.onComplete(_ => feed.close)
-    activitiesF
+    activitiesF <| (f => f.onComplete(_ => feed.close))
   }
 
   protected def retrieveNewActivities(feed: ActivityFeed, storage: Storage, athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
