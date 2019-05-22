@@ -1,9 +1,11 @@
 package velocorner.feed
 
+import org.apache.http.HttpStatus
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
 import velocorner.util.JsonIo
+import scalaz.syntax.std.option._
 
 import scala.concurrent.Future
 
@@ -31,7 +33,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       .map(JsonIo.read[ForecastResponse])
   }
 
-  def current(location: String): Future[WeatherResponse] = {
+  def current(location: String): Future[Option[WeatherResponse]] = {
     log.debug(s"retrieving current weather for $location")
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/weather")
       .withQueryStringParameters(
@@ -42,8 +44,10 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       )
       .get()
     }
-    response
-      .map(_.body)
-      .map(JsonIo.read[WeatherResponse])
+    response.map { res => res.status match {
+      case HttpStatus.SC_OK => JsonIo.read[WeatherResponse](res.body).some
+      case _ => None
+    }}
+
   }
 }
