@@ -22,10 +22,13 @@
     box-shadow: 8px 8px 15px 1px rgba(13,13,18,0.16);
 }
 
+.counters span {
+    font-size: 25px;
+}
 
 @media (max-width: 992px) {
     .counters span {
-        font-size: 17px;
+        font-size: 15px;
     }
     .counters span.counter-icon i {
         padding: 12px;
@@ -42,7 +45,7 @@
         display: inline-table;
     }
     .counters span {
-        font-size: 15px;
+        font-size: 12px;
     }
     .counters span.counter-icon i {
         padding: 5px;
