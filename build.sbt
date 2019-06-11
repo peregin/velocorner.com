@@ -17,7 +17,7 @@ val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.4" // standalone version
 val playJsonVersion = "2.7.3"
 val specsVersion = "4.5.1"
-val mockitoVersion = "2.27.0"
+val mockitoVersion = "2.28.2"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
