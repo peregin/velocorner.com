@@ -34,7 +34,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
       when(storageMock.getAthlete(anyLong())).thenReturn(Future(None))
 
       val controller = new ApiController(Environment.simple(), cacheApiMock, settingsMock, stubControllerComponents())
-      val result = controller.statistics().apply(FakeRequest())
+      val result = controller.yearlyProgress.apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
     }
 

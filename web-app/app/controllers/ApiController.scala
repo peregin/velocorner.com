@@ -42,9 +42,9 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     Ok(Json.toJson(statusInfo))
   }
 
-  // def mapped to /api/athletes/statistics
+  // def mapped to /api/athletes/statistics/progress
   // current year's progress
-  def statistics = AuthAsyncAction { implicit request =>
+  def yearlyProgress = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
     val currentYear = LocalDate.now().getYear
 

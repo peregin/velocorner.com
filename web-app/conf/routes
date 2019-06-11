@@ -46,7 +46,7 @@ GET     /api/status                              controllers.ApiController.statu
 #      schema:
 #        $ref: '#/definitions/velocorner.model.Progress'
 ###
-GET     /api/athletes/statistics                 controllers.ApiController.statistics
+GET     /api/athletes/statistics/progress        controllers.ApiController.yearlyProgress
 
 ###
 #  summary: List yearly series for the logged in athlete

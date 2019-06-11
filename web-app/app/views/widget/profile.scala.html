@@ -1,4 +1,4 @@
-@(account: velocorner.model.Account, restUrl: String)(implicit assets: AssetsFinder)
+@(account: velocorner.model.Account, urlProgress: String)(implicit assets: AssetsFinder)
 
 <!-- Profile and Counters -->
 <div class="main-counters margin-bottom-20">
@@ -84,7 +84,7 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@restUrl",
+            url: "@urlProgress",
             timeout: 20000,
             success: function(data) {
                 $('#profile-rides').html(data.progress.rides)
