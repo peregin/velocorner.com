@@ -93,8 +93,7 @@ class MongoDbStorage extends Storage with Logging {
   override def getWeatherStorage(): WeatherStorage = ???
 
   // attributes
-  override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = ???
-  override def getAttribute(key: String, `type`: String): Future[Option[String]] = ???
+  override def getAttributeStorage(): AttributeStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

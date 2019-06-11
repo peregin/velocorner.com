@@ -169,10 +169,11 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     val now = DateTime.now() // inject time iterator instead
     val refreshTimeoutInMinutes = 15 // make it configurable instead
     val weatherStorage = connectivity.getStorage.getWeatherStorage()
+    val attributeStorage = connectivity.getStorage.getAttributeStorage()
     logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
-    def lastUpdateTime= OptionT(connectivity.getStorage.getAttribute(isoLocation, "location"))
+    def lastUpdateTime= OptionT(attributeStorage.getAttribute(isoLocation, "location"))
       .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
       .getOrElse(now.minusYears(1))
 
@@ -180,7 +181,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
       _ = logger.info(s"querying latest weather forecast for $place")
       _ <- weatherStorage.storeWeather(entries)
-      _ <- connectivity.getStorage.storeAttribute(place,"location", now.toString(DateTimePattern.longFormat))
+      _ <- attributeStorage.storeAttribute(place,"location", now.toString(DateTimePattern.longFormat))
     } yield entries
 
     val resultET = for {

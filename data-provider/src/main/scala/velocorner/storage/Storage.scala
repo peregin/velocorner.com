@@ -47,8 +47,11 @@ trait Storage {
   }
 
   // key value pairs - generic attribute storage
-  def storeAttribute(key: String, `type`: String, value: String): Future[Unit]
-  def getAttribute(key: String, `type`: String): Future[Option[String]]
+  def getAttributeStorage(): AttributeStorage
+  trait AttributeStorage {
+    def storeAttribute(key: String, `type`: String, value: String): Future[Unit]
+    def getAttribute(key: String, `type`: String): Future[Option[String]]
+  }
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()

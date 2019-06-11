@@ -97,16 +97,13 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
       queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
     }
-
     override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
       forecast.toList.traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
         .map(_ => ())
     }
-
     override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
       queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
         .map(_.headOption)
-
     override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
       upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
     }
@@ -114,15 +111,17 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   override def getWeatherStorage(): WeatherStorage = weatherStorage
 
   // attributes
-  override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
-    val attr = KeyValue(key, `type`, value)
-    upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
+  lazy val attributeStorage = new AttributeStorage {
+    override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
+      val attr = KeyValue(key, `type`, value)
+      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
+    }
+    override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
+      queryFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
+        .map(_.headOption.map(_.value))
+    }
   }
-
-  override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
-    queryFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
-      .map(_.headOption.map(_.value))
-  }
+  override def getAttributeStorage(): AttributeStorage = attributeStorage
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {

@@ -117,15 +117,16 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "store/lookup attributes" in {
-      await(storage.getAttribute("key", "test")) must beNone
+      val attributeStorage = storage.getAttributeStorage()
+      await(attributeStorage.getAttribute("key", "test")) must beNone
 
-      await(storage.storeAttribute("key", "test", "value"))
-      await(storage.getAttribute("key", "test")) must beSome("value")
+      await(attributeStorage.storeAttribute("key", "test", "value"))
+      await(attributeStorage.getAttribute("key", "test")) must beSome("value")
 
-      await(storage.getAttribute("key", "test2")) must beNone
+      await(attributeStorage.getAttribute("key", "test2")) must beNone
 
-      await(storage.storeAttribute("key", "test", "value2"))
-      await(storage.getAttribute("key", "test")) must beSome("value2")
+      await(attributeStorage.storeAttribute("key", "test", "value2"))
+      await(attributeStorage.getAttribute("key", "test")) must beSome("value2")
     }
   }
 
