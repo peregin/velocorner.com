@@ -92,23 +92,26 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
 
-  // weather
-  override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
-    queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
-  }
 
-  override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
-    forecast.toList.traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
-      .map(_ => ())
-  }
+  lazy val weatherStorage = new WeatherStorage {
+    override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
+      queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
+    }
 
-  override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-    queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
-      .map(_.headOption)
+    override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
+      forecast.toList.traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
+        .map(_ => ())
+    }
 
-  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
-    upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
+    override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
+      queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
+        .map(_.headOption)
+
+    override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
+      upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
+    }
   }
+  override def getWeatherStorage(): WeatherStorage = weatherStorage
 
   // attributes
   override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
@@ -204,12 +207,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         Option(clazz).foreach(_.dropProperty(ixName))
       }
 
-      //dropIx(ACTIVITY_CLASS, "id")
+      //dropIx(ACTIVITY_CLASS, "id") // needed once after changing ix type
       createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
-      //dropIx(ACCOUNT_CLASS, "athleteId")
+      //dropIx(ACCOUNT_CLASS, "athleteId") // needed once after changing ix type
       createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      //dropIx(ATHLETE_CLASS, "id")
+      //dropIx(ATHLETE_CLASS, "id") // needed once after changing ix type
       createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(SUN_CLASS, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))

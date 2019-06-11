@@ -105,10 +105,7 @@ class RethinkDbStorage extends Storage with Logging {
   override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
 
   // weather
-  override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = ???
-  override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = ???
-  override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] = ???
-  override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = ???
+  override def getWeatherStorage(): WeatherStorage = ???
 
   // attributes
   override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = ???

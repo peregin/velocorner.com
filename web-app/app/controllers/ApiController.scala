@@ -168,6 +168,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     val isoLocation = CountryIsoUtils.iso(location)
     val now = DateTime.now() // inject time iterator instead
     val refreshTimeoutInMinutes = 15 // make it configurable instead
+    val weatherStorage = connectivity.getStorage.getWeatherStorage()
     logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
@@ -178,7 +179,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     def retrieveAndStore(place: String) = for {
       entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
       _ = logger.info(s"querying latest weather forecast for $place")
-      _ <- connectivity.getStorage.storeWeather(entries)
+      _ <- weatherStorage.storeWeather(entries)
       _ <- connectivity.getStorage.storeAttribute(place,"location", now.toString(DateTimePattern.longFormat))
     } yield entries
 
@@ -189,7 +190,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       lastUpdate <- EitherT.rightT(lastUpdateTime)
       elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
       _ = logger.info(s"last weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
-      entries <- EitherT.rightT(if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else connectivity.getStorage.listRecentForecast(place))
+      entries <- EitherT.rightT(if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else weatherStorage.listRecentForecast(place))
     } yield entries
 
     // generate json or xml content
@@ -212,12 +213,13 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     // convert city[,country] to city[,isoCountry]
     val isoLocation = CountryIsoUtils.iso(location)
     val now = LocalDate.now.toString
+    val weatherStorage = connectivity.getStorage.getWeatherStorage()
     logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")
 
     def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
       response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
       newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-      _ <- Future(connectivity.getStorage.storeSunriseSunset(newEntry)).liftM[OptionT]
+      _ <- Future(weatherStorage.storeSunriseSunset(newEntry)).liftM[OptionT]
     } yield newEntry
 
     val resultET = for {
@@ -225,7 +227,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
         .filter(_.nonEmpty)
         .toRightDisjunction(BadRequest)))
       // it is in the storage or retrieve it and store it
-      sunrise <- OptionT(connectivity.getStorage.getSunriseSunset(place, now))
+      sunrise <- OptionT(weatherStorage.getSunriseSunset(place, now))
         .orElse(retrieveAndStore)
         .toRight(NotFound)
     } yield sunrise

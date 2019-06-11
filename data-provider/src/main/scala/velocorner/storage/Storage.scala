@@ -36,12 +36,15 @@ trait Storage {
   def store(club: Club): Future[Unit]
   def getClub(id: Long): Future[Option[Club]]
 
-  // weather - location is <city[,countryISO2letter]>
-  // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
-  def listRecentForecast(location: String, limit: Int = 40): Future[Iterable[WeatherForecast]]
-  def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit]
-  def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]]
-  def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit]
+  def getWeatherStorage(): WeatherStorage
+  trait WeatherStorage {
+    // weather - location is <city[,countryISO2letter]>
+    // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
+    def listRecentForecast(location: String, limit: Int = 40): Future[Iterable[WeatherForecast]]
+    def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit]
+    def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]]
+    def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit]
+  }
 
   // key value pairs - generic attribute storage
   def storeAttribute(key: String, `type`: String, value: String): Future[Unit]
