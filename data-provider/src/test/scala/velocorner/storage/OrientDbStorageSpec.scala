@@ -61,8 +61,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "retrieve existing activity" in {
-      val activity = await(storage.getActivity(244993130)).getOrElse(sys.error("not found"))
-      activity.id === 244993130
+      await(storage.getActivity(244993130)).map(_.id) should beSome(244993130L)
     }
 
     "return empty on non existent activity" in {
@@ -72,6 +71,11 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     "list activity types" in {
       await(storage.listActivityTypes(432909)) should containTheSameElementsAs(Seq("Ride"))
     }
+
+    "select max achievements" in {
+      await(storage.getAchievementStorage().maxSpeed()) should beNone // max speed was not persisted in the early data sets
+      await(storage.getAchievementStorage().maxDistance()).map(_.value) should beSome(12d)
+    }.pendingUntilFixed("fix queries")
 
     "backup the database" in {
       val file = File.createTempFile("orientdb", "backup")

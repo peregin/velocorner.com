@@ -123,6 +123,30 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
   override def getAttributeStorage(): AttributeStorage = attributeStorage
 
+  // various achievments
+  lazy val achievementStorage = new AchievementStorage {
+    // TODO: fix queries and extract the select
+    override def maxSpeed(): Future[Option[Achievement]] = {
+      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE max_speed = (SELECT max(max_speed) FROM $ACTIVITY_CLASS)")
+        .map(_.headOption.map(a => Achievement(
+          value = a.max_speed.map(_.toDouble).getOrElse(0d),
+          activityId = a.id,
+          activityName = a.name,
+          activityTime = a.start_date
+        )))
+    }
+    override def maxDistance(): Future[Option[Achievement]] = {
+      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE distance = (SELECT max(distance) FROM $ACTIVITY_CLASS)")
+        .map(_.headOption.map(a => Achievement(
+          value = a.distance.toDouble,
+          activityId = a.id,
+          activityName = a.name,
+          activityTime = a.start_date
+        )))
+    }
+  }
+  override def getAchievementStorage(): AchievementStorage = achievementStorage
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     val config =

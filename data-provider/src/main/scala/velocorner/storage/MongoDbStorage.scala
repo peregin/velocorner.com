@@ -95,6 +95,9 @@ class MongoDbStorage extends Storage with Logging {
   // attributes
   override def getAttributeStorage(): AttributeStorage = ???
 
+  // various achievements
+  override def getAchievementStorage(): AchievementStorage = ???
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize() {
     db = Some(client.getDB(DB_NAME))

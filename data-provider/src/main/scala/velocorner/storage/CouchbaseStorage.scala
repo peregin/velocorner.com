@@ -117,6 +117,9 @@ class CouchbaseStorage(password: String) extends Storage with Logging with Metri
   // attributes
   override def getAttributeStorage(): AttributeStorage = ???
 
+  // various achievements
+  override def getAchievementStorage(): AchievementStorage = ???
+
   private def queryForIds(view: View): Future[Iterable[String]] = {
     val query = new Query()
     query.setStale(Stale.FALSE)

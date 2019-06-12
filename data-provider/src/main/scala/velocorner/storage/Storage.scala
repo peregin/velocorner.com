@@ -53,6 +53,13 @@ trait Storage {
     def getAttribute(key: String, `type`: String): Future[Option[String]]
   }
 
+  // various achievements
+  def getAchievementStorage(): AchievementStorage
+  trait AchievementStorage {
+    def maxSpeed(): Future[Option[Achievement]]
+    def maxDistance(): Future[Option[Achievement]]
+  }
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize()
 
