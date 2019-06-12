@@ -5,6 +5,7 @@ import velocorner.model.weather.{Weather, WeatherCode}
 
 import scala.io.Source
 import scala.util.{Failure, Try}
+import scala.util.Success
 
 /**
   * Utility to convert the weather code mappings into the model.
@@ -44,11 +45,11 @@ object WeatherCodeUtils extends Logging {
       .toSeq
 
     // log errors
-    val failures = entries
-      .filter(_.isFailure)
-      .map{ case Failure(e) => e }
-    if (failures.size > 0) failures.foreach(e => log.error("failed to parse line", e))
-
+    entries.foreach{_ match {
+      case Failure(e) => log.error("failed to parse line", e)
+      case _ =>
+    }}
+    
     entries
       .flatMap(_.toOption)
       .map(e => (e.code, e))
