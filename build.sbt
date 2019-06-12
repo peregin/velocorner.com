@@ -32,11 +32,12 @@ val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
-val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.2" % "test"
 
-val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.3" % "test"
-val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
 val apacheCommons = "commons-io" % "commons-io" % "2.6"
+
+val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.2" % "test"
+val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
+val scalaSpecJunit = "org.specs2" %% "specs2-junit" % specsVersion % "test"
 val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 
 def logging = Seq(
@@ -99,7 +100,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     libraryDependencies ++= Seq(
       playJson, playJsonJoda, playWsAhcStandalone,
       apacheCommons,
-      scalaSpec
+      scalaSpec, scalaSpecJunit
     ) ++ logging
       ++ storage
       ++ scalaz
