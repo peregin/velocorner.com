@@ -1,6 +1,6 @@
 package velocorner.search.manual
 
-import com.sksamuel.elastic4s.http.ElasticDsl._
+import com.sksamuel.elastic4s.ElasticDsl._
 import org.slf4s.Logging
 import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.search.ElasticSupport
@@ -18,7 +18,7 @@ object ElasticFromStorageManual extends App with ElasticSupport with AwaitSuppor
   val activities = await(storage.listRecentActivities(432909, 10000))
   storage.destroy()
 
-  val client = elasticCluster()
+  val client = localCluster()
 
   log.info(s"indexing ${activities.size} documents ...")
   val indices = map2Indices(activities)

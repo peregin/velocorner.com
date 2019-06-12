@@ -10,7 +10,7 @@ import play.sbt.PlayImport._
 
 val scalazVersion = "7.2.27"
 val logbackVersion = "1.2.3"
-val elasticVersion = "6.5.1"
+val elasticVersion = "7.0.2"
 val orientDbVersion = "3.0.20"
 val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
@@ -49,9 +49,8 @@ def logging = Seq(
 )
 def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-http" % elasticVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elasticVersion % "test",
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
 )
 def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb

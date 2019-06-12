@@ -1,8 +1,8 @@
 package velocorner.search
 
-import com.sksamuel.elastic4s.http.ElasticDsl._
-import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
-import com.sksamuel.elastic4s.indexes.{IndexApi, IndexRequest}
+import com.sksamuel.elastic4s.http.JavaClient
+import com.sksamuel.elastic4s.requests.indexes.{IndexApi, IndexRequest}
+import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
 import velocorner.model.strava.Activity
 
 /**
@@ -10,11 +10,12 @@ import velocorner.model.strava.Activity
   */
 trait ElasticSupport extends IndexApi {
 
-  def elasticCluster() = ElasticClient(ElasticProperties("http://localhost:9000"))
+  private lazy val client = JavaClient(ElasticProperties(Seq(ElasticNodeEndpoint("http", "localhost", 9200, prefix = None))))
+  def localCluster() = ElasticClient(client)
 
   def map2Indices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
     activities.map { a =>
-      val ixDefinition = indexInto("velocorner" / "activity")
+      val ixDefinition = indexInto("activity")
       extractIndices(a, ixDefinition).withId(a.id.toString)
     }
   }
