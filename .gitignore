@@ -9,6 +9,8 @@
 .cache
 .idea/*
 .idea_modules/*
+.bloop
+.metals
 bin/
 target/
 gen/
