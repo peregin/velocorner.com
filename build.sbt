@@ -15,7 +15,7 @@ val orientDbVersion = "3.0.20"
 val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.4" // standalone version
-val playJsonVersion = "2.7.3"
+val playJsonVersion = "2.7.4"
 val specsVersion = "4.5.1"
 val mockitoVersion = "2.28.2"
 
