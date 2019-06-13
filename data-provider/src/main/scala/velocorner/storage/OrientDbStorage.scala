@@ -6,10 +6,10 @@ import com.orientechnologies.orient.core.command.{OCommandOutputListener, OComma
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
-import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery, OSQLSynchQuery}
+import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery}
 import com.orientechnologies.orient.server.OServer
 import org.slf4s.Logging
-import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scalaz._
 import Scalaz._
 import scalaz.syntax.traverse.ToTraverseOps
+
 import scala.collection.JavaConverters._
 
 /**
@@ -37,8 +38,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
-    queryFor[T](sql)
-      .map(_.headOption)
+    queryForOption[T](sql)
   }
 
   // FIXME: workaround until elastic is in place
@@ -102,8 +102,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         .map(_ => ())
     }
     override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-      queryFor[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
-        .map(_.headOption)
+      queryForOption[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
     override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
       upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
     }
@@ -117,17 +116,27 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
     }
     override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
-      queryFor[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
-        .map(_.headOption.map(_.value))
+      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
+        .map(_.map(_.value))
     }
   }
   override def getAttributeStorage(): AttributeStorage = attributeStorage
 
   // various achievments
   lazy val achievementStorage = new AchievementStorage {
+
+    object MaxRow {
+      implicit val maxRowFormat = Format[MaxRow](Json.reads[MaxRow], Json.writes[MaxRow])
+    }
+    case class MaxRow(max_value: Double)
+
     // TODO: fix queries and extract the select
     override def maxSpeed(): Future[Option[Achievement]] = {
-      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE max_speed = (SELECT max(max_speed) FROM $ACTIVITY_CLASS)")
+      val maxOF = queryFor[MaxRow](s"SELECT MAX(max_speed) AS max_value FROM $ACTIVITY_CLASS").map(_.headOption)
+      val maxO = scala.concurrent.Await.result(maxOF, scala.concurrent.duration.Duration("10s"))
+      val ma = maxO.map(_.max_value).getOrElse(0d)
+
+      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE max_speed = '$ma'")
         .map(_.headOption.map(a => Achievement(
           value = a.max_speed.map(_.toDouble).getOrElse(0d),
           activityId = a.id,
@@ -136,13 +145,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         )))
     }
     override def maxDistance(): Future[Option[Achievement]] = {
-      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE distance = (SELECT max(distance) FROM $ACTIVITY_CLASS)")
-        .map(_.headOption.map(a => Achievement(
-          value = a.distance.toDouble,
-          activityId = a.id,
-          activityName = a.name,
-          activityTime = a.start_date
-        )))
+      ???
     }
   }
   override def getAchievementStorage(): AchievementStorage = achievementStorage
@@ -290,7 +293,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         }
 
         override def end() {
-          promise.success(accuResults)
+          // might be called twice in case of failure
+          if (!promise.isCompleted) {
+            promise.success(accuResults)
+          }
         }
 
         override def getResult: AnyRef = accuResults
@@ -298,6 +304,8 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       promise.future
     }.fold(err => Future.failed(err), res => res)
   }
+
+  private def queryForOption[T](sql: String)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql).map(_.headOption)
 
   private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): Future[Unit] = inTx() { db =>
     Try {

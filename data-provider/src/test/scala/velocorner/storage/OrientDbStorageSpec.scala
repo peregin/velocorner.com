@@ -73,9 +73,9 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "select max achievements" in {
-      await(storage.getAchievementStorage().maxSpeed()) should beNone // max speed was not persisted in the early data sets
-      await(storage.getAchievementStorage().maxDistance()).map(_.value) should beSome(12d)
-    }.pendingUntilFixed("fix queries")
+      await(storage.getAchievementStorage().maxSpeed()).map(_.value) should beSome(15.5d)
+      //await(storage.getAchievementStorage().maxDistance()).map(_.value) should beSome(12d)
+    }
 
     "backup the database" in {
       val file = File.createTempFile("orientdb", "backup")
