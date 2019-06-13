@@ -124,29 +124,31 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // various achievments
   lazy val achievementStorage = new AchievementStorage {
-
     object MaxRow {
       implicit val maxRowFormat = Format[MaxRow](Json.reads[MaxRow], Json.writes[MaxRow])
     }
     case class MaxRow(max_value: Double)
 
-    // TODO: fix queries and extract the select
-    override def maxSpeed(): Future[Option[Achievement]] = {
-      val maxOF = queryFor[MaxRow](s"SELECT MAX(max_speed) AS max_value FROM $ACTIVITY_CLASS").map(_.headOption)
-      val maxO = scala.concurrent.Await.result(maxOF, scala.concurrent.duration.Duration("10s"))
-      val ma = maxO.map(_.max_value).getOrElse(0d)
+    private def maxOf(fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
+      val result = for {
+        maxResult <- OptionT(queryForOption[MaxRow](s"SELECT MAX($fieldName) AS max_value FROM $ACTIVITY_CLASS"))
+        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $fieldName >= '${maxResult.max_value - tolerance}' ORDER BY $fieldName DESC LIMIT 1"))
+        maxValue <- OptionT(Future(mapperFunc(activity)))
+      } yield Achievement(
+        value = maxValue,
+        activityId = activity.id,
+        activityName = activity.name,
+        activityTime = activity.start_date
+      )
+      result.run
+    }
 
-      queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE max_speed = '$ma'")
-        .map(_.headOption.map(a => Achievement(
-          value = a.max_speed.map(_.toDouble).getOrElse(0d),
-          activityId = a.id,
-          activityName = a.name,
-          activityTime = a.start_date
-        )))
-    }
-    override def maxDistance(): Future[Option[Achievement]] = {
-      ???
-    }
+    override def maxSpeed(): Future[Option[Achievement]] = maxOf("max_speed", _.max_speed.map(_.toDouble))
+    override def maxDistance(): Future[Option[Achievement]] = maxOf("distance", _.distance.toDouble.some)
+    override def maxElevation(): Future[Option[Achievement]] = maxOf("total_elevation_gain", _.total_elevation_gain.toDouble.some)
+    override def maxHeartRate(): Future[Option[Achievement]] = maxOf("max_heartrate", _.max_heartrate.map(_.toDouble))
+    override def maxAverageSpeed(): Future[Option[Achievement]] = maxOf("average_speed", _.average_speed.map(_.toDouble))
+    override def maxAveragePower(): Future[Option[Achievement]] = maxOf("average_watts", _.average_watts.map(_.toDouble))
   }
   override def getAchievementStorage(): AchievementStorage = achievementStorage
 

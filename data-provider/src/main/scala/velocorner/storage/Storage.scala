@@ -58,6 +58,10 @@ trait Storage {
   trait AchievementStorage {
     def maxSpeed(): Future[Option[Achievement]]
     def maxDistance(): Future[Option[Achievement]]
+    def maxElevation(): Future[Option[Achievement]]
+    def maxHeartRate(): Future[Option[Achievement]]
+    def maxAverageSpeed(): Future[Option[Achievement]]
+    def maxAveragePower(): Future[Option[Achievement]]
   }
 
   // initializes any connections, pools, resources needed to open a storage session
