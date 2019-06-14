@@ -73,15 +73,15 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "select achievements" in {
-      await(storage.getAchievementStorage().maxSpeed()).map(_.value) should beSome(15.5d)
-      await(storage.getAchievementStorage().maxAverageSpeed()).map(_.value) should beSome(7.932000160217285d)
-      await(storage.getAchievementStorage().maxDistance()).map(_.value) should beSome(90514.3984375d)
-      await(storage.getAchievementStorage().maxElevation()).map(_.value) should beSome(1077d)
-      await(storage.getAchievementStorage().maxHeartRate()).map(_.value) should beNone
-      await(storage.getAchievementStorage().maxPower()).map(_.value) should beNone
-      await(storage.getAchievementStorage().maxAveragePower()).map(_.value) should beSome(233.89999389648438d)
-      await(storage.getAchievementStorage().minTemperature()).map(_.value) should beSome(-1d)
-      await(storage.getAchievementStorage().maxTemperature()).map(_.value) should beSome(11d)
+      await(storage.getAchievementStorage().maxSpeed(432909)).map(_.value) should beSome(15.5d)
+      await(storage.getAchievementStorage().maxAverageSpeed(432909)).map(_.value) should beSome(7.932000160217285d)
+      await(storage.getAchievementStorage().maxDistance(432909)).map(_.value) should beSome(90514.3984375d)
+      await(storage.getAchievementStorage().maxElevation(432909)).map(_.value) should beSome(1077d)
+      await(storage.getAchievementStorage().maxHeartRate(432909)).map(_.value) should beNone
+      await(storage.getAchievementStorage().maxPower(432909)).map(_.value) should beNone
+      await(storage.getAchievementStorage().maxAveragePower(432909)).map(_.value) should beSome(233.89999389648438d)
+      await(storage.getAchievementStorage().minTemperature(432909)).map(_.value) should beSome(-1d)
+      await(storage.getAchievementStorage().maxTemperature(432909)).map(_.value) should beSome(11d)
     }
 
     "backup the database" in {

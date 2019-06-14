@@ -1,14 +1,11 @@
-import org.joda.time.{LocalDate, LocalDateTime}
+import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
-import play.api.libs.json._
+import play.api.libs.json.{Format, Json}
 import velocorner.model.weather.WeatherForecast
 import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, YearlyProgress}
 
 import scala.xml.Elem
 
-/**
-  * Created by levi on 29/01/16.
-  */
 package object highcharts {
 
   object DailyPoint {

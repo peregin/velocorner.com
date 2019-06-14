@@ -22,7 +22,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scalaz.OptionT
 import scalaz._
 import Scalaz._
-import model.StatusInfo
+import model.{Achievements, StatusInfo}
 import play.api.Environment
 
 
@@ -59,7 +59,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
 
     result
       .getOrElse(Progress.zero)
-      .map(p => Ok(Json.obj("status" ->"OK", "progress" -> Json.toJson(p))))
+      .map(p => Ok(Json.obj("status" -> "OK", "progress" -> Json.toJson(p))))
   }
 
   // route mapped to /api/athletes/statistics/yearly/:action
@@ -81,7 +81,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
         case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
         case other => sys.error(s"not supported action: $other")
       }}
-      .map(dataSeries => Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries))))
+      .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
   }
 
   // year to date aggregation
@@ -108,7 +108,26 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
         case "elevation" => toElevationSeries(ytdProgress)
         case other => sys.error(s"not supported action: $other")
       }}
-      .map(dataSeries => Ok(Json.obj("status" ->"OK", "series" -> Json.toJson(dataSeries))))
+      .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
+  }
+
+  // list of achievemnts
+  // route mapped to /api/statistics/achievements
+  def achievements() = AuthAsyncAction { implicit request =>
+    val storage = connectivity.getStorage.getAchievementStorage()
+    loggedIn.map{ account =>
+      // parallelize
+      val maxSpeedF = storage.maxSpeed(account.athleteId)
+      val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
+      val achievements = for {
+        maxSpeed <- maxSpeedF
+        maxAverageSpeed <- maxAverageSpeedF
+      } yield Achievements(
+        maxSpeed = maxSpeed,
+        maxAverageSpeed = maxAverageSpeed
+      )
+      achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
+    }.getOrElse(Future(Unauthorized))
   }
 
   // suggestions when searching, workaround until elastic access, use the storage directly

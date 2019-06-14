@@ -129,10 +129,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
     }
     case class ResRow(res_value: Double)
 
-    private def minOf(fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
+    private def minOf(athleteId: Long, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
       val result = for {
-        minResult <- OptionT(queryForOption[ResRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS"))
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $fieldName <= '${minResult.res_value - tolerance}' ORDER BY $fieldName ASC LIMIT 1"))
+        minResult <- OptionT(queryForOption[ResRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId"))
+        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND $fieldName <= '${minResult.res_value - tolerance}' ORDER BY $fieldName ASC LIMIT 1"))
         minValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = minValue,
@@ -143,10 +143,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       result.run
     }
 
-    private def maxOf(fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
+    private def maxOf(athleteId: Long, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
       val result = for {
-        maxResult <- OptionT(queryForOption[ResRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS"))
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $fieldName >= '${maxResult.res_value - tolerance}' ORDER BY $fieldName DESC LIMIT 1"))
+        maxResult <- OptionT(queryForOption[ResRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId"))
+        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND $fieldName >= '${maxResult.res_value - tolerance}' ORDER BY $fieldName DESC LIMIT 1"))
         maxValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = maxValue,
@@ -157,15 +157,15 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       result.run
     }
 
-    override def maxSpeed(): Future[Option[Achievement]] = maxOf("max_speed", _.max_speed.map(_.toDouble))
-    override def maxAverageSpeed(): Future[Option[Achievement]] = maxOf("average_speed", _.average_speed.map(_.toDouble))
-    override def maxDistance(): Future[Option[Achievement]] = maxOf("distance", _.distance.toDouble.some)
-    override def maxElevation(): Future[Option[Achievement]] = maxOf("total_elevation_gain", _.total_elevation_gain.toDouble.some)
-    override def maxHeartRate(): Future[Option[Achievement]] = maxOf("max_heartrate", _.max_heartrate.map(_.toDouble))
-    override def maxPower(): Future[Option[Achievement]] = maxOf("max_watts", _.average_watts.map(_.toDouble))
-    override def maxAveragePower(): Future[Option[Achievement]] = maxOf("average_watts", _.average_watts.map(_.toDouble))
-    override def minTemperature(): Future[Option[Achievement]] = minOf("average_temp", _.average_temp.map(_.toDouble))
-    override def maxTemperature(): Future[Option[Achievement]] = maxOf("average_temp", _.average_temp.map(_.toDouble))
+    override def maxSpeed(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "max_speed", _.max_speed.map(_.toDouble))
+    override def maxAverageSpeed(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "average_speed", _.average_speed.map(_.toDouble))
+    override def maxDistance(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "distance", _.distance.toDouble.some)
+    override def maxElevation(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "total_elevation_gain", _.total_elevation_gain.toDouble.some)
+    override def maxHeartRate(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "max_heartrate", _.max_heartrate.map(_.toDouble))
+    override def maxPower(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "max_watts", _.average_watts.map(_.toDouble))
+    override def maxAveragePower(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "average_watts", _.average_watts.map(_.toDouble))
+    override def minTemperature(athleteId: Long): Future[Option[Achievement]] = minOf(athleteId, "average_temp", _.average_temp.map(_.toDouble))
+    override def maxTemperature(athleteId: Long): Future[Option[Achievement]] = maxOf(athleteId, "average_temp", _.average_temp.map(_.toDouble))
   }
   override def getAchievementStorage(): AchievementStorage = achievementStorage
 

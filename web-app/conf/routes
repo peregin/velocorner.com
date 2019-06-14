@@ -73,6 +73,18 @@ GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearl
 GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
 
 ###
+#  summary: List of achievements for the logged in athlete
+#  responses:
+#    200:
+#      description: Extracts max speed, longest ride, etc.
+#      schema:
+#        $ref: '#/definitions/velocorner.Achievements'
+#    404:
+#      description: Not found
+###
+GET     /api/athletes/statistics/achievements    controllers.ApiController.achievements
+
+###
 #  summary: Suggests a list of activities based on the query parameter
 #  responses:
 #    200:
