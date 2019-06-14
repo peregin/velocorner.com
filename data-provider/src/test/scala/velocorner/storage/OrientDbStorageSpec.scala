@@ -72,13 +72,16 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
       await(storage.listActivityTypes(432909)) should containTheSameElementsAs(Seq("Ride"))
     }
 
-    "select max achievements" in {
+    "select achievements" in {
       await(storage.getAchievementStorage().maxSpeed()).map(_.value) should beSome(15.5d)
+      await(storage.getAchievementStorage().maxAverageSpeed()).map(_.value) should beSome(7.932000160217285d)
       await(storage.getAchievementStorage().maxDistance()).map(_.value) should beSome(90514.3984375d)
       await(storage.getAchievementStorage().maxElevation()).map(_.value) should beSome(1077d)
       await(storage.getAchievementStorage().maxHeartRate()).map(_.value) should beNone
-      await(storage.getAchievementStorage().maxAverageSpeed()).map(_.value) should beSome(7.932000160217285d)
+      await(storage.getAchievementStorage().maxPower()).map(_.value) should beNone
       await(storage.getAchievementStorage().maxAveragePower()).map(_.value) should beSome(233.89999389648438d)
+      await(storage.getAchievementStorage().minTemperature()).map(_.value) should beSome(-1d)
+      await(storage.getAchievementStorage().maxTemperature()).map(_.value) should beSome(11d)
     }
 
     "backup the database" in {
