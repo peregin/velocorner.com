@@ -83,7 +83,7 @@
               '<td class="text-right">'+(entry.distance/1000).toFixed(1)+' km</td>'+
               '<td class="text-right">'+wholeValueAndUnit(entry.total_elevation_gain, 'm')+'</td>'+
               '<td>'+elapsedInSeconds(entry.moving_time)+' / '+elapsedInSeconds(entry.elapsed_time)+'</td>'+
-              '<td class="text-right">'+(entry.average_speed*3.6).toFixed(1) +' km/h</td>'+
+              '<td class="text-right">'+(entry.average_speed*3.6).toFixed(1)+' km/h</td>'+
               '<td class="text-right">'+wholeValueAndUnit(entry.average_watts, 'W')+'</td>'+
               '<td class="text-right">'+wholeValueAndUnit(entry.average_heartrate, 'hr')+'</td>'+
               '<td class="text-right">'+wholeValueAndUnit(entry.average_temp, '˚C')+'</td>'+

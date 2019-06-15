@@ -16,7 +16,7 @@
 
     @context.account.map { user =>
         <div class="tag-box">
-            @widget.profile(user, "/api/athletes/statistics/progress")
+            @widget.profile(user, "/api/athletes/statistics/progress", "/api/athletes/statistics/achievements")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
             @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", "/api/athletes/statistics/yearly/heatmap")
