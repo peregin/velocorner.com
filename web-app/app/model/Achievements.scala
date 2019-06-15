@@ -9,5 +9,7 @@ object Achievements {
 
 case class Achievements(
                          maxSpeed: Option[Achievement],
-                         maxAverageSpeed: Option[Achievement]
+                         maxAverageSpeed: Option[Achievement],
+                         maxDistance: Option[Achievement],
+                         maxElevation: Option[Achievement]
                        )

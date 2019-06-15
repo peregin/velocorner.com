@@ -119,12 +119,18 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       // parallelize
       val maxSpeedF = storage.maxSpeed(account.athleteId)
       val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
+      val maxDistanceF = storage.maxDistance(account.athleteId)
+      val maxElevationF = storage.maxElevation(account.athleteId)
       val achievements = for {
         maxSpeed <- maxSpeedF
         maxAverageSpeed <- maxAverageSpeedF
+        maxDistance <- maxDistanceF
+        maxElevation <- maxElevationF
       } yield Achievements(
         maxSpeed = maxSpeed,
-        maxAverageSpeed = maxAverageSpeed
+        maxAverageSpeed = maxAverageSpeed,
+        maxDistance = maxDistance,
+        maxElevation = maxElevation
       )
       achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
     }.getOrElse(Future(Unauthorized))

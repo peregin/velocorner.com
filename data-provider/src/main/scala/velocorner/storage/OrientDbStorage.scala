@@ -133,7 +133,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       val result = for {
         minResult <- OptionT(queryForOption[ResRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
         _ = log.debug(s"min[$fieldName]=${minResult.res_value}")
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName <= '${minResult.res_value - tolerance}' ORDER BY $fieldName ASC LIMIT 1"))
+        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName <= ${minResult.res_value + tolerance} ORDER BY $fieldName ASC LIMIT 1"))
         minValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = minValue,
@@ -148,7 +148,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       val result = for {
         maxResult <- OptionT(queryForOption[ResRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
         _ = log.debug(s"max[$fieldName]=${maxResult.res_value}")
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName >= '${maxResult.res_value - tolerance}' ORDER BY $fieldName DESC LIMIT 1"))
+        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName >= ${maxResult.res_value - tolerance} ORDER BY $fieldName DESC LIMIT 1"))
         maxValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = maxValue,
