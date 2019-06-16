@@ -121,16 +121,22 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
       val maxDistanceF = storage.maxDistance(account.athleteId)
       val maxElevationF = storage.maxElevation(account.athleteId)
+      val maxPowerF = storage.maxPower(account.athleteId)
+      val maxAveragePowerF = storage.maxAveragePower(account.athleteId)
       val achievements = for {
         maxSpeed <- maxSpeedF
         maxAverageSpeed <- maxAverageSpeedF
         maxDistance <- maxDistanceF
         maxElevation <- maxElevationF
+        maxPower <- maxPowerF
+        maxAveragePower <- maxAveragePowerF
       } yield Achievements(
         maxSpeed = maxSpeed,
         maxAverageSpeed = maxAverageSpeed,
         maxDistance = maxDistance,
-        maxElevation = maxElevation
+        maxElevation = maxElevation,
+        maxPower = maxPower,
+        maxAveragePower = maxAveragePower
       )
       achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
     }.getOrElse(Future(Unauthorized))

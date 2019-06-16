@@ -65,9 +65,10 @@
                     <div>Max average speed: <a id="achievement-max-avg-speed" href="#">-</a></div>
                     <div>Longest ride: <a id="achievement-max-distance" href="#">-</a></div>
                     <div>Max elevation: <a id="achievement-max-elevation" href="#">-</a></div>
-                    <div>Max power:</div>
-                    <div>Max average power:</div>
+                    <div>Max power: <a id="achievement-max-power" href="#">-</a></div>
+                    <div>Max average power: <a id="achievement-max-avg-power" href="#">-</a></div>
                     <div>Max heart rate:</div>
+                    <div>Max average heart rate:</div>
                     <div>Hottest ride:</div>
                     <div>Coldest ride:</div>
                 </div>
@@ -117,6 +118,8 @@
                 showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, 'km/h')
                 showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, 'km')
                 showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, 'm')
+                showEntry(data.maxPower, '#achievement-max-power', 1, 0, 'W')
+                showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W')
                 console.log(data);
            }
         });
