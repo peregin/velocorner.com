@@ -13,5 +13,7 @@ case class Achievements(
                          maxDistance: Option[Achievement],
                          maxElevation: Option[Achievement],
                          maxPower: Option[Achievement],
-                         maxAveragePower: Option[Achievement]
+                         maxAveragePower: Option[Achievement],
+                         maxHeartRate: Option[Achievement],
+                         maxAverageHeartRate: Option[Achievement]
                        )

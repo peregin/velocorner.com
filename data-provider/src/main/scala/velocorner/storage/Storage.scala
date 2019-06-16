@@ -61,6 +61,7 @@ trait Storage {
     def maxDistance(athleteId: Long): Future[Option[Achievement]]
     def maxElevation(athleteId: Long): Future[Option[Achievement]]
     def maxHeartRate(athleteId: Long): Future[Option[Achievement]]
+    def maxAverageHeartRate(athleteId: Long): Future[Option[Achievement]]
     def maxPower(athleteId: Long): Future[Option[Achievement]]
     def maxAveragePower(athleteId: Long): Future[Option[Achievement]]
     def minTemperature(athleteId: Long): Future[Option[Achievement]]

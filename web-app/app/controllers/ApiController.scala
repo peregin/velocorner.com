@@ -116,27 +116,31 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   def achievements() = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage.getAchievementStorage()
     loggedIn.map{ account =>
-      // parallelize
-      val maxSpeedF = storage.maxSpeed(account.athleteId)
+      // parallelization
       val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
       val maxDistanceF = storage.maxDistance(account.athleteId)
       val maxElevationF = storage.maxElevation(account.athleteId)
-      val maxPowerF = storage.maxPower(account.athleteId)
       val maxAveragePowerF = storage.maxAveragePower(account.athleteId)
+      val maxHeartRateF = storage.maxHeartRate(account.athleteId)
+      val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId)
       val achievements = for {
-        maxSpeed <- maxSpeedF
+        //maxSpeed <- storage.maxSpeed(account.athleteId)
         maxAverageSpeed <- maxAverageSpeedF
         maxDistance <- maxDistanceF
         maxElevation <- maxElevationF
-        maxPower <- maxPowerF
+        //maxPower <- storage.maxPower(account.athleteId)
         maxAveragePower <- maxAveragePowerF
+        maxHeartRate <- maxHeartRateF
+        maxAverageHeartRate <- maxAverageHeartRateF
       } yield Achievements(
-        maxSpeed = maxSpeed,
+        maxSpeed = None,
         maxAverageSpeed = maxAverageSpeed,
         maxDistance = maxDistance,
         maxElevation = maxElevation,
-        maxPower = maxPower,
-        maxAveragePower = maxAveragePower
+        maxPower = None,
+        maxAveragePower = maxAveragePower,
+        maxHeartRate = maxHeartRate,
+        maxAverageHeartRate = maxAverageHeartRate
       )
       achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
     }.getOrElse(Future(Unauthorized))
