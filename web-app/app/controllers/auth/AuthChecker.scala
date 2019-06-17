@@ -14,6 +14,8 @@ import scala.language.postfixOps
 import StravaController.OAuth2CookieKey
 
 trait AuthChecker {
+  // because of the body parser
+  this: AbstractController =>
 
   val cache: SyncCacheApi
 
@@ -45,7 +47,7 @@ trait AuthChecker {
   class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
 
     override protected def executionContext: ExecutionContext = ec
-    override def parser: BodyParser[AnyContent] = BodyParsers.parse.default
+    override def parser: BodyParser[AnyContent] = parse.default
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       implicit val r = request
       val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
