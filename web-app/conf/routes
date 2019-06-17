@@ -163,4 +163,8 @@ GET     /docs                                    controllers.Assets.at(path="/pu
 ### NoDocs ###
 GET     /counter                                 controllers.Assets.at(path="/public", file="html/counter.html")
 ### NoDocs ###
+GET     /googlea6d3ef59293b5121.html             controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
+### NoDocs ###
+GET     /googlea6d3ef59293b5121                  controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
+### NoDocs ###
 GET     /assets/*file                            controllers.Assets.at(path="/public", file)
