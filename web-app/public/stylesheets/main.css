@@ -52,4 +52,8 @@
         min-width: 25px;
         font-size: 15px;
     }
+    .col-sm-1 {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
 }
