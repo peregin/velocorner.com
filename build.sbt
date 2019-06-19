@@ -9,6 +9,7 @@ import play.sbt.PlayImport._
 
 
 val scalazVersion = "7.2.27"
+val zioVersion        = "1.0-RC4"
 val logbackVersion = "1.2.3"
 val elasticVersion = "7.0.2"
 val orientDbVersion = "3.0.20"
@@ -60,6 +61,10 @@ def scalaz = Seq(
   "org.scalaz" %% "scalaz-core" % scalazVersion
 )
 
+// starting from next release won't be part of scalaz
+def zio = Seq(
+  "org.scalaz" %% "scalaz-zio" % zioVersion,
+)
 
 lazy val runDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
@@ -104,6 +109,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     ) ++ logging
       ++ storage
       ++ scalaz
+      ++ zio
   )
 
 lazy val dataSearch = (project in file("data-search") withId "data-search")
