@@ -9,13 +9,13 @@ import play.sbt.PlayImport._
 
 
 val scalazVersion = "7.2.27"
-val zioVersion        = "1.0-RC4"
+val zioVersion        = "1.0-RC5"
 val logbackVersion = "1.2.3"
+val orientDbVersion = "3.0.21"
 val elasticVersion = "7.0.2"
-val orientDbVersion = "3.0.20"
 val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "2.0.4" // standalone version
+val playWsVersion = "2.0.6" // standalone version
 val playJsonVersion = "2.7.4"
 val specsVersion = "4.5.1"
 val mockitoVersion = "2.28.2"
@@ -36,7 +36,7 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 
 val apacheCommons = "commons-io" % "commons-io" % "2.6"
 
-val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.2" % "test"
+val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
 val scalaSpecJunit = "org.specs2" %% "specs2-junit" % specsVersion % "test"
 val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
@@ -46,7 +46,7 @@ def logging = Seq(
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
-  "org.codehaus.janino" % "janino" % "3.0.12", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.0.13", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
