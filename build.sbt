@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 
-val scalazVersion = "7.2.27"
+val scalazVersion = "7.2.28"
 val zioVersion        = "1.0-RC5"
 val logbackVersion = "1.2.3"
 val orientDbVersion = "3.0.21"
