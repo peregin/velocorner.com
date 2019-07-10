@@ -17,7 +17,7 @@ val log4jVersion = "2.11.2"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.6" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.5.1"
+val specsVersion = "4.6.0"
 val mockitoVersion = "2.28.2"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
@@ -46,7 +46,7 @@ def logging = Seq(
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
-  "org.codehaus.janino" % "janino" % "3.0.13", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.0.14", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
