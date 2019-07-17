@@ -8,9 +8,10 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
     <logger name="org.asynchttpclient" level="INFO"/>
     <logger name="play.shaded.ahc.org.asynchttpclient" level="INFO"/>
+    <logger name="play.shaded.ahc.io.netty" level="INFO"/>
 </configuration>

@@ -1,22 +1,30 @@
 package velocorner.manual
 
 import org.slf4s.Logging
+import scalaz.zio._
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
 import velocorner.util.CloseableResource
 
-import scala.concurrent.Await
-
 object OpenWeatherApp extends App with Logging with CloseableResource with MyMacConfig {
 
-  val config = SecretConfig.load()
-  withCloseable(new OpenWeatherFeed(config)) { feed =>
-    val res = Await.result(feed.forecast("Zurich,CH"), feed.timeout)
-    log.info(s"result is $res")
-    log.info(s"${res.points.size} items")
 
-    val cur = Await.result(feed.current("Adliswil,CH"), feed.timeout)
-    log.info(s"current sunrise/sunset is $cur")
+  override def run(args: List[String]): ZIO[OpenWeatherApp.Environment, Nothing, Int] = {
+    val res = for {
+      config <- ZIO.apply(SecretConfig.load())
+      feed <- ZIO.succeed(new OpenWeatherFeed(config))
+
+      res <- ZIO.fromFuture(_ => feed.forecast("Zurich,CH"))
+      _ = log.info(s"result is $res")
+      _ = log.info(s"${res.points.size} items")
+
+      cur <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
+      _ = log.info(s"current sunrise/sunset is $cur")
+
+      _ <- ZIO.apply(feed.close())
+
+      _ <- ZIO.apply(HttpFeed.shutdown())
+    } yield ()
+    res.foldM(_ => ZIO.succeed(1), _ => ZIO.succeed(0))
   }
-  HttpFeed.shutdown()
 }
