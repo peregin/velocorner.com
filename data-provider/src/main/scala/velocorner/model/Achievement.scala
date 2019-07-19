@@ -9,7 +9,7 @@ object Achievement {
 }
 
 case class Achievement(
-                        value: Double, // achievemnt value, example max speed, longest ride in km, etc.
+                        value: Double, // achievement value, example max speed, longest ride in km, etc.
                         activityId: Long,
                         activityName: String,
                         activityTime: DateTime
