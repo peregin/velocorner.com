@@ -124,14 +124,22 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // various achievments
   lazy val achievementStorage = new AchievementStorage {
-    object ResRow {
-      implicit val maxRowFormat = Format[ResRow](Json.reads[ResRow], Json.writes[ResRow])
+
+    object ResDoubleRow {
+      implicit val doubleRowFormat = Format[ResDoubleRow](Json.reads[ResDoubleRow], Json.writes[ResDoubleRow])
     }
-    case class ResRow(res_value: Double)
+    case class ResDoubleRow(res_value: Double)
+
+    object ResLongRow {
+      implicit val longRowFormat = Format[ResLongRow](Json.reads[ResLongRow], Json.writes[ResLongRow])
+    }
+    case class ResLongRow(res_value: Long)
 
     private def minOf(athleteId: Long, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
       val result = for {
-        minResult <- OptionT(queryForOption[ResRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
+        _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName IS NOT NULL"))
+          .filter(_.res_value > 0L)
+        minResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
         _ = log.debug(s"min[$fieldName]=${minResult.res_value}")
         activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName <= ${minResult.res_value + tolerance} ORDER BY $fieldName ASC LIMIT 1"))
         minValue <- OptionT(Future(mapperFunc(activity)))
@@ -146,7 +154,9 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
     private def maxOf(athleteId: Long, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
       val result = for {
-        maxResult <- OptionT(queryForOption[ResRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
+        _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName IS NOT NULL"))
+          .filter(_.res_value > 0L)
+        maxResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
         _ = log.debug(s"max[$fieldName]=${maxResult.res_value}")
         activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName >= ${maxResult.res_value - tolerance} ORDER BY $fieldName DESC LIMIT 1"))
         maxValue <- OptionT(Future(mapperFunc(activity)))
