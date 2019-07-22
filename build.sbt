@@ -9,13 +9,13 @@ import play.sbt.PlayImport._
 
 
 val scalazVersion = "7.2.28"
-val zioVersion        = "1.0-RC5"
+val zioVersion = "1.0-RC5"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.21"
+val orientDbVersion = "3.0.22"
 val elasticVersion = "7.1.0"
 val log4jVersion = "2.12.0"
 val slf4sVersion = "1.7.25"
-val playWsVersion = "2.0.6" // standalone version
+val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
 val specsVersion = "4.6.0"
 val mockitoVersion = "2.28.2"
