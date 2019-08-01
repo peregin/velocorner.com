@@ -46,7 +46,7 @@ def logging = Seq(
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
-  "org.codehaus.janino" % "janino" % "3.0.14", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.0.15", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
