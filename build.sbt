@@ -17,7 +17,7 @@ val log4jVersion = "2.12.0"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.6.0"
+val specsVersion = "4.7.0"
 val mockitoVersion = "2.28.2"
 
 val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
