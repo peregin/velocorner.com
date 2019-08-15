@@ -208,7 +208,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
-    def lastUpdateTime= OptionT(attributeStorage.getAttribute(isoLocation, "location"))
+    def lastUpdateTime = OptionT(attributeStorage.getAttribute(isoLocation, "location"))
       .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
       .getOrElse(now.minusYears(1))
 

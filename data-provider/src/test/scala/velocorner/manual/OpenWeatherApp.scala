@@ -8,7 +8,6 @@ import velocorner.util.CloseableResource
 
 object OpenWeatherApp extends App with Logging with CloseableResource with MyMacConfig {
 
-
   override def run(args: List[String]): ZIO[OpenWeatherApp.Environment, Nothing, Int] = {
     val res = for {
       config <- ZIO.apply(SecretConfig.load())
