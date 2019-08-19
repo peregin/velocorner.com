@@ -75,7 +75,7 @@ lazy val runDist: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := "2.12.8",
+  scalaVersion := "2.12.9",
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
