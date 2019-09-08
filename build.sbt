@@ -11,9 +11,9 @@ import play.sbt.PlayImport._
 val scalazVersion = "7.2.28"
 val zioVersion = "1.0-RC5"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.22"
-val elasticVersion = "7.3.0"
-val log4jVersion = "2.12.0"
+val orientDbVersion = "3.0.23"
+val elasticVersion = "7.3.1"
+val log4jVersion = "2.12.1"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
@@ -46,7 +46,7 @@ def logging = Seq(
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
-  "org.codehaus.janino" % "janino" % "3.0.15", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.1.0", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
