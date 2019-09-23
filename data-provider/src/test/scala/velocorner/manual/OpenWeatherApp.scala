@@ -21,7 +21,6 @@ object OpenWeatherApp extends App with Logging with CloseableResource with MyMac
       _ = log.info(s"current sunrise/sunset is $cur")
 
       _ <- ZIO.apply(feed.close())
-
       _ <- ZIO.apply(HttpFeed.shutdown())
     } yield ()
     res.foldM(_ => ZIO.succeed(1), _ => ZIO.succeed(0))

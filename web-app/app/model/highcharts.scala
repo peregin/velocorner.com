@@ -2,7 +2,7 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.{Format, Json}
 import velocorner.model.weather.WeatherForecast
-import velocorner.model.{AthleteDailyProgress, DateTimePattern, Progress, YearlyProgress}
+import velocorner.model.{DateTimePattern, Progress, YearlyProgress}
 
 import scala.xml.Elem
 
@@ -40,17 +40,6 @@ package object highcharts {
 
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
     items.map(yp => DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
-  }
-
-
-  def toAthleteDistanceSeries(items: Iterable[AthleteDailyProgress]) = toAthleteSeries(items, _.distance)
-
-  def toAthleteElevationSeries(items: Iterable[AthleteDailyProgress]) = toAthleteSeries(items, _.elevation)
-
-  private def toAthleteSeries(items: Iterable[AthleteDailyProgress], fun: Progress => Double): Iterable[DailySeries] = {
-    items.groupBy(_.athleteId).map{case (athleteId, list) =>
-      DailySeries(athleteId.toString, list.map(e => DailyPoint(e.dailyProgress.day, fun(e.dailyProgress.progress))))
-    }
   }
 
   implicit class PimpWeatherForecast(self: WeatherForecast) {

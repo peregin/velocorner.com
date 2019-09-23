@@ -2,8 +2,10 @@ package controllers
 
 import org.apache.commons.codec.binary.Base64
 import play.api.mvc.{AnyContent, Cookie, Request}
+
 import concurrent.duration._
 import scalaz.syntax.std.option._
+
 import scala.language.postfixOps
 
 object WeatherCookie {

@@ -6,22 +6,6 @@ object Progress {
 
   implicit val totalFormat = Format[Progress](Json.reads[Progress], Json.writes[Progress])
 
-  /**
-   * value format: {"ride":1,"dist":6741.7998046875,"distmax":6741.7998046875,"elev":93.0999984741211,"elevmax":93.0999984741211,"time":1144}
-   * Note that distance is mapped to meters and time is mapped to seconds
-   */
-  def fromStorage(value: String): Progress = {
-    val jsPath = Json.parse(value)
-    val rides = (jsPath \ "ride").as[Int]
-    val distance = (jsPath \ "dist").as[Double] / 1000
-    val longestDistance = (jsPath \ "distmax").as[Double] / 1000
-    val movingTime = (jsPath \ "time").as[Long]
-    val averageSpeed = if (movingTime != 0) distance * 3600 / movingTime else 0
-    val elevation = (jsPath \ "elev").as[Double]
-    val longestElevation = (jsPath \ "elevmax").as[Double]
-    Progress(rides, distance, longestDistance, movingTime, averageSpeed, elevation, longestElevation)
-  }
-
   def zero = Progress(0, 0d, 0d, 0, 0d, 0d, 0d)
 }
 

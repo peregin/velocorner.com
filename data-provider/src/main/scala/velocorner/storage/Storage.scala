@@ -85,10 +85,9 @@ object Storage extends Logging {
   def create(dbType: String, config: SecretConfig): Storage = {
     log.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
-      case any if dbType.startsWith("co") => new CouchbaseStorage(config.getBucketPassword)
-      case any if dbType.startsWith("re") => new RethinkDbStorage
-      case any if dbType.startsWith("mo") => new MongoDbStorage
-      case any if dbType.startsWith("or") => new OrientDbStorage(config.getOrientDbPath)
+      case any if any.startsWith("re") => new RethinkDbStorage
+      case any if any.startsWith("mo") => new MongoDbStorage
+      case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbPath)
       case unknown => sys.error(s"unknown storage type $unknown")
     }
 

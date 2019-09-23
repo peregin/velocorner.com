@@ -37,7 +37,6 @@ case class SecretConfig(config: Config) {
   def getCallbackUrl(application: String) = config.getString(s"$application.application.callback.url")
 
   def getStorageType: Option[String] = config.getAs[String]("storage")
-  def getBucketPassword = config.getString("couchbase.bucket.password")
   def getOrientDbPath = config.getString("orientdb.path")
 
   def getBackupDirectory: Option[String] = config.getAs[String]("storage.backup.directory")

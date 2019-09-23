@@ -1,6 +1,5 @@
 package velocorner.feed
 
-import org.apache.http.HttpStatus
 import org.slf4s.Logging
 import velocorner.SecretConfig
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
@@ -45,7 +44,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with Logging {
       .get()
     }
     response.map { res => res.status match {
-      case HttpStatus.SC_OK => JsonIo.read[WeatherResponse](res.body).some
+      case 200 => JsonIo.read[WeatherResponse](res.body).some
       case _ => None
     }}
 

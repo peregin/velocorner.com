@@ -20,7 +20,6 @@ val playJsonVersion = "2.7.4"
 val specsVersion = "4.7.0"
 val mockitoVersion = "2.28.2"
 
-val couchbaseClient = "com.couchbase.client" % "couchbase-client" % "1.4.13"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
 val orientDb = Seq(
@@ -31,10 +30,13 @@ val orientDb = Seq(
 
 val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
-val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
+val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 
-val apacheCommons = "commons-io" % "commons-io" % "2.6"
+val apacheCommons = Seq(
+  "commons-io" % "commons-io" % "2.6",
+  "commons-codec" % "commons-codec" % "1.11"
+)
 
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
@@ -55,7 +57,7 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
 )
-def storage = Seq(couchbaseClient, rethinkClient, mongoClient) ++ orientDb
+def storage = Seq(rethinkClient, mongoClient) ++ orientDb
 
 def scalaz = Seq(
   "org.scalaz" %% "scalaz-core" % scalazVersion
@@ -104,10 +106,10 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     name := "data-provider",
     libraryDependencies ++= Seq(
       playJson, playJsonJoda, playWsAhcStandalone,
-      apacheCommons,
       scalaSpec, scalaSpecJunit
     ) ++ logging
       ++ storage
+      ++ apacheCommons
       ++ scalaz
       ++ zio
   )
