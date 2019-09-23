@@ -17,8 +17,8 @@ val log4jVersion = "2.12.1"
 val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.7.0"
-val mockitoVersion = "2.28.2"
+val specsVersion = "4.7.1"
+val mockitoVersion = "3.0.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
@@ -35,7 +35,7 @@ val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % pl
 
 val apacheCommons = Seq(
   "commons-io" % "commons-io" % "2.6",
-  "commons-codec" % "commons-codec" % "1.11"
+  "commons-codec" % "commons-codec" % "1.13"
 )
 
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test"
@@ -77,7 +77,7 @@ lazy val runDist: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := "2.12.9",
+  scalaVersion := "2.12.10",
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
