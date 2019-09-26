@@ -46,8 +46,6 @@ val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "org.slf4s" %% "slf4s-api" % slf4sVersion,
-  "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
-  "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
   "org.codehaus.janino" % "janino" % "3.1.0", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
@@ -126,7 +124,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
     name := "web-app",
-    libraryDependencies ++= Seq(guice, ehcache, playWsJsonStandalone, playTest, mockito, scalaSpec),
+    libraryDependencies ++= Seq(
+      guice, ehcache, playWsJsonStandalone, playTest, mockito, scalaSpec
+    ),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
       name, version, scalaVersion, sbtVersion,
