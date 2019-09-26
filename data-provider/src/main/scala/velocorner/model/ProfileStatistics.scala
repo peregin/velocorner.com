@@ -17,7 +17,7 @@ object ProfileStatistics {
   }
 
   def from(dayToDate: Int, daysInYear: Int, ytdProgress: Progress): ProfileStatistics = {
-    val f = daysInYear / dayToDate.max(1)
+    val f = daysInYear.toDouble / dayToDate.max(1)
     ProfileStatistics(ytdProgress * f, ytdProgress)
   }
 }

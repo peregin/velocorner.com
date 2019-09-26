@@ -1,5 +1,6 @@
 package velocorner.model
 
+import org.joda.time.LocalDate
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
 
@@ -18,6 +19,13 @@ class ProfileStatisticsSpec extends Specification {
       statistics.estimate.averageSpeed === 27.2
       statistics.estimate.elevation === 1024
       statistics.estimate.longestElevation === 602
+    }
+
+    "estimate progress" in {
+      val now = LocalDate.parse("2019-09-26")
+      val statistics = ProfileStatistics.from(now, progress)
+      statistics.estimate.rides === 13
+      statistics.estimate.distance must beCloseTo(1628.25, .01)
     }
 
     "read and write from json" in {
