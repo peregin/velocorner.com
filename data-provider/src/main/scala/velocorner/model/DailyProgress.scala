@@ -6,12 +6,6 @@ import velocorner.model.strava.Activity
 
 object DailyProgress {
 
-  // key format: [2012,4,30]
-  def parseDate(text: String): LocalDate = {
-    val dateArray = text.stripPrefix("[").stripSuffix("]").split(',').map(_.toInt)
-    LocalDate.parse(f"${dateArray(0)}%4d-${dateArray(1)}%02d-${dateArray(2)}%02d")
-  }
-
   def fromStorage(activity: Activity): DailyProgress = {
     val progress = new Progress(1,
       activity.distance / 1000, activity.distance / 1000, activity.moving_time,
@@ -36,8 +30,4 @@ object DailyProgress {
 }
 
 
-case class DailyProgress(day: LocalDate, progress: Progress) {
-
-  def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
-  def getDay = day.getDayOfMonth
-}
+case class DailyProgress(day: LocalDate, progress: Progress)

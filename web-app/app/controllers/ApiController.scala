@@ -33,7 +33,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
-  val statusInfo = StatusInfo.create(environment.mode)
+  private val statusInfo = StatusInfo.create(environment.mode)
 
   private val logger = Logger.of(this.getClass)
 
@@ -44,22 +44,24 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
 
   // def mapped to /api/athletes/statistics/progress
   // current year's progress
-  def ytdProgress = AuthAsyncAction { implicit request =>
+  def ytdProfile = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
-    val currentYear = LocalDate.now().getYear
+    val now = LocalDate.now()
+    val currentYear = now.getYear
 
-    val result = for {
+    val statisticsOT = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athlete statistics for ${account.displayName}")
       dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
       yearlyProgress = YearlyProgress.from(dailyProgress)
       aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
-    } yield currentYearProgress
+    } yield ProfileStatistics.from(now, currentYearProgress)
 
-    result
-      .getOrElse(Progress.zero)
-      .map(p => Ok(Json.obj("status" -> "OK", "progress" -> Json.toJson(p))))
+    statisticsOT
+      .getOrElse(ProfileStatistics.zero)
+      .map(Json.toJson(_))
+      .map(Ok(_))
   }
 
   // route mapped to /api/athletes/statistics/yearly/:action

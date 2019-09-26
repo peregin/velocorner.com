@@ -8,6 +8,8 @@ case class ProfileStatistics(estimate: Progress, progress: Progress)
 
 object ProfileStatistics {
 
+  val zero = ProfileStatistics(Progress.zero, Progress.zero)
+
   implicit val totalFormat = Format[ProfileStatistics](Json.reads[ProfileStatistics], Json.writes[ProfileStatistics])
 
   def from(now: LocalDate, ytdProgress: Progress): ProfileStatistics = {

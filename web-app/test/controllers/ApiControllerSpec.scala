@@ -4,7 +4,7 @@ import akka.util.Timeout
 import model.StatusInfo
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.{Environment, Mode}
 import play.api.cache.SyncCacheApi
@@ -34,7 +34,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
       when(storageMock.getAthlete(anyLong())).thenReturn(Future(None))
 
       val controller = new ApiController(Environment.simple(), cacheApiMock, settingsMock, stubControllerComponents())
-      val result = controller.ytdProgress.apply(FakeRequest())
+      val result = controller.ytdProfile.apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
     }
 
