@@ -119,6 +119,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     val storage = connectivity.getStorage.getAchievementStorage()
     loggedIn.map{ account =>
       // parallelization
+      val maxSpeedF = storage.maxSpeed(account.athleteId)
       val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
       val maxDistanceF = storage.maxDistance(account.athleteId)
       val maxElevationF = storage.maxElevation(account.athleteId)
@@ -126,7 +127,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       val maxHeartRateF = storage.maxHeartRate(account.athleteId)
       val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId)
       val achievements = for {
-        maxSpeed <- storage.maxSpeed(account.athleteId)
+        maxSpeed <- maxSpeedF
         maxAverageSpeed <- maxAverageSpeedF
         maxDistance <- maxDistanceF
         maxElevation <- maxElevationF
