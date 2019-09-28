@@ -4,11 +4,11 @@ import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import scalaz.syntax.std.boolean._
 
-case class ProfileStatistics(estimate: Progress, progress: Progress)
+case class ProfileStatistics(yearlyPercentile: Int, estimate: Progress, progress: Progress)
 
 object ProfileStatistics {
 
-  val zero = ProfileStatistics(Progress.zero, Progress.zero)
+  val zero = ProfileStatistics(0, Progress.zero, Progress.zero)
 
   implicit val totalFormat = Format[ProfileStatistics](Json.reads[ProfileStatistics], Json.writes[ProfileStatistics])
 
@@ -20,6 +20,7 @@ object ProfileStatistics {
 
   def from(dayToDate: Int, daysInYear: Int, ytdProgress: Progress): ProfileStatistics = {
     val f = daysInYear.toDouble / dayToDate.max(1)
-    ProfileStatistics(ytdProgress * f, ytdProgress)
+    val percentile = dayToDate.toDouble * 100 / daysInYear
+    ProfileStatistics(yearlyPercentile = percentile.toInt.min(100), ytdProgress * f, ytdProgress)
   }
 }

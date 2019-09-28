@@ -126,7 +126,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       val maxHeartRateF = storage.maxHeartRate(account.athleteId)
       val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId)
       val achievements = for {
-        //maxSpeed <- storage.maxSpeed(account.athleteId)
+        maxSpeed <- storage.maxSpeed(account.athleteId)
         maxAverageSpeed <- maxAverageSpeedF
         maxDistance <- maxDistanceF
         maxElevation <- maxElevationF
@@ -135,7 +135,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
         maxHeartRate <- maxHeartRateF
         maxAverageHeartRate <- maxAverageHeartRateF
       } yield Achievements(
-        maxSpeed = None,
+        maxSpeed = maxSpeed,
         maxAverageSpeed = maxAverageSpeed,
         maxDistance = maxDistance,
         maxElevation = maxElevation,

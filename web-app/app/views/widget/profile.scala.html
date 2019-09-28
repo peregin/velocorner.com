@@ -54,25 +54,25 @@
                     </div>
                 </div>
 
-                <div class="row" style="padding-left:20px; padding-right:20px;"><i class="fa fa-line-chart rounded"></i><span> Prediction</span>
+                <div class="row" style="padding-left:20px; padding-right:20px;"><i class="fa fa-line-chart rounded"></i><span> Prediction until end of year</span>
                 </div>
                 <div class="row" style="padding-left:20px; padding-right:20px; height: 10px;">
                     <div class="progress progress-u progress-xs rounded">
-                        <div class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" style="width: 88%"></div>
+                        <div id="yearlyPercentile" class="progress-bar progress-bar-blue" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
-                        <span style="text-align: center;">0</span>
+                        <span id="estimate-rides" style="text-align: center;">0</span>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
-                        <span style="text-align: center;">5600<span style="font-size: 0.7em;">km</span></span>
+                        <span id="estimate-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">km</span>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
-                        <span style="text-align: center;">121000<span style="font-size: 0.7em;">m</span></span>
+                        <span id="estimate-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">m</span>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
-                        <span style="text-align: center;">500<span style="font-size: 0.7em;">h</span></span>
+                        <span id="estimate-hours" style="text-align: center;">0</span><span style="font-size: 0.7em;">h</span>
                     </div>
                 </div>
             </div>
@@ -120,12 +120,19 @@
             url: "@urlProgress",
             timeout: 20000,
             success: function(data) {
+                $('#yearlyPercentile').attr('aria-valuenow', data.yearlyPercentile).css("width", data.yearlyPercentile + "%")
+
+                $('#estimate-rides').html(data.estimate.rides)
+                $('#estimate-distance').html(Math.round(data.estimate.distance))
+                $('#estimate-elevation').html(Math.round(data.estimate.elevation))
+                $('#estimate-hours').html(Math.round(data.estimate.movingTime/3600))
+
                 $('#profile-rides').html(data.progress.rides)
                 $('#profile-distance').html(Math.round(data.progress.distance))
                 $('#profile-elevation').html(Math.round(data.progress.elevation))
                 $('#profile-hours').html(Math.round(data.progress.movingTime/3600))
                 App.initCounter();
-                console.log(data.progress);
+                console.log("yearly progress " + data.yearlyPercentile + "%");
            }
         });
 
@@ -144,7 +151,7 @@
                 showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W')
                 showEntry(data.maxHeartRate, '#achievement-max-hr', 1, 0, 'Bps')
                 showEntry(data.maxAverageHeartRate, '#achievement-max-avg-hr', 1, 0, 'Bps')
-                console.log(data);
+                console.log("max speed: " + (data.maxSpeed.value * 3.6).toFixed(1) + " from " + data.maxSpeed.activityId);
            }
         });
     });
