@@ -16,6 +16,12 @@
 
     @context.account.map { user =>
         <div class="tag-box">
+            <div class="tab-v1" style="margin-bottom:20px;">
+                <ul id="activity-tabs" class="nav nav-tabs">
+                    <li class="active"><a href="#ride" data-toggle="tab">Ride</a></li>
+                </ul>
+            </div>
+
             @widget.profile(user, "/api/athletes/statistics/profile", "/api/athletes/statistics/achievements")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
@@ -62,12 +68,29 @@
 <script type="text/javascript" src="@assets.path("unify/assets/js/plugins/circles-master.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
-        websocket = new WebSocket('ws://' + window.location.host + '/ws');
-        websocket.onopen = function(evt) { onOpen(evt) };
-        websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
-        websocket.onerror = function(evt) { onError(evt) };
+        setupTabs();
+        setupWebSocket();
     });
+
+    function setupTabs() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/activities/type",
+            timeout: 20000,
+            success: function(data) {
+                console.log("activity types: " + data);
+                $("#activity-tabs").empty();
+                $.each(data, function(ix, activity) {
+                    console.log("activity: " + activity + " - " + ix);
+                    $("#activity-tabs").append('<li'+ (ix === 0 ? ' class="active"' : '') + '><a href="#'+activity+'" data-toggle="tab">' + activity + '</a></li>');
+                });
+           }
+        });
+    }
+
+    function setupWebSocket() {
+    }
 
     function onOpen(evt) {
         console.log('CONNECTED ' + evt);
