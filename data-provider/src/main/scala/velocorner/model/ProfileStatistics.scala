@@ -19,6 +19,7 @@ object ProfileStatistics {
   }
 
   def from(dayToDate: Int, daysInYear: Int, ytdProgress: Progress): ProfileStatistics = {
+    // note that this should not be a linear function between march and october - 20->80% - there are more ride activities
     val f = daysInYear.toDouble / dayToDate.max(1)
     val percentile = dayToDate.toDouble * 100 / daysInYear
     ProfileStatistics(yearlyPercentile = percentile.toInt.min(100), ytdProgress * f, ytdProgress)
