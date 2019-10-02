@@ -1,11 +1,13 @@
 package velocorner.storage
 
-import com.mongodb.client.model.UpdateOptions
+import com.mongodb.client.model.{IndexModel, UpdateOptions}
 import com.typesafe.scalalogging.LazyLogging
 import org.mongodb.scala._
 import com.mongodb.{BasicDBObject, DBObject}
+import org.bson.BsonDocument
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.IndexOptions
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.storage.MongoDbStorage._
@@ -40,8 +42,7 @@ class MongoDbStorage extends Storage with LazyLogging {
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
-    val results = coll.find(query)
+    val results = coll.find(and(equal("athlete.id", athleteId), equal("type", "Ride")))
     val activities = results.map(JsonIo.read[Activity])
     log.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
@@ -98,10 +99,10 @@ class MongoDbStorage extends Storage with LazyLogging {
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     db = Some(client.getDatabase(DB_NAME))
-    db.getCollection(ACTIVITY_TABLE).createIndex("{id:1}", "id", true)
-    db.getCollection(ACCOUNT_TABLE).createIndex("{athleteId:1}", "athleteId", true)
-    db.getCollection(CLUB_TABLE).createIndex("{id:1}", "id", true)
-    db.getCollection(ATHLETE_TABLE).createIndex("{id:1}", "id", true)
+    db.getCollection(ACTIVITY_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
+    db.getCollection(ACCOUNT_TABLE).createIndexes(Seq(new IndexModel("{athleteId:1}", new IndexOptions().name("athleteId").unique(true))))
+    db.getCollection(CLUB_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
+    db.getCollection(ATHLETE_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
   }
 
   // releases any connections, resources used
@@ -121,6 +122,8 @@ object MongoDbStorage {
   val ATHLETE_TABLE = "athlete"
 
   implicit def dbOrFail(db: Option[MongoDatabase]): MongoDatabase = db.getOrElse(sys.error("db is not initialized"))
+
+  implicit def json2Bson(json: String): Bson = BsonDocument.parse(json)
 
   //implicit def json2DbObject(json: String): DBObject = BasicDBObject.parse(json)
 
