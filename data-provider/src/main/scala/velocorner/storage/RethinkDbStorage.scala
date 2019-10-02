@@ -1,7 +1,7 @@
 package velocorner.storage
 
 import com.rethinkdb.RethinkDB
-import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
+import com.rethinkdb.gen.ast.{GetField, ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject

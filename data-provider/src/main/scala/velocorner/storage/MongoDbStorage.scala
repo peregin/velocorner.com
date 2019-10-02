@@ -3,7 +3,6 @@ package velocorner.storage
 import com.mongodb.client.model.{IndexModel, UpdateOptions}
 import com.typesafe.scalalogging.LazyLogging
 import org.mongodb.scala._
-import com.mongodb.{BasicDBObject, DBObject}
 import org.bson.BsonDocument
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
@@ -16,6 +15,10 @@ import velocorner.util.JsonIo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
+
+import scalaz.std.list._
+import scalaz.std.scalaFuture._
+import scalaz.syntax.traverse.ToTraverseOps
 
 /**
   * Created by levi on 28/09/16.
@@ -30,46 +33,56 @@ class MongoDbStorage extends Storage with LazyLogging {
 
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = Future {
+  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    activities.foreach{ a =>
+    activities.toList.traverseU { a =>
       val json = JsonIo.write(a)
-      coll.updateOne(equal("id", a.id), json, new UpdateOptions().upsert(true))
-    }
+      coll
+        .updateOne(equal("id", a.id), json, new UpdateOptions()
+        .upsert(true))
+        .toFuture()
+    }.map(_ => ())
   }
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
 
-  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
+  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    val results = coll.find(and(equal("athlete.id", athleteId), equal("type", "Ride")))
-    val activities = results.map(JsonIo.read[Activity])
-    log.debug(s"found activities ${activities.size} for $athleteId")
-    DailyProgress.fromStorage(activities)
+    val results = coll
+      .find(and(equal("athlete.id", athleteId), equal("type", "Ride")))
+      .toFuture()
+    for {
+      docs <- results
+    } yield DailyProgress.fromStorage(docs.map(_.toJson()).map(JsonIo.read[Activity]))
   }
 
   override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE, "id").map(_.map(JsonIo.read[Activity]))
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = Future {
+  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    val query = $and("athlete.id" $eq athleteId, "type" $eq "Ride")
-    val results = coll.find(query).sort("{start_date:-1}").limit(limit)
-    val activities = results.map(JsonIo.read[Activity])
-    log.debug(s"found recent activities ${activities.size} for $athleteId")
-    activities
+    val results = coll
+      .find(and(equal("athlete.id", athleteId), equal("type", "Ride")))
+      .sort("{start_date:-1}")
+      .limit(limit)
+      .toFuture()
+    for {
+      docs <- results
+    } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
 
-  private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = Future {
+  private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)
-    val upd = idName $eq id
-    coll.update(upd, json, true, false)
+    coll
+      .updateOne(equal(idName, id), json, new UpdateOptions()
+        .upsert(true)).toFuture().map(_ => ())
   }
 
-  private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = Future {
+  private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = {
     val coll = db.getCollection(collName)
-    val query = idName $eq id
-    coll.find(query).headOption
+    for {
+      doc <- coll.find(equal(idName, id)).headOption
+    } yield doc.map(_.toJson())
   }
 
   // accounts
@@ -124,8 +137,4 @@ object MongoDbStorage {
   implicit def dbOrFail(db: Option[MongoDatabase]): MongoDatabase = db.getOrElse(sys.error("db is not initialized"))
 
   implicit def json2Bson(json: String): Bson = BsonDocument.parse(json)
-
-  //implicit def json2DbObject(json: String): DBObject = BasicDBObject.parse(json)
-
-  //implicit def cursor2Json(cursor: DBCursor): Seq[String] = cursor.toArray.asScala.map(JSON.serialize(_))
 }
