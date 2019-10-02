@@ -18,7 +18,7 @@ val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
 val specsVersion = "4.7.1"
-val mockitoVersion = "3.0.0"
+val mockitoVersion = "3.1.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
