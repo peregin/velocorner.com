@@ -56,5 +56,5 @@ case class Progress(rides: Int,
     this.longestElevation
   )
 
-  def factor[T : Numeric : FromDouble](v: T, f: Double): T = v.toDouble() * f
+  def factor[T : Numeric : FromDouble](v: T, f: Double): T = v.toDouble * f
 }

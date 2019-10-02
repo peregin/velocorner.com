@@ -5,6 +5,7 @@ import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 import play.shaded.ahc.org.asynchttpclient.proxy.{ProxyServer, ProxyType}
@@ -14,11 +15,10 @@ import velocorner.SecretConfig
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import org.slf4s.Logging
 
 import scala.concurrent.ExecutionContext
 
-object HttpFeed extends Logging {
+object HttpFeed extends LazyLogging {
 
   implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()

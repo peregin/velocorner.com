@@ -1,6 +1,6 @@
 package velocorner.feed
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.SecretConfig
 import velocorner.model.strava.{Activity, Athlete}
@@ -8,13 +8,12 @@ import velocorner.util.JsonIo
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Implementation to connect with Strava REST API
  */
-object StravaActivityFeed extends Logging {
+object StravaActivityFeed extends LazyLogging {
 
   val baseUrl = "https://www.strava.com/api/v3"
   val accessTokenUrl = s"${StravaActivityFeed.baseUrl}/oauth/token"
@@ -29,7 +28,7 @@ object StravaActivityFeed extends Logging {
     def list(page: Int, accu: List[Activity]): Future[List[Activity]] = {
       for {
         activities <- feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
-        _ = log.debug(s"page $page, activities ${activities.size}")
+        _ = logger.debug(s"page $page, activities ${activities.size}")
         next <- if (activities.size < StravaActivityFeed.maxItemsPerPage) Future(activities ++ accu) else list(page + 1, activities ++ accu)
       } yield next
     }
@@ -37,11 +36,11 @@ object StravaActivityFeed extends Logging {
   }
 }
 
-class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with ActivityFeed with Logging {
+class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with ActivityFeed with LazyLogging {
 
   val token = maybeToken.getOrElse(config.getToken("strava")) // dedicated token after authentication or application generic
   val clientId = config.getId("strava")
-  log.info(s"connecting to strava with token [$token] and clientId[$clientId]...")
+  logger.info(s"connecting to strava with token [$token] and clientId[$clientId]...")
   val authHeader = s"Bearer $token"
 
   // clubs

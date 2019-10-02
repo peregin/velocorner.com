@@ -3,18 +3,16 @@ package velocorner.storage
 import com.rethinkdb.RethinkDB
 import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
+import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
-import org.slf4s.Logging
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 import scala.language.implicitConversions
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -25,7 +23,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   *   r.db('velocorner').table('activity');
   * </code>
   */
-class RethinkDbStorage extends Storage with Logging {
+class RethinkDbStorage extends Storage with LazyLogging {
 
   lazy val client = RethinkDB.r
   @volatile var maybeConn: Option[Connection] = None
@@ -38,7 +36,7 @@ class RethinkDbStorage extends Storage with Logging {
     }.foreach{json =>
       // TODO: bulk store
       val result: java.util.HashMap[String, String] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
-      log.debug(s"result $result")
+      logger.debug(s"result $result")
     }
   }
 
@@ -52,7 +50,7 @@ class RethinkDbStorage extends Storage with Logging {
       field1.eq(athleteId).and(field2.eq("Ride"))
     }).run(maybeConn)
     val activities = result2Activity(result.toList.asScala.toList)
-    log.debug(s"found activities ${activities.size} for $athleteId")
+    logger.debug(s"found activities ${activities.size} for $athleteId")
     DailyProgress.fromStorage(activities)
   }
 
@@ -66,7 +64,7 @@ class RethinkDbStorage extends Storage with Logging {
       field1.eq(athleteId).and(field2.eq("Ride"))
     }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn)
     val activities = result2Activity(result.asScala.toList)
-    log.debug(s"found recent activities ${activities.size} for $athleteId")
+    logger.debug(s"found recent activities ${activities.size} for $athleteId")
     activities
   }
 
@@ -78,7 +76,7 @@ class RethinkDbStorage extends Storage with Logging {
   private def upsert[T](jsText: T, table: String): Future[Unit] = Future {
     val json = client.json(jsText)
     val result: java.util.HashMap[String, String] = client.table(table).insert(json).optArg("conflict", "update").run(maybeConn)
-    log.debug(s"result $result")
+    logger.debug(s"result $result")
   }
 
   private def getJsonById(id: Long, table: String): Future[Option[String]] = Future {
@@ -114,7 +112,7 @@ class RethinkDbStorage extends Storage with Logging {
   override def getAchievementStorage(): AchievementStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
-  override def initialize() {
+  override def initialize(): Unit = {
     val conn = client.connection().hostname("localhost").port(28015).connect()
 
     // create database if not present
@@ -124,7 +122,7 @@ class RethinkDbStorage extends Storage with Logging {
     conn.use(DB_NAME)
 
     // create tables if not present
-    def createIfNotExists(tables: String*) {
+    def createIfNotExists(tables: String*): Unit = {
       val tableNames: java.util.ArrayList[String] = client.tableList().run(conn)
       tables.foreach{ t =>
         if (!tableNames.contains(t)) client.tableCreate(t).run(conn)
@@ -133,11 +131,11 @@ class RethinkDbStorage extends Storage with Logging {
     createIfNotExists(ACTIVITY_TABLE, ACCOUNT_TABLE, ATHLETE_TABLE, CLUB_TABLE)
 
     maybeConn = Some(conn)
-    log.info(s"connected with $conn")
+    logger.info(s"connected with $conn")
   }
 
   // releases any connections, resources used
-  override def destroy() {
+  override def destroy(): Unit = {
     maybeConn.close
   }
 

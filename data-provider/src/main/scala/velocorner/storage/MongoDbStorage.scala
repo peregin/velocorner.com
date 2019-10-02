@@ -1,21 +1,19 @@
 package velocorner.storage
 
+import com.mongodb.client.model.UpdateOptions
+import com.typesafe.scalalogging.LazyLogging
+import org.mongodb.scala._
+import com.mongodb.{BasicDBObject, DBObject}
+import org.mongodb.scala.bson.conversions.Bson
+import org.mongodb.scala.model.Filters._
 import velocorner.model._
-import velocorner.util.JsonIo
-import MongoDbStorage._
-import com.mongodb.{DBCursor, DBObject}
-import com.mongodb.casbah.{MongoClient, MongoDB}
-import com.mongodb.util.JSON
-import com.mongodb.casbah.query.Imports._
-import org.slf4s.Logging
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.{SunriseSunset, WeatherForecast}
-
-import scala.language.implicitConversions
-import collection.JavaConverters._
-import scala.concurrent.Future
+import velocorner.storage.MongoDbStorage._
+import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.language.implicitConversions
 
 /**
   * Created by levi on 28/09/16.
@@ -23,10 +21,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * TODO: use bulk upsert
   * TODO: use async API
   */
-class MongoDbStorage extends Storage with Logging {
+class MongoDbStorage extends Storage with LazyLogging {
 
   lazy val client = MongoClient()
-  @volatile var db: Option[MongoDB] = None
+  @volatile var db: Option[MongoDatabase] = None
 
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -34,8 +32,7 @@ class MongoDbStorage extends Storage with Logging {
     val coll = db.getCollection(ACTIVITY_TABLE)
     activities.foreach{ a =>
       val json = JsonIo.write(a)
-      val upd = "id" $eq a.id
-      coll.update(upd, json, true, false)
+      coll.updateOne(equal("id", a.id), json, new UpdateOptions().upsert(true))
     }
   }
 
@@ -99,8 +96,8 @@ class MongoDbStorage extends Storage with Logging {
   override def getAchievementStorage(): AchievementStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
-  override def initialize() {
-    db = Some(client.getDB(DB_NAME))
+  override def initialize(): Unit = {
+    db = Some(client.getDatabase(DB_NAME))
     db.getCollection(ACTIVITY_TABLE).createIndex("{id:1}", "id", true)
     db.getCollection(ACCOUNT_TABLE).createIndex("{athleteId:1}", "athleteId", true)
     db.getCollection(CLUB_TABLE).createIndex("{id:1}", "id", true)
@@ -108,7 +105,7 @@ class MongoDbStorage extends Storage with Logging {
   }
 
   // releases any connections, resources used
-  override def destroy() {
+  override def destroy(): Unit = {
     client.close()
   }
 
@@ -123,9 +120,9 @@ object MongoDbStorage {
   val CLUB_TABLE = "club"
   val ATHLETE_TABLE = "athlete"
 
-  implicit def dbOrFail(db: Option[MongoDB]): MongoDB = db.getOrElse(sys.error("db is not initialized"))
+  implicit def dbOrFail(db: Option[MongoDatabase]): MongoDatabase = db.getOrElse(sys.error("db is not initialized"))
 
-  implicit def json2DbObject(json: String): DBObject = JSON.parse(json).asInstanceOf[DBObject]
+  //implicit def json2DbObject(json: String): DBObject = BasicDBObject.parse(json)
 
-  implicit def cursor2Json(cursor: DBCursor): Seq[String] = cursor.toArray.asScala.map(JSON.serialize(_))
+  //implicit def cursor2Json(cursor: DBCursor): Seq[String] = cursor.toArray.asScala.map(JSON.serialize(_))
 }

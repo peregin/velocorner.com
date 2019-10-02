@@ -1,11 +1,10 @@
 package velocorner.util
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import velocorner.model.weather.{Weather, WeatherCode}
 
 import scala.io.Source
 import scala.util.{Failure, Try}
-import scala.util.Success
 
 /**
   * Utility to convert the weather code mappings into the model.
@@ -16,7 +15,7 @@ import scala.util.Success
   * 501	moderate rain	                10d icon-weather-007
   *
   */
-object WeatherCodeUtils extends Logging {
+object WeatherCodeUtils extends LazyLogging {
 
   lazy val code2Model = fromResources()
 
@@ -46,7 +45,7 @@ object WeatherCodeUtils extends Logging {
 
     // log errors
     entries.foreach{_ match {
-      case Failure(e) => log.error("failed to parse line", e)
+      case Failure(e) => logger.error("failed to parse line", e)
       case _ =>
     }}
     
