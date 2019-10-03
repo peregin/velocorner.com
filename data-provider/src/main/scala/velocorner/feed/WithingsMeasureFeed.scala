@@ -27,7 +27,7 @@ class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretC
   private def signer = new OAuthCalculator(WithingsMeasureFeed.consumerKey(config), token) {
     override def calculateAndAddSignature(request: Request, requestBuilder: RequestBuilderBase[_]): Unit = {
       super.calculateAndAddSignature(request, requestBuilder)
-      val maybeAuthHeader = request.getHeaders.asScala.toSeq.filter(m => m.getKey.compareToIgnoreCase("Authorization") == 0).headOption
+      val maybeAuthHeader = request.getHeaders.asScala.toSeq.find(m => m.getKey.compareToIgnoreCase("Authorization") == 0)
       maybeAuthHeader.foreach{h =>
         val auth = h.getValue
         logger.info(s"auth header: $auth")

@@ -12,7 +12,7 @@ object StatusInfo {
   }, (mode: play.api.Mode) => JsString(mode.toString))
 
 
-  val writes = new Writes[StatusInfo] {
+  private val writes = new Writes[StatusInfo] {
     override def writes(o: StatusInfo): JsValue = {
       val baseJs: JsObject = Json.writes[StatusInfo].writes(o).as[JsObject]
       val typeJs: JsString = Writes.StringWrites.writes("Status")

@@ -25,7 +25,7 @@ import scala.language.implicitConversions
   */
 class RethinkDbStorage extends Storage with LazyLogging {
 
-  lazy val client = RethinkDB.r
+  private lazy val client = RethinkDB.r
   @volatile var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -69,8 +69,8 @@ class RethinkDbStorage extends Storage with LazyLogging {
   }
 
   private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] = {
-    val mapList = result//result.toList.asScala.toList
-    mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity] _)
+    val mapList = result //result.toList.asScala.toList
+    mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity])
   }
 
   private def upsert[T](jsText: T, table: String): Future[Unit] = Future {
@@ -136,10 +136,10 @@ class RethinkDbStorage extends Storage with LazyLogging {
 
   // releases any connections, resources used
   override def destroy(): Unit = {
-    maybeConn.close
+    maybeConn.close()
   }
 
-  override def backup(fileName: String) = ???
+  override def backup(fileName: String): Unit = ???
 }
 
 object RethinkDbStorage {
@@ -152,7 +152,5 @@ object RethinkDbStorage {
 
   implicit def convert(conn: Option[Connection]): Connection = conn.getOrElse(sys.error("connection is not initialized"))
 
-  implicit def reqlFunction1(fun: (ReqlExpr) => Object): ReqlFunction1 = new ReqlFunction1 {
-    override def apply(arg1: ReqlExpr): Object = fun(arg1)
-  }
+  implicit def reqlFunction1(fun: ReqlExpr => Object): ReqlFunction1 = (arg1: ReqlExpr) => fun(arg1)
 }

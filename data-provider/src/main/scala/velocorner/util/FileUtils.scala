@@ -25,12 +25,12 @@ object FileUtils extends CloseableResource with LazyLogging {
   private def addDirToArchive(zos: ZipOutputStream, file: File): Unit = {
     file.listFiles().foreach{entry =>
       if (entry.isDirectory) {
-        logger.debug(s"adding directory ${entry.getName()} to archive")
+        logger.debug(s"adding directory ${entry.getName} to archive")
         addDirToArchive(zos, entry)
       } else {
-        logger.debug(s"adding file ${entry.getName()} to archive")
+        logger.debug(s"adding file ${entry.getName} to archive")
         withCloseable(new FileInputStream(entry)) { fis =>
-          zos.putNextEntry(new ZipEntry(entry.getName()));
+          zos.putNextEntry(new ZipEntry(entry.getName))
           IOUtils.copy(fis, zos)
           zos.closeEntry()
         }
