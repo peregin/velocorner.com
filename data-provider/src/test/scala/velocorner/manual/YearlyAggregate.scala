@@ -1,7 +1,7 @@
 package velocorner.manual
 
-import org.slf4s.Logging
-import velocorner.model.{YearlyProgress, Progress}
+import com.typesafe.scalalogging.LazyLogging
+import velocorner.model.{Progress, YearlyProgress}
 
 /**
  * Created by levi on 17/08/15.
@@ -14,9 +14,9 @@ object YearlyAggregate {
   }
 }
 
-case class YearlyAggregate(year: Int, aggregate: Progress) extends Logging {
+case class YearlyAggregate(year: Int, aggregate: Progress) extends LazyLogging {
 
-  def prettyPrint() {
-    log.info(f"year $year -> ${aggregate.distance}%6.0f km, ${aggregate.elevation}%7.0f \u2191m, ${aggregate.rides}%4d rides")
+  def prettyPrint(): Unit = {
+    logger.info(f"year $year -> ${aggregate.distance}%6.0f km, ${aggregate.elevation}%7.0f \u2191m, ${aggregate.rides}%4d rides")
   }
 }

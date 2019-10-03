@@ -185,7 +185,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   override def getAchievementStorage(): AchievementStorage = achievementStorage
 
   // initializes any connections, pools, resources needed to open a storage session
-  override def initialize() {
+  override def initialize(): Unit = {
     val config =
       s"""
          |<orient-server>
@@ -240,7 +240,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
       case class IndexSetup(indexField: String, indexType: OType)
 
-      def createIxIfNeeded(className: String, index: IndexSetup*) {
+      def createIxIfNeeded(className: String, index: IndexSetup*): Unit = {
         val schema = odb.getMetadata.getSchema
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
@@ -281,7 +281,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 
   // releases any connections, resources used
-  override def destroy() {
+  override def destroy(): Unit = {
     server.foreach(_.shutdown())
     server = None
     logger.info("database has been closed...")
@@ -357,7 +357,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           val doc = accuResults.headOption.getOrElse(new ODocument(className))
           doc.fromJSON(JsonIo.write(payload))
           doc.save()
-          promise.success(Unit)
+          promise.success(())
         }
 
         override def getResult: AnyRef = null

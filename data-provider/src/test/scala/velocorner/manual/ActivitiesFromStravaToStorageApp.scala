@@ -1,11 +1,11 @@
 package velocorner.manual
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
-object AthleteFromStravaToStorageApp extends App with Logging with AwaitSupport with MyMacConfig {
+object AthleteFromStravaToStorageApp extends App with LazyLogging with AwaitSupport with MyMacConfig {
 
   private val config = SecretConfig.load()
   implicit val feed = new StravaActivityFeed(None, config)
@@ -16,7 +16,7 @@ object AthleteFromStravaToStorageApp extends App with Logging with AwaitSupport 
   val activities = await(StravaActivityFeed.listAllAthleteActivities)
   await(storage.storeActivity(activities))
 
-  log.info("done...")
+  logger.info("done...")
   storage.destroy()
   feed.close()
   HttpFeed.shutdown()

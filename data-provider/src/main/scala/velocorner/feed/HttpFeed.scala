@@ -12,7 +12,7 @@ import play.shaded.ahc.org.asynchttpclient.proxy.{ProxyServer, ProxyType}
 import play.shaded.ahc.org.asynchttpclient.{DefaultAsyncHttpClient, DefaultAsyncHttpClientConfig, Realm}
 import velocorner.SecretConfig
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -23,10 +23,10 @@ object HttpFeed extends LazyLogging {
   implicit val system = ActorSystem.create("ws-feed")
   implicit val materializer = ActorMaterializer()
   val processors = sys.runtime.availableProcessors()
-  //log.info(s"available processors $processors")
+  logger.info(s"available processors $processors")
   implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
 
-  def shutdown() {
+  def shutdown(): Unit = {
     materializer.shutdown()
     system.terminate()
   }

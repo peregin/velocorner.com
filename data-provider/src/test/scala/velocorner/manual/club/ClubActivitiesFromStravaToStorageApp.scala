@@ -1,25 +1,25 @@
 package velocorner.manual.club
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
-import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
+import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.model.strava.Club
 import velocorner.storage.Storage
 import velocorner.util.CloseableResource
 
-object ClubActivitiesFromStravaToStorageApp extends App with Logging with CloseableResource with AwaitSupport with MyMacConfig {
+object ClubActivitiesFromStravaToStorageApp extends App with LazyLogging with CloseableResource with AwaitSupport with MyMacConfig {
 
-  log.info("initializing...")
+  logger.info("initializing...")
   withCloseable(new StravaActivityFeed(None, SecretConfig.load())) { feed =>
     val storage = Storage.create("co")
     storage.initialize()
 
-    log.info("retrieving...")
+    logger.info("retrieving...")
     val activities = await(feed.listRecentClubActivities(Club.Velocorner))
-    log.info("storing...")
+    logger.info("storing...")
     await(storage.storeActivity(activities))
-    log.info("done...")
+    logger.info("done...")
 
     storage.destroy()
   }

@@ -1,7 +1,7 @@
 package velocorner.storage
 
 import com.rethinkdb.RethinkDB
-import com.rethinkdb.gen.ast.{GetField, ReqlExpr, ReqlFunction1}
+import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
@@ -11,9 +11,9 @@ import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
-import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by levi on 14/09/16.
@@ -47,7 +47,7 @@ class RethinkDbStorage extends Storage with LazyLogging {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
-      field1.eq(athleteId).and(field2.eq("Ride"))
+      field1.eq(athleteId, Nil).and(field2.eq("Ride", Nil))
     }).run(maybeConn)
     val activities = result2Activity(result.toList.asScala.toList)
     logger.debug(s"found activities ${activities.size} for $athleteId")
@@ -61,7 +61,7 @@ class RethinkDbStorage extends Storage with LazyLogging {
     val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
-      field1.eq(athleteId).and(field2.eq("Ride"))
+      field1.eq(athleteId, Nil).and(field2.eq("Ride", Nil))
     }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn)
     val activities = result2Activity(result.asScala.toList)
     logger.debug(s"found recent activities ${activities.size} for $athleteId")

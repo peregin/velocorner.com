@@ -35,8 +35,6 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   val allowedHosts: Seq[String] = connectivity.allowedHosts
   private val statusInfo = StatusInfo.create(environment.mode)
 
-  private val logger = Logger.of(this.getClass)
-
   // def mapped to /api/status
   def status = Action { implicit request =>
     Ok(Json.toJson(statusInfo))
@@ -176,7 +174,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     val resultTF = for {
       account <- OptionT(Future(loggedIn))
       types <- storage.listActivityTypes(account.athleteId).liftM[OptionT]
-      _ = log.debug(s"account ${account.displayName} did ${types.mkString(",")}")
+      _ = logger.debug(s"account ${account.displayName} did ${types.mkString(",")}")
     } yield types
 
     resultTF

@@ -1,13 +1,13 @@
 package velocorner.manual
 
+import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.LocalDate
-import org.slf4s.Logging
 import velocorner.model.{DailyProgress, YearlyProgress}
 
 /**
  * Created by levi on 13/04/15.
  */
-trait AggregateActivities extends Logging {
+trait AggregateActivities extends LazyLogging {
 
   def printAllProgress(cyclingActivities: Iterable[DailyProgress]) {
     printAll(YearlyProgress.from(cyclingActivities))
@@ -15,13 +15,13 @@ trait AggregateActivities extends Logging {
 
   def printAll(yearly: Iterable[YearlyProgress]) {
     // everything
-    log.info("TOTAL")
+    logger.info("TOTAL")
     printProgress(yearly)
 
     // every progress until current day
     val now = LocalDate.now()
     val cyclingActivitiesUntilThisDay = yearly.map(_.ytd(now))
-    log.info(s"YEAR TO DATE $now")
+    logger.info(s"YEAR TO DATE $now")
     printProgress(cyclingActivitiesUntilThisDay)
   }
 
