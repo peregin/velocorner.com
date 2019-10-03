@@ -12,7 +12,7 @@ object StatusInfo {
   }, (mode: play.api.Mode) => JsString(mode.toString))
 
 
-  val writes = new Writes[StatusInfo] {
+  private val writes = new Writes[StatusInfo] {
     override def writes(o: StatusInfo): JsValue = {
       val baseJs: JsObject = Json.writes[StatusInfo].writes(o).as[JsObject]
       val typeJs: JsString = Writes.StringWrites.writes("Status")
@@ -24,15 +24,14 @@ object StatusInfo {
 
   def create(applicationMode: play.api.Mode): StatusInfo = new StatusInfo(
     applicationMode = applicationMode,
-    buildTime = buildinfo.BuildInfo.buildTime,
-    appVersion = buildinfo.BuildInfo.version,
-    scalaVersion = buildinfo.BuildInfo.scalaVersion,
-    sbtVersion = buildinfo.BuildInfo.sbtVersion,
-    scalazVersion = buildinfo.BuildInfo.scalazVersion,
-    elasticVersion = buildinfo.BuildInfo.elasticVersion,
-    playVersion = buildinfo.BuildInfo.playVersion
+    buildTime = velocorner.build.BuildInfo.buildTime,
+    appVersion = velocorner.build.BuildInfo.version,
+    scalaVersion = velocorner.build.BuildInfo.scalaVersion,
+    sbtVersion = velocorner.build.BuildInfo.sbtVersion,
+    scalazVersion = velocorner.build.BuildInfo.scalazVersion,
+    elasticVersion = velocorner.build.BuildInfo.elasticVersion,
+    playVersion = velocorner.build.BuildInfo.playVersion
   )
-
 }
 
 case class StatusInfo(

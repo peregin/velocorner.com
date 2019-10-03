@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
@@ -69,21 +69,21 @@ trait Storage {
   }
 
   // initializes any connections, pools, resources needed to open a storage session
-  def initialize()
+  def initialize(): Unit
 
   // releases any connections, resources used
-  def destroy()
+  def destroy(): Unit
 
   // backup database content into the given file
-  def backup(fileName: String)
+  def backup(fileName: String): Unit
 }
 
-object Storage extends Logging {
+object Storage extends LazyLogging {
 
   def create(dbType: String): Storage = create(dbType, SecretConfig.load())
 
   def create(dbType: String, config: SecretConfig): Storage = {
-    log.info(s"initializing storage $dbType ...")
+    logger.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
       case any if any.startsWith("re") => new RethinkDbStorage
       case any if any.startsWith("mo") => new MongoDbStorage
@@ -91,7 +91,7 @@ object Storage extends Logging {
       case unknown => sys.error(s"unknown storage type $unknown")
     }
 
-    log.info(s"connecting to ${storage.getClass.getSimpleName} storage...")
+    logger.info(s"connecting to ${storage.getClass.getSimpleName} storage...")
     storage
   }
 }

@@ -2,9 +2,9 @@ package velocorner.storage
 
 import java.io.File
 
+import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.io.FileUtils
 import org.joda.time.DateTime
-import org.slf4s.Logging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.manual.AwaitSupport
@@ -12,7 +12,7 @@ import velocorner.model.strava.Activity
 import velocorner.model.weather.{ForecastResponse, SunriseSunset, WeatherForecast}
 import velocorner.util.{FreePortFinder, JsonIo}
 
-class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSupport with Logging {
+class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSupport with LazyLogging {
 
   sequential
   stopOnFail
@@ -141,16 +141,16 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
   }
 
-  override def beforeAll() {
+  override def beforeAll(): Unit = {
     // eventually the port is already used if the application runs locally
     val serverPort = FreePortFinder.find()
-    log.info(s"running OrientDb on port $serverPort")
+    logger.info(s"running OrientDb on port $serverPort")
     storage = new OrientDbStorage("orientdb_data_test", MemoryStorage, serverPort)
     FileUtils.deleteDirectory(new File(storage.rootDir)) // cleanup previous incomplete test remainders
     storage.initialize()
   }
 
-  override def afterAll() {
+  override def afterAll(): Unit = {
     storage.destroy()
     FileUtils.deleteDirectory(new File(storage.rootDir))
     storage = null

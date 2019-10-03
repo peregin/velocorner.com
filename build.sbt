@@ -7,21 +7,19 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
-
+val projectScalaVersion = "2.13.1"
 val scalazVersion = "7.2.28"
-val zioVersion = "1.0-RC5"
+val zioVersion = "1.0.0-RC13"
 val logbackVersion = "1.2.3"
 val orientDbVersion = "3.0.23"
 val elasticVersion = "7.3.1"
-val log4jVersion = "2.12.1"
-val slf4sVersion = "1.7.25"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
 val specsVersion = "4.7.1"
-val mockitoVersion = "3.0.0"
+val mockitoVersion = "3.1.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
-val mongoClient = "org.mongodb" %% "casbah" % "3.1.1"
+val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
 val orientDb = Seq(
   "com.orientechnologies" % "orientdb-core" % orientDbVersion,
   "com.orientechnologies" % "orientdb-client" % orientDbVersion,
@@ -45,7 +43,7 @@ val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
-  "org.slf4s" %% "slf4s-api" % slf4sVersion,
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.codehaus.janino" % "janino" % "3.1.0", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
@@ -63,7 +61,7 @@ def scalaz = Seq(
 
 // starting from next release won't be part of scalaz
 def zio = Seq(
-  "org.scalaz" %% "scalaz-zio" % zioVersion,
+  "dev.zio" %% "zio" % zioVersion,
 )
 
 lazy val runDist: ReleaseStep = ReleaseStep(
@@ -75,7 +73,7 @@ lazy val runDist: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := "2.12.10",
+  scalaVersion := projectScalaVersion,
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
@@ -125,7 +123,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     buildSettings,
     name := "web-app",
     libraryDependencies ++= Seq(
-      guice, ehcache, playWsJsonStandalone, playTest, mockito, scalaSpec
+      guice, ehcache,
+      playWsJsonStandalone,
+      playTest, mockito, scalaSpec
     ),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
@@ -137,6 +137,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       "playVersion" -> play.core.PlayVersion.current,
       "scalazVersion" -> scalazVersion,
     ),
+    buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),

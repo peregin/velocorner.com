@@ -19,6 +19,7 @@ class StatusInfoSpec extends Specification {
     "marshal status" in {
       val json = JsonIo.write(status)
       json must contain(""""type" : "Status"""".stripMargin)
+      json must contain(""""buildTime" :""".stripMargin)
     }
   }
 }

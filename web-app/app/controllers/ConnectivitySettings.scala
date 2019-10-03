@@ -28,11 +28,13 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   configuration.getOptional[String]("storage.backup.directory")foreach{ directory =>
     val frequency = secretConfig.getBackupFrequency
     logger.info(s"backup at $frequency basis into $directory")
-    actorSystem.scheduler.schedule(FiniteDuration(1, "second"), frequency, () => {
-      val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH.mm.ss")
-      val now = DateTime.now(DateTimeZone.UTC).toString(timeFormatter)
-      val file = s"$directory/velocorner-$now.zip"
-      storage.backup(file)
+    actorSystem.scheduler.schedule(FiniteDuration(1, "second"), frequency, new Runnable {
+      override def run(): Unit = {
+        val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH.mm.ss")
+        val now = DateTime.now(DateTimeZone.UTC).toString(timeFormatter)
+        val file = s"$directory/velocorner-$now.zip"
+        storage.backup(file)
+      }
     })
   }
   logger.info("ready...")
@@ -45,7 +47,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def getWeatherFeed = new OpenWeatherFeed(secretConfig)
 
-  def disconnect() {
+  def disconnect(): Unit = {
     logger.info("releasing storage connections...")
     getStorage.destroy
     logger.info("stopped...")

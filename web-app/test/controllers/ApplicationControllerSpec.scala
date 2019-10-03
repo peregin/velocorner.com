@@ -2,7 +2,7 @@ package controllers
 
 import akka.util.Timeout
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.cache.SyncCacheApi
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}

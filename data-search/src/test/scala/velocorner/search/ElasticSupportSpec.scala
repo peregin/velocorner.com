@@ -2,13 +2,13 @@ package velocorner.search
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
 import velocorner.model.strava.Activity
 import velocorner.util.JsonIo
 
 
-class ElasticSupportSpec extends Specification with ElasticSupport with Logging {
+class ElasticSupportSpec extends Specification with ElasticSupport with LazyLogging {
 
   sequential
 
@@ -28,12 +28,12 @@ class ElasticSupportSpec extends Specification with ElasticSupport with Logging 
 
     "search" in {
       val res = client.execute(search("activity") matchQuery("name", "Uetli") limit 5).await
-      log.info(s"found $res")
+      logger.info(s"found $res")
 
       res.status === 200
       val hits = res.result.hits.hits
 
-      log.info(s"search results ${hits.mkString(",")}")
+      logger.info(s"search results ${hits.mkString(",")}")
       hits.length === 5
     }.pendingUntilFixed("LocalNode is not supported anymore")
   }

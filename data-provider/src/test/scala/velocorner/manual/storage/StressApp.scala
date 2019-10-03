@@ -2,7 +2,7 @@ package velocorner.manual.storage
 
 import java.util.concurrent.{CountDownLatch, Executors, ThreadFactory, TimeUnit}
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.{AggregateActivities, MyMacConfig}
 import velocorner.model.strava.Activity
 import velocorner.storage.Storage
@@ -15,7 +15,7 @@ import scala.util.control.Exception._
 /**
   * Created by levi on 19.11.16.
   */
-object StressApp extends App with Metrics with Logging with AggregateActivities with MyMacConfig {
+object StressApp extends App with Metrics with LazyLogging with AggregateActivities with MyMacConfig {
 
   val par = 10
   val latch = new CountDownLatch(par)
@@ -37,22 +37,22 @@ object StressApp extends App with Metrics with Logging with AggregateActivities 
     1 to par foreach { i =>
       Future {
         val activity = if (i % 2 == 0) {
-          log.info(s"start[$i] query activity...")
+          logger.info(s"start[$i] query activity...")
           storage.dailyProgressForAthlete(432909)
           "query"
         } else {
-          log.info(s"start[$i] store activity...")
+          logger.info(s"start[$i] store activity...")
           storage.storeActivity(activities)
           "store"
         }
-        log.info(s"done[$i] $activity activity...")
+        logger.info(s"done[$i] $activity activity...")
         latch.countDown()
       }
     }
 
     // wait for all
-    log.info("wait for the workers")
+    logger.info("wait for the workers")
     latch.await(10, TimeUnit.SECONDS)
-    log.info("done...")
+    logger.info("done...")
   }
 }

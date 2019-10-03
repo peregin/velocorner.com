@@ -1,11 +1,11 @@
 package velocorner.util
 
-import org.slf4s.Logging
+import com.typesafe.scalalogging.LazyLogging
 
 /**
  * Created by levi on 07/02/15.
  */
-trait Metrics extends Logging {
+trait Metrics extends LazyLogging {
 
   def timed[T](text: => String)(body: => T): T = {
     val mark = System.currentTimeMillis()
@@ -13,7 +13,7 @@ trait Metrics extends Logging {
       body
     } finally {
       val elapsed = System.currentTimeMillis() - mark
-      log.info(s"$text took $elapsed millis")
+      logger.info(s"$text took $elapsed millis")
     }
   }
 }

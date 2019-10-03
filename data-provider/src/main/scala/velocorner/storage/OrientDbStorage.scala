@@ -6,9 +6,8 @@ import com.orientechnologies.orient.core.command.{OCommandOutputListener, OComma
 import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
-import com.orientechnologies.orient.core.sql.query.{OSQLNonBlockingQuery}
+import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import com.orientechnologies.orient.server.OServer
-import org.slf4s.Logging
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
@@ -22,17 +21,20 @@ import scala.language.implicitConversions
 import scala.util.Try
 import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
+import com.typesafe.scalalogging.LazyLogging
 import scalaz._
-import Scalaz._
+import scalaz.std.list._
+import scalaz.syntax.std.option._
+import scalaz.std.scalaFuture._
 import scalaz.syntax.traverse.ToTraverseOps
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Created by levi on 14.11.16.
  */
 class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStorage, serverPort: Int = 2480)
-  extends Storage with CloseableResource with Metrics with Logging {
+  extends Storage with CloseableResource with Metrics with LazyLogging {
 
   var server: Option[OServer] = None
 
@@ -56,12 +58,12 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx() { db =>
     val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId GROUP BY name ORDER BY counter DESC")
-    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).toIterable
+    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
   }}
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = for {
     activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'")
-    _ = log.debug(s"found activities ${activities.size} for $athleteId")
+    _ = logger.debug(s"found activities ${activities.size} for $athleteId")
   } yield DailyProgress.fromStorage(activities)
 
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
@@ -140,7 +142,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName IS NOT NULL"))
           .filter(_.res_value > 0L)
         minResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
-        _ = log.debug(s"min[$fieldName]=${minResult.res_value}")
+        _ = logger.debug(s"min[$fieldName]=${minResult.res_value}")
         activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName <= ${minResult.res_value + tolerance} ORDER BY $fieldName ASC LIMIT 1"))
         minValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
@@ -157,7 +159,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName IS NOT NULL"))
           .filter(_.res_value > 0L)
         maxResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride'"))
-        _ = log.debug(s"max[$fieldName]=${maxResult.res_value}")
+        _ = logger.debug(s"max[$fieldName]=${maxResult.res_value}")
         activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' AND $fieldName >= ${maxResult.res_value - tolerance} ORDER BY $fieldName DESC LIMIT 1"))
         maxValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
@@ -183,7 +185,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   override def getAchievementStorage(): AchievementStorage = achievementStorage
 
   // initializes any connections, pools, resources needed to open a storage session
-  override def initialize() {
+  override def initialize(): Unit = {
     val config =
       s"""
          |<orient-server>
@@ -238,7 +240,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
       case class IndexSetup(indexField: String, indexType: OType)
 
-      def createIxIfNeeded(className: String, index: IndexSetup*) {
+      def createIxIfNeeded(className: String, index: IndexSetup*): Unit = {
         val schema = odb.getMetadata.getSchema
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
@@ -253,7 +255,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
       }
 
-      def dropIx(className: String, ixName: String) {
+      def dropIx(className: String, ixName: String): Unit = {
         val ixManager = odb.getMetadata.getIndexManager
         // old name was without hyphen, try both versions
         val names = Seq(s"$ixName$className", s"$ixName-$className")
@@ -279,15 +281,15 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 
   // releases any connections, resources used
-  override def destroy() {
+  override def destroy(): Unit = {
     server.foreach(_.shutdown())
     server = None
-    log.info("database has been closed...")
+    logger.info("database has been closed...")
   }
 
   override def backup(fileName: String) = timed("backup") {
     val listener = new OCommandOutputListener {
-      override def onMessage(iText: String)= log.trace(s"backup $iText")
+      override def onMessage(iText: String)= logger.trace(s"backup $iText")
     }
     withCloseable(new FileOutputStream(fileName)) { fos =>
       server.foreach { s =>
@@ -324,10 +326,10 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           true
         }
 
-        override def end() {
+        override def end(): Unit = {
           // might be called twice in case of failure
           if (!promise.isCompleted) {
-            promise.success(accuResults)
+            promise.success(accuResults.toSeq)
           }
         }
 
@@ -351,11 +353,11 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           false
         }
 
-        override def end() {
+        override def end(): Unit = {
           val doc = accuResults.headOption.getOrElse(new ODocument(className))
           doc.fromJSON(JsonIo.write(payload))
           doc.save()
-          promise.success(Unit)
+          promise.success(())
         }
 
         override def getResult: AnyRef = null
