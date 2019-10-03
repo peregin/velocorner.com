@@ -24,15 +24,14 @@ object StatusInfo {
 
   def create(applicationMode: play.api.Mode): StatusInfo = new StatusInfo(
     applicationMode = applicationMode,
-    buildTime = buildinfo.BuildInfo.buildTime,
-    appVersion = buildinfo.BuildInfo.version,
-    scalaVersion = buildinfo.BuildInfo.scalaVersion,
-    sbtVersion = buildinfo.BuildInfo.sbtVersion,
-    scalazVersion = buildinfo.BuildInfo.scalazVersion,
-    elasticVersion = buildinfo.BuildInfo.elasticVersion,
-    playVersion = buildinfo.BuildInfo.playVersion
+    buildTime = velocorner.build.BuildInfo.buildTime,
+    appVersion = velocorner.build.BuildInfo.version,
+    scalaVersion = velocorner.build.BuildInfo.scalaVersion,
+    sbtVersion = velocorner.build.BuildInfo.sbtVersion,
+    scalazVersion = velocorner.build.BuildInfo.scalazVersion,
+    elasticVersion = velocorner.build.BuildInfo.elasticVersion,
+    playVersion = velocorner.build.BuildInfo.playVersion
   )
-
 }
 
 case class StatusInfo(

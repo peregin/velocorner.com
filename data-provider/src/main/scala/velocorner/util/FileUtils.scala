@@ -16,13 +16,13 @@ object FileUtils extends CloseableResource with LazyLogging {
     tmpDir.resolve(name).toString
   }
 
-  def zipDir(dirName: String, fileName: String) {
+  def zipDir(dirName: String, fileName: String): Unit = {
     withCloseable(new ZipOutputStream(new FileOutputStream(fileName))) { zos =>
       addDirToArchive(zos, new File(dirName))
     }
   }
 
-  private def addDirToArchive(zos: ZipOutputStream, file: File) {
+  private def addDirToArchive(zos: ZipOutputStream, file: File): Unit = {
     file.listFiles().foreach{entry =>
       if (entry.isDirectory) {
         logger.debug(s"adding directory ${entry.getName()} to archive")

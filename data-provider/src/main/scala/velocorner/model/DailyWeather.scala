@@ -17,10 +17,12 @@ object DailyWeather {
       .toSeq.sortBy(_.day.toString)
   }
 
+  import Ordering.Float.IeeeOrdering
+
   def from(day: LocalDate, pointsForThisDay: Iterable[Weather]): DailyWeather = {
     val tempMin = pointsForThisDay.map(_.main.temp_min).min // celsius
     val tempMax = pointsForThisDay.map(_.main.temp_max).max // celsius
-    val windMax = pointsForThisDay.map(_.wind.speed).max.toFloat * 3.6f // m/s to km/h
+    val windMax = pointsForThisDay.map(_.wind.speed).max(Ordering.Double.IeeeOrdering).toFloat * 3.6f // m/s to km/h
     val bootstrapIcon = WeatherCodeUtils.bootstrapIcon(WeatherCodeUtils.dailyWeatherCode(pointsForThisDay)) // bootstrap weather icon
     new DailyWeather(day, pointsForThisDay, tempMin, tempMax, windMax, bootstrapIcon)
   }

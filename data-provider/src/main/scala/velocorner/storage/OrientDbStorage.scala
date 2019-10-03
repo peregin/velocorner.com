@@ -28,7 +28,7 @@ import scalaz.syntax.std.option._
 import scalaz.std.scalaFuture._
 import scalaz.syntax.traverse.ToTraverseOps
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Created by levi on 14.11.16.
@@ -58,7 +58,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx() { db =>
     val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId GROUP BY name ORDER BY counter DESC")
-    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).toIterable
+    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
   }}
 
   override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = for {
@@ -255,7 +255,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
       }
 
-      def dropIx(className: String, ixName: String) {
+      def dropIx(className: String, ixName: String): Unit = {
         val ixManager = odb.getMetadata.getIndexManager
         // old name was without hyphen, try both versions
         val names = Seq(s"$ixName$className", s"$ixName-$className")
@@ -326,7 +326,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           true
         }
 
-        override def end() {
+        override def end(): Unit = {
           // might be called twice in case of failure
           if (!promise.isCompleted) {
             promise.success(accuResults.toSeq)
@@ -353,7 +353,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
           false
         }
 
-        override def end() {
+        override def end(): Unit = {
           val doc = accuResults.headOption.getOrElse(new ODocument(className))
           doc.fromJSON(JsonIo.write(payload))
           doc.save()

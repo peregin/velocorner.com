@@ -137,12 +137,14 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       "playVersion" -> play.core.PlayVersion.current,
       "scalazVersion" -> scalazVersion,
     ),
+    buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
-    dockerBaseImage in Docker := "java:8"
+    dockerBaseImage in Docker := "java:8",
+    swaggerDomainNameSpaces := Seq("models")
   )
-  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin)
+  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 

@@ -75,7 +75,7 @@ trait Storage {
   def destroy(): Unit
 
   // backup database content into the given file
-  def backup(fileName: String)
+  def backup(fileName: String): Unit
 }
 
 object Storage extends LazyLogging {

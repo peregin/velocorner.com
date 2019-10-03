@@ -7,7 +7,7 @@ import velocorner.SecretConfig
 
 import scala.concurrent.Await
 import scala.language.postfixOps
-import collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
 * Implementation to connect with Withings REST API

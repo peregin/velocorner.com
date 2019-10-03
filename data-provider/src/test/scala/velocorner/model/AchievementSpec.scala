@@ -12,7 +12,7 @@ class AchievementSpec extends Specification {
     "be idempotent" in {
       val achievement = new Achievement(
         value = 12.5d,
-        activityId = 123l,
+        activityId = 123L,
         activityName = "name",
         activityTime = now
       )

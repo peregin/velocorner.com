@@ -10,7 +10,7 @@ import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions

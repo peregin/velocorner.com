@@ -9,11 +9,11 @@ import velocorner.model.{DailyProgress, YearlyProgress}
  */
 trait AggregateActivities extends LazyLogging {
 
-  def printAllProgress(cyclingActivities: Iterable[DailyProgress]) {
+  def printAllProgress(cyclingActivities: Iterable[DailyProgress]): Unit = {
     printAll(YearlyProgress.from(cyclingActivities))
   }
 
-  def printAll(yearly: Iterable[YearlyProgress]) {
+  def printAll(yearly: Iterable[YearlyProgress]): Unit = {
     // everything
     logger.info("TOTAL")
     printProgress(yearly)
@@ -25,7 +25,7 @@ trait AggregateActivities extends LazyLogging {
     printProgress(cyclingActivitiesUntilThisDay)
   }
 
-  protected def printProgress(byYear: Iterable[YearlyProgress]) {
+  protected def printProgress(byYear: Iterable[YearlyProgress]): Unit = {
     val aggregateByYear = byYear.map(YearlyAggregate.from)
     aggregateByYear.foreach(_.prettyPrint())
   }
