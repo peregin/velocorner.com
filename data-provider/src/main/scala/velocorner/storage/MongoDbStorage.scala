@@ -68,7 +68,7 @@ class MongoDbStorage extends Storage with LazyLogging {
       .toFuture()
     for {
       docs <- results
-    } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
+    } yield docs.map(_.toJson()).map(JsonIo.read[Activity]) 
   }
 
   private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = {
