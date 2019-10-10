@@ -25,9 +25,6 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.3")
 // Generate swagger doc from the routes
 addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.7.8-PLAY2.7")
 
-// Library to fetch dependencies from Maven / Ivy repositories super fast - from version 1.1.0-M4
-addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.1.0-M13-4")
-
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 
