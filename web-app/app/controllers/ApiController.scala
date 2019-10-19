@@ -7,7 +7,6 @@ import highcharts._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
 import org.reactivestreams.Subscriber
-import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -40,17 +39,17 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     Ok(Json.toJson(statusInfo))
   }
 
-  // def mapped to /api/athletes/statistics/progress
+  // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
-  def ytdProfile = AuthAsyncAction { implicit request =>
+  def ytdProfile(activity: String) = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
     val now = LocalDate.now()
     val currentYear = now.getYear
 
     val statisticsOT = for {
       account <- OptionT(Future(loggedIn))
-      _ = logger.info(s"athlete statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
       yearlyProgress = YearlyProgress.from(dailyProgress)
       aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
       currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
@@ -62,14 +61,14 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       .map(Ok(_))
   }
 
-  // route mapped to /api/athletes/statistics/yearly/:action
-  def yearlyStatistics(action: String) = AuthAsyncAction { implicit request =>
+  // route mapped to /api/athletes/statistics/yearly/:action/:activity
+  def yearlyStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
 
     val result = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
       yearlyProgress = YearlyProgress.from(dailyProgress)
     } yield yearlyProgress
 
@@ -85,15 +84,15 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   }
 
   // year to date aggregation
-  // route mapped to /api/athletes/statistics/ytd/:action
-  def ytdStatistics(action: String) = AuthAsyncAction { implicit request =>
+  // route mapped to /api/athletes/statistics/ytd/:action/:activity
+  def ytdStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
     val now = LocalDate.now()
     val storage = connectivity.getStorage
 
     val result = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId).liftM[OptionT]
+      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
       yearlyProgress = YearlyProgress.from(dailyProgress)
       ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
         YearlyProgress(ytd.year, Seq(
@@ -111,19 +110,19 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
       .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
   }
 
-  // list of achievemnts
-  // route mapped to /api/statistics/achievements
-  def achievements() = AuthAsyncAction { implicit request =>
+  // list of achievements
+  // route mapped to /api/statistics/achievements/:activity
+  def achievements(activity: String) = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage.getAchievementStorage()
     loggedIn.map{ account =>
       // parallelization
-      val maxSpeedF = storage.maxSpeed(account.athleteId)
-      val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId)
-      val maxDistanceF = storage.maxDistance(account.athleteId)
-      val maxElevationF = storage.maxElevation(account.athleteId)
-      val maxAveragePowerF = storage.maxAveragePower(account.athleteId)
-      val maxHeartRateF = storage.maxHeartRate(account.athleteId)
-      val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId)
+      val maxSpeedF = storage.maxSpeed(account.athleteId, activity)
+      val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
+      val maxDistanceF = storage.maxDistance(account.athleteId, activity)
+      val maxElevationF = storage.maxElevation(account.athleteId, activity)
+      val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
+      val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
+      val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
       val achievements = for {
         maxSpeed <- maxSpeedF
         maxAverageSpeed <- maxAverageSpeedF

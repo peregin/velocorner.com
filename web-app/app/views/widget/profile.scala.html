@@ -33,7 +33,7 @@
                     <div class="counters col-md-3 col-sm-1">
                         <span class="counter-icon"><i class="fa fa-bicycle rounded"></i></span>
                         <span id="profile-rides" class="counter">0</span>
-                        <h4>Rides</h4>
+                        <h4 id="activity-name">Rides</h4>
                     </div>
                     <div class="counters col-md-3 col-sm-1">
                         <span class="counter-icon"><i class="fa fa-globe rounded"></i></span>
@@ -83,7 +83,7 @@
                 <div class="row" style="height:167px; overflow-y: scroll;">
 <!--                    <div>Max speed: <a id="achievement-max-speed" href="#">-</a></div>-->
                     <div>Max average speed: <a id="achievement-max-avg-speed" href="#">-</a></div>
-                    <div>Longest ride: <a id="achievement-max-distance" href="#">-</a></div>
+                    <div>Longest activity: <a id="achievement-max-distance" href="#">-</a></div>
                     <div>Max elevation gain: <a id="achievement-max-elevation" href="#">-</a></div>
 <!--                    <div>Max power: <a id="achievement-max-power" href="#">-</a></div>-->
                     <div>Max average power: <a id="achievement-max-avg-power" href="#">-</a></div>
@@ -110,25 +110,27 @@
         }
     }
 
-    $(document).ready(function() {
+    function loadProfile(activityType) {
         // ytd progress
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@urlProgress",
+            url: "@urlProgress/" + activityType,
             timeout: 20000,
             success: function(data) {
-                $('#yearlyPercentile').attr('aria-valuenow', data.yearlyPercentile).css("width", data.yearlyPercentile + "%")
+                $('#activity-name').html(activityType + 's');
 
-                $('#estimate-rides').html(data.estimate.rides)
-                $('#estimate-distance').html(Math.round(data.estimate.distance))
-                $('#estimate-elevation').html(Math.round(data.estimate.elevation))
-                $('#estimate-hours').html(Math.round(data.estimate.movingTime/3600))
+                $('#yearlyPercentile').attr('aria-valuenow', data.yearlyPercentile).css("width", data.yearlyPercentile + "%");
 
-                $('#profile-rides').html(data.progress.rides)
-                $('#profile-distance').html(Math.round(data.progress.distance))
-                $('#profile-elevation').html(Math.round(data.progress.elevation))
-                $('#profile-hours').html(Math.round(data.progress.movingTime/3600))
+                $('#estimate-rides').html(data.estimate.rides);
+                $('#estimate-distance').html(Math.round(data.estimate.distance));
+                $('#estimate-elevation').html(Math.round(data.estimate.elevation));
+                $('#estimate-hours').html(Math.round(data.estimate.movingTime/3600));
+
+                $('#profile-rides').html(data.progress.rides);
+                $('#profile-distance').html(Math.round(data.progress.distance));
+                $('#profile-elevation').html(Math.round(data.progress.elevation));
+                $('#profile-hours').html(Math.round(data.progress.movingTime/3600));
                 App.initCounter();
                 console.log("yearly progress " + data.yearlyPercentile + "%");
            }
@@ -138,7 +140,7 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@urlAchievements",
+            url: "@urlAchievements/" + activityType,
             timeout: 20000,
             success: function(data) {
                 //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h')
@@ -152,6 +154,17 @@
                 console.log("max speed: " + (data.maxSpeed.value * 3.6).toFixed(1) + " from " + data.maxSpeed.activityId);
            }
         });
+    }
+
+    $(document).ready(function() {
+        loadProfile('Ride');
+
+        let activityTabs = $("#activity-tabs")
+        activityTabs.context.addEventListener('activityType', function(e) {
+            let activityType = e.detail.activityType;
+            console.log("profile event: " + activityType);
+            loadProfile(activityType);
+        }, false);
     });
 //]]>
 </script>

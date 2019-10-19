@@ -68,11 +68,14 @@
 <script type="text/javascript" src="@assets.path("unify/assets/js/plugins/circles-master.js")"></script>
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
-        setupTabs();
+        @if(context.account.nonEmpty) {
+            setupTabs();
+        }
         setupWebSocket();
     });
 
     function setupTabs() {
+        let activityType = "Ride";
         $.ajax({
             type: "GET",
             dataType: "json",
@@ -80,16 +83,41 @@
             timeout: 20000,
             success: function(data) {
                 console.log("activity types: " + data);
-                $("#activity-tabs").empty();
-                $.each(data, function(ix, activity) {
-                    console.log("activity: " + activity + " - " + ix);
-                    $("#activity-tabs").append('<li'+ (ix === 0 ? ' class="active"' : '') + '><a href="#'+activity+'" data-toggle="tab">' + activity + '</a></li>');
+                let activityTabs = $("#activity-tabs")
+                activityTabs.empty();
+                // add Ride as main and active at the beginning
+                activityTabs.append('<li class="active"><a href="Ride" data-toggle="tab">Ride</a></li>');
+                // Remove Ride from the incoming list and attach the activities
+                let notRides = data.filter(function(activity) {
+                    return activity != "Ride";
+                });
+                $.each(notRides, function(ix, activity) {
+                    activityTabs.append('<li><a href='+activity+' data-toggle="tab">' + activity + '</a></li>');
+                });
+
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    // activated tab
+                    activityType = $(e.target).attr("href");
+                    console.log("tab selected: " + activityType);
+
+                    // dispatch event and handle it in the components
+                    activityTabs.context.dispatchEvent(new CustomEvent("activityType", {
+                        detail: {
+                            activityType: activityType
+                        },
+                        bubbles: true
+                    }));
                 });
            }
         });
     }
 
     function setupWebSocket() {
+        websocket = new WebSocket('ws://' + window.location.host + '/ws');
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
     }
 
     function onOpen(evt) {

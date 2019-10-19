@@ -10,7 +10,7 @@ object AggregateAthleteActivitiesFromStorageApp extends App with Metrics with La
 
   val storage = Storage.create("or")
   storage.initialize()
-  val progress = timed("aggregation")(await(storage.dailyProgressForAthlete(432909)))
+  val progress = timed("aggregation")(await(storage.dailyProgressForAthlete(432909, "Ride")))
   printAllProgress(progress)
 
   logger.info("done...")

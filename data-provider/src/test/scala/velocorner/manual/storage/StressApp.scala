@@ -19,12 +19,10 @@ object StressApp extends App with Metrics with LazyLogging with AggregateActivit
 
   val par = 10
   val latch = new CountDownLatch(par)
-  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, new ThreadFactory {
-    override def newThread(r: Runnable): Thread = {
-      val t = new Thread(r, "worker")
-      t.setDaemon(true)
-      t
-    }
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, (r: Runnable) => {
+    val t = new Thread(r, "worker")
+    t.setDaemon(true)
+    t
   }))
 
   val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
@@ -38,7 +36,7 @@ object StressApp extends App with Metrics with LazyLogging with AggregateActivit
       Future {
         val activity = if (i % 2 == 0) {
           logger.info(s"start[$i] query activity...")
-          storage.dailyProgressForAthlete(432909)
+          storage.dailyProgressForAthlete(432909, "Ride")
           "query"
         } else {
           logger.info(s"start[$i] store activity...")

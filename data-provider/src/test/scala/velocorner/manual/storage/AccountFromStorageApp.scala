@@ -8,7 +8,7 @@ import zio.ZIO
 
 object AccountFromStorageApp extends zio.App with LazyLogging with AwaitSupport with MyMacConfig {
 
-  override def run(args: List[String]): ZIO[AccountFromStorageApp.Environment, Nothing, Int] = {
+  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
     val res = for {
       storage <- ZIO.succeed(Storage.create("or"))
       _ <- ZIO.apply(storage.initialize())

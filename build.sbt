@@ -8,14 +8,14 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 val projectScalaVersion = "2.13.1"
-val scalazVersion = "7.2.28"
-val zioVersion = "1.0.0-RC14"
+val scalazVersion = "7.2.29"
+val zioVersion = "1.0.0-RC15"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.23"
+val orientDbVersion = "3.0.24"
 val elasticVersion = "7.3.1"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.7.1"
+val specsVersion = "4.8.0"
 val mockitoVersion = "3.1.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -142,7 +142,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
     dockerBaseImage in Docker := "java:8",
-    swaggerDomainNameSpaces := Seq("models")
+    swaggerDomainNameSpaces := Seq("model"),
+    swaggerPrettyJson := true,
+    swaggerV3 := true
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")

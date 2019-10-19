@@ -8,11 +8,13 @@ import zio.ZIO
 
 object AchievementsFromStorageApp extends zio.App with LazyLogging with AwaitSupport with MyMacConfig {
 
-  override def run(args: List[String]): ZIO[AchievementsFromStorageApp.Environment, Nothing, Int] = {
+  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
     val res = for {
       storage <- ZIO.succeed(Storage.create("or"))
       _ <- ZIO.apply(storage.initialize())
-      maxAchievement <- ZIO.fromFuture(global => storage.getAchievementStorage().maxAverageHeartRate(9463742).recover{case _ => None}(global))
+      maxAchievement <- ZIO.fromFuture(
+        global => storage.getAchievementStorage().maxAverageHeartRate(9463742, "Ride").recover{case _ => None}(global)
+      )
       _ = logger.info(s"max achievement ${maxAchievement.toString}")
       _ <- ZIO.apply(storage.destroy())
     } yield ()

@@ -3,8 +3,7 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
 $(function () {
-    var chart;
-    chart = new Highcharts.Chart({
+    var chart = new Highcharts.Chart({
         chart: {
             renderTo: '@chartId',
             type: 'bar',
@@ -68,35 +67,49 @@ $(function () {
         series: []
     });
 
-    chart.showLoading('Loading @chartTitle Data...');
-    var fetchStatistics = $.ajax({
-        type: "GET",
-        url: "@restUrl",
-        timeout: 20000
-    });
-    fetchStatistics.done(function(statisticsData) {
-        console.log("got the data for @chartId");
-        var data = statisticsData.series.map(item => item.series[0].value);
-        var names = statisticsData.series.map(item => item.name);
-        chart.addSeries({
-            name: 'Years',
-            dataLabels: {
-                formatter: function() {
-                    return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> @unit';
-                }
-            },
-            showInLegend: false,
-            colorByPoint: true,
-            data: data
+    function loadBarChart(activityType) {
+        chart.showLoading('Loading @chartTitle Data...');
+        var fetchStatistics = $.ajax({
+            type: "GET",
+            url: "@restUrl/" + activityType,
+            timeout: 20000
         });
-        chart.xAxis[0].setCategories(names);
+        fetchStatistics.done(function(statisticsData) {
+            console.log("got the data for @chartId");
+            while (chart.series.length > 0) {
+                chart.series[0].remove(true);
+            }
+            // add new data
+            var data = statisticsData.series.map(item => item.series[0].value);
+            var names = statisticsData.series.map(item => item.name);
+            chart.addSeries({
+                name: 'Years',
+                dataLabels: {
+                    formatter: function() {
+                        return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> @unit';
+                    }
+                },
+                showInLegend: false,
+                colorByPoint: true,
+                data: data
+            });
+            chart.xAxis[0].setCategories(names);
 
-        chart.hideLoading();
-        chart.chartBackground.attr({
-            fill: '#FFFFFF'
+            chart.hideLoading();
+            chart.chartBackground.attr({
+                fill: '#FFFFFF'
+            });
         });
-    });
+    }
 
+    loadBarChart("Ride");
+
+    let activityTabs = $("#activity-tabs")
+    activityTabs.context.addEventListener('activityType', function(e) {
+        let activityType = e.detail.activityType;
+        console.log("bart chart[@chartId] event: " + activityType);
+        loadBarChart(activityType);
+    }, false);
 });
 //]]>
 </script>

@@ -43,11 +43,11 @@ class RethinkDbStorage extends Storage with LazyLogging {
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
 
-  override def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]] = Future {
+  override def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]] = Future {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
-      field1.eq(athleteId, Nil).and(field2.eq("Ride", Nil))
+      field1.eq(athleteId, Nil).and(field2.eq(activityType, Nil))
     }).run(maybeConn)
     val activities = result2Activity(result.toList.asScala.toList)
     logger.debug(s"found activities ${activities.size} for $athleteId")

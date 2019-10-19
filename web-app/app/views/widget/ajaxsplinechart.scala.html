@@ -3,8 +3,7 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
 $(function () {
-    var chart;
-    chart = new Highcharts.Chart({
+    var chart = new Highcharts.Chart({
         chart: {
             renderTo: '@chartId',
             type: 'spline',
@@ -57,34 +56,50 @@ $(function () {
         series: []
     });
 
-    chart.showLoading('Loading @chartTitle Data...');
-    var fetchStatistics = $.ajax({
-        type: "GET",
-        url: "@restUrl",
-        timeout: 20000
-    });
-    fetchStatistics.done(function(statisticsData) {
-        console.log("got the data for @chartId");
-        $.each(statisticsData.series, function(key, value) {
-            var series = {name:'', data:[]};
-            $.each(value, function(key, val) {
-                if (key == 'name') {
-                    series.name = val;
-                } else {
-                    $.each(val, function(dayKey, entry) {
-                        var d = entry.day.split("-");
-                        var x = Date.UTC(2016, d[1]-1, d[2]);
-                        series.data.push([x, entry.value]);
-                    });
-                }
+    function loadSplineChart(activityType) {
+        chart.showLoading('Loading @chartTitle Data...');
+        var fetchStatistics = $.ajax({
+            type: "GET",
+            url: "@restUrl/" + activityType,
+            timeout: 20000
+        });
+        fetchStatistics.done(function(statisticsData) {
+            console.log("got the data for @chartId");
+            // remove old series
+            while (chart.series.length > 0) {
+                chart.series[0].remove(true);
+            }
+            // add new data
+            $.each(statisticsData.series, function(key, value) {
+                var series = {name:'', data:[]};
+                $.each(value, function(key, val) {
+                    if (key == 'name') {
+                        series.name = val;
+                    } else {
+                        $.each(val, function(dayKey, entry) {
+                            var d = entry.day.split("-");
+                            var x = Date.UTC(2016, d[1]-1, d[2]);
+                            series.data.push([x, entry.value]);
+                        });
+                    }
+                });
+                chart.addSeries(series);
             });
-            chart.addSeries(series);
+            chart.hideLoading();
+            chart.chartBackground.attr({
+                fill: '#FFFFFF'
+            });
         });
-        chart.hideLoading();
-        chart.chartBackground.attr({
-            fill: '#FFFFFF'
-        });
-    });
+    }
+
+    loadSplineChart("Ride");
+
+    let activityTabs = $("#activity-tabs")
+    activityTabs.context.addEventListener('activityType', function(e) {
+        let activityType = e.detail.activityType;
+        console.log("spline chart[@chartId] event: " + activityType);
+        loadSplineChart(activityType);
+    }, false);
 
 });
 //]]>

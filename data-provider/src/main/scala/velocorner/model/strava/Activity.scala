@@ -97,7 +97,6 @@ case class Activity(
   `type`: String,
   start_date: DateTime,
   start_date_local: DateTime,
-  timezone: String,
   average_speed: Option[Float],
   max_speed: Option[Float],
   average_cadence: Option[Float],

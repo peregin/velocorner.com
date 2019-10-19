@@ -17,7 +17,7 @@ trait Storage {
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): Future[Iterable[String]]
 
-  def dailyProgressForAthlete(athleteId: Long): Future[Iterable[DailyProgress]]
+  def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]]
 
   def getActivity(id: Long): Future[Option[Activity]]
 
@@ -56,16 +56,16 @@ trait Storage {
   // various achievements
   def getAchievementStorage(): AchievementStorage
   trait AchievementStorage {
-    def maxSpeed(athleteId: Long): Future[Option[Achievement]]
-    def maxAverageSpeed(athleteId: Long): Future[Option[Achievement]]
-    def maxDistance(athleteId: Long): Future[Option[Achievement]]
-    def maxElevation(athleteId: Long): Future[Option[Achievement]]
-    def maxHeartRate(athleteId: Long): Future[Option[Achievement]]
-    def maxAverageHeartRate(athleteId: Long): Future[Option[Achievement]]
-    def maxPower(athleteId: Long): Future[Option[Achievement]]
-    def maxAveragePower(athleteId: Long): Future[Option[Achievement]]
-    def minTemperature(athleteId: Long): Future[Option[Achievement]]
-    def maxTemperature(athleteId: Long): Future[Option[Achievement]]
+    def maxSpeed(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxPower(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def minTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]
   }
 
   // initializes any connections, pools, resources needed to open a storage session

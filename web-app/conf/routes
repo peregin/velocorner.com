@@ -4,29 +4,29 @@
 
 # WEB
 ### NoDocs ###
-GET     /                                        controllers.ApplicationController.index
+GET     /                                                  controllers.ApplicationController.index
 ### NoDocs ###
-GET     /refresh                                 controllers.ApplicationController.refresh
+GET     /refresh                                           controllers.ApplicationController.refresh
 ### NoDocs ###
-GET     /search                                  controllers.ApplicationController.search
+GET     /search                                            controllers.ApplicationController.search
 ### NoDocs ###
-GET     /about                                   controllers.ApplicationController.about
+GET     /about                                             controllers.ApplicationController.about
 
 # STRAVA AUTH
 ### NoDocs ###
-GET     /login/strava                            controllers.auth.StravaController.login(scope: String)
+GET     /login/strava                                      controllers.auth.StravaController.login(scope: String)
 ### NoDocs ###
-GET     /link/strava                             controllers.auth.StravaController.link(scope: String)
+GET     /link/strava                                       controllers.auth.StravaController.link(scope: String)
 ### NoDocs ###
-GET     /authorize/strava                        controllers.auth.StravaController.authorize
+GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
-GET     /logout/strava                           controllers.auth.StravaController.logout
+GET     /logout/strava                                     controllers.auth.StravaController.logout
 
 # WITHINGS AUTH
 ### NoDocs ###
-GET     /login/withings                          controllers.auth.WithingsController.login(scope: String)
+GET     /login/withings                                    controllers.auth.WithingsController.login(scope: String)
 ### NoDocs ###
-GET     /authorize/withings                      controllers.auth.WithingsController.authorize
+GET     /authorize/withings                                controllers.auth.WithingsController.authorize
 
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
@@ -34,9 +34,9 @@ GET     /authorize/withings                      controllers.auth.WithingsContro
 #    200:
 #      description: status information about the system
 #      schema:
-#        $ref: '#/definitions/model.StatusInfo'
+#        $ref: '#/components/schemas/model.StatusInfo'
 ###
-GET     /api/status                              controllers.ApiController.status
+GET     /api/status                                        controllers.ApiController.status
 
 ###
 #  summary: Retrieves current year's statistics for the logged in athlete
@@ -44,33 +44,33 @@ GET     /api/status                              controllers.ApiController.statu
 #    200:
 #      description: Returns the yearly statistics
 #      schema:
-#        $ref: '#/definitions/velocorner.model.Progress'
+#        $ref: '#/components/schemas/velocorner.model.Progress'
 ###
-GET     /api/athletes/statistics/profile        controllers.ApiController.ytdProfile
+GET     /api/athletes/statistics/profile/:activity         controllers.ApiController.ytdProfile(activity: String)
 
 ###
-#  summary: List yearly series for the logged in athlete
+#  summary: Lists yearly series for the logged in athlete
 #  responses:
 #    200:
-#      description: Returns the yearly series
+#      description: Returns the yearly series, for heatmap, distance or elevation
 #      schema:
-#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/yearly/:action  controllers.ApiController.yearlyStatistics(action: String)
+GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiController.yearlyStatistics(action: String, activity: String)
 
 ###
-#  summary: List year to date series for the logged in athlete
+#  summary: Lists year to date series for the logged in athlete
 #  responses:
 #    200:
 #      description: Returns the year to date series
 #      schema:
-#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdStatistics(action: String)
+GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiController.ytdStatistics(action: String, activity: String)
 
 ###
 #  summary: List of achievements for the logged in athlete
@@ -78,11 +78,11 @@ GET     /api/athletes/statistics/ytd/:action     controllers.ApiController.ytdSt
 #    200:
 #      description: Extracts max speed, longest ride, etc.
 #      schema:
-#        $ref: '#/definitions/velocorner.Achievements'
+#        $ref: '#/components/schemas/velocorner.Achievements'
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/achievements    controllers.ApiController.achievements
+GET     /api/athletes/statistics/achievements/:activity    controllers.ApiController.achievements(activity: String)
 
 ###
 #  summary: Suggests a list of activities based on the query parameter
@@ -90,9 +90,9 @@ GET     /api/athletes/statistics/achievements    controllers.ApiController.achie
 #    200:
 #      description: Returns a list of activities
 #      schema:
-#        $ref: '#/definitions/velocorner.model.strava.Activity'
+#        $ref: '#/components/schemas/velocorner.model.strava.Activity'
 ###
-GET     /api/activities/suggest                  controllers.ApiController.suggest(query: String)
+GET     /api/activities/suggest                            controllers.ApiController.suggest(query: String)
 
 ###
 #  summary: List all the distinct activity types for the logged in user. (Ride, Run, etc.)
@@ -100,7 +100,7 @@ GET     /api/activities/suggest                  controllers.ApiController.sugge
 #    200:
 #      description: Returns a list of activity types ordered by frequency
 ###
-GET     /api/activities/type                     controllers.ApiController.activityTypes
+GET     /api/activities/type                               controllers.ApiController.activityTypes
 
 ###
 #  summary: Retrieves an activity
@@ -108,7 +108,7 @@ GET     /api/activities/type                     controllers.ApiController.activ
 #    200:
 #      description: Returns an activity based on id
 #      schema:
-#        $ref: '#/definitions/velocorner.model.strava.Activity'
+#        $ref: '#/components/schemas/velocorner.model.strava.Activity'
 #    403:
 #      description: Forbidden
 #    404:
@@ -116,7 +116,7 @@ GET     /api/activities/type                     controllers.ApiController.activ
 #    500:
 #      description: Internal error
 ###
-GET     /api/activities/:id                      controllers.ApiController.activity(id: Int)
+GET     /api/activities/:id                                controllers.ApiController.activity(id: Int)
 
 ###
 #  summary: Retrieves the weather forecast for a specific place
@@ -124,7 +124,7 @@ GET     /api/activities/:id                      controllers.ApiController.activ
 #    200:
 #      description: Weather forecast for the next 5 days
 #      schema:
-#        $ref: '#/definitions/velocorner.model.DailyWeather'
+#        $ref: '#/components/schemas/velocorner.model.DailyWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -132,7 +132,7 @@ GET     /api/activities/:id                      controllers.ApiController.activ
 #    500:
 #      description: Internal error
 ###
-GET     /api/weather/:location                   controllers.ApiController.weather(location: String)
+GET     /api/weather/:location                             controllers.ApiController.weather(location: String)
 
 ###
 #  summary: Retrieves the sunrise and sunset information for a specific place
@@ -140,7 +140,7 @@ GET     /api/weather/:location                   controllers.ApiController.weath
 #    200:
 #      description: Sunrise, sunset
 #      schema:
-#        $ref: '#/definitions/velocorner.model.weather.SunriseSunset'
+#        $ref: '#/components/schemas/velocorner.model.weather.SunriseSunset'
 #    400:
 #      description: Bad request
 #    404:
@@ -148,23 +148,23 @@ GET     /api/weather/:location                   controllers.ApiController.weath
 #    500:
 #      description: Internal error
 ###
-GET     /api/sunrise/:location                   controllers.ApiController.sunrise(location: String)
+GET     /api/sunrise/:location                             controllers.ApiController.sunrise(location: String)
 
 ### NoDocs ###
-GET     /ws                                      controllers.ApiController.ws
+GET     /ws                                                controllers.ApiController.ws
 
 # DOC
 ### NoDocs ###
-GET     /swagger.json                            controllers.Assets.at(path="/public", file="swagger.json")
+GET     /swagger.json                                      controllers.Assets.at(path="/public", file="swagger.json")
 ### NoDocs ###
-GET     /docs                                    controllers.Assets.at(path="/public", file="swagger-ui/index.html")
+GET     /docs                                              controllers.Assets.at(path="/public", file="swagger-ui/index.html")
 
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###
-GET     /counter                                 controllers.Assets.at(path="/public", file="html/counter.html")
+GET     /counter                                           controllers.Assets.at(path="/public", file="html/counter.html")
 ### NoDocs ###
-GET     /googlea6d3ef59293b5121.html             controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
+GET     /googlea6d3ef59293b5121.html                       controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
 ### NoDocs ###
-GET     /googlea6d3ef59293b5121                  controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
+GET     /googlea6d3ef59293b5121                            controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
 ### NoDocs ###
-GET     /assets/*file                            controllers.Assets.at(path="/public", file)
+GET     /assets/*file                                      controllers.Assets.at(path="/public", file)

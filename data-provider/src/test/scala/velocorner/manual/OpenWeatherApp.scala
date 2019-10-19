@@ -3,12 +3,11 @@ package velocorner.manual
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
-import velocorner.util.CloseableResource
 import zio.ZIO
 
-object OpenWeatherApp extends zio.App with LazyLogging with CloseableResource with MyMacConfig {
+object OpenWeatherApp extends zio.App with LazyLogging with MyMacConfig {
 
-  override def run(args: List[String]): ZIO[OpenWeatherApp.Environment, Nothing, Int] = {
+  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
     val res = for {
       config <- ZIO.apply(SecretConfig.load())
       feed <- ZIO.succeed(new OpenWeatherFeed(config))

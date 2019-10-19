@@ -5,6 +5,7 @@ scala:
 
 jdk:
   - openjdk9
+
 notifications:
   # Email notifications are disabled, the README contains a link to the CI build status.
   # See http://about.travis-ci.org/docs/user/build-configuration/ to configure
