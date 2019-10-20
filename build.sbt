@@ -142,6 +142,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
     dockerBaseImage in Docker := "java:8",
+    dockerUsername := Some("peregin"),
     swaggerDomainNameSpaces := Seq("model"),
     swaggerPrettyJson := true,
     swaggerV3 := true
