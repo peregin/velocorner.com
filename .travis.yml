@@ -12,7 +12,8 @@ notifications:
   email: false
 
 script:
-  - sbt clean coverage test coverageReport
+  - sbt clean test
+  # TODO: until sbt-coverage is on 2.13.1 - sbt clean coverage test coverageReport
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+#after_success:
+#  - bash <(curl -s https://codecov.io/bash)
