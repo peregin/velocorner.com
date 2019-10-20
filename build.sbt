@@ -59,15 +59,21 @@ def scalaz = Seq(
   "org.scalaz" %% "scalaz-core" % scalazVersion
 )
 
-// starting from next release won't be part of scalaz
 def zio = Seq(
   "dev.zio" %% "zio" % zioVersion,
 )
 
-lazy val runDist: ReleaseStep = ReleaseStep(
+lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
     extracted.runAggregated(com.typesafe.sbt.packager.Keys.dist in Global in webApp, st)
+  }
+)
+
+lazy val runWebAppDockerPush: ReleaseStep = ReleaseStep(
+  action = { st: State =>
+    val extracted = Project.extract(st)
+    extracted.runAggregated(publish in Docker in webApp, st)
   }
 )
 
@@ -90,9 +96,11 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    runDist,
+    runWebAppDist,
+    // runWebAppDockerPush, // will push automatically the image to the docker hub
     setNextVersion,
-    commitNextVersion
+    commitNextVersion,
+    pushChanges
   )
 )
 
@@ -143,6 +151,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     dockerExposedPorts in Docker := Seq(9000),
     dockerBaseImage in Docker := "java:8",
     dockerUsername := Some("peregin"),
+    version in Docker := "latest",
     swaggerDomainNameSpaces := Seq("model"),
     swaggerPrettyJson := true,
     swaggerV3 := true
