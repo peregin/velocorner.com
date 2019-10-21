@@ -13,11 +13,11 @@ object ActivitiesFromStravaAndAggregateApp extends App with LazyLogging with Met
 
   val storage = Storage.create("or")
   storage.initialize()
-  val activities = await(StravaActivityFeed.listRecentAthleteActivities)
+  val activities = awaitOn(StravaActivityFeed.listRecentAthleteActivities)
   logger.info(s"retrieved ${activities.size} activities")
-  await(storage.storeActivity(activities))
+  awaitOn(storage.storeActivity(activities))
 
-  val progress = timed("aggregation")(await(storage.dailyProgressForAthlete(432909, "Ride")))
+  val progress = timed("aggregation")(awaitOn(storage.dailyProgressForAthlete(432909, "Ride")))
   printAllProgress(progress)
 
   logger.info("done...")

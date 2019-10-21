@@ -15,7 +15,7 @@ object ElasticFromStorageManual extends App with ElasticSupport with AwaitSuppor
   storage.initialize()
   logger.info("initialized...")
 
-  val activities = await(storage.listRecentActivities(432909, 10000))
+  val activities = awaitOn(storage.listRecentActivities(432909, 10000))
   storage.destroy()
 
   val client = localCluster()

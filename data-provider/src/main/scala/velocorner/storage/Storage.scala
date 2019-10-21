@@ -56,13 +56,11 @@ trait Storage {
   // various achievements
   def getAchievementStorage(): AchievementStorage
   trait AchievementStorage {
-    def maxSpeed(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxPower(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]]
     def minTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]
     def maxTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]

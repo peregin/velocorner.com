@@ -83,6 +83,7 @@ object Activity {
   implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
 }
 
+// max 22 fields are supported by the json marshaller
 case class Activity(
   id: Long,
   resource_state: Int,
