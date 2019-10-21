@@ -105,5 +105,6 @@ case class Activity(
   average_watts: Option[Float],
   max_watts: Option[Float],
   average_heartrate: Option[Float],
-  max_heartrate: Option[Float]
+  max_heartrate: Option[Float],
+  gear_id: Option[String]
 )

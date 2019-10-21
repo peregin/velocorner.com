@@ -28,7 +28,9 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "add items as idempotent operation" in {
-      val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json").filter(_.`type` == "Ride")
+      val activities = JsonIo
+        .readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
+        .filter(_.`type` == "Ride")
       awaitOn(storage.storeActivity(activities))
       awaitOn(storage.listRecentActivities(432909, 50)) must haveSize(24)
 
