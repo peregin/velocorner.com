@@ -1,6 +1,5 @@
-
-resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
-resolvers += "Typesafe Simple Repository" at "https://repo.typesafe.com/typesafe/simple/maven-releases/"
+resolvers in ThisBuild += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
+resolvers in ThisBuild += "Typesafe Simple Repository" at "https://repo.typesafe.com/typesafe/simple/maven-releases/"
 
 // to generate dependency graph of the libraries
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2")

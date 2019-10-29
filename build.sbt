@@ -81,7 +81,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   scalacOptions := Seq("-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
   scalacOptions in Test ++= Seq("-Yrangepos"),
-  resolvers ++= Seq(
+  resolvers in ThisBuild ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
   ),
   releaseProcess := Seq[ReleaseStep](
