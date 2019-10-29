@@ -1,13 +1,11 @@
 package velocorner.storage
 
-import java.io.FileOutputStream
-
-import com.orientechnologies.orient.core.command.{OCommandOutputListener, OCommandResultListener}
-import com.orientechnologies.orient.core.db.document.{ODatabaseDocument, ODatabaseDocumentTx}
+import com.orientechnologies.orient.core.command.OCommandResultListener
+import com.orientechnologies.orient.core.db.{ODatabaseType, OrientDB, OrientDBConfig}
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
-import com.orientechnologies.orient.server.OServer
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
@@ -25,6 +23,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scalaz._
 import scalaz.std.list._
 import scalaz.syntax.std.option._
+import scalaz.syntax.std.boolean._
 import scalaz.std.scalaFuture._
 import scalaz.syntax.traverse.ToTraverseOps
 
@@ -33,10 +32,13 @@ import scala.jdk.CollectionConverters._
 /**
  * Created by levi on 14.11.16.
  */
-class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStorage, serverPort: Int = 2480)
+class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
   extends Storage with CloseableResource with Metrics with LazyLogging {
 
-  var server: Option[OServer] = None
+  @volatile var server: Option[OrientDB] = None
+  private val dbUser = dbUrl.isDefined ? "root" | "admin"
+  private val orientDbUrl = dbUrl.map("remote:" + _).getOrElse("memory:")
+  private val dbType = dbUrl.isDefined ? ODatabaseType.PLOCAL | ODatabaseType.MEMORY
 
   private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
@@ -56,7 +58,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
       .map(_ => ())
   }
 
-  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx() { db =>
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx { db =>
     val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId GROUP BY name ORDER BY counter DESC")
     results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
   }}
@@ -184,58 +186,11 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
-    val config =
-      s"""
-         |<orient-server>
-         |    <handlers />
-         |    <network>
-         |        <protocols>
-         |            <protocol name="http" implementation="com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpDb"/>
-         |            <protocol name="binary" implementation="com.orientechnologies.orient.server.network.protocol.binary.ONetworkProtocolBinary"/>
-         |        </protocols>
-         |        <listeners>
-         |            <listener ip-address="127.0.0.1" port-range="$serverPort" protocol="http">
-         |                <commands>
-         |                    <command
-         |                        pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt"
-         |                        implementation="com.orientechnologies.orient.server.network.protocol.http.command.get.OServerCommandGetStaticContent">
-         |                        <parameters>
-         |                            <entry name="http.cache:*.htm *.html" value="Cache-Control: no-cache, no-store, max-age=0, must-revalidate\r\nPragma: no-cache" />
-         |                            <entry name="http.cache:default" value="Cache-Control: max-age=120" />
-         |                        </parameters>
-         |                    </command>
-         |                </commands>
-         |            </listener>
-         |            <listener ip-address="0.0.0.0" port-range="2424-2430" protocol="binary"/>
-         |        </listeners>
-         |    </network>
-         |    <storages>
-         |        <storage name="velocorner" path="${storageType.name}:$rootDir/$DATABASE_NAME" userName="admin" userPassword="admin" loaded-at-startup="true"/>
-         |    </storages>
-         |    <users>
-         |        <user name="admin" password="admin" resources="*"/>
-         |        <user name="root" password="root" resources="*"/>
-         |    </users>
-         |    <properties>
-         |        <entry name="server.database.path" value="$rootDir/server"/>
-         |        <entry name="plugin.directory" value="$rootDir/plugins"/>
-         |        <entry name="log.console.level" value="info"/>
-         |        <entry name="plugin.dynamic" value="false"/>
-         |        <entry name="server.cache.staticResources" value="false"/>
-         |    </properties>
-         |</orient-server>
-      """.stripMargin
+    val orientDb: OrientDB = new OrientDB(orientDbUrl, dbUser, dbPassword, OrientDBConfig.defaultConfig())
+    orientDb.createIfNotExists(DATABASE_NAME, dbType)
+    server = orientDb.some
 
-    val oserver = new OServer
-    oserver.startup(config).activate()
-    server = Some(oserver)
-
-    inTx() { odb =>
-      if (!odb.exists()) {
-        odb.create()
-        odb.close()
-      }
-
+    inTx { odb =>
       case class IndexSetup(indexField: String, indexType: OType)
 
       def createIxIfNeeded(className: String, index: IndexSetup*): Unit = {
@@ -265,12 +220,9 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
         Option(clazz).foreach(_.dropProperty(ixName))
       }
 
-      //dropIx(ACTIVITY_CLASS, "id") // needed once after changing ix type
       createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
-      //dropIx(ACCOUNT_CLASS, "athleteId") // needed once after changing ix type
       createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      //dropIx(ATHLETE_CLASS, "id") // needed once after changing ix type
       createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(SUN_CLASS, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
@@ -280,39 +232,25 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   // releases any connections, resources used
   override def destroy(): Unit = {
-    server.foreach(_.shutdown())
+    server.foreach(_.close())
     server = None
     logger.info("database has been closed...")
   }
 
-  override def backup(fileName: String) = timed("backup") {
-    val listener = new OCommandOutputListener {
-      override def onMessage(iText: String)= logger.trace(s"backup $iText")
-    }
-    withCloseable(new FileOutputStream(fileName)) { fos =>
-      server.foreach { s =>
-        val internal = s.openDatabase("velocorner")
-        internal.backup(fos, null, null, listener, 1, 4096)
+  def inTx[T](body: ODatabaseDocument => T): T = {
+    server.map { orientDb =>
+      val session = orientDb.open(DATABASE_NAME, dbUser, dbPassword)
+      session.activateOnCurrentThread()
+      ultimately {
+        session.close()
+      }.apply {
+        body(session)
       }
-    }
-  }
-
-
-  def inTx[T](storageType: StorageType = RemoteStorage)(body:ODatabaseDocument => T): T = {
-    val url = storageType match {
-      case RemoteStorage => s"${storageType.name}:localhost/$rootDir/$DATABASE_NAME"
-      case _ => s"${storageType.name}:$rootDir/$DATABASE_NAME"
-    }
-    val dbDoc = new ODatabaseDocumentTx(url)
-    if (!dbDoc.isActiveOnCurrentThread) dbDoc.activateOnCurrentThread()
-    dbDoc.open(ADMIN_USER, ADMIN_PASSWORD)
-    ultimately(dbDoc.close()).apply {
-      body(dbDoc)
-    }
+    }.getOrElse(throw new IllegalStateException("database is closed"))
   }
 
   // asynch
-  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx() { db =>
+  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx { db =>
     Try {
       val promise = Promise[Seq[T]]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
@@ -339,7 +277,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
 
   private def queryForOption[T](sql: String)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql).map(_.headOption)
 
-  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): Future[Unit] = inTx() { db =>
+  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): Future[Unit] = inTx { db =>
     Try {
       val promise = Promise[Unit]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
@@ -365,15 +303,7 @@ class OrientDbStorage(val rootDir: String, storageType: StorageType = LocalStora
   }
 }
 
-sealed abstract class StorageType(val name: String)
-case object RemoteStorage extends StorageType("remote")
-case object LocalStorage extends StorageType("plocal")
-case object MemoryStorage extends StorageType("memory")
-
 object OrientDbStorage {
-
-  val ADMIN_USER = "admin"
-  val ADMIN_PASSWORD = "admin"
 
   val DATABASE_NAME = "velocorner"
 

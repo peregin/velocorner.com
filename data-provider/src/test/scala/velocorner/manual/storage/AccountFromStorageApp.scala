@@ -5,7 +5,6 @@ import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.storage.Storage
 import zio.ZIO
 
-
 object AccountFromStorageApp extends zio.App with LazyLogging with AwaitSupport with MyMacConfig {
 
   override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
@@ -16,7 +15,11 @@ object AccountFromStorageApp extends zio.App with LazyLogging with AwaitSupport 
       _ = logger.info(s"ACCOUNT ${account.toString}")
       _ <- ZIO.apply(storage.destroy())
     } yield ()
-    res.foldM(_ => ZIO.succeed(1), _ => ZIO.succeed(0))
+    res.foldM(err => {
+        logger.error(s"failed", err)
+        ZIO.succeed(1)
+      },
+      _ => ZIO.succeed(0))
   }
 }
 

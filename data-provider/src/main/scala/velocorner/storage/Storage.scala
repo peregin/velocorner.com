@@ -71,9 +71,6 @@ trait Storage {
 
   // releases any connections, resources used
   def destroy(): Unit
-
-  // backup database content into the given file
-  def backup(fileName: String): Unit
 }
 
 object Storage extends LazyLogging {
@@ -85,7 +82,7 @@ object Storage extends LazyLogging {
     val storage = dbType.toLowerCase match {
       case any if any.startsWith("re") => new RethinkDbStorage
       case any if any.startsWith("mo") => new MongoDbStorage
-      case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbPath)
+      case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
       case unknown => sys.error(s"unknown storage type $unknown")
     }
 

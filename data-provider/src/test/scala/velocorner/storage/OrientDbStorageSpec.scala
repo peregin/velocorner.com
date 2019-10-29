@@ -1,16 +1,13 @@
 package velocorner.storage
 
-import java.io.File
-
 import com.typesafe.scalalogging.LazyLogging
-import org.apache.commons.io.FileUtils
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.manual.AwaitSupport
 import velocorner.model.strava.Activity
 import velocorner.model.weather.{ForecastResponse, SunriseSunset, WeatherForecast}
-import velocorner.util.{FreePortFinder, JsonIo}
+import velocorner.util.JsonIo
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSupport with LazyLogging {
 
@@ -85,13 +82,6 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
       awaitOn(storage.getAchievementStorage().maxTemperature(432909, "Ride")).map(_.value) should beSome(11d)
     }
 
-    "backup the database" in {
-      val file = File.createTempFile("orientdb", "backup")
-      storage.backup(file.getAbsolutePath)
-      file.length() must beGreaterThan(10L)
-      file.delete()
-    }
-
     "read empty list of weather forecast" in {
       val list = awaitOn(storage.getWeatherStorage().listRecentForecast(zhLocation))
       list must beEmpty
@@ -143,17 +133,11 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
   }
 
   override def beforeAll(): Unit = {
-    // eventually the port is already used if the application runs locally
-    val serverPort = FreePortFinder.find()
-    logger.info(s"running OrientDb on port $serverPort")
-    storage = new OrientDbStorage("orientdb_data_test", MemoryStorage, serverPort)
-    FileUtils.deleteDirectory(new File(storage.rootDir)) // cleanup previous incomplete test remainders
+    storage = new OrientDbStorage(dbUrl = None, dbPassword = "admin")
     storage.initialize()
   }
 
   override def afterAll(): Unit = {
     storage.destroy()
-    FileUtils.deleteDirectory(new File(storage.rootDir))
-    storage = null
   }
 }

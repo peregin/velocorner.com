@@ -122,8 +122,6 @@ class MongoDbStorage extends Storage with LazyLogging {
   override def destroy(): Unit = {
     client.close()
   }
-
-  override def backup(fileName: String) = ???
 }
 
 object MongoDbStorage {

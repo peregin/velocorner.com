@@ -20,11 +20,7 @@ val mockitoVersion = "3.1.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
-val orientDb = Seq(
-  "com.orientechnologies" % "orientdb-core" % orientDbVersion,
-  "com.orientechnologies" % "orientdb-client" % orientDbVersion,
-  "com.orientechnologies" % "orientdb-server" % orientDbVersion
-)
+val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
 
 val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
@@ -53,7 +49,7 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
 )
-def storage = Seq(rethinkClient, mongoClient) ++ orientDb
+def storage = Seq(rethinkClient, mongoClient, orientDbClient)
 
 def scalaz = Seq(
   "org.scalaz" %% "scalaz-core" % scalazVersion

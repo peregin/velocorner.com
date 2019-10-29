@@ -1,9 +1,6 @@
 package controllers
 
-import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, DateTimeZone}
 import play.Logger
 import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
@@ -13,11 +10,9 @@ import velocorner.feed.{OpenWeatherFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configuration: Configuration, actorSystem: ActorSystem) {
+class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configuration: Configuration) {
 
   val secretConfig = SecretConfig(configuration.underlying)
 
@@ -25,18 +20,6 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   private val storage = Storage.create("or", secretConfig)
   storage.initialize
 
-  configuration.getOptional[String]("storage.backup.directory")foreach{ directory =>
-    val frequency = secretConfig.getBackupFrequency
-    logger.info(s"backup at $frequency basis into $directory")
-    actorSystem.scheduler.schedule(FiniteDuration(1, "second"), frequency, new Runnable {
-      override def run(): Unit = {
-        val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH.mm.ss")
-        val now = DateTime.now(DateTimeZone.UTC).toString(timeFormatter)
-        val file = s"$directory/velocorner-$now.zip"
-        storage.backup(file)
-      }
-    })
-  }
   logger.info("ready...")
 
   def getStorage = storage

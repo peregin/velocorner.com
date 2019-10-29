@@ -138,8 +138,6 @@ class RethinkDbStorage extends Storage with LazyLogging {
   override def destroy(): Unit = {
     maybeConn.close()
   }
-
-  override def backup(fileName: String): Unit = ???
 }
 
 object RethinkDbStorage {
