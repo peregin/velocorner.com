@@ -4,4 +4,4 @@ if [ -z "$TRAVIS_BRANCH" ]; then
   exit 1
 fi
 git checkout "$TRAVIS_BRANCH"
-sbt "release with-defaults"
+sbt "release skip-tests with-defaults"
