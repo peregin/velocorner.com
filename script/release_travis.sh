@@ -8,11 +8,13 @@ if [ -z "$TRAVIS_BRANCH" ]; then
 fi
 echo "commit message is [$TRAVIS_COMMIT_MESSAGE]"
 
+# login to docker.io, sbt release will push the image
 echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
 git checkout "$TRAVIS_BRANCH"
 git config --global user.name "Deploy CI"
 sbt "release skip-tests with-defaults"
+
 # push version changes and tags to the github
 git push --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$TRAVIS_BRANCH"
 
