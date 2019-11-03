@@ -8,7 +8,7 @@ if [ -z "$TRAVIS_BRANCH" ]; then
 fi
 echo "commit message is [$TRAVIS_COMMIT_MESSAGE]"
 
-docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN"
+echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
 git checkout "$TRAVIS_BRANCH"
 git config --global user.name "Deploy CI"
