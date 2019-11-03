@@ -17,4 +17,4 @@ sbt "release skip-tests with-defaults"
 git push --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$TRAVIS_BRANCH"
 
 # restart the docker swarm stack
-sshpass -p "$DEPLOYER_TOKEN" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.local '/opt/velocorner/deploy.sh'
+sshpass -p "$DEPLOYER_TOKEN" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
