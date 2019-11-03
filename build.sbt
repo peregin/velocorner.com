@@ -95,8 +95,8 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     runWebAppDist,
     // runWebAppDockerPush, // will push automatically the image to the docker hub
     setNextVersion,
-    commitNextVersion,
-    pushChanges
+    commitNextVersion
+    // pushChanges
   )
 )
 
