@@ -4,15 +4,10 @@ MX Record velocorner.com
 CName www @
 CName dev @
 
-# Server
-mkdir /var/www/velocorner.com
-add a plain static page - coming soon page
-nohup ./web-app &
-
 # How to run the web application
 The main configuration file is not part of the source code, should include the application.conf and the private data, such as Strava API token
 ```shell script
-sbt -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf 'project web-app' run
+sbt -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf -Dlog.mode=papertrail 'project web-app' run
 ```
 
 # Distribution
