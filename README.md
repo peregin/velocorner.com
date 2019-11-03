@@ -15,7 +15,10 @@ The yearly data is also presented as a heatmap, so it is easy to compare the eff
 The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
-
-Please visit the page at [http://velocorner.com](http://velocorner.com)
+Visit the page at [http://velocorner.com](http://velocorner.com)
 
 The project is also used to experiment with the technologies.
+
+## CI/CD Flow
+
+![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD") 
