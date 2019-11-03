@@ -14,8 +14,8 @@ notifications:
 script:
   - sbt clean test
   # TODO: until sbt-coverage is on 2.13.1 - sbt clean coverage test coverageReport
-
-#after_success:
+after_success:
+  - echo "testing succeeded"
 #  - bash <(curl -s https://codecov.io/bash)
 
 deploy:
@@ -23,16 +23,3 @@ deploy:
   script: sbt "release with-defaults"
   on:
     branch: master
-
-before_cache:
-  # Tricks to avoid unnecessary cache updates
-  - find $HOME/.sbt -name "*.lock" | xargs rm
-  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
-  - rm -f $HOME/.ivy2/.sbt.ivy.lock
-
-# speedup sbt builds
-cache:
-  directories:
-    - $HOME/.cache/coursier
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
