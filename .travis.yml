@@ -17,3 +17,22 @@ script:
 
 #after_success:
 #  - bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  provider: script
+  script: sbt "release with-defaults"
+  on:
+    branch: master
+
+before_cache:
+  # Tricks to avoid unnecessary cache updates
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - rm -f $HOME/.ivy2/.sbt.ivy.lock
+
+# speedup sbt builds
+cache:
+  directories:
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot/
