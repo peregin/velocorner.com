@@ -6,7 +6,7 @@ scala:
 jdk:
   - openjdk9
 
-if: type = push AND commit_message =~ /^((?!version).)*/
+if: type = push AND commit_message !~ /Setting/
 
 notifications:
   # Email notifications are disabled, the README contains a link to the CI build status.
