@@ -1,3 +1,0 @@
-
-- add tab to top of activities to filter by type (ride, run, ski, hike, etc)
-- show gears and usage, ytd and overall
