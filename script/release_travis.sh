@@ -3,6 +3,8 @@ if [ -z "$TRAVIS_BRANCH" ]; then
   echo "TRAVIS_BRANCH environment variable must be set"
   exit 1
 fi
+echo "message is $TRAVIS_COMMIT_MESSAGE"
+
 git checkout "$TRAVIS_BRANCH"
 git config --global user.name "Deploy CI"
 sbt "release skip-tests with-defaults"

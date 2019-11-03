@@ -16,8 +16,8 @@ script:
   #- sbt clean test
   # TODO: until sbt-coverage is on 2.13.1 - sbt clean coverage test coverageReport
 
+# deploy from master and avoid infinite loop when pushing new version
 after_success:
   - echo "testing succeeded"
-  - echo "message is $TRAVIS_COMMIT_MESSAGE"
   - if [[ "$TRAVIS_BRANCH" = "master" ]] && [[ "$TRAVIS_COMMIT_MESSAGE" != *"Setting version"* ]]; then bash ./script/release_travis.sh; fi
 #  - bash <(curl -s https://codecov.io/bash)
