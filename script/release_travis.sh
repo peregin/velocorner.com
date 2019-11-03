@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 if [ -z "$TRAVIS_BRANCH" ]; then
   echo "TRAVIS_BRANCH environment variable must be set"
   exit 1
