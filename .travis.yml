@@ -1,3 +1,6 @@
+# avoid infinite loop when travis is publishing a new version
+if: type = push AND commit_message !~ /Setting/
+
 language: scala
 
 scala:
@@ -9,8 +12,10 @@ jdk:
 services:
   - docker
 
-# avoid infinite loop when travis is publishing a new version
-if: type = push AND commit_message !~ /Setting/
+addons:
+  apt:
+    packages:
+      - sshpass
 
 notifications:
   # Email notifications are disabled, the README contains a link to the CI build status.
