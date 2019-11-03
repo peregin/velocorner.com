@@ -96,7 +96,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     // runWebAppDockerPush, // will push automatically the image to the docker hub
     setNextVersion,
     commitNextVersion
-    // pushChanges
+    // pushChanges  // travis release script will push the changes
   )
 )
 
