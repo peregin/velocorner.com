@@ -17,5 +17,5 @@ script:
 
 after_success:
   - echo "testing succeeded"
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./release.sh; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then bash ./release.sh; fi
 #  - bash <(curl -s https://codecov.io/bash)
