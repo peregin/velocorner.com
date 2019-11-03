@@ -6,6 +6,8 @@ scala:
 jdk:
   - openjdk9
 
+if: type = push AND commit_message =~ /^((?!version).)*/
+
 notifications:
   # Email notifications are disabled, the README contains a link to the CI build status.
   # See http://about.travis-ci.org/docs/user/build-configuration/ to configure
@@ -18,6 +20,6 @@ script:
 
 # deploy from master and avoid infinite loop when pushing new version
 after_success:
-  - echo "testing succeeded"
+  - echo "releasing..."
   - if [[ "$TRAVIS_BRANCH" = "master" ]] && [[ "$TRAVIS_COMMIT_MESSAGE" != *"Setting version"* ]]; then bash ./script/release_travis.sh; fi
 #  - bash <(curl -s https://codecov.io/bash)
