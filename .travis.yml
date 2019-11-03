@@ -6,6 +6,9 @@ scala:
 jdk:
   - openjdk9
 
+services:
+  - docker
+
 # avoid infinite loop when travis is publishing a new version
 if: type = push AND commit_message !~ /Setting/
 
