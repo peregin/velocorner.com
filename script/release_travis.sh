@@ -8,7 +8,7 @@ if [ -z "$TRAVIS_BRANCH" ]; then
 fi
 echo "commit message is [$TRAVIS_COMMIT_MESSAGE]"
 
-docker login -u peregin -p "$DOKERHUB_TOKEN"
+docker login -u peregin -p ${DOKERHUB_TOKEN}
 
 git checkout "$TRAVIS_BRANCH"
 git config --global user.name "Deploy CI"
