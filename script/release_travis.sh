@@ -6,5 +6,5 @@ fi
 git config --global user.name "Deploy CI"
 git remote rm origin
 git remote add origin https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git > /dev/null 2>&1
-git checkout "$TRAVIS_BRANCH"
+git checkout "$TRAVIS_BRANCH" --set-upstream origin
 sbt "release skip-tests with-defaults"
