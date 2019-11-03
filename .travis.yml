@@ -17,10 +17,5 @@ script:
 
 after_success:
   - echo "testing succeeded"
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then bash ./script/release.sh; fi
 #  - bash <(curl -s https://codecov.io/bash)
-
-deploy:
-  provider: script
-  script: bash ./script/release_travis.sh
-  on:
-    branch: master
