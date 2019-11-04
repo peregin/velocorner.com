@@ -8,6 +8,7 @@
 .gradle
 .cache
 .idea/*
+!.idea/runConfigurations/*
 .idea_modules/*
 .bloop
 .metals
@@ -36,4 +37,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /public
+
 
