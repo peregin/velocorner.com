@@ -10,16 +10,21 @@
 ![Build Stats](https://buildstats.info/travisci/chart/peregin/velocorner.com?branch=master&buildCount=25)
 
 # velocorner.com
-The web application provides metrics for cycling (or for other kind of sports) activities, trail descriptions, biking videos.
-The statistics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to date series as well.
+The web application provides metrics for cycling and running (or for other kind of sports) activities.
+The statistics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to 
+date series as well.
 The yearly data is also presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
 The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
-Visit the page at [http://velocorner.com](http://velocorner.com)
-
-The project is also used to experiment with the technologies.
+Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
+Also using this project to experiment with technologies.
 
 ## CI/CD Flow
 
-![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD") 
+![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD")
+
+## Infrastructure
+Follows the infrastructure as code approach, see more details in this ![repo](https://github.com/peregin/my-little-infra "Infrastructure") .
+
+![Infrastructure](https://raw.github.com/peregin/my-little-infra/master/doc/infra.png "Infrastructure")
