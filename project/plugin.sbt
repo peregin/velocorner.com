@@ -27,3 +27,6 @@ addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.7.8-PLAY2.7")
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 
+// Show the hash of the current version
+addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
+

@@ -30,7 +30,8 @@ object StatusInfo {
     sbtVersion = velocorner.build.BuildInfo.sbtVersion,
     scalazVersion = velocorner.build.BuildInfo.scalazVersion,
     elasticVersion = velocorner.build.BuildInfo.elasticVersion,
-    playVersion = velocorner.build.BuildInfo.playVersion
+    playVersion = velocorner.build.BuildInfo.playVersion,
+    gitHash = velocorner.build.BuildInfo.gitHash
   )
 }
 
@@ -42,5 +43,6 @@ case class StatusInfo(
                        sbtVersion: String,
                        scalazVersion: String,
                        elasticVersion: String,
-                       playVersion: String
+                       playVersion: String,
+                       gitHash: String
                      )

@@ -140,6 +140,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       "elasticVersion" -> elasticVersion,
       "playVersion" -> play.core.PlayVersion.current,
       "scalazVersion" -> scalazVersion,
+      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
     ),
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",

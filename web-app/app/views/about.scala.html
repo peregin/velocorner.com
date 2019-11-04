@@ -88,7 +88,7 @@
             timeout: 20000,
             success: function(data) {
                 console.log(data);
-                $('#status-title').html(data.appVersion)
+                $('#status-title').html(data.appVersion + " - Build Hash: " + data.gitHash.slice(0, 10))
                 $('#status-version').html(data.appVersion)
                 $('#status-build-time').html(data.buildTime)
                 $('#status-scala-version').html(data.scalaVersion)
