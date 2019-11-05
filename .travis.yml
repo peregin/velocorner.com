@@ -22,8 +22,8 @@ notifications:
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_fa718eafddd5_key -iv $encrypted_fa718eafddd5_iv -in script/deploy_key.enc -out script/deploy_key -d
-  - chmod 600 script/deploy_rsa
-  - ssh-add script/deploy_rsa
+  - chmod 600 script/deploy_key
+  - ssh-add script/deploy_key
 
 script:
   - sbt clean test
