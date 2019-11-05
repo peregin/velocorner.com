@@ -13,14 +13,15 @@ services:
   - docker
 
 addons:
-  apt:
-    packages:
-      - sshpass
+  ssh_known_hosts: velocorner.com
 
 notifications:
   # Email notifications are disabled, the README contains a link to the CI build status.
   # See http://about.travis-ci.org/docs/user/build-configuration/ to configure
   email: false
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_fa718eafddd5_key -iv $encrypted_fa718eafddd5_iv -in script/deploy_key.enc -out script/deploy_key -d
 
 script:
   - sbt clean test
