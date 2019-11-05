@@ -16,7 +16,7 @@ git config --global user.name "Deploy CI"
 sbt "release skip-tests with-defaults"
 
 # push version changes and tags to the github
-git push --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$TRAVIS_BRANCH"
+git push --tags --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$TRAVIS_BRANCH"
 
 # restart the docker swarm stack
 ssh -i script/deploy_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
