@@ -27,5 +27,5 @@ sbt "release with-defaults"
 ```shell script
 sbt docker:publishLocal
 docker rm velocorner
-docker run -i -d --rm --name velocorner -p 9000:9000 -v /Users/levi/Downloads/velo/velocorner/:/data/ velocorner.com:1.0.3-SNAPSHOT -Dconfig.file=/data/docker.conf
+docker run -i -d --rm --name velocorner -p 9000:9000 -v /Users/levi/Downloads/velo/velocorner/:/data/ velocorner.com:1.0.3 -Dconfig.file=/data/docker.conf
 ```
