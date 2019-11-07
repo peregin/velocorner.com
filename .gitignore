@@ -37,6 +37,27 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /public
+# deployment, travis
 /script/deploy_key
+
+# web-front
+node_modules
+package-lock.json
+.pnp
+.pnp.js
+# testing
+coverage
+# production
+web-app//build
+# misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 
 
