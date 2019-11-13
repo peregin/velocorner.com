@@ -4,24 +4,30 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.storage.Storage
-import velocorner.util.Metrics
+import zio.Task
 
-object ActivitiesFromStravaAndAggregateApp extends App with LazyLogging with Metrics with AggregateActivities with AwaitSupport with MyMacConfig {
+object ActivitiesFromStravaAndAggregateApp extends zio.App with LazyLogging with AggregateActivities with MyMacConfig {
 
-  private val config = SecretConfig.load()
-  implicit val feed = new StravaActivityFeed(None, config)
-
-  val storage = Storage.create("or")
-  storage.initialize()
-  val activities = awaitOn(StravaActivityFeed.listRecentAthleteActivities)
-  logger.info(s"retrieved ${activities.size} activities")
-  awaitOn(storage.storeActivity(activities))
-
-  val progress = timed("aggregation")(awaitOn(storage.dailyProgressForAthlete(432909, "Ride")))
-  printAllProgress(progress)
-
-  logger.info("done...")
-  storage.destroy()
-  feed.close()
-  HttpFeed.shutdown()
+  override def run(args: List[String]): zio.URIO[zio.ZEnv, Int] = {
+    val res = Task.effect{
+      val config = SecretConfig.load()
+      new StravaActivityFeed(None, config)
+    }.bracket{ feed =>
+      Task.effectTotal{
+        feed.close()
+        HttpFeed.shutdown()
+      }
+      }{ implicit feed =>
+      for {
+        storage <- Task.effect(Storage.create("or"))
+        _ <- Task.effect(storage.initialize())
+        activities <- Task.fromFuture(_ => StravaActivityFeed.listRecentAthleteActivities)
+        _ <- Task.effectTotal(logger.info(s"retrieved ${activities.size} activities"))
+        progress <- Task.fromFuture(_ => storage.dailyProgressForAthlete(432909, "Ride"))
+        _ <- Task.effectTotal(printAllProgress(progress))
+        _ <- Task.effect(storage.destroy())
+      } yield ()
+    }
+    res.fold(_ => 1, _ => 0)
+  }
 }

@@ -1,6 +1,6 @@
 package velocorner.manual.storage
 
-import velocorner.manual.{AggregateActivities, MyMacConfig, OpenWeatherApp}
+import velocorner.manual.{AggregateActivities, MyMacConfig}
 import velocorner.storage.Storage
 import zio.ZIO
 
@@ -8,11 +8,11 @@ object ActivitiesFromStorageApp extends zio.App with AggregateActivities with My
 
   override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
     val res = for {
-      storage <- ZIO.apply(Storage.create("or"))
-      _ <- ZIO.apply(storage.initialize())
+      storage <- ZIO.effect(Storage.create("or"))
+      _ <- ZIO.effect(storage.initialize())
       progress <- ZIO.fromFuture(_ => storage.dailyProgressForAthlete(432909, "Ride"))
-      _ = printAllProgress(progress)
-      _ <- ZIO.apply(storage.destroy())
+      _ <- ZIO.effect(printAllProgress(progress))
+      _ <- ZIO.effect(storage.destroy())
     } yield ()
     res.foldM(_ => ZIO.succeed(1), _ => ZIO.succeed(0))
   }
