@@ -11,11 +11,11 @@ val projectScalaVersion = "2.13.1"
 val scalazVersion = "7.2.29"
 val zioVersion = "1.0.0-RC16"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.24"
+val orientDbVersion = "3.0.25"
 val elasticVersion = "7.3.1"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.8.0"
+val specsVersion = "4.8.1"
 val mockitoVersion = "3.1.0"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
