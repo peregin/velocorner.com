@@ -10,6 +10,11 @@ The main configuration file is not part of the source code, should include the a
 sbt -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf -Dlog.mode=papertrail 'project web-app' run
 ```
 
+## Convert images to webp format
+```shell script
+for f in *.jpg; do cwebp $f -o "${f%.*}".webp; echo "converted $f file..."; done
+```
+
 # Distribution
 ```shell script
 sbt dist
