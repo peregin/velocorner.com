@@ -32,10 +32,10 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
-  private val statusInfo = StatusInfo.create(environment.mode)
 
   // def mapped to /api/status
   def status = Action { implicit request =>
+    val statusInfo = StatusInfo.compute(environment.mode)
     Ok(Json.toJson(statusInfo))
   }
 

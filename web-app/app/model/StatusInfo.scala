@@ -1,11 +1,12 @@
 package model
 
+import play.api.Mode
 import play.api.libs.json._
 
 
 object StatusInfo {
 
-  implicit val modeFormat = Format[play.api.Mode]((json: JsValue) => {
+  implicit val modeFormat: Format[Mode] = Format[play.api.Mode]((json: JsValue) => {
     val modeString = json.asInstanceOf[JsString].value
     val mode = play.api.Mode.values.find(_.toString == modeString).getOrElse(play.api.Mode.Dev)
     JsSuccess(mode)
@@ -20,19 +21,26 @@ object StatusInfo {
     }
   }
 
-  implicit val statusFormat = Format[StatusInfo](Json.reads[StatusInfo], writes)
+  implicit val statusFormat: Format[StatusInfo] = Format[StatusInfo](Json.reads[StatusInfo], writes)
 
-  def create(applicationMode: play.api.Mode): StatusInfo = new StatusInfo(
-    applicationMode = applicationMode,
-    buildTime = velocorner.build.BuildInfo.buildTime,
-    appVersion = velocorner.build.BuildInfo.version,
-    scalaVersion = velocorner.build.BuildInfo.scalaVersion,
-    sbtVersion = velocorner.build.BuildInfo.sbtVersion,
-    scalazVersion = velocorner.build.BuildInfo.scalazVersion,
-    elasticVersion = velocorner.build.BuildInfo.elasticVersion,
-    playVersion = velocorner.build.BuildInfo.playVersion,
-    gitHash = velocorner.build.BuildInfo.gitHash
-  )
+  def compute(applicationMode: play.api.Mode): StatusInfo = {
+    val memoryTotal = sys.runtime.totalMemory()
+    val memoryUsed = memoryTotal - sys.runtime.freeMemory()
+    val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
+    new StatusInfo(
+      applicationMode = applicationMode,
+      buildTime = velocorner.build.BuildInfo.buildTime,
+      appVersion = velocorner.build.BuildInfo.version,
+      scalaVersion = velocorner.build.BuildInfo.scalaVersion,
+      sbtVersion = velocorner.build.BuildInfo.sbtVersion,
+      scalazVersion = velocorner.build.BuildInfo.scalazVersion,
+      elasticVersion = velocorner.build.BuildInfo.elasticVersion,
+      playVersion = velocorner.build.BuildInfo.playVersion,
+      gitHash = velocorner.build.BuildInfo.gitHash,
+      memoryTotal = memoryTotal,
+      memoryUsedPercentile = memoryUsedPercentile
+    )
+  }
 }
 
 case class StatusInfo(
@@ -44,5 +52,7 @@ case class StatusInfo(
                        scalazVersion: String,
                        elasticVersion: String,
                        playVersion: String,
-                       gitHash: String
+                       gitHash: String,
+                       memoryTotal: Long,
+                       memoryUsedPercentile: Int
                      )

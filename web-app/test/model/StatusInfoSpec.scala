@@ -8,7 +8,7 @@ class StatusInfoSpec extends Specification {
 
   "model" should {
 
-    val status = StatusInfo.create(Environment.simple().mode)
+    val status = StatusInfo.compute(Environment.simple().mode)
 
     "read and write from json" in {
       val json = JsonIo.write(status)

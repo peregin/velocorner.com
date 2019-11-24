@@ -29,7 +29,7 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion-1" href="#collapse-One" aria-expanded="false">
-                        Version Information: <span id="status-title">X</span> <small>click for more...</small>
+                        <span class="fa fa-bars"></span> Version Information: <span id="status-title">X</span> <small>click for more...</small>
                     </a>
                 </h4>
             </div>
@@ -71,7 +71,18 @@
 
     <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
         <p>
-            <a href="/docs">REST API</a> for statistics.
+            <a href="/docs"><img src="@assets.path("swagger-ui/favicon-32x32.png")"> REST API</a> for statistics.
+        </p>
+    </div>
+
+    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+        <p>
+            Memory usage of <span id="memory-total-bytes">1.00 Gb</span>
+            <div id="memory-progress-bar" class="progress-bar progress-bar-info"
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
+                10% Used
+            </div>
+            <br/>
         </p>
     </div>
 }
@@ -96,6 +107,9 @@
                 $('#status-elastic-version').html(data.elasticVersion)
                 $('#status-play-version').html(data.playVersion)
                 $('#status-play-mode').html(data.applicationMode)
+                $('#memory-progress-bar').attr('aria-valuenow', data.memoryUsedPercentile).css("width", data.memoryUsedPercentile + "%");
+                $('#memory-progress-bar').html(data.memoryUsedPercentile + '% Used');
+                $('#memory-total-bytes').html(formatBytes(data.memoryTotal));
            }
         });
 
