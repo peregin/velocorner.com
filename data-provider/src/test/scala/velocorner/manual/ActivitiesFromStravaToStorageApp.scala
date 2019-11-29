@@ -12,8 +12,9 @@ object AthleteFromStravaToStorageApp extends App with LazyLogging with AwaitSupp
 
   val storage = Storage.create("or")
   storage.initialize()
-  //val activities = await(StravaFeed.listRecentAthleteActivities)
-  val activities = awaitOn(StravaActivityFeed.listAllAthleteActivities)
+  val activities = awaitOn(StravaActivityFeed.listRecentAthleteActivities)
+  logger.info(s"found ${activities.size} activities")
+  //val activities = awaitOn(StravaActivityFeed.listAllAthleteActivities)
   awaitOn(storage.storeActivity(activities))
 
   logger.info("done...")

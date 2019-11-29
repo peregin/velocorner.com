@@ -28,6 +28,9 @@ object ActivitiesFromStravaAndAggregateApp extends zio.App with LazyLogging with
         _ <- Task.effect(storage.destroy())
       } yield ()
     }
-    res.fold(_ => 1, _ => 0)
+    res.fold(err => {
+      logger.error("failed", err)
+      1
+    }, _ => 0)
   }
 }
