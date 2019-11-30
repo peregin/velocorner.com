@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-function getSummary(cb) {
+function getStatus(cb) {
   return fetch('/api/status', {
     accept: "application/json"
   })
@@ -23,5 +23,5 @@ function parseJSON(response) {
   return response.json();
 }
 
-const Client = { getSummary };
+const Client = { getSummary: getStatus };
 export default Client;
