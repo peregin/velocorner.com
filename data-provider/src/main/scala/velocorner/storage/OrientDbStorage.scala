@@ -50,6 +50,11 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max")
   }
 
+  // to have an option list all rides for an athlete
+  def listActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] = {
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = '$activityType' AND athlete.id = $athleteId ORDER BY start_date DESC")
+  }
+
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     activities
