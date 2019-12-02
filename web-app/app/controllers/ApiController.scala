@@ -250,7 +250,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
       response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
       newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-      _ <- Future(weatherStorage.storeSunriseSunset(newEntry)).liftM[OptionT]
+      _ <- weatherStorage.storeSunriseSunset(newEntry).liftM[OptionT]
     } yield newEntry
 
     val resultET = for {
