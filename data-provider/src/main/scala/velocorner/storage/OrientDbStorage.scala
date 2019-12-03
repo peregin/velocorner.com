@@ -51,8 +51,9 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
   }
 
   // to have an option list all rides for an athlete
-  def listActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] = {
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = '$activityType' AND athlete.id = $athleteId ORDER BY start_date DESC")
+  def listActivities(athleteId: Long, activityType: Option[String]): Future[Iterable[Activity]] = {
+    val typeClause = activityType.map(a => s"type = '$a' AND ").getOrElse("")
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $typeClause athlete.id = $athleteId ORDER BY start_date DESC")
   }
 
   // insert all activities, new ones are added, previous ones are overridden

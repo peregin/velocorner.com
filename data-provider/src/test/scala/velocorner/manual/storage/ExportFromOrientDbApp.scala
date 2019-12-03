@@ -26,12 +26,15 @@ object ExportFromOrientDbApp extends zio.App with LazyLogging with MyMacConfig {
     val res = for {
       storage <- ZIO.effect(Storage.create("or"))
       _ <- ZIO.effect(storage.initialize())
-      activities <- ZIO.fromFuture(_ => storage.asInstanceOf[OrientDbStorage].listActivities(athleteId, "Ride"))
+      activities <- ZIO.fromFuture(_ => storage.asInstanceOf[OrientDbStorage].listActivities(athleteId, activityType = None))
       _ = logger.info(s"found ${activities.size} activities ...")
       _ <- writeJson(s"/Users/levi/Downloads/$athleteId.json", activities)
       _ <- ZIO.effect(storage.destroy())
     } yield ()
-    res.fold(_ => 1, _ => 0)
+    res.fold(err => {
+      logger.error("failed to extract data", err)
+      1
+    }, _ => 0)
   }
 
 }
