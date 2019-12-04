@@ -6,11 +6,12 @@ def analyze():
     df = cleanup("data/432909.json.gz")
 
     plt.style.use('fivethirtyeight')
-    #sns.countplot(df['type'])
-    #plt.title('Types of activities')
-    #sns.pairplot(df, hue='type')
+    sns.countplot(df['type'])
+    plt.title('Types of activities')
+    # sns.pairplot(df, hue='type')
 
-    #input("Press any key to close")
+    plt.show()
+
 
 
 def cleanup(name):
@@ -64,15 +65,14 @@ def cleanup(name):
 
     # keep significant data only
     df = df[df['type'].isin(['Ride', 'Run', 'Hike', 'AlpineSki'])]
-    #print(df['type'].value_counts())
+    # print(df['type'].value_counts())
 
     # check NA fields
     df['max_watts'] = df['max_watts'].fillna(0)
     df['avg_watts'] = df['avg_watts'].fillna(0)
     df['avg_cadence'] = df['avg_cadence'].fillna(0)
     df['avg_temp'] = df['avg_temp'].fillna(20) # avg 20 C if NA?
-    #print(df.columns[df.isna().any()].tolist())
-
+    # print(df.columns[df.isna().any()].tolist())
 
     print(df.info())
     print(df.head(n=5))
