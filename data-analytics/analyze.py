@@ -6,9 +6,19 @@ def analyze():
     df = cleanup("data/432909.json.gz")
 
     plt.style.use('fivethirtyeight')
-    sns.countplot(df['type'])
-    plt.title('Types of activities')
-    # sns.pairplot(df, hue='type')
+    # sns.countplot(df['type'])
+    # plt.title('Types of activities')
+    # sns.pairplot(df, hue='type', diag_kind='hist')
+    corr = df.corr()
+    plt.figure(figsize=(12, 8))
+    # sns.heatmap(corr, annot=True, fmt=".2f")
+
+    # trends
+    trends = df.copy()
+    trends.set_index(pd.to_datetime(trends.index), drop=True, inplace=True)
+    trends['weekday'] = trends.index.map(lambda x: x.weekday)
+    print(trends.groupby('weekday').mean())
+    trends.groupby('weekday').mean()['elapsed_mins'].plot(kind='bar')
 
     plt.show()
 
