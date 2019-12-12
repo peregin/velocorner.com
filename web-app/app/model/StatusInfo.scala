@@ -24,7 +24,7 @@ object StatusInfo {
   implicit val statusFormat: Format[StatusInfo] = Format[StatusInfo](Json.reads[StatusInfo], writes)
 
   def compute(applicationMode: play.api.Mode): StatusInfo = {
-    val memoryTotal = sys.runtime.totalMemory()
+    val memoryTotal = sys.runtime.maxMemory()
     val memoryUsed = memoryTotal - sys.runtime.freeMemory()
     val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
     new StatusInfo(
