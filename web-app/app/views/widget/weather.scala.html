@@ -4,16 +4,16 @@
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
     <div class="row">
         <div class="col-md-3 col-sm-12">
-            <span>
+            <label>
                 <img style="width: 16px; height:16px;" src="@assets.path("images/icons/sun-64.png")" alt="Forecast">
                 Forecast
-            </span>
-            <div class="input-group animated fadeInDown">
-                <input id="weather" name="weather" type="text" value="@location" class="form-control" placeholder="Location">
-                <span class="input-group-btn">
-                    <button id="weather_button" name="weather_button" class="btn-u rounded btn-block" type="button"><i class="fa fa-refresh"></i> Weather</button>
-                </span>
-            </div>
+                <div class="input-group animated fadeInDown">
+                    <input id="weather" name="weather" type="text" value="@location" class="form-control" placeholder="Location">
+                    <span class="input-group-btn">
+                        <button id="weather_button" name="weather_button" class="btn-u rounded btn-block" type="button"><i class="fa fa-refresh"></i> Weather</button>
+                    </span>
+                </div>
+            </label>
             <div id="weather-progress" class="progress progress-striped active" style="visibility:hidden;">
                 <div id="weather-progress-bar" class="progress-bar progress-bar-info"
                      role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
