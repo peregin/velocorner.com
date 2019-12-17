@@ -18,6 +18,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
+
 class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {
@@ -27,7 +28,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
     "return with success" in {
       val cacheApiMock = mock[SyncCacheApi]
       val settingsMock = mock[ConnectivitySettings]
-      val storageMock = mock[Storage]
+      val storageMock = mock[Storage[Future]]
 
       when(settingsMock.getStorage).thenReturn(storageMock)
       when(storageMock.getClub(Club.Velocorner)).thenReturn(Future(None))

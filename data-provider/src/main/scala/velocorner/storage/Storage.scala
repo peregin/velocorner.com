@@ -9,10 +9,10 @@ import velocorner.model.weather.{SunriseSunset, WeatherForecast}
 import scala.concurrent.Future
 
 
-trait Storage {
+trait Storage[M[_]] {
 
   // insert all activities, new ones are added, previous ones are overridden
-  def storeActivity(activities: Iterable[Activity]): Future[Unit]
+  def storeActivity(activities: Iterable[Activity]): M[Unit]
 
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): Future[Iterable[String]]
@@ -75,9 +75,9 @@ trait Storage {
 
 object Storage extends LazyLogging {
 
-  def create(dbType: String): Storage = create(dbType, SecretConfig.load())
+  def create(dbType: String): Storage[Future] = create(dbType, SecretConfig.load())
 
-  def create(dbType: String, config: SecretConfig): Storage = {
+  def create(dbType: String, config: SecretConfig): Storage[Future] = {
     logger.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
       case any if any.startsWith("re") => new RethinkDbStorage

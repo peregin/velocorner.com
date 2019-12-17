@@ -33,7 +33,7 @@ import scala.jdk.CollectionConverters._
  * Created by levi on 14.11.16.
  */
 class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
-  extends Storage with CloseableResource with Metrics with LazyLogging {
+  extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
 
   @volatile var server: Option[OrientDB] = None
   private val dbUser = dbUrl.isDefined ? "root" | "admin"

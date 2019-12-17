@@ -23,7 +23,7 @@ import scala.language.implicitConversions
   *   r.db('velocorner').table('activity');
   * </code>
   */
-class RethinkDbStorage extends Storage with LazyLogging {
+class RethinkDbStorage extends Storage[Future] with LazyLogging {
 
   private lazy val client = RethinkDB.r
   @volatile var maybeConn: Option[Connection] = None
