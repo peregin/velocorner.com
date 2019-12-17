@@ -8,18 +8,19 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 val projectScalaVersion = "2.13.1"
-val scalazVersion = "7.2.29"
+val scalazVersion = "7.2.30"
 val zioVersion = "1.0.0-RC17"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.25"
+val orientDbVersion = "3.0.26"
+val mongoDbVersion = "2.8.0"
 val elasticVersion = "7.3.1"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
 val specsVersion = "4.8.1"
-val mockitoVersion = "3.2.0"
+val mockitoVersion = "3.2.4"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
-val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
+val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
 val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
 
 val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
