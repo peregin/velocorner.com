@@ -4,9 +4,10 @@ import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.indexes.{IndexApi, IndexRequest}
 import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
 import velocorner.model.strava.Activity
+import velocorner.util.JsonIo
 
 /**
-  * Created by levi on 21.03.17.
+  * Simple utility to support elastic operations
   */
 trait ElasticSupport extends IndexApi {
 
@@ -16,10 +17,13 @@ trait ElasticSupport extends IndexApi {
   def map2Indices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
     activities.map { a =>
       val ixDefinition = indexInto("activity")
-      extractIndices(a, ixDefinition).withId(a.id.toString)
+      extractDoc(a, ixDefinition).withId(a.id.toString)
     }
   }
 
+  def extractDoc(a: Activity, id: IndexRequest): IndexRequest = id.doc(JsonIo.write(a))
+
+  // only specific fields
   def extractIndices(a: Activity, id: IndexRequest): IndexRequest = id.fields(
     "name" -> a.name,
     "start_date" -> a.start_date,

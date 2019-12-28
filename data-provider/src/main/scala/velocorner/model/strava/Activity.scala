@@ -85,6 +85,7 @@ object Activity {
   implicit val activityFormat: OFormat[Activity] = Jsonx.formatCaseClass[Activity]
   // works up to 22 parameter case classes
   //implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
+  implicit val listActivities: Reads[List[Activity]] = Reads.list(activityFormat)
 }
 
 // max 22 fields are supported by the json marshaller
