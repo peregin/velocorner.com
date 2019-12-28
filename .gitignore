@@ -15,6 +15,7 @@
 .metals
 bin/
 target/
+classes/
 gen/
 out/
 build/

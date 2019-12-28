@@ -3,6 +3,7 @@ package velocorner.model.strava
 import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.model.DateTimePattern
+import ai.x.play.json.Jsonx
 
 /**
  * Represents an Activity from the Strava feed and storage layer:
@@ -80,7 +81,10 @@ import velocorner.model.DateTimePattern
 object Activity {
 
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter
-  implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
+  // generates a PlayJson Format[T] for a case class T with any number of fields
+  implicit val activityFormat: OFormat[Activity] = Jsonx.formatCaseClass[Activity]
+  // works up to 22 parameter case classes
+  //implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
 }
 
 // max 22 fields are supported by the json marshaller
@@ -106,5 +110,7 @@ case class Activity(
   max_watts: Option[Float],
   average_heartrate: Option[Float],
   max_heartrate: Option[Float],
-  gear_id: Option[String]
+  gear_id: Option[String],
+  start_latitude: Option[Float],
+  start_longitude: Option[Float]
 )

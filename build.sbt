@@ -24,6 +24,8 @@ val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
 val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
 
 val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
+// for more than 22 parameter case classes
+val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.40.2"
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
@@ -106,7 +108,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     buildSettings,
     name := "data-provider",
     libraryDependencies ++= Seq(
-      playJson, playJsonJoda, playWsAhcStandalone,
+      playJson, playJsonExtensions, playJsonJoda, playWsAhcStandalone,
       scalaSpec, scalaSpecJunit
     ) ++ logging
       ++ storage
