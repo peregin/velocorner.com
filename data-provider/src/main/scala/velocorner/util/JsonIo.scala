@@ -6,7 +6,7 @@ import play.api.libs.json._
 
 import scala.io.Source
 
-object JsonIo {
+object JsonIo extends CloseableResource {
 
   def readFromGzipResource[T](resourceName: String)(implicit fjs: Reads[T]): T = {
     val in = new GZIPInputStream(getClass.getResourceAsStream(resourceName))
@@ -14,7 +14,7 @@ object JsonIo {
     read(raw)
   }
 
-  def readStringFromResource(resourceName: String): String = Source.fromURL(getClass.getResource(resourceName)).mkString
+  def readStringFromResource(resourceName: String): String = withCloseable(Source.fromURL(getClass.getResource(resourceName)))(_.mkString)
 
   def readReadFromResource[T](resourceName: String)(implicit fjs: Reads[T]): T = {
     val json = readStringFromResource(resourceName)
@@ -22,7 +22,7 @@ object JsonIo {
   }
 
   def readFromFile[T](fileName: String)(implicit fjs: Reads[T]): T = {
-    val json = Source.fromFile(fileName).mkString
+    val json = withCloseable(Source.fromFile(fileName))(_.mkString)
     read[T](json)
   }
   
@@ -34,8 +34,8 @@ object JsonIo {
     }
   }
 
-  def write[T](obj: T)(implicit fjs: Writes[T]): String = {
+  def write[T](obj: T, pretty: Boolean = true)(implicit fjs: Writes[T]): String = {
     val json = Json.toJson(obj)
-    Json.prettyPrint(json)
+    if (pretty) Json.prettyPrint(json) else json.toString()
   }
 }

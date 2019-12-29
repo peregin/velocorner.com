@@ -83,8 +83,6 @@ object Activity {
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter
   // generates a PlayJson Format[T] for a case class T with any number of fields
   implicit val activityFormat: OFormat[Activity] = Jsonx.formatCaseClass[Activity]
-  // works up to 22 parameter case classes
-  //implicit val activityFormat = Format[Activity](Json.reads[Activity], Json.writes[Activity])
   implicit val listActivities: Reads[List[Activity]] = Reads.list(activityFormat)
 }
 

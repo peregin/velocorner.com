@@ -1,27 +1,50 @@
 package velocorner.search
 
+import com.sksamuel.elastic4s.ElasticDsl.{createIndex, geopointField, properties}
 import com.sksamuel.elastic4s.http.JavaClient
-import com.sksamuel.elastic4s.requests.indexes.{IndexApi, IndexRequest}
+import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexApi, IndexRequest}
+import com.sksamuel.elastic4s.requests.searches.GeoPoint
 import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
+import play.api.libs.json.{JsObject, JsString, Json}
+import scalaz.Show
+import scalaz.syntax.show._
 import velocorner.model.strava.Activity
 import velocorner.util.JsonIo
 
-/**
-  * Simple utility to support elastic operations
-  */
 trait ElasticSupport extends IndexApi {
 
   private lazy val client = JavaClient(ElasticProperties(Seq(ElasticNodeEndpoint("http", "localhost", 9200, prefix = None))))
-  def localCluster() = ElasticClient(client)
 
-  def map2Indices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
-    activities.map { a =>
+  def localCluster(): ElasticClient = ElasticClient(client)
+
+  def setup(): CreateIndexRequest = createIndex("activity").mapping(properties(geopointField("location")))
+
+  def toIndices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
+    activities.map { activity =>
       val ixDefinition = indexInto("activity")
-      extractDoc(a, ixDefinition).withId(a.id.toString)
+      val ix = ixDefinition.withId(activity.id.toString)
+
+      val convertedActivity = activity.copy(
+        max_speed = activity.max_speed.map(_ * 3.6f), // to km/h
+        average_speed = activity.average_speed.map(_ * 3.6f) // to km/h
+      )
+
+      // enrich with location
+      val maybeGeoPoint = for {
+        lat <- activity.start_latitude
+        lon <- activity.start_longitude
+      } yield GeoPoint(lat, lon)
+      implicit val gpShow: Show[GeoPoint] = Show.shows[GeoPoint](gp => s"${gp.lat},${gp.long}")
+      val json = (Json.toJson(convertedActivity), maybeGeoPoint) match {
+        case (jsObj: JsObject, Some(geoPoint)) => jsObj +("location", JsString(geoPoint.shows))
+        case (jsAny, _) => jsAny
+      }
+      ix.doc(json.toString())
     }
   }
 
-  def extractDoc(a: Activity, id: IndexRequest): IndexRequest = id.doc(JsonIo.write(a))
+  // specific to elastic bulk upload, doc json must be in one line
+  def extractFullDoc(a: Activity, id: IndexRequest): IndexRequest = id.doc(JsonIo.write(a, pretty = false))
 
   // only specific fields
   def extractIndices(a: Activity, id: IndexRequest): IndexRequest = id.fields(

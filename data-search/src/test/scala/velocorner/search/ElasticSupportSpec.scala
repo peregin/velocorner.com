@@ -12,6 +12,9 @@ class ElasticSupportSpec extends Specification with ElasticSupport with LazyLogg
 
   sequential
 
+  // LocalNode is not supported anymore - SKIP TESTS HERE
+  args(skipAll = true)
+
   "local cluster" should {
 
     val client = localCluster()
@@ -19,12 +22,12 @@ class ElasticSupportSpec extends Specification with ElasticSupport with LazyLogg
     "create indices" in {
       val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
       activities must haveSize(30)
-      val indices = map2Indices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
+      val indices = toIndices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
       val res = indices.map(ix => client.execute(ix).await)
       val statuses = res.map(_.status)
       statuses must haveSize(30) // it has 6 skiing events
       statuses must contain(201)
-    }.pendingUntilFixed("LocalNode is not supported anymore")
+    }
 
     "search" in {
       val res = client.execute(search("activity") matchQuery("name", "Uetli") limit 5).await
@@ -35,6 +38,6 @@ class ElasticSupportSpec extends Specification with ElasticSupport with LazyLogg
 
       logger.info(s"search results ${hits.mkString(",")}")
       hits.length === 5
-    }.pendingUntilFixed("LocalNode is not supported anymore")
+    }
   }
 }

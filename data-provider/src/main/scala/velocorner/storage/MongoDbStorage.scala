@@ -24,11 +24,10 @@ import scalaz.syntax.traverse.ToTraverseOps
   * Created by levi on 28/09/16.
   * Access layer to the MongoDb.
   * TODO: use bulk upsert
-  * TODO: use async API
   */
 class MongoDbStorage extends Storage[Future] with LazyLogging {
 
-  lazy val client = MongoClient()
+  lazy private val client = MongoClient()
   @volatile var db: Option[MongoDatabase] = None
 
 
