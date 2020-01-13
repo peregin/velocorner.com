@@ -38,7 +38,8 @@ object Athlete {
       JsObject(baseJs.fields :+ ("type" -> typeJs))
     }
   }
-  implicit val activityFormat = Format[Athlete](Json.reads[Athlete], writes)
+  implicit val athleteFormat = Format[Athlete](Json.reads[Athlete], writes)
+  implicit val listAthletes: Reads[List[Athlete]] = Reads.list(athleteFormat)
 }
 
 case class Athlete(
