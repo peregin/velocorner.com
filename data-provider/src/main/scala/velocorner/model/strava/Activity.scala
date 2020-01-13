@@ -111,5 +111,6 @@ case class Activity(
   max_heartrate: Option[Float],
   gear_id: Option[String],
   start_latitude: Option[Float],
-  start_longitude: Option[Float]
+  start_longitude: Option[Float],
+  commute: Option[Boolean]
 )
