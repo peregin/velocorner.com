@@ -5,14 +5,13 @@ import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
-import velocorner.model._
+import scalaz.Monad
 import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.{Account, DailyProgress}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
 import scala.jdk.CollectionConverters._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.language.implicitConversions
 
 /**
@@ -23,27 +22,25 @@ import scala.language.implicitConversions
   *   r.db('velocorner').table('activity');
   * </code>
   */
-class RethinkDbStorage extends Storage[Future] with LazyLogging {
+class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   private lazy val client = RethinkDB.r
   @volatile var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = Future {
-    activities.map{ a =>
-      val json = JsonIo.write(a)
-      client.json(json)
-    }.foreach{json =>
-      // TODO: bulk store
-      val result: java.util.HashMap[String, String] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
-      logger.debug(s"result $result")
-    }
-  }
+  override def storeActivity(activities: Iterable[Activity]): M[Unit] = Monad[M].point(activities.map { a =>
+    val json = JsonIo.write(a)
+    client.json(json)
+  }.foreach { json =>
+    // TODO: bulk store
+    val result: java.util.HashMap[String, String] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
+    logger.debug(s"result $result")
+  })
 
 
-  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
+  override def listActivityTypes(athleteId: Long): M[Iterable[String]] = Monad[M].point(Iterable.empty[String])
 
-  override def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]] = Future {
+  override def dailyProgressForAthlete(athleteId: Long, activityType: String): M[Iterable[DailyProgress]] = Monad[M].point {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
@@ -54,10 +51,10 @@ class RethinkDbStorage extends Storage[Future] with LazyLogging {
     DailyProgress.fromStorage(activities)
   }
 
-  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
+  override def getActivity(id: Long): M[Option[Activity]] = ??? // getJsonById(id, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = Future {
+  override def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]] = Monad[M].point {
     val result: java.util.ArrayList[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
@@ -69,17 +66,16 @@ class RethinkDbStorage extends Storage[Future] with LazyLogging {
   }
 
   private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] = {
-    val mapList = result //result.toList.asScala.toList
-    mapList.map(JSONObject.toJSONString).map(JsonIo.read[Activity])
+    result.map(JSONObject.toJSONString).map(JsonIo.read[Activity])
   }
 
-  private def upsert[T](jsText: T, table: String): Future[Unit] = Future {
+  private def upsert[T](jsText: T, table: String) = Monad[M].point {
     val json = client.json(jsText)
     val result: java.util.HashMap[String, String] = client.table(table).insert(json).optArg("conflict", "update").run(maybeConn)
     logger.debug(s"result $result")
   }
 
-  private def getJsonById(id: Long, table: String): Future[Option[String]] = Future {
+  private def getJsonById(id: Long, table: String) = Monad[M].point {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("id")
       field1.eq(id)
@@ -88,28 +84,28 @@ class RethinkDbStorage extends Storage[Future] with LazyLogging {
   }
 
   // accounts
-  override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
+  override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
 
-  override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE).map(_.map(JsonIo.read[Account]))
+  override def getAccount(id: Long): M[Option[Account]] = ??? //getJsonById(id, ACCOUNT_TABLE).map(_.map(JsonIo.read[Account]))
 
   // athletes
-  override def store(athlete: Athlete): Future[Unit] = upsert(JsonIo.write(athlete), ATHLETE_TABLE)
+  override def store(athlete: Athlete): M[Unit] = upsert(JsonIo.write(athlete), ATHLETE_TABLE)
 
-  override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
+  override def getAthlete(id: Long): M[Option[Athlete]] = ??? //getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
 
   // clubs
-  override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), CLUB_TABLE)
+  override def store(club: Club): M[Unit] = upsert(JsonIo.write(club), CLUB_TABLE)
 
-  override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
+  override def getClub(id: Long): M[Option[Club]] = ??? //getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
 
   // weather
-  override def getWeatherStorage(): WeatherStorage = ???
+  override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
-  override def getAttributeStorage(): AttributeStorage = ???
+  override def getAttributeStorage: AttributeStorage = ???
 
   // various achievements
-  override def getAchievementStorage(): AchievementStorage = ???
+  override def getAchievementStorage: AchievementStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

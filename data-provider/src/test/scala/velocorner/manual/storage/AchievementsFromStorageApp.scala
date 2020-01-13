@@ -13,7 +13,7 @@ object AchievementsFromStorageApp extends zio.App with LazyLogging with MyMacCon
       storage <- ZIO.effect(Storage.create("or"))
       _ <- ZIO.effect(storage.initialize())
       maxAchievement <- ZIO.fromFuture(
-        global => storage.getAchievementStorage().maxAverageHeartRate(9463742, "Ride").recover{case _ => None}(global)
+        global => storage.getAchievementStorage.maxAverageHeartRate(9463742, "Ride").recover{case _ => None}(global)
       )
       _ <- ZIO.effect(logger.info(s"max achievement ${maxAchievement.toString}"))
       _ <- ZIO.effect(storage.destroy())

@@ -5,6 +5,8 @@ import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
 import velocorner.model.weather.{SunriseSunset, WeatherForecast}
+import velocorner.util.FutureInstances
+import FutureInstances.monadInstance
 
 import scala.concurrent.Future
 
@@ -15,55 +17,55 @@ trait Storage[M[_]] {
   def storeActivity(activities: Iterable[Activity]): M[Unit]
 
   // e.g. Ride, Run, etc.
-  def listActivityTypes(athleteId: Long): Future[Iterable[String]]
+  def listActivityTypes(athleteId: Long): M[Iterable[String]]
 
-  def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]]
+  def dailyProgressForAthlete(athleteId: Long, activityType: String): M[Iterable[DailyProgress]]
 
-  def getActivity(id: Long): Future[Option[Activity]]
+  def getActivity(id: Long): M[Option[Activity]]
 
   // to check how much needs to be imported from the feed
-  def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]]
+  def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
 
   // accounts
-  def store(account: Account): Future[Unit]
-  def getAccount(id: Long): Future[Option[Account]]
+  def store(account: Account): M[Unit]
+  def getAccount(id: Long): M[Option[Account]]
 
   // athletes
-  def store(athlete: Athlete): Future[Unit]
-  def getAthlete(id: Long): Future[Option[Athlete]]
+  def store(athlete: Athlete): M[Unit]
+  def getAthlete(id: Long): M[Option[Athlete]]
 
   // clubs
-  def store(club: Club): Future[Unit]
-  def getClub(id: Long): Future[Option[Club]]
+  def store(club: Club): M[Unit]
+  def getClub(id: Long): M[Option[Club]]
 
-  def getWeatherStorage(): WeatherStorage
+  def getWeatherStorage: WeatherStorage
   trait WeatherStorage {
     // weather - location is <city[,countryISO2letter]>
     // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
-    def listRecentForecast(location: String, limit: Int = 40): Future[Iterable[WeatherForecast]]
-    def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit]
-    def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]]
-    def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit]
+    def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
+    def storeWeather(forecast: Iterable[WeatherForecast]): M[Unit]
+    def getSunriseSunset(location: String, localDate: String): M[Option[SunriseSunset]]
+    def storeSunriseSunset(sunriseSunset: SunriseSunset): M[Unit]
   }
 
   // key value pairs - generic attribute storage
-  def getAttributeStorage(): AttributeStorage
+  def getAttributeStorage: AttributeStorage
   trait AttributeStorage {
-    def storeAttribute(key: String, `type`: String, value: String): Future[Unit]
-    def getAttribute(key: String, `type`: String): Future[Option[String]]
+    def storeAttribute(key: String, `type`: String, value: String): M[Unit]
+    def getAttribute(key: String, `type`: String): M[Option[String]]
   }
 
   // various achievements
-  def getAchievementStorage(): AchievementStorage
+  def getAchievementStorage: AchievementStorage
   trait AchievementStorage {
-    def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def minTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]
-    def maxTemperature(athleteId: Long, activity: String): Future[Option[Achievement]]
+    def maxAverageSpeed(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxDistance(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxElevation(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxAverageHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxAveragePower(athleteId: Long, activity: String): M[Option[Achievement]]
+    def minTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
   }
 
   // initializes any connections, pools, resources needed to open a storage session
@@ -77,10 +79,11 @@ object Storage extends LazyLogging {
 
   def create(dbType: String): Storage[Future] = create(dbType, SecretConfig.load())
 
+
   def create(dbType: String, config: SecretConfig): Storage[Future] = {
     logger.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
-      case any if any.startsWith("re") => new RethinkDbStorage
+      case any if any.startsWith("re") => new RethinkDbStorage[Future] // import for future instances implicit
       case any if any.startsWith("mo") => new MongoDbStorage
       case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
       case unknown => sys.error(s"unknown storage type $unknown")

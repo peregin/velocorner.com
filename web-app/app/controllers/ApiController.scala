@@ -113,7 +113,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
   // list of achievements
   // route mapped to /api/statistics/achievements/:activity
   def achievements(activity: String) = AuthAsyncAction { implicit request =>
-    val storage = connectivity.getStorage.getAchievementStorage()
+    val storage = connectivity.getStorage.getAchievementStorage
     loggedIn.map{ account =>
       // parallelization
       val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
@@ -198,8 +198,8 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     val isoLocation = CountryIsoUtils.iso(location)
     val now = DateTime.now() // inject time iterator instead
     val refreshTimeoutInMinutes = 15 // make it configurable instead
-    val weatherStorage = connectivity.getStorage.getWeatherStorage()
-    val attributeStorage = connectivity.getStorage.getAttributeStorage()
+    val weatherStorage = connectivity.getStorage.getWeatherStorage
+    val attributeStorage = connectivity.getStorage.getAttributeStorage
     logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
@@ -244,7 +244,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     // convert city[,country] to city[,isoCountry]
     val isoLocation = CountryIsoUtils.iso(location)
     val now = LocalDate.now.toString
-    val weatherStorage = connectivity.getStorage.getWeatherStorage()
+    val weatherStorage = connectivity.getStorage.getWeatherStorage
     logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")
 
     def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
@@ -271,19 +271,17 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
 
   // WebSocket to update the client
   // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
-  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { rh =>
-    rh match {
-      case _ if sameOriginCheck(rh) =>
-        logger.info(s"ws with request header: $rh")
-        val flow = wsFlow(rh)
-        Future.successful[Either[Result, Flow[String, String, _]]](Right(flow)).recover{ case e =>
-          logger.error("failed to create websocket", e)
-          Left(InternalServerError(s"failed to create websocket, ${e.getMessage}"))
-        }
-      case rejected =>
-        logger.error(s"same origin check failed for $rejected")
-        Future.successful(Left(Forbidden))
-    }
+  def ws: WebSocket = WebSocket.acceptOrResult[String, String] {
+    case rh if sameOriginCheck(rh) =>
+      logger.info(s"ws with request header: $rh")
+      val flow = wsFlow(rh)
+      Future.successful[Either[Result, Flow[String, String, _]]](Right(flow)).recover { case e =>
+        logger.error("failed to create websocket", e)
+        Left(InternalServerError(s"failed to create websocket, ${e.getMessage}"))
+      }
+    case rejected =>
+      logger.error(s"same origin check failed for $rejected")
+      Future.successful(Left(Forbidden))
   }
 
   var counter = 1

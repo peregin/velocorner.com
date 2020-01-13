@@ -31,14 +31,12 @@ import play.api.libs.json.{Format, Json, _}
   *
   */
 object Athlete {
-  val writes = new Writes[Athlete] {
-    override def writes(o: Athlete): JsValue = {
-      val baseJs: JsObject = Json.writes[Athlete].writes(o).as[JsObject]
-      val typeJs: JsString = Writes.StringWrites.writes("Athlete")
-      JsObject(baseJs.fields :+ ("type" -> typeJs))
-    }
+  val writes: Writes[Athlete] = (o: Athlete) => {
+    val baseJs: JsObject = Json.writes[Athlete].writes(o).as[JsObject]
+    val typeJs: JsString = Writes.StringWrites.writes("Athlete")
+    JsObject(baseJs.fields :+ ("type" -> typeJs))
   }
-  implicit val athleteFormat = Format[Athlete](Json.reads[Athlete], writes)
+  implicit val athleteFormat: Format[Athlete] = Format[Athlete](Json.reads[Athlete], writes)
   implicit val listAthletes: Reads[List[Athlete]] = Reads.list(athleteFormat)
 }
 
