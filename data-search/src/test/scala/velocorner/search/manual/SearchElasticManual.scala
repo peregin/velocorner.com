@@ -19,7 +19,7 @@ object SearchElasticManual extends App with ElasticSupport with AwaitSupport wit
       sortByFieldDesc "start_date"
   ).await
   val hits = res.result.hits.hits.toList
-  hits.foreach(h => logger.info(s"${SortedMap(h.sourceAsMap.toArray:_*)}"))
+  hits.foreach(h => logger.info(s"${SortedMap(h.sourceAsMap.toIndexedSeq:_*)}"))
 
   elastic.close()
 }
