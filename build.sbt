@@ -11,12 +11,12 @@ val projectScalaVersion = "2.13.1"
 val scalazVersion = "7.2.30"
 val zioVersion = "1.0.0-RC17"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.26"
+val orientDbVersion = "3.0.27"
 val mongoDbVersion = "2.8.0"
-val elasticVersion = "7.3.4"
+val elasticVersion = "7.3.5"
 val playWsVersion = "2.0.7" // standalone version
 val playJsonVersion = "2.7.4"
-val specsVersion = "4.8.1"
+val specsVersion = "4.8.3"
 val mockitoVersion = "3.2.4"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
@@ -32,7 +32,7 @@ val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % pl
 
 val apacheCommons = Seq(
   "commons-io" % "commons-io" % "2.6",
-  "commons-codec" % "commons-codec" % "1.13"
+  "commons-codec" % "commons-codec" % "1.14"
 )
 
 val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test"
