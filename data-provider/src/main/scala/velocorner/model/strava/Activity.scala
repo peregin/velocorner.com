@@ -112,5 +112,8 @@ case class Activity(
   gear_id: Option[String],
   start_latitude: Option[Float],
   start_longitude: Option[Float],
-  commute: Option[Boolean]
+  commute: Option[Boolean],
+  elev_high: Option[Float],
+  elev_low: Option[Float],
+  pr_count: Option[Int]
 )
