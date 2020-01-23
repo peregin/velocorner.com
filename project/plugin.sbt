@@ -7,7 +7,7 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2")
 addSbtPlugin("com.gilt" % "sbt-dependency-graph-sugar" % "0.9.0")
 
 // check latest updates form maven
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.0")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.3")
 
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
@@ -16,13 +16,13 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 // Gerolf's release plugin
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
 
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.3")
 
 // Generate swagger doc from the routes
-addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.7.8-PLAY2.7")
+addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.9.1-PLAY2.7")
 
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
