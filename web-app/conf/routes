@@ -34,7 +34,7 @@ GET     /authorize/withings                                controllers.auth.With
 #    200:
 #      description: status information about the system
 #      schema:
-#        $ref: '#/definitions/model.StatusInfo'
+#        $ref: '#/components/schemas/model.StatusInfo'
 ###
 GET     /api/status                                        controllers.ApiController.status
 
@@ -44,7 +44,7 @@ GET     /api/status                                        controllers.ApiContro
 #    200:
 #      description: Returns the yearly statistics
 #      schema:
-#        $ref: '#/definitions/velocorner.model.Progress'
+#        $ref: '#/components/schemas/velocorner.model.Progress'
 ###
 GET     /api/athletes/statistics/profile/:activity         controllers.ApiController.ytdProfile(activity: String)
 
@@ -54,7 +54,7 @@ GET     /api/athletes/statistics/profile/:activity         controllers.ApiContro
 #    200:
 #      description: Returns the yearly series, for heatmap, distance or elevation
 #      schema:
-#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -66,7 +66,7 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiContro
 #    200:
 #      description: Returns the year to date series
 #      schema:
-#        $ref: '#/definitions/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -78,7 +78,7 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiContro
 #    200:
 #      description: Extracts max speed, longest ride, etc.
 #      schema:
-#        $ref: '#/definitions/velocorner.Achievements'
+#        $ref: '#/components/schemas/velocorner.Achievements'
 #    404:
 #      description: Not found
 ###
@@ -90,7 +90,7 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ApiContro
 #    200:
 #      description: Returns a list of activities
 #      schema:
-#        $ref: '#/definitions/velocorner.model.strava.Activity'
+#        $ref: '#/components/schemas/velocorner.model.strava.Activity'
 ###
 GET     /api/activities/suggest                            controllers.ApiController.suggest(query: String)
 
@@ -108,7 +108,7 @@ GET     /api/activities/type                               controllers.ApiContro
 #    200:
 #      description: Returns an activity based on id
 #      schema:
-#        $ref: '#/definitions/velocorner.model.strava.Activity'
+#        $ref: '#/components/schemas/velocorner.model.strava.Activity'
 #    403:
 #      description: Forbidden
 #    404:
@@ -124,7 +124,7 @@ GET     /api/activities/:id                                controllers.ApiContro
 #    200:
 #      description: Weather forecast for the next 5 days
 #      schema:
-#        $ref: '#/definitions/velocorner.model.DailyWeather'
+#        $ref: '#/components/schemas/velocorner.model.DailyWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -140,7 +140,7 @@ GET     /api/weather/:location                             controllers.ApiContro
 #    200:
 #      description: Sunrise, sunset
 #      schema:
-#        $ref: '#/definitions/velocorner.model.weather.SunriseSunset'
+#        $ref: '#/components/schemas/velocorner.model.weather.SunriseSunset'
 #    400:
 #      description: Bad request
 #    404:
