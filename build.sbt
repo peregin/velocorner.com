@@ -14,8 +14,8 @@ val logbackVersion = "1.2.3"
 val orientDbVersion = "3.0.27"
 val mongoDbVersion = "2.8.0"
 val elasticVersion = "7.3.5"
-val playWsVersion = "2.0.7" // standalone version
-val playJsonVersion = "2.7.4"
+val playWsVersion = "2.1.2" // standalone version
+val playJsonVersion = "2.8.1"
 val specsVersion = "4.8.3"
 val mockitoVersion = "3.2.4"
 
@@ -35,7 +35,7 @@ val apacheCommons = Seq(
   "commons-codec" % "commons-codec" % "1.14"
 )
 
-val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test"
+val playTest = "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % "test"
 val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
 val scalaSpecJunit = "org.specs2" %% "specs2-junit" % specsVersion % "test"
 val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"

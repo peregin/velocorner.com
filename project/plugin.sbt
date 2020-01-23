@@ -18,15 +18,15 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 // Gerolf's release plugin
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
 
-// Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.3")
-
 // Generate swagger doc from the routes
-addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.9.1-PLAY2.7")
+addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.9.1-PLAY2.8")
 
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 
 // Show the hash of the current version
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
+
+// Use the Play sbt plugin for Play projects
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.0")
 
