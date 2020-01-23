@@ -34,7 +34,7 @@ GET     /authorize/withings                                controllers.auth.With
 #    200:
 #      description: status information about the system
 #      schema:
-#        $ref: '#/definitions//model.StatusInfo'
+#        $ref: '#/definitions/model.StatusInfo'
 ###
 GET     /api/status                                        controllers.ApiController.status
 
