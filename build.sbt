@@ -8,6 +8,7 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
 val projectScalaVersion = "2.13.1"
+
 val scalazVersion = "7.2.30"
 val zioVersion = "1.0.0-RC17"
 val logbackVersion = "1.2.3"
@@ -160,10 +161,18 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
+lazy val gatewayService = (project in file("gateway-service") withId "gateway-service")
+  .settings(
+    buildSettings,
+    name := "gateway-service",
+    scalaVersion := "2.12.10", // because finagle is not fully supported in 2.13
+    libraryDependencies += "com.twitter" %% "finatra-http" % "19.12.0",
+    resolvers += "MavenRepository" at "https://mvnrepository.com/"
+  )
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(dataProvider, dataSearch, webApp)
+  .aggregate(gatewayService, dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
     buildSettings

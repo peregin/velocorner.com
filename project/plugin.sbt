@@ -2,7 +2,7 @@ resolvers in ThisBuild += "Typesafe Repository" at "https://repo.typesafe.com/ty
 resolvers in ThisBuild += "Typesafe Simple Repository" at "https://repo.typesafe.com/typesafe/simple/maven-releases/"
 
 // to generate dependency graph of the libraries
-addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 
 addSbtPlugin("com.gilt" % "sbt-dependency-graph-sugar" % "0.9.0")
 
