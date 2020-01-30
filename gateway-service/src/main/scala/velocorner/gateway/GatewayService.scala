@@ -8,7 +8,7 @@ object GatewayService extends HttpServer {
 
   class InfoController extends Controller {
     get("/info") { request: Request =>
-      response.ok
+      response.ok.html("<h1>Hello</h1>")
     }
   }
 
