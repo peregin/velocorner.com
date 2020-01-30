@@ -5,7 +5,7 @@ class Header extends Component {
     render() {
         return (
             <header role="banner">
-                <section className="header-wrapper">
+                <section className="header no-topbar">
                     <Link id="logo" to="/" title="Velocorner" />
                     <nav>
                         <ul>
