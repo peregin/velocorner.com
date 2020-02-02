@@ -9,6 +9,7 @@ import Client from "./Client";
 import About from "./About";
 
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 import reactLogo from './images/react.svg';
 import playLogo from './images/play.svg';
@@ -62,7 +63,7 @@ class App extends Component {
               </a>
             </h3>
           </div>
-
+          <Footer />
         </div>
       </Router>
     );
