@@ -1,6 +1,6 @@
 {
   "name": "web-front",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "private": true,
   "dependencies": {
     "kleur": "^3.0.2",
@@ -12,6 +12,8 @@
   },
   "proxy": "http://velocorner.com",
   "scripts": {
+    "clean": "rm -Rf node_modules/ build/",
+    "version": "echo $npm_package_version",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
