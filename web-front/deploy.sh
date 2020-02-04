@@ -9,7 +9,7 @@ echo "Current version is $CURRENT_VERSION"
 # docker build triggers a production install with npm
 docker build . -t peregin/web-front:latest
 
-# test the image
+# test the image if needed
 # docker run --rm -p 3000:3000 peregin/web-front:latest
 docker push peregin/web-front:latest
 

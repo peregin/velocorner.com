@@ -39,7 +39,7 @@ class Footer extends Component {
 
                         <div className="copyright">
                             <div className="container">
-                                <p className="text-center">2015 - {(new Date().getFullYear())} &copy; All Rights Reserved <a target="_blank" href="http://velocorner.com">Velocorner</a></p>
+                                <p className="text-center">2015 - {(new Date().getFullYear())} &copy; All Rights Reserved <a target="_blank" rel="noopener noreferrer" href="http://velocorner.com">Velocorner</a></p>
                             </div>
                         </div>
 
