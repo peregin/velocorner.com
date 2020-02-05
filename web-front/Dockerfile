@@ -8,8 +8,9 @@ COPY /public /app/public
 COPY ["package.json", "package-lock.json*", "./"]
 
 # build
-RUN npm install --production
-RUN npm install react-scripts@3.2.0 -g
+# RUN npm install --production
+RUN npm install
+RUN npm install react-scripts@3.3.1 -g
 
 # expose PORT 3000 on our virtual machine so we can run our server
 EXPOSE 3000
