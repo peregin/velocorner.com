@@ -15,11 +15,14 @@ git checkout "$TRAVIS_BRANCH"
 git config --global user.name "Deploy CI"
 
 # build and push web-app
+echo "deploying web-app"
 sbt "release skip-tests with-defaults"
+
 # build and push web-front
-#cd web-front
-#sh deploy.sh
-#cd ..
+echo "deploying web-front"
+cd web-front
+sh deploy.sh
+cd ..
 
 # push version changes and tags to the github
 git push --tags --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$TRAVIS_BRANCH"
