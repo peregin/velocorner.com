@@ -1,9 +1,9 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Frontend for velocorner.com
 
 ## Available Scripts
 In the project directory, you can run:
 
-### `npm run start`
+### `API_HOST=http://velocorner.com npm run start`
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
@@ -23,9 +23,16 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `npm run version`
+Retrieves the version of the package.
+
 ## Dockerize
 
 ```shell script
+# build and run local docker environment
 docker build -t peregin/web-front:latest .
-docker run --rm -p 3000:3000 peregin/web-front:latest
+docker run --rm -e API_HOST=http://velocorner.com -p 3000:3000 peregin/web-front:latest
+
+# run from local dev environment
+API_HOST=http://velocorner.com npm run start
 ```
