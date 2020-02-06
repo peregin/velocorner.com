@@ -35,11 +35,12 @@ import database /root/velocorner.export.gz
 ```shell script
 sbt dist
 ```
-run with nohup and start as a background process
-
+Run with nohup and start as a background process
+```shell script
 nohup bin/web-app -Dconfig.file=../velocorner.conf &
+```
 
-# Release (includes the distribution)
+# Release (includes the distribution without manual intervention)
 ```shell script
 sbt "release with-defaults"
 ```
