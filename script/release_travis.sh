@@ -20,8 +20,7 @@ echo "deploying web-app"
 sbt "release skip-tests with-defaults"
 
 # build and push web-front
-# bump version
-# TODO: commit the changes, tag the code base with the module name, add a seperate shell script invoking deploy
+# bump version, commit changes and tags the code base
 echo "deploying web-front"
 cd web-front
 sh deploy.sh
