@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Home = ({ match }) => {
-    return <div>Current Route: {match.params.tech}</div>
+const Home = () => {
+    return <div>Home</div>
 };
 
-export default Home
+export default Home;

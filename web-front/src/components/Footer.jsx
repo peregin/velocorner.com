@@ -18,7 +18,8 @@ class Footer extends Component {
                                           style = {{
                                               width: '100%',
                                               border: '0',
-                                              overflow: 'hidden'
+                                              overflow: 'hidden',
+                                              height: '250px'
                                           }}>
                                         </iframe>
                                     </div>
