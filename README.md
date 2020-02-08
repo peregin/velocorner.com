@@ -25,6 +25,6 @@ Also using this project to experiment with technologies.
 ![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD")
 
 ## Infrastructure
-Follows the infrastructure as code approach, see more details in this ![repo](https://github.com/peregin/my-little-infra "Infrastructure") .
+Follows the infrastructure as code approach, see more details in this [repo](https://github.com/peregin/my-little-infra "Infrastructure") .
 
 ![Infrastructure](https://raw.github.com/peregin/my-little-infra/master/doc/infra.png "Infrastructure")
