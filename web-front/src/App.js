@@ -5,21 +5,19 @@ import {
   Link
 } from 'react-router-dom';
 
-import Client from "./Client";
-import About from "./About";
+import Home from "./pages/Home";
+import About from "./pages/About";
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+
+import Client from "./Client";
 
 import reactLogo from './images/react.svg';
 import playLogo from './images/play.svg';
 import scalaLogo from './images/scala.png';
 
 import './App.css';
-
-const Tech = ({ match }) => {
-  return <div>Current Route: {match.params.tech}</div>
-};
 
 class App extends Component {
   constructor(props) {
@@ -42,8 +40,8 @@ class App extends Component {
           <Header />
 
           <h1>Welcome to {this.state.title}!</h1>
+          <Route path="/:tech" component={Home} />
           <Route path="/about" component={About} />
-          <Route path="/:tech" component={Tech} />
           <nav>
             <Link to="scala" >
               <img width="450" height="300" src={scalaLogo} alt="Scala Logo" />
