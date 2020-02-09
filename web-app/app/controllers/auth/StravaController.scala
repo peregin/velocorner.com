@@ -53,7 +53,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def login(scope: String) = Action { implicit request =>
     loggedIn(request) match {
       case Some(a) =>
-        Redirect(controllers.routes.ApplicationController.index())
+        Redirect(controllers.routes.WebController.index())
       case None =>
         redirectToAuthorization(scope, request)
     }
@@ -95,7 +95,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   def logout = Action { implicit request =>
     tokenAccessor.extract(request) foreach idContainer.remove
-    val res = Redirect(controllers.routes.ApplicationController.index)
+    val res = Redirect(controllers.routes.WebController.index)
     tokenAccessor.delete(res)
 
   }
@@ -126,7 +126,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.map{providerUser =>
       connectivity.getStorage.store(providerUser)
-      Redirect(controllers.routes.ApplicationController.index)
+      Redirect(controllers.routes.WebController.index)
     }
   }
 
@@ -151,6 +151,6 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   // auth control
   def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(controllers.routes.ApplicationController.index()))
+    Future.successful(Redirect(controllers.routes.WebController.index()))
   }
 }

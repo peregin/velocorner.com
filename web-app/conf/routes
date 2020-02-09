@@ -4,13 +4,13 @@
 
 # WEB
 ### NoDocs ###
-GET     /                                                  controllers.ApplicationController.index
+GET     /                                                  controllers.WebController.index
 ### NoDocs ###
-GET     /refresh                                           controllers.ApplicationController.refresh
+GET     /refresh                                           controllers.WebController.refresh
 ### NoDocs ###
-GET     /search                                            controllers.ApplicationController.search
+GET     /search                                            controllers.WebController.search
 ### NoDocs ###
-GET     /about                                             controllers.ApplicationController.about
+GET     /about                                             controllers.WebController.about
 
 # STRAVA AUTH
 ### NoDocs ###

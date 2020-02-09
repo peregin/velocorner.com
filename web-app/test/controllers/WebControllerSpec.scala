@@ -11,7 +11,7 @@ import velocorner.SecretConfig
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
+class WebControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "controller" should {
 
@@ -32,7 +32,7 @@ class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFa
     when(secretConfigMock.isWithingsEnabled()).thenReturn(false)
 
     "render landing page" in {
-      val controller = new ApplicationController(
+      val controller = new WebController(
         stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
       )(assetsFinder)
       val result = controller.index.apply(FakeRequest())
@@ -41,7 +41,7 @@ class ApplicationControllerSpec extends PlaySpec with StubControllerComponentsFa
     }
 
     "render about page" in {
-      val controller = new ApplicationController(
+      val controller = new WebController(
         stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
       )(assetsFinder)
       val result = controller.about.apply(FakeRequest())

@@ -11,7 +11,11 @@ import scalaz._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ApplicationController @Inject()
+/**
+  * Serves the web pages, rendered from server side.
+  * Being replaced with web-front module running on node, with react components.
+  */
+class WebController @Inject()
   (components: ControllerComponents,
    val cache: SyncCacheApi, val connectivity: ConnectivitySettings,
    strategy: RefreshStrategy)
@@ -32,7 +36,7 @@ class ApplicationController @Inject()
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
     result.run
-      .map(_ => Redirect(routes.ApplicationController.index()))
+      .map(_ => Redirect(routes.WebController.index()))
       .recover{ case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
         // if the feed fails with expired token, then logout
         logger.info("feed token has been expired, logging out")
