@@ -36,7 +36,7 @@ class App extends Component {
 
           <h1>Welcome to {this.state.title}!</h1>
 
-          <Route path="/" component={Home} />
+          <Route exact path="/" component={Home} />
           <Route path="/about" component={About} />
 
           <div>
