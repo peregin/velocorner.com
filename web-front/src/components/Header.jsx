@@ -10,7 +10,7 @@ class Header extends Component {
                 <div className="navbar navbar-default mega-menu navbar-responsive-collapse" role="navigation">
                     <div className="container">
 
-                        /* Brand and toggle get grouped for better mobile display */
+                        {/* Brand and toggle get grouped for better mobile display */}
                         <div className="navbar-header">
                             <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
                                 <span className="sr-only">Toggle navigation</span>
@@ -24,8 +24,8 @@ class Header extends Component {
                             </h2>
                         </div>
 
-                        /*  Search input form */
-                        /* TODO: shortcut - only if logged in */
+                        {/*  Search input form */}
+                        {/* TODO: shortcut - only if logged in */}
                         <div className="input-group col-md-6 col-xs-12" style={{float: 'left', margin: '10px'}}>
                             <input id="search" name="search" type="text" className="form-control" placeholder="Search for activities ..."/>
                             <span className="input-group-btn">
@@ -34,19 +34,19 @@ class Header extends Component {
                         </div>
                     
 
-                        /* Collect the nav links, forms, and other content for toggling */
+                        {/* Collect the nav links, forms, and other content for toggling */}
                         <div className="collapse navbar-collapse navbar-responsive-collapse">
                             <ul className="nav navbar-nav">
-                                /* Home */
+                                {/* Home */}
                                 <li className={ this.props.page == "Home" ? 'active' : '' }><a href="/">Home</a></li>
-                                /* About */
+                                {/* About */}
                                 <li className={ this.props.page == "About" ? 'active' : '' }><a href="/about">About Us</a></li>
                             </ul>
-                        </div> /* navbar-collapse */
+                        </div> {/* navbar-collapse */}
                     </div>
                 </div>
 
-                /* <script src="%PUBLIC_URL%/javascripts/search.js" type="text/javascript"></script> */
+                {/* <script src="%PUBLIC_URL%/javascripts/search.js" type="text/javascript"></script> */}
 
                 <header role="banner">
                     <section className="header no-topbar">
