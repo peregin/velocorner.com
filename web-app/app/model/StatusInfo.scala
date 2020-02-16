@@ -1,5 +1,6 @@
 package model
 
+import controllers.StartupService
 import play.api.Mode
 import play.api.libs.json._
 
@@ -38,7 +39,8 @@ object StatusInfo {
       playVersion = velocorner.build.BuildInfo.playVersion,
       gitHash = velocorner.build.BuildInfo.gitHash,
       memoryTotal = memoryTotal,
-      memoryUsedPercentile = memoryUsedPercentile
+      memoryUsedPercentile = memoryUsedPercentile,
+      upTime = StartupService.elapsedTimeText()
     )
   }
 }
@@ -54,5 +56,6 @@ case class StatusInfo(
                        playVersion: String,
                        gitHash: String,
                        memoryTotal: Long,
-                       memoryUsedPercentile: Int
+                       memoryUsedPercentile: Int,
+                       upTime: String
                      )

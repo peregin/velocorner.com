@@ -21,10 +21,10 @@ for f in *.jpg; do cwebp $f -o "${f%.*}".webp; echo "converted $f file..."; done
 scp -o StrictHostKeyChecking= scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:
 # on vm
 ./machine.sh local ssh
-docker ps
 # select the proper instance
-sudo docker cp velocorner.export.gz 4210f757da9e:/root
-sudo docker exec -it 4210f757da9e /bin/bash
+DB_ID=$(docker ps -aqf "name=velocorner_database")
+sudo docker cp velocorner.export.gz $DB_ID:/root
+sudo docker exec -it $DB_ID /bin/bash
 # in orientdb container 
 console.sh
 connect remote:localhost/velocorner root <???>
