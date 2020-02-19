@@ -1,3 +1,4 @@
+import model.highcharts.DailySeries
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.{Format, Json}
@@ -17,20 +18,6 @@ package object highcharts {
 
     def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
     def getDay = day.getDayOfMonth
-  }
-
-
-  object DailySeries {
-    implicit val seriesFormat = Format[DailySeries](Json.reads[DailySeries], Json.writes[DailySeries])
-  }
-
-  case class DailySeries(name: String, series: Iterable[DailyPoint]) {
-
-    def aggregate() = {
-      val aggregatedSeries = series.toSeq.reverse.scanLeft(DailyPoint(LocalDate.now(), 0))((accu, i) =>
-        DailyPoint(i.day, accu.value + i.value)).tail
-      DailySeries(name, aggregatedSeries)
-    }
   }
 
 

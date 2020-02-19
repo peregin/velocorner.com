@@ -18,7 +18,7 @@ for f in *.jpg; do cwebp $f -o "${f%.*}".webp; echo "converted $f file..."; done
 ## Import local database
 ```shell script
 # from host to virtualbox vm
-scp -o StrictHostKeyChecking= scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:
 # on vm
 ./machine.sh local ssh
 # select the proper instance

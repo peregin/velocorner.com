@@ -54,7 +54,7 @@ GET     /api/athletes/statistics/profile/:activity         controllers.ApiContro
 #    200:
 #      description: Returns the yearly series, for heatmap, distance or elevation
 #      schema:
-#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/model.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -66,7 +66,7 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiContro
 #    200:
 #      description: Returns the year to date series
 #      schema:
-#        $ref: '#/components/schemas/velocorner.highcharts.DailySeries'
+#        $ref: '#/components/schemas/model.highcharts.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -78,7 +78,7 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiContro
 #    200:
 #      description: Extracts max speed, longest ride, etc.
 #      schema:
-#        $ref: '#/components/schemas/velocorner.Achievements'
+#        $ref: '#/components/schemas/model.Achievements'
 #    404:
 #      description: Not found
 ###
