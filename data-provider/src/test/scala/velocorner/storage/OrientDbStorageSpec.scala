@@ -4,9 +4,10 @@ import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
+import velocorner.api.weather.SunriseSunset
 import velocorner.manual.AwaitSupport
 import velocorner.model.strava.Activity
-import velocorner.model.weather.{ForecastResponse, SunriseSunset, WeatherForecast}
+import velocorner.model.weather.{ForecastResponse, WeatherForecast}
 import velocorner.util.JsonIo
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSupport with LazyLogging {

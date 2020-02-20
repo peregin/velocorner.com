@@ -4,9 +4,10 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.{SunriseSunset, WeatherForecast}
+import velocorner.model.weather.WeatherForecast
 import velocorner.util.FutureInstances
 import FutureInstances.monadInstance
+import velocorner.api.weather.SunriseSunset
 
 import scala.concurrent.Future
 

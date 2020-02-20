@@ -15,20 +15,17 @@ import velocorner.SecretConfig
 import scala.jdk.CollectionConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 object HttpFeed extends LazyLogging {
 
   implicit val system = ActorSystem.create("ws-feed")
-  implicit val materializer = ActorMaterializer()
   val processors = sys.runtime.availableProcessors()
   logger.info(s"available processors $processors")
   implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
 
-  def shutdown(): Unit = {
-    materializer.shutdown()
-    system.terminate()
+  def shutdown(): Future[Unit] = {
+    system.terminate().map(_ => ())
   }
 }
 

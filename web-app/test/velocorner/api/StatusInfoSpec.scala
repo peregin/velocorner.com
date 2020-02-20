@@ -1,4 +1,4 @@
-package model
+package velocorner.api
 
 import org.specs2.mutable.Specification
 import play.api.Environment

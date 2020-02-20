@@ -1,7 +1,6 @@
 package controllers
 
 import akka.util.Timeout
-import model.StatusInfo
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -10,6 +9,7 @@ import play.api.{Environment, Mode}
 import play.api.cache.SyncCacheApi
 import play.api.http.Status
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
+import velocorner.api.StatusInfo
 import velocorner.model.strava.Club
 import velocorner.storage.Storage
 

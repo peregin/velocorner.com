@@ -9,7 +9,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
 import velocorner.model.strava.{Activity, Athlete, Club}
-import velocorner.model.weather.{SunriseSunset, WeatherForecast}
+import velocorner.model.weather.WeatherForecast
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
@@ -26,6 +26,7 @@ import scalaz.syntax.std.option._
 import scalaz.syntax.std.boolean._
 import scalaz.std.scalaFuture._
 import scalaz.syntax.traverse.ToTraverseOps
+import velocorner.api.weather.SunriseSunset
 
 import scala.jdk.CollectionConverters._
 

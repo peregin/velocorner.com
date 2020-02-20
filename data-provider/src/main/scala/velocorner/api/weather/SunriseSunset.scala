@@ -1,4 +1,4 @@
-package velocorner.model.weather
+package velocorner.api.weather
 
 import org.joda.time.DateTime
 import play.api.libs.json._
@@ -6,7 +6,7 @@ import velocorner.model.EpochFormatter
 ;
 
 /**
-  * The structure from the storage layer.
+  * Structure from the storage layer and exposed in the external API.
   */
 object SunriseSunset {
   implicit val dateTimeFormat = EpochFormatter.create

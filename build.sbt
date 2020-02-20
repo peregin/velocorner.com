@@ -154,7 +154,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     dockerUsername := Some("peregin"),
     version in Docker := "latest",
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
-    swaggerDomainNameSpaces := Seq("model", "velocorner"),
+    swaggerDomainNameSpaces := Seq("velocorner", "model"),
     swaggerPrettyJson := true,
     swaggerV3 := true
   )

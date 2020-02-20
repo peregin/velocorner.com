@@ -1,4 +1,4 @@
-package model
+package velocorner.api
 
 import controllers.StartupService
 import play.api.Mode
