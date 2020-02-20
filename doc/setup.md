@@ -23,12 +23,9 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local
 ./machine.sh local ssh
 # select the proper instance
 DB_ID=$(docker ps -aqf "name=velocorner_database")
+DB_PWD=???
 sudo docker cp velocorner.export.gz $DB_ID:/root
-sudo docker exec -it $DB_ID /bin/bash
-# in orientdb container 
-console.sh
-connect remote:localhost/velocorner root <???>
-import database /root/velocorner.export.gz
+sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
 ```
 
 # Distribution
