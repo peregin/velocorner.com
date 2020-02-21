@@ -29,7 +29,7 @@ object StatusInfo {
     val memoryUsed = memoryTotal - sys.runtime.freeMemory()
     val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
     new StatusInfo(
-      applicationMode = applicationMode,
+      applicationMode = applicationMode.toString,
       buildTime = velocorner.build.BuildInfo.buildTime,
       appVersion = velocorner.build.BuildInfo.version,
       scalaVersion = velocorner.build.BuildInfo.scalaVersion,
@@ -46,7 +46,7 @@ object StatusInfo {
 }
 
 case class StatusInfo(
-                       applicationMode: play.api.Mode,
+                       applicationMode: String,
                        buildTime: String,
                        appVersion: String,
                        scalaVersion: String,

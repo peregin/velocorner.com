@@ -11,7 +11,6 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.model._
-import velocorner.model.weather.WeatherForecast
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
 import javax.inject.Inject
@@ -23,7 +22,7 @@ import scalaz._
 import Scalaz._
 import play.api.Environment
 import velocorner.api.{Achievements, Progress, StatusInfo}
-import velocorner.api.weather.{DailyWeather, SunriseSunset}
+import velocorner.api.weather.{DailyWeather, SunriseSunset, WeatherForecast}
 
 
 /**

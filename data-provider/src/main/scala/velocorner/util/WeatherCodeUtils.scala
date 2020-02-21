@@ -1,7 +1,8 @@
 package velocorner.util
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.model.weather.{Weather, WeatherCode}
+import velocorner.api.weather.Weather
+import velocorner.model.weather.WeatherCode
 
 import scala.io.Source
 import scala.util.{Failure, Try}

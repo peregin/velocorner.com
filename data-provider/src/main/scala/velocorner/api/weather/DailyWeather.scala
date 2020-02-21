@@ -3,7 +3,6 @@ package velocorner.api.weather
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json.{Format, Json}
 import velocorner.model.DateTimePattern
-import velocorner.model.weather.{Weather, WeatherForecast}
 import velocorner.util.WeatherCodeUtils
 
 object DailyWeather {

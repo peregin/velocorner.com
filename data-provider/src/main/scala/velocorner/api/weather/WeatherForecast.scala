@@ -1,4 +1,4 @@
-package velocorner.model.weather
+package velocorner.api.weather
 
 import play.api.libs.json.{Format, Json}
 ;

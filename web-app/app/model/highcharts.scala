@@ -1,7 +1,7 @@
 import org.joda.time.format.DateTimeFormat
 import velocorner.api.{Progress, chart}
 import velocorner.api.chart.{DailyPoint, DailySeries}
-import velocorner.model.weather.WeatherForecast
+import velocorner.api.weather.WeatherForecast
 import velocorner.model.YearlyProgress
 
 import scala.xml.Elem

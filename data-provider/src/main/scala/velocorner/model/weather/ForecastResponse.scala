@@ -1,6 +1,7 @@
 package velocorner.model.weather
 
 import play.api.libs.json._
+import velocorner.api.weather.{City, Weather}
 
 /**
   * The response structure from openweathermap.
