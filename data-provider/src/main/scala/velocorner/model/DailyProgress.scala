@@ -1,7 +1,7 @@
 package velocorner.model
 
 import org.joda.time.LocalDate
-import velocorner.model.strava.Activity
+import velocorner.api.{Activity, Progress}
 
 
 object DailyProgress {

@@ -1,8 +1,9 @@
-package velocorner.model
+package velocorner.api
 
 import play.api.libs.json._
-import velocorner.model.Progress._
-import Numeric.Implicits._
+import velocorner.api.Progress._
+
+import scala.Numeric.Implicits._
 
 
 object Progress {

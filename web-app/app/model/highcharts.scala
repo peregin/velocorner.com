@@ -1,32 +1,19 @@
-import model.highcharts.DailySeries
-import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
-import play.api.libs.json.{Format, Json}
+import velocorner.api.{Progress, chart}
+import velocorner.api.chart.{DailyPoint, DailySeries}
 import velocorner.model.weather.WeatherForecast
-import velocorner.model.{DateTimePattern, Progress, YearlyProgress}
+import velocorner.model.YearlyProgress
 
 import scala.xml.Elem
 
 package object highcharts {
-
-  object DailyPoint {
-    implicit val dateFormat = DateTimePattern.createShortFormatter
-    implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
-  }
-
-  case class DailyPoint(day: LocalDate, value: Double) {
-
-    def getMonth = day.getMonthOfYear - 1 // in javascript date starts with 0
-    def getDay = day.getDayOfMonth
-  }
-
 
   def toDistanceSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.distance)
 
   def toElevationSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.elevation)
 
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
-    items.map(yp => DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
+    items.map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
   }
 
   implicit class PimpWeatherForecast(self: WeatherForecast) {

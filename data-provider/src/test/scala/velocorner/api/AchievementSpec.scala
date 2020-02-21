@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.api
 
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification

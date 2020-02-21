@@ -6,7 +6,8 @@ import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
 import scalaz.Monad
-import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.api.{Activity, Athlete}
+import velocorner.model.strava.Club
 import velocorner.model.{Account, DailyProgress}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo

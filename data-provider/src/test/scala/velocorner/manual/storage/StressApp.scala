@@ -3,10 +3,10 @@ package velocorner.manual.storage
 import java.util.concurrent.{CountDownLatch, Executors, ThreadFactory, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
+import velocorner.api.Activity
 import velocorner.manual.{AggregateActivities, MyMacConfig}
-import velocorner.model.strava.Activity
 import velocorner.storage.Storage
-import velocorner.util.{JsonIo, Metrics}
+import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
@@ -15,7 +15,7 @@ import scala.util.control.Exception._
 /**
   * Created by levi on 19.11.16.
   */
-object StressApp extends App with Metrics with LazyLogging with AggregateActivities with MyMacConfig {
+object StressApp extends App with CloseableResource with LazyLogging with AggregateActivities with MyMacConfig {
 
   val par = 10
   val latch = new CountDownLatch(par)
@@ -25,7 +25,7 @@ object StressApp extends App with Metrics with LazyLogging with AggregateActivit
     t
   }))
 
-  val json = Source.fromURL(getClass.getResource("/data/strava/last30activities.json")).mkString
+  val json = withCloseable(Source.fromURL(getClass.getResource("/data/strava/last30activities.json")))(_.mkString)
   val activities = JsonIo.read[List[Activity]](json)
 
   val storage = Storage.create("or") // mo

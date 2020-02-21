@@ -2,7 +2,7 @@ package velocorner.model
 
 import org.joda.time.DateTime
 import play.api.libs.json._
-import velocorner.model.strava.Athlete
+import velocorner.api.Athlete
 
 object Account {
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter

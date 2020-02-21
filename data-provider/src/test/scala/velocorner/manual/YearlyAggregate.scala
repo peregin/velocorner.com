@@ -1,7 +1,8 @@
 package velocorner.manual
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.model.{Progress, YearlyProgress}
+import velocorner.api.Progress
+import velocorner.model.YearlyProgress
 
 /**
  * Created by levi on 17/08/15.

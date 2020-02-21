@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProper
 import play.api.libs.json.{JsObject, JsString, Json}
 import scalaz.Show
 import scalaz.syntax.show._
-import velocorner.model.strava.Activity
+import velocorner.api.Activity
 import velocorner.util.JsonIo
 
 trait ElasticSupport extends IndexApi {

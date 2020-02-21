@@ -1,7 +1,8 @@
-package velocorner.model
+package velocorner.api
 
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json}
+import velocorner.model.DateTimePattern
 
 object Achievement {
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter

@@ -1,7 +1,7 @@
 package velocorner.manual.file
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.model.strava.Activity
+import velocorner.api.Activity
 import velocorner.util.{JsonIo, Metrics}
 
 

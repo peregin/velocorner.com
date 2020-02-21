@@ -1,4 +1,4 @@
-package velocorner.model.strava
+package velocorner.api
 
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo

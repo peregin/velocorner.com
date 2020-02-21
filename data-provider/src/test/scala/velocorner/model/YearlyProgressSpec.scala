@@ -2,6 +2,7 @@ package velocorner.model
 
 import org.joda.time.LocalDate
 import org.specs2.mutable.Specification
+import velocorner.api.Progress
 
 /**
  * Created by levi on 09/07/15.

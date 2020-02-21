@@ -3,7 +3,7 @@ package velocorner.feed
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.SecretConfig
-import velocorner.model.strava.{Activity, Athlete}
+import velocorner.api.{Activity, Athlete}
 import velocorner.util.JsonIo
 
 import scala.concurrent.Future
@@ -38,10 +38,11 @@ object StravaActivityFeed extends LazyLogging {
 
 class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with ActivityFeed with LazyLogging {
 
-  val token = maybeToken.getOrElse(config.getToken("strava")) // dedicated token after authentication or application generic
-  val clientId = config.getId("strava")
+  private val token = maybeToken.getOrElse(config.getToken("strava")) // dedicated token after authentication or application generic
+  private val clientId = config.getId("strava")
+  private val authHeader = s"Bearer $token"
+
   logger.info(s"connecting to strava with token [$token] and clientId[$clientId]...")
-  val authHeader = s"Bearer $token"
 
   // clubs
   override def listRecentClubActivities(clubId: Long): Future[List[Activity]] = for {

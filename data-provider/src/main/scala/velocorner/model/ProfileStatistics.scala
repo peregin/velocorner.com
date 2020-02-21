@@ -3,6 +3,7 @@ package velocorner.model
 import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import scalaz.syntax.std.boolean._
+import velocorner.api.Progress
 
 case class ProfileStatistics(yearlyPercentile: Int, estimate: Progress, progress: Progress)
 

@@ -21,9 +21,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scalaz.OptionT
 import scalaz._
 import Scalaz._
-import model.Achievements
 import play.api.Environment
-import velocorner.api.StatusInfo
+import velocorner.api.{Achievements, Progress, StatusInfo}
 import velocorner.api.weather.{DailyWeather, SunriseSunset}
 
 

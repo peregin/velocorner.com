@@ -1,7 +1,6 @@
-package model
+package velocorner.api
 
 import play.api.libs.json.{Format, Json}
-import velocorner.model.Achievement
 
 object Achievements {
   implicit val format = Format[Achievements](Json.reads[Achievements], Json.writes[Achievements])

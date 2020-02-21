@@ -1,6 +1,7 @@
 package velocorner.model
 
 import org.joda.time.{Days, LocalDate}
+import velocorner.api.Progress
 
 case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
 

@@ -15,7 +15,7 @@ import velocorner.model.Account
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 import play.api.libs.ws.DefaultBodyWritables._
-import velocorner.model.strava.Athlete
+import velocorner.api.Athlete
 
 case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
 

@@ -8,17 +8,17 @@ import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
 import velocorner.model._
-import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.strava.Club
 import velocorner.storage.MongoDbStorage._
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
-
 import scalaz.std.list._
 import scalaz.std.scalaFuture._
 import scalaz.syntax.traverse.ToTraverseOps
+import velocorner.api.{Activity, Athlete}
 
 /**
   * Created by levi on 28/09/16.
@@ -100,13 +100,13 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
 
   // weather
-  override def getWeatherStorage(): WeatherStorage = ???
+  override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
-  override def getAttributeStorage(): AttributeStorage = ???
+  override def getAttributeStorage: AttributeStorage = ???
 
   // various achievements
-  override def getAchievementStorage(): AchievementStorage = ???
+  override def getAchievementStorage: AchievementStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

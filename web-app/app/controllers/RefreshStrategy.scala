@@ -3,9 +3,9 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.Logger
+import velocorner.api.Activity
 import velocorner.model.Account
 import velocorner.feed.{ActivityFeed, StravaActivityFeed}
-import velocorner.model.strava.Activity
 import velocorner.storage.Storage
 
 import scala.concurrent.Future
@@ -20,7 +20,7 @@ import scalaz.syntax.id._
 @Singleton
 class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
 
-  val log = Logger.of(this.getClass)
+  private val log = Logger.of(this.getClass)
 
   // won't refresh from the feed if was updated within this time period
   val stalePeriodInMillis = 60000 // more than a minute

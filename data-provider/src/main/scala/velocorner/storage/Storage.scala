@@ -3,10 +3,11 @@ package velocorner.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
-import velocorner.model.strava.{Activity, Athlete, Club}
+import velocorner.model.strava.Club
 import velocorner.model.weather.WeatherForecast
 import velocorner.util.FutureInstances
 import FutureInstances.monadInstance
+import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.SunriseSunset
 
 import scala.concurrent.Future

@@ -3,8 +3,8 @@ package velocorner.manual.storage
 import java.io.PrintWriter
 
 import com.typesafe.scalalogging.LazyLogging
+import velocorner.api.Activity
 import velocorner.manual.MyMacConfig
-import velocorner.model.strava.Activity
 import velocorner.storage.{OrientDbStorage, Storage}
 import velocorner.util.JsonIo
 import zio.{Task, ZIO}

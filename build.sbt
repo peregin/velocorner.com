@@ -20,7 +20,7 @@ val playJsonVersion = "2.8.1"
 val specsVersion = "4.8.3"
 val mockitoVersion = "3.2.4"
 
-val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
+val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.4.0"
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
 val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
 
@@ -154,7 +154,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     dockerUsername := Some("peregin"),
     version in Docker := "latest",
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
-    swaggerDomainNameSpaces := Seq("velocorner", "model"),
+    swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
     swaggerV3 := true
   )
