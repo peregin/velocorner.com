@@ -33,8 +33,10 @@ GET     /authorize/withings                                controllers.auth.With
 #  responses:
 #    200:
 #      description: status information about the system
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.StatusInfo'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.StatusInfo'
 ###
 GET     /api/status                                        controllers.ApiController.status
 
@@ -123,8 +125,10 @@ GET     /api/activities/:id                                controllers.ApiContro
 #  responses:
 #    200:
 #      description: Weather forecast for the next 5 days
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.weather.DailyWeather'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.weather.DailyWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -139,8 +143,10 @@ GET     /api/weather/:location                             controllers.ApiContro
 #  responses:
 #    200:
 #      description: Sunrise, sunset
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.weather.SunriseSunset'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.weather.SunriseSunset'
 #    400:
 #      description: Bad request
 #    404:

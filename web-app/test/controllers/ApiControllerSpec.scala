@@ -56,7 +56,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
       val result = controller.status().apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val statusInfo = Helpers.contentAsJson(result).as[StatusInfo]
-      statusInfo.applicationMode mustBe Mode.Test
+      statusInfo.applicationMode mustBe Mode.Test.toString
     }
   }
 }
