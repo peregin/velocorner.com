@@ -73,8 +73,8 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiContro
 #      description: Returns the year to date series
 #      content:
 #        application/json:
-#        schema:
-#          $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
 #    404:
 #      description: Not found
 ###
