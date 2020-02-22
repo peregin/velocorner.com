@@ -3,6 +3,9 @@
   info:
     title: "Velocorner API"
     description: "Public API for cycling statistics"
+    contact:
+      name: "Velocorner API"
+      email: "velocorner.com@gmail.com"
   consumes:
     - application/json
   produces:

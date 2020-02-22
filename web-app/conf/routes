@@ -45,8 +45,10 @@ GET     /api/status                                        controllers.ApiContro
 #  responses:
 #    200:
 #      description: Returns the yearly statistics
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.Progress'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.Progress'
 ###
 GET     /api/athletes/statistics/profile/:activity         controllers.ApiController.ytdProfile(activity: String)
 
@@ -55,8 +57,10 @@ GET     /api/athletes/statistics/profile/:activity         controllers.ApiContro
 #  responses:
 #    200:
 #      description: Returns the yearly series, for heatmap, distance or elevation
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -67,8 +71,10 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiContro
 #  responses:
 #    200:
 #      description: Returns the year to date series
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
+#      content:
+#        application/json:
+#        schema:
+#          $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
 #    404:
 #      description: Not found
 ###
@@ -79,8 +85,10 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiContro
 #  responses:
 #    200:
 #      description: Extracts max speed, longest ride, etc.
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.Achievements'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.Achievements'
 #    404:
 #      description: Not found
 ###
@@ -91,8 +99,10 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ApiContro
 #  responses:
 #    200:
 #      description: Returns a list of activities
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.Activity'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.Activity'
 ###
 GET     /api/activities/suggest                            controllers.ApiController.suggest(query: String)
 
@@ -109,8 +119,10 @@ GET     /api/activities/type                               controllers.ApiContro
 #  responses:
 #    200:
 #      description: Returns an activity based on id
-#      schema:
-#        $ref: '#/components/schemas/velocorner.api.Activity'
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.Activity'
 #    403:
 #      description: Forbidden
 #    404:
