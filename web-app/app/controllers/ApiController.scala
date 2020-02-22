@@ -225,7 +225,7 @@ class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi,
     } yield entries
 
     // generate json or xml content
-    type transform2Content = Iterable[WeatherForecast] => String
+    type transform2Content = List[WeatherForecast] => String
     val contentGenerator: transform2Content = request.getQueryString("mode") match {
       case Some("xml") => wt => toMeteoGramXml(wt).toString()
       case _ => wt => JsonIo.write(DailyWeather.list(wt))

@@ -12,9 +12,9 @@ package object highcharts {
 
   def toElevationSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.elevation)
 
-  private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): Iterable[DailySeries] = {
-    items.map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress)))))
-  }
+  private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] = {
+    items.map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList))
+  }.toList // must be a list because of the swagger spec generator
 
   implicit class PimpWeatherForecast(self: WeatherForecast) {
     val dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -37,7 +37,7 @@ package object highcharts {
     }
   }
 
-  def toMeteoGramXml(items: Iterable[WeatherForecast]): Elem = {
+  def toMeteoGramXml(items: List[WeatherForecast]): Elem = {
     val location = {items.headOption.map(_.location).getOrElse("n/a")}
     val (city, country) = location.lastIndexOf(',') match {
       case -1 => (location, "n/a")

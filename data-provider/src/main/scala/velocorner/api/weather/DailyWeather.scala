@@ -10,16 +10,16 @@ object DailyWeather {
   implicit val dateFormat = DateTimePattern.createShortFormatter
   implicit val entryFormat = Format[DailyWeather](Json.reads[DailyWeather], Json.writes[DailyWeather])
 
-  def list(entries: Iterable[WeatherForecast]): Iterable[DailyWeather] = {
+  def list(entries: List[WeatherForecast]): List[DailyWeather] = {
     entries
       .groupBy(wf => new DateTime(wf.timestamp).toLocalDate)
       .map{ case (day, wfList) => from(day, wfList.map(_.forecast)) }
-      .toSeq.sortBy(_.day.toString)
+      .toList.sortBy(_.day.toString)
   }
 
   import Ordering.Float.IeeeOrdering
 
-  def from(day: LocalDate, pointsForThisDay: Iterable[Weather]): DailyWeather = {
+  def from(day: LocalDate, pointsForThisDay: List[Weather]): DailyWeather = {
     val tempMin = pointsForThisDay.map(_.main.temp_min).min // celsius
     val tempMax = pointsForThisDay.map(_.main.temp_max).max // celsius
     val windMax = pointsForThisDay.map(_.wind.speed).max(Ordering.Double.IeeeOrdering).toFloat * 3.6f // m/s to km/h
@@ -28,7 +28,7 @@ object DailyWeather {
   }
 }
 
-case class DailyWeather(day: LocalDate, points: Iterable[Weather],
+case class DailyWeather(day: LocalDate, points: List[Weather],
                         temp_min: Float, temp_max: Float,
                         wind_max: Float,
                         bootstrapIcon: String)
