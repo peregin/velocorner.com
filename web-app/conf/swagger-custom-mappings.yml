@@ -1,0 +1,10 @@
+---
+- type: localdate
+  specAsParameter:
+    - type: string
+      format: date
+- type: iterable[velocorner.api.weather.weather]
+  specAsParameter:
+    - type: array
+      items:
+        $ref: '#/components/schemas/velocorner.api.weather.Weather'
