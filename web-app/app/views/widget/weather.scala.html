@@ -74,7 +74,7 @@
         // meteogram
         $.ajax({
             dataType: 'xml',
-            url: "@restUrl/weather/" + place + "?mode=xml",
+            url: "@restUrl/weather/forecast/" + place + "?mode=xml",
             success: function (xml) {
                 $('#weather-progress').css("visibility","hidden");
                 $('#weather-container').css('display', 'block');
@@ -89,7 +89,7 @@
         // sunrise and sunset
         $.ajax({
             dataType: 'json',
-            url: "@restUrl/sunrise/" + place,
+            url: "@restUrl/weather/sunrise/" + place,
             success: function (data) {
                 $('#sunrise-sunset').css("visibility","visible");
                 $('#weather-sunrise').html(moment.unix(data.sunrise).format('H:mm'));

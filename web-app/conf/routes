@@ -30,6 +30,10 @@ GET     /authorize/withings                                controllers.auth.With
 
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
+#  tags:
+#    - activity
+#  tags:
+#    - status
 #  responses:
 #    200:
 #      description: status information about the system
@@ -42,6 +46,8 @@ GET     /api/status                                        controllers.ApiContro
 
 ###
 #  summary: Retrieves current year's statistics for the logged in athlete
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns the yearly statistics
@@ -50,10 +56,12 @@ GET     /api/status                                        controllers.ApiContro
 #          schema:
 #            $ref: '#/components/schemas/velocorner.api.Progress'
 ###
-GET     /api/athletes/statistics/profile/:activity         controllers.ApiController.ytdProfile(activity: String)
+GET     /api/athletes/statistics/profile/:activity         controllers.ActivityController.ytdProfile(activity: String)
 
 ###
 #  summary: Lists yearly series for the logged in athlete
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns the yearly series, for heatmap, distance or elevation
@@ -64,10 +72,12 @@ GET     /api/athletes/statistics/profile/:activity         controllers.ApiContro
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiController.yearlyStatistics(action: String, activity: String)
+GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityController.yearlyStatistics(action: String, activity: String)
 
 ###
 #  summary: Lists year to date series for the logged in athlete
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns the year to date series
@@ -78,10 +88,12 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ApiContro
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiController.ytdStatistics(action: String, activity: String)
+GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityController.ytdStatistics(action: String, activity: String)
 
 ###
 #  summary: List of achievements for the logged in athlete
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Extracts max speed, longest ride, etc.
@@ -92,30 +104,45 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ApiContro
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/achievements/:activity    controllers.ApiController.achievements(activity: String)
+GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityController.achievements(activity: String)
 
 ###
 #  summary: Suggests a list of activities based on the query parameter
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns a list of activities
 #      content:
 #        application/json:
 #          schema:
-#            $ref: '#/components/schemas/velocorner.api.Activity'
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/velocorner.api.Activity'
 ###
-GET     /api/activities/suggest                            controllers.ApiController.suggest(query: String)
+GET     /api/activities/suggest                            controllers.ActivityController.suggest(query: String)
 
 ###
 #  summary: List all the distinct activity types for the logged in user. (Ride, Run, etc.)
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns a list of activity types ordered by frequency
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items: string
+#    404:
+#      description: Not found
 ###
-GET     /api/activities/type                               controllers.ApiController.activityTypes
+GET     /api/activities/type                               controllers.ActivityController.activityTypes
 
 ###
 #  summary: Retrieves an activity
+#  tags:
+#    - activity
 #  responses:
 #    200:
 #      description: Returns an activity based on id
@@ -130,10 +157,27 @@ GET     /api/activities/type                               controllers.ApiContro
 #    500:
 #      description: Internal error
 ###
-GET     /api/activities/:id                                controllers.ApiController.activity(id: Int)
+GET     /api/activities/:id                                controllers.ActivityController.activity(id: Int)
 
 ###
 #  summary: Retrieves the weather forecast for a specific place
+#  tags:
+#    - weather
+#  parameters:
+#    - in: path
+#      name: location
+#      required: true
+#      schema:
+#        type: string
+#      example: Zurich, Switzerland
+#      description: City and country of the forecast, comma separated
+#    - in: query
+#      name: mode
+#      schema:
+#        type: string
+#        enum: [json, xml]
+#        example: json
+#      description: Formats the content type optimized for meteogram widget if set to xml
 #  responses:
 #    200:
 #      description: Weather forecast for the next 5 days
@@ -148,10 +192,20 @@ GET     /api/activities/:id                                controllers.ApiContro
 #    500:
 #      description: Internal error
 ###
-GET     /api/weather/:location                             controllers.ApiController.weather(location: String)
+GET     /api/weather/forecast/:location                    controllers.WeatherController.forecast(location: String)
 
 ###
 #  summary: Retrieves the sunrise and sunset information for a specific place
+#  tags:
+#    - weather
+#  parameters:
+#    - in: path
+#      name: location
+#      required: true
+#      schema:
+#        type: string
+#      example: Zurich, Switzerland
+#      description: City and country of the forecast, comma separated
 #  responses:
 #    200:
 #      description: Sunrise, sunset
@@ -166,7 +220,7 @@ GET     /api/weather/:location                             controllers.ApiContro
 #    500:
 #      description: Internal error
 ###
-GET     /api/sunrise/:location                             controllers.ApiController.sunrise(location: String)
+GET     /api/weather/sunrise/:location                     controllers.WeatherController.sunrise(location: String)
 
 ### NoDocs ###
 GET     /ws                                                controllers.ApiController.ws

@@ -6,7 +6,3 @@
     contact:
       name: "Velocorner API"
       email: "velocorner.com@gmail.com"
-  consumes:
-    - application/json
-  produces:
-    - application/json

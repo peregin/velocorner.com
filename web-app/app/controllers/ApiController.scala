@@ -2,272 +2,28 @@ package controllers
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import controllers.auth.AuthChecker
-import highcharts._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{DateTime, Duration, LocalDate}
+import javax.inject.Inject
 import org.reactivestreams.Subscriber
-import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-import velocorner.model._
-import velocorner.storage.OrientDbStorage
-import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
-import javax.inject.Inject
+import play.api.{Environment, Logger}
+import velocorner.api.StatusInfo
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scalaz.OptionT
-import scalaz._
-import Scalaz._
-import play.api.Environment
-import velocorner.api.{Achievements, Progress, StatusInfo}
-import velocorner.api.weather.{DailyWeather, SunriseSunset, WeatherForecast}
+import scala.concurrent.Future
 
 
-/**
- * Created by levi on 06/10/16.
- */
-class ApiController @Inject()(environment: Environment, val cache: SyncCacheApi, val connectivity: ConnectivitySettings, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker with OriginChecker with Metrics {
+class ApiController @Inject()(environment: Environment, val connectivity: ConnectivitySettings, components: ControllerComponents)
+  extends AbstractController(components) with OriginChecker {
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
+  private val logger = Logger(getClass)
 
   // def mapped to /api/status
   def status = Action { implicit request =>
     val statusInfo = StatusInfo.compute(environment.mode)
     Ok(Json.toJson(statusInfo))
   }
-
-  // def mapped to /api/athletes/statistics/profile/:activity
-  // current year's progress
-  def ytdProfile(activity: String) = AuthAsyncAction { implicit request =>
-    val storage = connectivity.getStorage
-    val now = LocalDate.now()
-    val currentYear = now.getYear
-
-    val statisticsOT = for {
-      account <- OptionT(Future(loggedIn))
-      _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
-      yearlyProgress = YearlyProgress.from(dailyProgress)
-      aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-      currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
-    } yield ProfileStatistics.from(now, currentYearProgress)
-
-    statisticsOT
-      .getOrElse(ProfileStatistics.zero)
-      .map(Json.toJson(_))
-      .map(Ok(_))
-  }
-
-  // route mapped to /api/athletes/statistics/yearly/:action/:activity
-  def yearlyStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
-    val storage = connectivity.getStorage
-
-    val result = for {
-      account <- OptionT(Future(loggedIn))
-      _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
-      yearlyProgress = YearlyProgress.from(dailyProgress)
-    } yield yearlyProgress
-
-    result
-      .getOrElse(Iterable.empty)
-      .map{ yearlyProgress => action.toLowerCase match {
-        case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
-        case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
-        case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
-        case other => sys.error(s"not supported action: $other")
-      }}
-      .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
-  }
-
-  // year to date aggregation
-  // route mapped to /api/athletes/statistics/ytd/:action/:activity
-  def ytdStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
-    val now = LocalDate.now()
-    val storage = connectivity.getStorage
-
-    val result = for {
-      account <- OptionT(Future(loggedIn))
-      _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
-      yearlyProgress = YearlyProgress.from(dailyProgress)
-      ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
-        YearlyProgress(ytd.year, Seq(
-          DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))
-        ))
-    } yield ytdProgress
-
-    result
-      .getOrElse(Iterable.empty)
-      .map{ ytdProgress => action.toLowerCase match {
-        case "distance" => toDistanceSeries(ytdProgress)
-        case "elevation" => toElevationSeries(ytdProgress)
-        case other => sys.error(s"not supported action: $other")
-      }}
-      .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
-  }
-
-  // list of achievements
-  // route mapped to /api/statistics/achievements/:activity
-  def achievements(activity: String) = AuthAsyncAction { implicit request =>
-    val storage = connectivity.getStorage.getAchievementStorage
-    loggedIn.map{ account =>
-      // parallelization
-      val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
-      val maxDistanceF = storage.maxDistance(account.athleteId, activity)
-      val maxElevationF = storage.maxElevation(account.athleteId, activity)
-      val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
-      val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
-      val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
-      val achievements = for {
-        maxAverageSpeed <- maxAverageSpeedF
-        maxDistance <- maxDistanceF
-        maxElevation <- maxElevationF
-        maxAveragePower <- maxAveragePowerF
-        maxHeartRate <- maxHeartRateF
-        maxAverageHeartRate <- maxAverageHeartRateF
-      } yield Achievements(
-        maxAverageSpeed = maxAverageSpeed,
-        maxDistance = maxDistance,
-        maxElevation = maxElevation,
-        maxAveragePower = maxAveragePower,
-        maxHeartRate = maxHeartRate,
-        maxAverageHeartRate = maxAverageHeartRate
-      )
-      achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
-    }.getOrElse(Future(Unauthorized))
-  }
-
-  // suggestions when searching, workaround until elastic access, use the storage directly
-  // route mapped to /api/activities/suggest
-  def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction { implicit request =>
-    logger.debug(s"suggesting for $query")
-    val storage = connectivity.getStorage
-
-    val activitiesTF = for {
-      account <- OptionT(Future(loggedIn))
-      orientDb <- OptionT(Future(storage.isInstanceOf[OrientDbStorage].fold(storage.asInstanceOf[OrientDbStorage].some, None)))
-      activities <- orientDb.suggestActivities(query, account.athleteId, 10).liftM[OptionT]
-    } yield activities
-
-    activitiesTF
-      .getOrElse(Iterable.empty)
-      .map{ activities =>
-        logger.debug(s"found ${activities.size} suggested activities ...")
-        activities.map( a => Json.obj("value" -> a.name, "data" -> JsonIo.write(a)))
-      }
-      .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
-  }}
-
-  // route mapped to /api/activities/type
-  def activityTypes = { AuthAsyncAction { implicit request =>
-    val storage = connectivity.getStorage
-    val resultTF = for {
-      account <- OptionT(Future(loggedIn))
-      types <- storage.listActivityTypes(account.athleteId).liftM[OptionT]
-      _ = logger.debug(s"account ${account.displayName} did ${types.mkString(",")}")
-    } yield types
-
-    resultTF
-      .map(ts => Ok(JsonIo.write(ts)))
-      .getOrElse(NotFound)
-  }}
-
-  // retrieves the activity with the given id
-  // route mapped to /api/activities/:id
-  def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction { implicit request =>
-    logger.debug(s"querying activity $id")
-    val resultET = for {
-      _ <- EitherT(Future(loggedIn.toRightDisjunction(Forbidden)))
-      activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRightDisjunction(NotFound)))
-    } yield activity
-
-    resultET
-      .map(JsonIo.write(_))
-      .map(Ok(_))
-      .merge
-  }}
-
-  // retrieves the weather forecast for a given place
-  // route mapped to /api/weather/:location
-  def weather(location: String)= timed(s"query weather forecast for $location") { AuthAsyncAction { implicit request =>
-    // convert city[,country] to city[,isoCountry]
-    val isoLocation = CountryIsoUtils.iso(location)
-    val now = DateTime.now() // inject time iterator instead
-    val refreshTimeoutInMinutes = 15 // make it configurable instead
-    val weatherStorage = connectivity.getStorage.getWeatherStorage
-    val attributeStorage = connectivity.getStorage.getAttributeStorage
-    logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
-
-    // if not in storage use a one year old ts to trigger the query
-    def lastUpdateTime = OptionT(attributeStorage.getAttribute(isoLocation, "location"))
-      .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
-      .getOrElse(now.minusYears(1))
-
-    def retrieveAndStore(place: String) = for {
-      entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
-      _ = logger.info(s"querying latest weather forecast for $place")
-      _ <- weatherStorage.storeWeather(entries)
-      _ <- attributeStorage.storeAttribute(place,"location", now.toString(DateTimePattern.longFormat))
-    } yield entries
-
-    val resultET = for {
-      place <- EitherT(Future(Option(isoLocation)
-        .filter(_.nonEmpty)
-        .toRightDisjunction(BadRequest)))
-      lastUpdate <- EitherT.rightT(lastUpdateTime)
-      elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
-      _ = logger.info(s"last weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
-      entries <- EitherT.rightT(if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else weatherStorage.listRecentForecast(place))
-    } yield entries
-
-    // generate json or xml content
-    type transform2Content = List[WeatherForecast] => String
-    val contentGenerator: transform2Content = request.getQueryString("mode") match {
-      case Some("xml") => wt => toMeteoGramXml(wt).toString()
-      case _ => wt => JsonIo.write(DailyWeather.list(wt))
-    }
-
-    resultET
-      .map(_.toList.sortBy(_.timestamp))
-      .map(contentGenerator)
-      .map(Ok(_).withCookies(WeatherCookie.create(location)))
-      .merge
-  }}
-
-  // retrieves the sunrise and sunset information for a given place
-  // route mapped to /api/sunrise/:location
-  def sunrise(location: String)= timed(s"query sunrise sunset for $location") { AuthAsyncAction { implicit request =>
-    // convert city[,country] to city[,isoCountry]
-    val isoLocation = CountryIsoUtils.iso(location)
-    val now = LocalDate.now.toString
-    val weatherStorage = connectivity.getStorage.getWeatherStorage
-    logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")
-
-    def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
-      response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
-      newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-      _ <- weatherStorage.storeSunriseSunset(newEntry).liftM[OptionT]
-    } yield newEntry
-
-    val resultET = for {
-      place <- EitherT(Future(Option(isoLocation)
-        .filter(_.nonEmpty)
-        .toRightDisjunction(BadRequest)))
-      // it is in the storage or retrieve it and store it
-      sunrise <- OptionT(weatherStorage.getSunriseSunset(place, now))
-        .orElse(retrieveAndStore)
-        .toRight(NotFound)
-    } yield sunrise
-
-    resultET
-      .map(JsonIo.write(_))
-      .map(Ok(_))
-      .merge
-  }}
 
   // WebSocket to update the client
   // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
