@@ -7,8 +7,8 @@ import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
 import scalaz.Monad
 import velocorner.api.{Activity, Athlete}
+import velocorner.model.Account
 import velocorner.model.strava.Club
-import velocorner.model.{Account, DailyProgress}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
@@ -41,18 +41,14 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def listActivityTypes(athleteId: Long): M[Iterable[String]] = Monad[M].pure(Iterable.empty[String])
 
-  override def dailyProgressForAthlete(athleteId: Long, activityType: String): M[Iterable[DailyProgress]] = Monad[M].pure {
+  override def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]] = Monad[M].pure {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("athlete").getField("id")
       val field2 = arg1.getField("type")
       field1.eq(athleteId, Nil).and(field2.eq(activityType, Nil))
     }).run(maybeConn)
-    val activities = result2Activity(result.toList.asScala.toList)
-    logger.debug(s"found activities ${activities.size} for $athleteId")
-    DailyProgress.fromStorage(activities)
+    result2Activity(result.toList.asScala.toList)
   }
-
-  override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]] = Monad[M].pure {
@@ -65,6 +61,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     logger.debug(s"found recent activities ${activities.size} for $athleteId")
     activities
   }
+
+  override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
 
   private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] =
     result.map(JSONObject.toJSONString).map(JsonIo.read[Activity])

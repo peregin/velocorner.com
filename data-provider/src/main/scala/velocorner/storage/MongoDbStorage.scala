@@ -45,17 +45,15 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
 
-  override def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]] = {
+  override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
     val results = coll
       .find(and(equal("athlete.id", athleteId), equal("type", activityType)))
       .toFuture()
     for {
       docs <- results
-    } yield DailyProgress.fromStorage(docs.map(_.toJson()).map(JsonIo.read[Activity]))
+    } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
-
-  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE, "id").map(_.map(JsonIo.read[Activity]))
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
@@ -67,8 +65,10 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
       .toFuture()
     for {
       docs <- results
-    } yield docs.map(_.toJson()).map(JsonIo.read[Activity]) 
+    } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
+
+  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
   private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)

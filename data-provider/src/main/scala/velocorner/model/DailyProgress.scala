@@ -6,7 +6,7 @@ import velocorner.api.{Activity, Progress}
 
 object DailyProgress {
 
-  def fromStorage(activity: Activity): DailyProgress = {
+  def from(activity: Activity): DailyProgress = {
     val progress = new Progress(1,
       activity.distance / 1000, activity.distance / 1000, activity.moving_time,
       activity.average_speed.getOrElse(0f).toDouble,
@@ -15,8 +15,8 @@ object DailyProgress {
     DailyProgress(activity.start_date_local.toLocalDate, progress)
   }
 
-  def fromStorage(activities: Iterable[Activity]): Iterable[DailyProgress] = {
-    activities.map(fromStorage)
+  def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {
+    activities.map(from)
       .groupBy(_.day)
       .map{ case (day, progressPerDay) =>
         DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))

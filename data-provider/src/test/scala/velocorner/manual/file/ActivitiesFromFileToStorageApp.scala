@@ -3,6 +3,7 @@ package velocorner.manual.file
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Activity
 import velocorner.manual.{AggregateActivities, AwaitSupport, MyMacConfig}
+import velocorner.model.DailyProgress
 import velocorner.storage.Storage
 import velocorner.util.{JsonIo, Metrics}
 
@@ -17,7 +18,9 @@ object ActivitiesFromFileToStorageApp extends App with AggregateActivities with 
 
   awaitOn(storage.storeActivity(list))
   logger.info(s" ${list.size} documents persisted...")
-  val progress = timed("aggregation")(awaitOn(storage.dailyProgressForAthlete(432909, "Ride")))
+  val progress = timed("aggregation")(awaitOn(
+    storage.listAllActivities(432909, "Ride")).map(DailyProgress.from)
+  )
   printAllProgress(progress)
 
   storage.destroy()

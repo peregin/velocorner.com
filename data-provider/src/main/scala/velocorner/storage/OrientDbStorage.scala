@@ -70,17 +70,15 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
   }}
 
-  override def dailyProgressForAthlete(athleteId: Long, activityType: String): Future[Iterable[DailyProgress]] = for {
-    activities <- queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'")
-    _ = logger.debug(s"found activities ${activities.size} for $athleteId")
-  } yield DailyProgress.fromStorage(activities)
-
-  override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
+  override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'")
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
   }
+
+  override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
 
   // accounts
   override def store(account: Account): Future[Unit] = {
@@ -118,7 +116,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
       upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
     }
   }
-  override def getWeatherStorage(): WeatherStorage = weatherStorage
+  override def getWeatherStorage: WeatherStorage = weatherStorage
 
   // attributes
   lazy val attributeStorage = new AttributeStorage {
@@ -131,9 +129,9 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         .map(_.map(_.value))
     }
   }
-  override def getAttributeStorage(): AttributeStorage = attributeStorage
+  override def getAttributeStorage: AttributeStorage = attributeStorage
 
-  // various achievments
+  // various achievements
   lazy val achievementStorage = new AchievementStorage {
 
     object ResDoubleRow {
@@ -189,7 +187,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     override def minTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = minOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
     override def maxTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
   }
-  override def getAchievementStorage(): AchievementStorage = achievementStorage
+  override def getAchievementStorage: AchievementStorage = achievementStorage
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

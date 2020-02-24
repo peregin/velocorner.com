@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import scalaz.Scalaz._
 import scalaz.{OptionT, _}
-import velocorner.api.{Achievements, Progress}
+import velocorner.api.{Achievements, Activity, Progress}
 import velocorner.model._
 import velocorner.storage.OrientDbStorage
 import velocorner.util.{JsonIo, Metrics}
@@ -23,25 +23,32 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
-  def ytdProfile(activity: String) = AuthAsyncAction { implicit request =>
+  def ytdProfile(activity: String) = timed(s"query for profile $activity") { AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
     val now = LocalDate.now()
     val currentYear = now.getYear
 
+    def yearlyProgress(activities: Iterable[Activity]): Progress = {
+      val dailyProgress = DailyProgress.from(activities)
+      val yearlyProgress = YearlyProgress.from(dailyProgress)
+      val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
+      aggregatedYearlyProgress.headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
+    }
+
     val statisticsOT = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
-      yearlyProgress = YearlyProgress.from(dailyProgress)
-      aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-      currentYearProgress = aggregatedYearlyProgress.find(_.year == currentYear).map(_.progress.last.progress).getOrElse(Progress.zero)
-    } yield ProfileStatistics.from(now, currentYearProgress)
+      activities <- storage.listAllActivities(account.athleteId, activity).liftM[OptionT]
+      _ = logger.debug(s"found ${activities.size} activities for ${account.athleteId}")
+      ytdActivities = activities.filter(_.start_date_local.toLocalDate.getYear == currentYear)
+      ytdCommutes = ytdActivities.filter(_.commute.getOrElse(false))
+    } yield ProfileStatistics.from(now, yearlyProgress(ytdActivities), yearlyProgress(ytdCommutes))
 
     statisticsOT
       .getOrElse(ProfileStatistics.zero)
       .map(Json.toJson(_))
       .map(Ok(_))
-  }
+  }}
 
   // route mapped to /api/athletes/statistics/yearly/:action/:activity
   def yearlyStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
@@ -50,7 +57,8 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
     val result = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
+      activities <- storage.listAllActivities(account.athleteId, activity).liftM[OptionT]
+      dailyProgress = DailyProgress.from(activities)
       yearlyProgress = YearlyProgress.from(dailyProgress)
     } yield yearlyProgress
 
@@ -74,7 +82,8 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
     val result = for {
       account <- OptionT(Future(loggedIn))
       _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
-      dailyProgress <- storage.dailyProgressForAthlete(account.athleteId, activity).liftM[OptionT]
+      activities <- storage.listAllActivities(account.athleteId, activity).liftM[OptionT]
+      dailyProgress = DailyProgress.from(activities)
       yearlyProgress = YearlyProgress.from(dailyProgress)
       ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
         YearlyProgress(ytd.year, Seq(

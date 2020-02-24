@@ -7,8 +7,10 @@ import org.specs2.specification.BeforeAfterAll
 import velocorner.api.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.manual.AwaitSupport
+import velocorner.model.DailyProgress
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSupport with LazyLogging {
 
@@ -22,7 +24,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     val zhLocation = "Zurich,CH"
 
     "check that is empty" in {
-      awaitOn(storage.dailyProgressForAthlete(432909, "Ride")) must beEmpty
+      awaitOn(storage.listAllActivities(432909, "Ride")) must beEmpty
     }
 
     "add items as idempotent operation" in {
@@ -42,8 +44,10 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "retrieve daily stats for an athlete" in {
-      awaitOn(storage.dailyProgressForAthlete(432909, "Ride")) must haveSize(15)
-      awaitOn(storage.dailyProgressForAthlete(432909, "Hike")) must beEmpty
+      awaitOn(
+        storage.listAllActivities(432909, "Ride").map(DailyProgress.from)
+      ) must haveSize(15)
+      awaitOn(storage.listAllActivities(432909, "Hike")) must beEmpty
     }
 
     "suggest activities for a specific athlete" in {
@@ -74,22 +78,22 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "select achievements" in {
-      awaitOn(storage.getAchievementStorage().maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
-      awaitOn(storage.getAchievementStorage().maxDistance(432909, "Ride")).map(_.value) should beSome(90514.3984375d)
-      awaitOn(storage.getAchievementStorage().maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
-      awaitOn(storage.getAchievementStorage().maxHeartRate(432909, "Ride")).map(_.value) should beNone
-      awaitOn(storage.getAchievementStorage().maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
-      awaitOn(storage.getAchievementStorage().minTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
-      awaitOn(storage.getAchievementStorage().maxTemperature(432909, "Ride")).map(_.value) should beSome(11d)
+      awaitOn(storage.getAchievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
+      awaitOn(storage.getAchievementStorage.maxDistance(432909, "Ride")).map(_.value) should beSome(90514.3984375d)
+      awaitOn(storage.getAchievementStorage.maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
+      awaitOn(storage.getAchievementStorage.maxHeartRate(432909, "Ride")).map(_.value) should beNone
+      awaitOn(storage.getAchievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
+      awaitOn(storage.getAchievementStorage.minTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
+      awaitOn(storage.getAchievementStorage.maxTemperature(432909, "Ride")).map(_.value) should beSome(11d)
     }
 
     "read empty list of weather forecast" in {
-      val list = awaitOn(storage.getWeatherStorage().listRecentForecast(zhLocation))
+      val list = awaitOn(storage.getWeatherStorage.listRecentForecast(zhLocation))
       list must beEmpty
     }
 
     "store weather forecast items as idempotent operation" in {
-      val weatherStorage = storage.getWeatherStorage()
+      val weatherStorage = storage.getWeatherStorage
       val entries = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
       entries must haveSize(40)
       awaitOn(weatherStorage.storeWeather(entries.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e))))
@@ -108,7 +112,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "store/lookup sunrise/sunset" in {
-      val weatherStorage = storage.getWeatherStorage()
+      val weatherStorage = storage.getWeatherStorage
       val now = DateTime.now
       val tomorrow = now.plusDays(1)
       awaitOn(weatherStorage.getSunriseSunset("bla", "2019")) must beNone
@@ -120,7 +124,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
     }
 
     "store/lookup attributes" in {
-      val attributeStorage = storage.getAttributeStorage()
+      val attributeStorage = storage.getAttributeStorage
       awaitOn(attributeStorage.getAttribute("key", "test")) must beNone
 
       awaitOn(attributeStorage.storeAttribute("key", "test", "value"))

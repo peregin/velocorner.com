@@ -1,12 +1,12 @@
 package velocorner.manual.storage
 
-import java.util.concurrent.{CountDownLatch, Executors, ThreadFactory, TimeUnit}
+import java.util.concurrent.{CountDownLatch, Executors, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Activity
 import velocorner.manual.{AggregateActivities, MyMacConfig}
 import velocorner.storage.Storage
-import velocorner.util.{CloseableResource, JsonIo, Metrics}
+import velocorner.util.{CloseableResource, JsonIo}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
@@ -36,7 +36,7 @@ object StressApp extends App with CloseableResource with LazyLogging with Aggreg
       Future {
         val activity = if (i % 2 == 0) {
           logger.info(s"start[$i] query activity...")
-          storage.dailyProgressForAthlete(432909, "Ride")
+          storage.listAllActivities(432909, "Ride")
           "query"
         } else {
           logger.info(s"start[$i] store activity...")

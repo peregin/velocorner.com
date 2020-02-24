@@ -10,6 +10,7 @@ import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
+import scala.language.higherKinds
 
 
 trait Storage[M[_]] {
@@ -20,12 +21,12 @@ trait Storage[M[_]] {
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): M[Iterable[String]]
 
-  def dailyProgressForAthlete(athleteId: Long, activityType: String): M[Iterable[DailyProgress]]
-
-  def getActivity(id: Long): M[Option[Activity]]
+  def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]]
 
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
+
+  def getActivity(id: Long): M[Option[Activity]]
 
   // accounts
   def store(account: Account): M[Unit]
