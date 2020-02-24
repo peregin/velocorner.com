@@ -34,12 +34,11 @@ object StravaController {
   val OAuth2StateKey = "velocorner.oauth2.state"
   val OAuth2AttrKey = TypedKey[Account]
 
-  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, new ThreadFactory {
-    override def newThread(r: Runnable): Thread = {
-      val t = new Thread(r, "play worker")
-      t.setDaemon(true)
-      t
-    }}
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => {
+    val t = new Thread(r, "play worker")
+    t.setDaemon(true)
+    t
+  }
   ))
 }
 
@@ -51,8 +50,9 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   private val logger = Logger.of(this.getClass)
 
   def login(scope: String) = Action { implicit request =>
+    logger.info(s"login($scope)")
     loggedIn(request) match {
-      case Some(a) =>
+      case Some(account) =>
         Redirect(controllers.routes.WebController.index())
       case None =>
         redirectToAuthorization(scope, request)
@@ -60,6 +60,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   }
 
   def link(scope: String) = Action { implicit request =>
+    logger.info(s"link($scope)")
     loggedIn(request) match {
       case Some(a) =>
         redirectToAuthorization(scope, request)
@@ -75,7 +76,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
         "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
       )
     ).bindFromRequest
-    logger.info(s"authorize request with ${form.data}")
+    logger.info(s"authorize ${form.data}")
 
     def formSuccess(v: (String, String)): Future[Result] = {
       val (code, state) = v
@@ -94,10 +95,10 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   }
 
   def logout = Action { implicit request =>
+    logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
     val res = Redirect(controllers.routes.WebController.index)
     tokenAccessor.delete(res)
-
   }
 
   // - utility methods below -
