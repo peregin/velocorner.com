@@ -83,8 +83,8 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
       awaitOn(storage.getAchievementStorage.maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
       awaitOn(storage.getAchievementStorage.maxHeartRate(432909, "Ride")).map(_.value) should beNone
       awaitOn(storage.getAchievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
-      awaitOn(storage.getAchievementStorage.minTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
-      awaitOn(storage.getAchievementStorage.maxTemperature(432909, "Ride")).map(_.value) should beSome(11d)
+      awaitOn(storage.getAchievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
+      awaitOn(storage.getAchievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
     }
 
     "read empty list of weather forecast" in {

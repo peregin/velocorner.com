@@ -12,5 +12,7 @@ case class Achievements(
                          maxElevation: Option[Achievement],
                          maxAveragePower: Option[Achievement],
                          maxHeartRate: Option[Achievement],
-                         maxAverageHeartRate: Option[Achievement]
+                         maxAverageHeartRate: Option[Achievement],
+                         minAverageTemperature: Option[Achievement],
+                         maxAverageTemperature: Option[Achievement]
                        )

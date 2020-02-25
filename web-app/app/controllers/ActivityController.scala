@@ -113,6 +113,8 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
       val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
       val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
       val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
+      val minAverageTemperatureF = storage.minAverageTemperature(account.athleteId, activity)
+      val maxAverageTemperatureF = storage.maxAverageTemperature(account.athleteId, activity)
       val achievements = for {
         maxAverageSpeed <- maxAverageSpeedF
         maxDistance <- maxDistanceF
@@ -120,13 +122,17 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         maxAveragePower <- maxAveragePowerF
         maxHeartRate <- maxHeartRateF
         maxAverageHeartRate <- maxAverageHeartRateF
+        minTemperature <- minAverageTemperatureF
+        maxTemperature <- maxAverageTemperatureF
       } yield Achievements(
         maxAverageSpeed = maxAverageSpeed,
         maxDistance = maxDistance,
         maxElevation = maxElevation,
         maxAveragePower = maxAveragePower,
         maxHeartRate = maxHeartRate,
-        maxAverageHeartRate = maxAverageHeartRate
+        maxAverageHeartRate = maxAverageHeartRate,
+        minAverageTemperature = minTemperature,
+        maxAverageTemperature = maxTemperature
       )
       achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
     }.getOrElse(Future(Unauthorized))

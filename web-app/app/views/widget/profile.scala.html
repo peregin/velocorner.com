@@ -104,8 +104,8 @@
                     <div>Max average power: <a id="achievement-max-avg-power" href="#">-</a></div>
                     <div>Max heart rate: <a id="achievement-max-hr" href="#">-</a></div>
                     <div>Max average heart rate: <a id="achievement-max-avg-hr" href="#">-</a></div>
-<!--                    <div>Hottest ride: </div>-->
-<!--                    <div>Coldest ride: </div>-->
+                    <div>Min average temperature: <a id="achievement-min-avg-temp" href="#">-</a></div>
+                    <div>Max average temperature: <a id="achievement-max-avg-temp" href="#">-</a></div>
                 </div>
             </div>
         </div>
@@ -171,6 +171,8 @@
                 showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W')
                 showEntry(data.maxHeartRate, '#achievement-max-hr', 1, 0, 'Bps')
                 showEntry(data.maxAverageHeartRate, '#achievement-max-avg-hr', 1, 0, 'Bps')
+                showEntry(data.minAverageTemperature, '#achievement-min-avg-temp', 1, 0, 'C')
+                showEntry(data.maxAverageTemperature, '#achievement-max-avg-temp', 1, 0, 'C')
            }
         });
     }

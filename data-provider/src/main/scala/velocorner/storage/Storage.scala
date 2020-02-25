@@ -66,8 +66,8 @@ trait Storage[M[_]] {
     def maxHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxAverageHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxAveragePower(athleteId: Long, activity: String): M[Option[Achievement]]
-    def minTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+    def minAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
   }
 
   // initializes any connections, pools, resources needed to open a storage session
