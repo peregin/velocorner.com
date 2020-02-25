@@ -52,7 +52,24 @@
                     </div>
                 </div>
 
-                <div class="row" style="padding-left:20px; padding-right:20px;"><i class="fa fa-line-chart rounded"></i><span> Prediction until end of year</span>
+                <div class="row" style="padding-left:20px; padding-right:20px;"><i class="fa fa-smile-o rounded"></i><span> Commutes</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
+                        <span id="commute-rides" style="text-align: center;">0</span>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
+                        <span id="commute-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">km</span>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
+                        <span id="commute-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">m</span>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3" style="text-align: center;">
+                        <span id="commute-hours" style="text-align: center;">0</span><span style="font-size: 0.7em;">h</span>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-left:20px; padding-right:20px;"><i class="fa fa-line-chart rounded"></i><span> Activities until end of year</span>
                 </div>
                 <div class="row" style="padding-left:20px; padding-right:20px; height: 10px;">
                     <div class="progress progress-u progress-xs rounded">
@@ -80,7 +97,7 @@
         <div class="col-sm-3 col-mprepare refresh amd d-6 sm-margin-bottom-40">
             <div class="funny-boxes funny-boxes-top-yellow" style="padding-top: 8px;">
                 <div class="row"><h4><i class="fa fa-trophy rounded"></i> Achievements</h4></div>
-                <div class="row" style="height:167px; overflow-y: scroll;">
+                <div class="row">
                     <div>Max average speed: <a id="achievement-max-avg-speed" href="#">-</a></div>
                     <div>Longest activity: <a id="achievement-max-distance" href="#">-</a></div>
                     <div>Max elevation gain: <a id="achievement-max-elevation" href="#">-</a></div>
@@ -124,6 +141,11 @@
                 $('#estimate-distance').html(Math.round(data.estimate.distance));
                 $('#estimate-elevation').html(Math.round(data.estimate.elevation));
                 $('#estimate-hours').html(Math.round(data.estimate.movingTime/3600));
+
+                $('#commute-rides').html(data.commute.rides);
+                $('#commute-distance').html(Math.round(data.commute.distance));
+                $('#commute-elevation').html(Math.round(data.commute.elevation));
+                $('#commute-hours').html(Math.round(data.commute.movingTime/3600));
 
                 $('#profile-rides').html(data.progress.rides);
                 $('#profile-distance').html(Math.round(data.progress.distance));
