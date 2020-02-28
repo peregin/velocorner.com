@@ -21,8 +21,6 @@ class WebController @Inject()
    strategy: RefreshStrategy)
   (implicit assets: AssetsFinder) extends AbstractController(components) with AuthChecker {
 
-  private val logger = Logger.of(this.getClass)
-
   def index = AuthAction { implicit request =>
     Ok(views.html.index(getPageContext("Home")))
   }

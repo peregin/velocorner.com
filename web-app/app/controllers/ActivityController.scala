@@ -23,7 +23,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
-  def ytdProfile(activity: String) = timed(s"query for profile $activity") { AuthAsyncAction { implicit request =>
+  def ytdProfile(activity: String) = TimedAuthAsyncAction(s"query for profile $activity") { implicit request =>
     val storage = connectivity.getStorage
     val now = LocalDate.now()
     val currentYear = now.getYear
@@ -48,10 +48,10 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
       .getOrElse(ProfileStatistics.zero)
       .map(Json.toJson(_))
       .map(Ok(_))
-  }}
+  }
 
   // route mapped to /api/athletes/statistics/yearly/:action/:activity
-  def yearlyStatistics(action: String, activity: String) = AuthAsyncAction { implicit request =>
+  def yearlyStatistics(action: String, activity: String) = TimedAuthAsyncAction(s"yearly statistics $action/$activity") { implicit request =>
     val storage = connectivity.getStorage
 
     val result = for {
@@ -103,7 +103,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // list of achievements
   // route mapped to /api/statistics/achievements/:activity
-  def achievements(activity: String) = AuthAsyncAction { implicit request =>
+  def achievements(activity: String) = TimedAuthAsyncAction(s"achievements for $activity") { implicit request =>
     val storage = connectivity.getStorage.getAchievementStorage
     loggedIn.map{ account =>
       // parallelization
@@ -140,7 +140,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // suggestions when searching, workaround until elastic access, use the storage directly
   // route mapped to /api/activities/suggest
-  def suggest(query: String) = timed(s"suggest for $query") { AuthAsyncAction { implicit request =>
+  def suggest(query: String) = TimedAuthAsyncAction(s"suggest for $query") { implicit request =>
     logger.debug(s"suggesting for $query")
     val storage = connectivity.getStorage
 
@@ -157,11 +157,11 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         activities.map( a => Json.obj("value" -> a.name, "data" -> JsonIo.write(a)))
       }
       .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
-  }}
+  }
 
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
-  def activity(id: Int) = timed(s"query for activity $id") { AuthAsyncAction { implicit request =>
+  def activity(id: Int) = TimedAuthAsyncAction(s"query for activity $id") { implicit request =>
     logger.debug(s"querying activity $id")
     val resultET = for {
       _ <- EitherT(Future(loggedIn.toRightDisjunction(Forbidden)))
@@ -172,10 +172,10 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
       .map(JsonIo.write(_))
       .map(Ok(_))
       .merge
-  }}
+  }
 
   // route mapped to /api/activities/type
-  def activityTypes = { AuthAsyncAction { implicit request =>
+  def activityTypes = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
       account <- OptionT(Future(loggedIn))
@@ -186,5 +186,5 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
     resultTF
       .map(ts => Ok(JsonIo.write(ts)))
       .getOrElse(NotFound)
-  }}
+  }
 }

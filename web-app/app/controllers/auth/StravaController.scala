@@ -1,11 +1,11 @@
 package controllers.auth
 
 import java.util.UUID
-import java.util.concurrent.{Executors, ThreadFactory}
-import javax.inject.Inject
+import java.util.concurrent.Executors
 
 import controllers.ConnectivitySettings
-import play.Logger
+import controllers.auth.StravaController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
+import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
@@ -15,8 +15,6 @@ import velocorner.model.Account
 import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
-
-import controllers.auth.StravaController.{AccessToken, ConsumerUser, OAuth2StateKey, ProviderUser, ec}
 
 object StravaController {
 
@@ -46,8 +44,6 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   extends AbstractController(components) with AuthChecker with CloseableResource {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
-
-  private val logger = Logger.of(this.getClass)
 
   def login(scope: String) = Action { implicit request =>
     logger.info(s"login($scope)")

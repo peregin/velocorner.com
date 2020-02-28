@@ -2,7 +2,6 @@ package controllers.auth
 
 import StravaController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
 import controllers.ConnectivitySettings
-import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 import velocorner.model.Account
@@ -10,10 +9,10 @@ import velocorner.model.Account
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
-
 import StravaController.OAuth2CookieKey
+import velocorner.util.Metrics
 
-trait AuthChecker {
+trait AuthChecker extends Metrics {
   // because of the body parser
   this: AbstractController =>
 
@@ -25,8 +24,6 @@ trait AuthChecker {
 
   // auth conf
   lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new CacheIdContainer[Id](cache))
-
-  private val logger = Logger.of(this.getClass)
 
   // auth conf
   lazy val tokenAccessor = new CookieTokenAccessor(
@@ -60,6 +57,15 @@ trait AuthChecker {
   }
 
   def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
+  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction{
+    val mark = System.currentTimeMillis()
+    f.andThen{ g =>
+      g.onComplete{ _ =>
+        val elapsed = System.currentTimeMillis() - mark
+        logger.info(s"$text took $elapsed millis")}
+      g
+    }
+  }
   def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
 
   def loggedIn(implicit request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
