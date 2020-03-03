@@ -10,9 +10,10 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import StravaController.OAuth2CookieKey
-import velocorner.util.Metrics
+import controllers.util.WebMetrics
 
-trait AuthChecker extends Metrics {
+
+trait AuthChecker extends WebMetrics {
   // because of the body parser
   this: AbstractController =>
 
@@ -57,15 +58,8 @@ trait AuthChecker extends Metrics {
   }
 
   def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
-  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction{
-    val mark = System.currentTimeMillis()
-    f.andThen{ g =>
-      g.onComplete{ _ =>
-        val elapsed = System.currentTimeMillis() - mark
-        logger.info(s"$text took $elapsed millis")}
-      g
-    }
-  }
+  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction(timedRequest(text)(f))
+
   def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
 
   def loggedIn(implicit request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)

@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.util.WebMetrics
 import highcharts._
 import javax.inject.Inject
 import org.joda.time.format.DateTimeFormat
@@ -16,12 +17,12 @@ import scala.concurrent.Future
 
 
 class WeatherController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents)
-  extends AbstractController(components) with Metrics {
+  extends AbstractController(components) with WebMetrics {
 
 
   // retrieves the weather forecast for a given place
   // route mapped to /api/weather/:location
-  def forecast(location: String)= timed(s"query weather forecast for $location") { Action.async { implicit request =>
+  def forecast(location: String)= Action.async { timedRequest(s"query weather forecast for $location") { implicit request =>
     // convert city[,country] to city[,isoCountry]
     val isoLocation = CountryIsoUtils.iso(location)
     val now = DateTime.now() // inject time iterator instead
@@ -68,7 +69,7 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
 
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/sunrise/:location
-  def sunrise(location: String)= timed(s"query sunrise sunset for $location") { Action.async { implicit request =>
+  def sunrise(location: String)= Action.async { timedRequest(s"query sunrise sunset for $location") { implicit request =>
     // convert city[,country] to city[,isoCountry]
     val isoLocation = CountryIsoUtils.iso(location)
     val now = LocalDate.now.toString
