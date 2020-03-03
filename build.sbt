@@ -10,14 +10,14 @@ import play.sbt.PlayImport._
 val projectScalaVersion = "2.13.1"
 
 val scalazVersion = "7.2.30"
-val zioVersion = "1.0.0-RC17"
+val zioVersion = "1.0.0-RC18"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.28"
+val orientDbVersion = "3.0.29"
 val mongoDbVersion = "2.8.0"
 val elasticVersion = "7.3.5"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
-val specsVersion = "4.8.3"
+val specsVersion = "4.9.2"
 val mockitoVersion = "3.2.4"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % "2.4.0"
