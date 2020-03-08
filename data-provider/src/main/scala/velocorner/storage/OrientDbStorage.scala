@@ -227,6 +227,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
 
       createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.LONG))
       createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("type", OType.STRING))
+      createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("athlete.id", OType.LONG))
       createIxIfNeeded(ACCOUNT_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.INTEGER))
       createIxIfNeeded(ATHLETE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.LONG))
