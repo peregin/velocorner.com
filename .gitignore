@@ -9,7 +9,7 @@
 .cache
 /data-analytics/.idea/
 .idea/*
-!.idea/runConfigurations/*
+!.idea/runConfigurations
 .idea_modules/*
 .bloop
 .metals
