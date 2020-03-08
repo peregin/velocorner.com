@@ -198,7 +198,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     inTx { odb =>
       case class IndexSetup(indexField: String, indexType: OType)
 
-      def createIxIfNeeded(className: String, index: IndexSetup*): Unit = {
+      def createIxIfNeeded(className: String, indexType: OClass.INDEX_TYPE, index: IndexSetup*): Unit = {
         val schema = odb.getMetadata.getSchema
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
@@ -210,7 +210,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         val ixFields = index.map(_.indexField).sorted
         val ixName = ixFields.mkString("-").replace(".", "_")
 
-        if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", OClass.INDEX_TYPE.UNIQUE, ixFields:_*)
+        if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", indexType, ixFields:_*)
       }
 
       def dropIx(className: String, ixName: String): Unit = {
@@ -225,13 +225,14 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         Option(clazz).foreach(_.dropProperty(ixName))
       }
 
-      createIxIfNeeded(ACTIVITY_CLASS, IndexSetup("id", OType.LONG))
-      createIxIfNeeded(ACCOUNT_CLASS, IndexSetup("athleteId", OType.LONG))
-      createIxIfNeeded(CLUB_CLASS, IndexSetup("id", OType.INTEGER))
-      createIxIfNeeded(ATHLETE_CLASS, IndexSetup("id", OType.LONG))
-      createIxIfNeeded(WEATHER_CLASS, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
-      createIxIfNeeded(SUN_CLASS, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
-      createIxIfNeeded(ATTRIBUTE_CLASS, IndexSetup("key", OType.STRING))
+      createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.LONG))
+      createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("type", OType.STRING))
+      createIxIfNeeded(ACCOUNT_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("athleteId", OType.LONG))
+      createIxIfNeeded(CLUB_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.INTEGER))
+      createIxIfNeeded(ATHLETE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.LONG))
+      createIxIfNeeded(WEATHER_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
+      createIxIfNeeded(SUN_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
+      createIxIfNeeded(ATTRIBUTE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("key", OType.STRING))
     }
   }
 
