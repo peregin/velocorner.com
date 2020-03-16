@@ -10,7 +10,7 @@ import play.sbt.PlayImport._
 val projectScalaVersion = "2.13.1"
 
 val scalazVersion = "7.2.30"
-val zioVersion = "1.0.0-RC18-1"
+val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
 val orientDbVersion = "3.0.29"
 val mongoDbVersion = "2.8.0"
