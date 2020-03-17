@@ -19,7 +19,7 @@ val elasticVersion = "7.3.5"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
 val specsVersion = "4.9.2"
-val mockitoVersion = "3.3.1"
+val mockitoVersion = "3.3.3"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
