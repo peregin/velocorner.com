@@ -12,7 +12,7 @@ val projectScalaVersion = "2.13.1"
 val scalazVersion = "7.2.30"
 val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
-val orientDbVersion = "3.0.29"
+val orientDbVersion = "3.0.30"
 val mongoDbVersion = "2.8.0"
 val rethinkDbVersion = "2.4.0"
 val elasticVersion = "7.3.5"
@@ -45,7 +45,7 @@ val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-  "org.codehaus.janino" % "janino" % "3.1.0", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.1.2", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
