@@ -18,7 +18,7 @@ val rethinkDbVersion = "2.4.0"
 val elasticVersion = "7.6.0"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
-val specsVersion = "4.9.2"
+val specsVersion = "4.9.3"
 val mockitoVersion = "3.3.3"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
