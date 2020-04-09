@@ -2,6 +2,11 @@ package velocorner.util
 
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.{ExecutionContext, Future}
+
+// for kestrel combinator and unsafeTap
+import scalaz.syntax.id._
+
 /**
  * Created by levi on 07/02/15.
  */
@@ -16,10 +21,15 @@ trait Metrics extends LazyLogging {
     }
   }
 
+  def timedFuture[T](text: => String)(body: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
+    val mark =  System.currentTimeMillis()
+    body <| (_.onComplete(_ => log(text, mark)))
+  }
+
+  protected def log(text: String, mark: Long): Unit = logger.info(message(text, mark))
+
   protected def message(text: String, mark: Long): String = {
     val elapsed = System.currentTimeMillis() - mark
     s"$text took $elapsed millis"
   }
-
-  protected def log(text: String, mark: Long): Unit = logger.info(message(text, mark))
 }

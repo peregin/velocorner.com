@@ -42,10 +42,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
       _ <- storage.store(account.copy(lastUpdate = Some(now)))
     } yield newActivities
 
-    activitiesF |> {f => 
-      f.onComplete(_ => feed.close())
-      f
-    }
+    activitiesF <| (_.onComplete(_ => feed.close()))
   }
 
   protected def retrieveNewActivities(feed: ActivityFeed, storage: Storage[Future], athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
