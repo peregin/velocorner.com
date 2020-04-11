@@ -76,7 +76,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   }
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future {
-    inTx { db =>
+    transact { db =>
       val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = :id GROUP BY name ORDER BY counter DESC",
         Map(
           "id" -> athleteId
@@ -249,7 +249,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     server = orientDb.some
     pool = new ODatabasePool(orientDb, DATABASE_NAME, dbUser, dbPassword, config).some
 
-    inTx { odb =>
+    transact { odb =>
       case class IndexSetup(indexField: String, indexType: OType)
 
       def createIxIfNeeded(className: String, indexType: OClass.INDEX_TYPE, index: IndexSetup*): Unit = {
@@ -307,7 +307,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     logger.info("database has been closed...")
   }
 
-  def inTx[T](body: ODatabaseDocument => T): T = {
+  def transact[T](body: ODatabaseDocument => T): T = {
     pool.map { dbPool =>
       val session = dbPool.acquire()
       session.activateOnCurrentThread()
@@ -320,7 +320,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   }
 
   // asynch
-  private def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx { db =>
+  private def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = transact { db =>
     Try {
       val promise = Promise[Seq[T]]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
@@ -347,7 +347,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   private def queryForOption[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql, args).map(_.headOption)
 
-  private def upsert[T](payload: T, className: String, sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Writes[T]): Future[Unit] = inTx { db =>
+  private def upsert[T](payload: T, className: String, sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Writes[T]): Future[Unit] = transact { db =>
     Try {
       val promise = Promise[Unit]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
