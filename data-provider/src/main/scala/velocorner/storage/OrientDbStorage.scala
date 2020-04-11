@@ -1,7 +1,8 @@
 package velocorner.storage
 
 import com.orientechnologies.orient.core.command.OCommandResultListener
-import com.orientechnologies.orient.core.db.{ODatabaseType, OrientDB, OrientDBConfig}
+import com.orientechnologies.orient.core.config.OGlobalConfiguration
+import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig, OrientDBConfigBuilder}
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
@@ -35,7 +36,6 @@ import scala.jdk.CollectionConverters._
   * Created by levi on 14.11.16.
   * Improvements to do:
   * - use new query API from OrientDB 3.0 ?
-  * - object pool for db
   * - use compound index for athlete.id and activity type
   * - use monad stack M[_] : Monad
   */
@@ -43,6 +43,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
 
   @volatile var server: Option[OrientDB] = None
+  @volatile var pool: Option[ODatabasePool] = None
   private val dbUser = url.isDefined ? "root" | "admin"
   private val dbUrl = url.map("remote:" + _).getOrElse("memory:")
   private val dbType = url.isDefined ? ODatabaseType.PLOCAL | ODatabaseType.MEMORY
@@ -237,9 +238,16 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
-    val orientDb: OrientDB = new OrientDB(dbUrl, dbUser, dbPassword, OrientDBConfig.defaultConfig())
+    val config = OrientDBConfig
+      .builder()
+      .addConfig(OGlobalConfiguration.DB_POOL_MIN, 4)
+      .addConfig(OGlobalConfiguration.DB_POOL_MAX, 20)
+      .build()
+    val orientDb: OrientDB = new OrientDB(dbUrl, dbUser, dbPassword, config)
     orientDb.createIfNotExists(DATABASE_NAME, dbType)
+
     server = orientDb.some
+    pool = new ODatabasePool(orientDb, DATABASE_NAME, dbUser, dbPassword, config).some
 
     inTx { odb =>
       case class IndexSetup(indexField: String, indexType: OType)
@@ -292,14 +300,16 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   // releases any connections, resources used
   override def destroy(): Unit = {
+    pool.foreach(_.close())
+    pool = None
     server.foreach(_.close())
     server = None
     logger.info("database has been closed...")
   }
 
   def inTx[T](body: ODatabaseDocument => T): T = {
-    server.map { orientDb =>
-      val session = orientDb.open(DATABASE_NAME, dbUser, dbPassword)
+    pool.map { dbPool =>
+      val session = dbPool.acquire()
       session.activateOnCurrentThread()
       ultimately {
         session.close()
