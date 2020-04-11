@@ -20,6 +20,7 @@ import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
 import scalaz._
+import scalaz.syntax.functor._
 import scalaz.std.list._
 import scalaz.syntax.std.option._
 import scalaz.syntax.std.boolean._
@@ -31,15 +32,20 @@ import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import scala.jdk.CollectionConverters._
 
 /**
- * Created by levi on 14.11.16.
- */
-class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
+  * Created by levi on 14.11.16.
+  * Improvements to do:
+  * - use new query API from OrientDB 3.0 ?
+  * - object pool for db
+  * - use compound index for athlete.id and activity type
+  * - use monad stack M[_] : Monad
+  */
+class OrientDbStorage(url: Option[String], dbPassword: String)
   extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
 
   @volatile var server: Option[OrientDB] = None
-  private val dbUser = dbUrl.isDefined ? "root" | "admin"
-  private val orientDbUrl = dbUrl.map("remote:" + _).getOrElse("memory:")
-  private val dbType = dbUrl.isDefined ? ODatabaseType.PLOCAL | ODatabaseType.MEMORY
+  private val dbUser = url.isDefined ? "root" | "admin"
+  private val dbUrl = url.map("remote:" + _).getOrElse("memory:")
+  private val dbType = url.isDefined ? ODatabaseType.PLOCAL | ODatabaseType.MEMORY
 
   private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
@@ -52,6 +58,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
   }
 
   // to have an option list all rides for an athlete
+  // it is not used in web-app
   def listActivities(athleteId: Long, activityType: Option[String]): Future[Iterable[Activity]] = {
     val typeClause = activityType.map(a => s"type = '$a' AND ").getOrElse("")
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $typeClause athlete.id = $athleteId ORDER BY start_date DESC")
@@ -61,42 +68,59 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     activities
       .toList
-      .traverseU(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = ${a.id}"))
-      .map(_ => ())
+      .traverseU(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id",
+        Map("id" -> a.id))
+      )
+      .void
   }
 
-  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future { inTx { db =>
-    val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId GROUP BY name ORDER BY counter DESC")
-    results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
-  }}
+  override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future {
+    inTx { db =>
+      val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = :id GROUP BY name ORDER BY counter DESC",
+        Map(
+          "id" -> athleteId
+        ).asJava)
+      results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
+    }
+  }
 
   override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'")
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND type = :type",
+      Map(
+        "id" -> athleteId,
+        "type" -> activityType
+      )
+    )
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = 'Ride' ORDER BY start_date DESC LIMIT $limit")
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id ORDER BY start_date DESC LIMIT :limit",
+      Map(
+        "id" -> athleteId,
+        "limit" -> limit
+      )
+    )
   }
 
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
 
   // accounts
   override def store(account: Account): Future[Unit] = {
-    upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = ${account.athleteId}")
+    upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
   }
 
   override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
 
   // athletes
   override def store(athlete: Athlete): Future[Unit] = {
-    upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = ${athlete.id}")
+    upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = :id", Map("id" -> athlete.id))
   }
 
   override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
 
   // clubs
   override def store(club: Club): Future[Unit] = {
-    upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = ${club.id}")
+    upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = :id", Map("id" -> club.id))
   }
 
   override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
@@ -106,29 +130,41 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
       queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
     }
+
     override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
-      forecast.toList.traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
-        .map(_ => ())
+      forecast
+        .toList
+        .traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
+        .void
     }
+
     override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-      queryForOption[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like '$location' AND date = '$localDate'")
+      queryForOption[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
+        Map("location" -> location, "date" -> localDate))
+
     override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
-      upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like '${sunriseSunset.location}' AND date = '${sunriseSunset.date}'")
+      upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
+        Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date))
     }
   }
+
   override def getWeatherStorage: WeatherStorage = weatherStorage
 
   // attributes
   lazy val attributeStorage = new AttributeStorage {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
       val attr = KeyValue(key, `type`, value)
-      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' and key = '$key'")
+      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key",
+        Map("type" -> `type`, "key" -> key))
     }
+
     override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
-      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = '${`type`}' AND key = '$key'")
+      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type AND key = :key",
+        Map("type" -> `type`, "key" -> key))
         .map(_.map(_.value))
     }
   }
+
   override def getAttributeStorage: AttributeStorage = attributeStorage
 
   // various achievements
@@ -137,11 +173,13 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     object ResDoubleRow {
       implicit val doubleRowFormat = Format[ResDoubleRow](Json.reads[ResDoubleRow], Json.writes[ResDoubleRow])
     }
+
     case class ResDoubleRow(res_value: Double)
 
     object ResLongRow {
       implicit val longRowFormat = Format[ResLongRow](Json.reads[ResLongRow], Json.writes[ResLongRow])
     }
+
     case class ResLongRow(res_value: Long)
 
     private def minOf(athleteId: Long, activityType: String, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
@@ -179,19 +217,27 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
     }
 
     override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_speed", _.average_speed.map(_.toDouble))
+
     override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "distance", _.distance.toDouble.some)
+
     override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "total_elevation_gain", _.total_elevation_gain.toDouble.some)
+
     override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "max_heartrate", _.max_heartrate.map(_.toDouble))
+
     override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_heartrate", _.average_heartrate.map(_.toDouble))
+
     override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_watts", _.average_watts.map(_.toDouble))
+
     override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = minOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
+
     override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
   }
+
   override def getAchievementStorage: AchievementStorage = achievementStorage
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
-    val orientDb: OrientDB = new OrientDB(orientDbUrl, dbUser, dbPassword, OrientDBConfig.defaultConfig())
+    val orientDb: OrientDB = new OrientDB(dbUrl, dbUser, dbPassword, OrientDBConfig.defaultConfig())
     orientDb.createIfNotExists(DATABASE_NAME, dbType)
     server = orientDb.some
 
@@ -210,14 +256,14 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         val ixFields = index.map(_.indexField).sorted
         val ixName = ixFields.mkString("-").replace(".", "_")
 
-        if (!clazz.areIndexed(ixFields:_*)) clazz.createIndex(s"$ixName-$className", indexType, ixFields:_*)
+        if (!clazz.areIndexed(ixFields: _*)) clazz.createIndex(s"$ixName-$className", indexType, ixFields: _*)
       }
 
       def dropIx(className: String, ixName: String): Unit = {
         val ixManager = odb.getMetadata.getIndexManager
         // old name was without hyphen, try both versions
         val names = Seq(s"$ixName$className", s"$ixName-$className")
-        names.foreach{n =>
+        names.foreach { n =>
           if (ixManager.existsIndex(n)) ixManager.dropIndex(n)
         }
         val schema = odb.getMetadata.getSchema
@@ -234,6 +280,13 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
       createIxIfNeeded(WEATHER_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(SUN_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
       createIxIfNeeded(ATTRIBUTE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("key", OType.STRING))
+
+      odb.browseClass(ACCOUNT_CLASS).setFetchPlan("*:0")
+      odb.browseClass(ACTIVITY_CLASS).setFetchPlan("*:0")
+      odb.browseClass(ATHLETE_CLASS).setFetchPlan("*:0")
+      odb.browseClass(WEATHER_CLASS).setFetchPlan("*:0")
+      odb.browseClass(SUN_CLASS).setFetchPlan("*:0")
+      odb.browseClass(ATTRIBUTE_CLASS).setFetchPlan("*:0")
     }
   }
 
@@ -257,7 +310,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
   }
 
   // asynch
-  private def queryFor[T](sql: String)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx { db =>
+  private def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = inTx { db =>
     Try {
       val promise = Promise[Seq[T]]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
@@ -277,14 +330,14 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         }
 
         override def getResult: AnyRef = accuResults
-      }))
+      }), args.asJava)
       promise.future
     }.fold(err => Future.failed(err), res => res)
   }
 
-  private def queryForOption[T](sql: String)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql).map(_.headOption)
+  private def queryForOption[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql, args).map(_.headOption)
 
-  private def upsert[T](payload: T, className: String, sql: String)(implicit fjs: Writes[T]): Future[Unit] = inTx { db =>
+  private def upsert[T](payload: T, className: String, sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Writes[T]): Future[Unit] = inTx { db =>
     Try {
       val promise = Promise[Unit]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
@@ -304,7 +357,7 @@ class OrientDbStorage(dbUrl: Option[String], dbPassword: String)
         }
 
         override def getResult: AnyRef = null
-      }))
+      }), args.asJava)
       promise.future
     }.fold(err => Future.failed(err), res => res)
   }

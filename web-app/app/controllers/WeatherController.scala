@@ -10,7 +10,7 @@ import scalaz.Scalaz._
 import scalaz.{OptionT, _}
 import velocorner.api.weather.{DailyWeather, SunriseSunset, WeatherForecast}
 import velocorner.model._
-import velocorner.util.{CountryIsoUtils, JsonIo, Metrics}
+import velocorner.util.{CountryIsoUtils, JsonIo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -87,7 +87,7 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
         .filter(_.nonEmpty)
         .toRightDisjunction(BadRequest)))
       // it is in the storage or retrieve it and store it
-      sunrise <- OptionT(weatherStorage.getSunriseSunset(place, now))
+      sunrise <- OptionT(timedFuture("storage query sunrise sunset")(weatherStorage.getSunriseSunset(place, now)))
         .orElse(retrieveAndStore)
         .toRight(NotFound)
     } yield sunrise
