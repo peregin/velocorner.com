@@ -22,15 +22,22 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
   "storage" should {
 
     val zhLocation = "Zurich,CH"
+    val activities = JsonIo
+      .readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
+      .filter(_.`type` == "Ride")
 
     "check that is empty" in {
       awaitOn(storage.listAllActivities(432909, "Ride")) must beEmpty
     }
 
+    "add activity twice as upsert" in {
+      val single = activities.headOption.toList
+      awaitOn(storage.storeActivity(single))
+      awaitOn(storage.storeActivity(single))
+      awaitOn(storage.listAllActivities(432909, "Ride")) must haveSize(1)
+    }
+
     "add items as idempotent operation" in {
-      val activities = JsonIo
-        .readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
-        .filter(_.`type` == "Ride")
       awaitOn(storage.storeActivity(activities))
       awaitOn(storage.listRecentActivities(432909, 50)) must haveSize(24)
 
@@ -138,7 +145,7 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with AwaitSu
   }
 
   override def beforeAll(): Unit = {
-    storage = new OrientDbStorage(dbUrl = None, dbPassword = "admin")
+    storage = new OrientDbStorage(url = None, dbPassword = "admin")
     storage.initialize()
   }
 
