@@ -2,7 +2,6 @@ package velocorner.model
 
 import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
-import scalaz.syntax.std.boolean._
 import velocorner.api.Progress
 
 case class ProfileStatistics(yearlyPercentile: Int, estimate: Progress, progress: Progress, commute: Progress)
@@ -15,7 +14,7 @@ object ProfileStatistics {
 
   def from(now: LocalDate, ytdProgress: Progress, ytdCommute: Progress): ProfileStatistics = {
     val dayToDate = now.dayOfYear().get()
-    val daysInYear = now.year().isLeap ? 366 | 365
+    val daysInYear = if (now.year().isLeap) 366 else 365
     from(dayToDate, daysInYear, ytdProgress, ytdCommute)
   }
 

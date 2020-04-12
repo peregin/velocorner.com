@@ -5,12 +5,13 @@ import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
-import scalaz.Monad
 import velocorner.api.{Activity, Athlete}
 import velocorner.model.Account
 import velocorner.model.strava.Club
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
+
+import cats._
 
 import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions

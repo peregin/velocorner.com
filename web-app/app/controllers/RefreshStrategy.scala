@@ -12,7 +12,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 // for kestrel combinator
-import scalaz.syntax.id._
+import mouse.all._
 
 /**
   * Isolate the update the logic to refresh club and account activities.

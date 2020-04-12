@@ -6,10 +6,11 @@ import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexApi, In
 import com.sksamuel.elastic4s.requests.searches.GeoPoint
 import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
 import play.api.libs.json.{JsObject, JsString, Json}
-import scalaz.Show
-import scalaz.syntax.show._
 import velocorner.api.Activity
 import velocorner.util.JsonIo
+
+import cats.Show
+import cats.implicits._
 
 trait ElasticSupport extends IndexApi {
 
@@ -34,9 +35,9 @@ trait ElasticSupport extends IndexApi {
         lat <- activity.start_latitude
         lon <- activity.start_longitude
       } yield GeoPoint(lat, lon)
-      implicit val gpShow: Show[GeoPoint] = Show.shows[GeoPoint](gp => s"${gp.lat},${gp.long}")
+      implicit val gpShow: Show[GeoPoint] = Show.show[GeoPoint](gp => s"${gp.lat},${gp.long}")
       val json = (Json.toJson(convertedActivity), maybeGeoPoint) match {
-        case (jsObj: JsObject, Some(geoPoint)) => jsObj +("location", JsString(geoPoint.shows))
+        case (jsObj: JsObject, Some(geoPoint)) => jsObj +("location", JsString(geoPoint.show))
         case (jsAny, _) => jsAny
       }
       ix.doc(json.toString())

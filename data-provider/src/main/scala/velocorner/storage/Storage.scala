@@ -4,13 +4,14 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.Club
-import velocorner.util.FutureInstances
-import FutureInstances.monadInstance
 import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
 import scala.language.higherKinds
+
+import cats.instances.future._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 trait Storage[M[_]] {

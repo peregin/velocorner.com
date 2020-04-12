@@ -5,11 +5,12 @@ import javax.inject.Inject
 import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
-import scalaz.Scalaz._
-import scalaz._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import cats.implicits._
+import cats.data.OptionT
 
 /**
   * Serves the web pages, rendered from server side.
@@ -30,10 +31,10 @@ class WebController @Inject()
     logger.info(s"refreshing page for $maybeAccount")
     val result = for {
       account <- OptionT(Future(maybeAccount))
-      activities <- strategy.refreshAccountActivities(account).liftM[OptionT]
+      activities <- OptionT.liftF(strategy.refreshAccountActivities(account))
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
-    result.run
+    result.value
       .map(_ => Redirect(routes.WebController.index()))
       .recover{ case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
         // if the feed fails with expired token, then logout

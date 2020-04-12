@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 // for kestrel combinator and unsafeTap
-import scalaz.syntax.id._
+import mouse.all._
 
 /**
  * Created by levi on 07/02/15.

@@ -2,9 +2,10 @@ package velocorner.api.weather
 
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
-import scalaz.syntax.std.option._
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
+
+import cats.implicits._
 
 class WeatherSpec extends Specification {
 

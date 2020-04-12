@@ -3,14 +3,13 @@ package velocorner.search.manual
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
-import scalaz.std.list._
-import scalaz.syntax.traverse.ToTraverseOps
 import velocorner.manual.{AwaitSupport, MyMacConfig}
 import velocorner.search.ElasticSupport
 import velocorner.storage.{OrientDbStorage, Storage}
-import velocorner.util.FutureInstances._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import cats.implicits._
 
 
 /**
@@ -36,7 +35,7 @@ object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitS
     errors <- indices.sliding(bulkSize, bulkSize)
       .map(chunk => elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate)))
       .toList
-      .sequenceU
+      .sequence
       .map(_.filter(_.isError))
   } yield errors
 

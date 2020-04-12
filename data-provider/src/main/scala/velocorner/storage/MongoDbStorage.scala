@@ -15,9 +15,7 @@ import velocorner.util.JsonIo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
-import scalaz.std.list._
-import scalaz.std.scalaFuture._
-import scalaz.syntax.traverse.ToTraverseOps
+import cats.implicits._
 import velocorner.api.{Activity, Athlete}
 
 /**
@@ -34,7 +32,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
-    activities.toList.traverseU { a =>
+    activities.toList.traverse { a =>
       val json = JsonIo.write(a)
       coll
         .updateOne(equal("id", a.id), json, new UpdateOptions()

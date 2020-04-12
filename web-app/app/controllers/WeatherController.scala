@@ -6,14 +6,16 @@ import javax.inject.Inject
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
 import play.api.mvc.{AbstractController, ControllerComponents}
-import scalaz.Scalaz._
-import scalaz.{OptionT, _}
 import velocorner.api.weather.{DailyWeather, SunriseSunset, WeatherForecast}
 import velocorner.model._
 import velocorner.util.{CountryIsoUtils, JsonIo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import cats.data.{EitherT, OptionT}
+import cats.implicits._
+import cats.instances.future.catsStdInstancesForFuture
 
 
 class WeatherController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents)
@@ -32,11 +34,14 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
     logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
-    def lastUpdateTime = OptionT(attributeStorage.getAttribute(isoLocation, "location"))
-      .map(DateTime.parse(_, DateTimeFormat.forPattern(DateTimePattern.longFormat)))
-      .getOrElse(now.minusYears(1))
+    def lastUpdateTime: Future[DateTime] = attributeStorage.getAttribute(isoLocation, "location").map{
+      _ match {
+        case Some(timeText) => DateTime.parse(timeText, DateTimeFormat.forPattern(DateTimePattern.longFormat))
+        case _ => now.minusYears(1)
+      }
+    }
 
-    def retrieveAndStore(place: String) = for {
+    def retrieveAndStore(place: String): Future[List[WeatherForecast]] = for {
       entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
       _ = logger.info(s"querying latest weather forecast for $place")
       _ <- weatherStorage.storeWeather(entries)
@@ -46,11 +51,11 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
     val resultET = for {
       place <- EitherT(Future(Option(isoLocation)
         .filter(_.nonEmpty)
-        .toRightDisjunction(BadRequest)))
-      lastUpdate <- EitherT.rightT(lastUpdateTime)
+        .toRight(BadRequest)))
+      lastUpdate <- EitherT.right[Status](lastUpdateTime)
       elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable mins to execute the query
       _ = logger.info(s"last weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
-      entries <- EitherT.rightT(if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else weatherStorage.listRecentForecast(place))
+      entries <- EitherT.right[Status](if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else weatherStorage.listRecentForecast(place))
     } yield entries
 
     // generate json or xml content
@@ -79,13 +84,13 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
     def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
       response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
       newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-      _ <- weatherStorage.storeSunriseSunset(newEntry).liftM[OptionT]
+      _ <- OptionT.liftF(weatherStorage.storeSunriseSunset(newEntry))
     } yield newEntry
 
     val resultET = for {
       place <- EitherT(Future(Option(isoLocation)
         .filter(_.nonEmpty)
-        .toRightDisjunction(BadRequest)))
+        .toRight(BadRequest)))
       // it is in the storage or retrieve it and store it
       sunrise <- OptionT(timedFuture("storage query sunrise sunset")(weatherStorage.getSunriseSunset(place, now)))
         .orElse(retrieveAndStore)

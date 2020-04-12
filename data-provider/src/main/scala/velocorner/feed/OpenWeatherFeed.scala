@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
 import velocorner.util.JsonIo
-import scalaz.syntax.std.option._
+import cats.implicits._
 
 import scala.concurrent.Future
 

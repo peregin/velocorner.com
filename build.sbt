@@ -9,7 +9,7 @@ import play.sbt.PlayImport._
 
 val projectScalaVersion = "2.13.1"
 
-val scalazVersion = "7.2.30"
+val catsVersion = "2.0.0"
 val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
 val orientDbVersion = "3.0.30"
@@ -56,8 +56,9 @@ def elastic4s = Seq(
 )
 def storage = Seq(rethinkClient, mongoClient, orientDbClient)
 
-def scalaz = Seq(
-  "org.scalaz" %% "scalaz-core" % scalazVersion
+def cats = Seq(
+  "org.typelevel" %% "cats-core" % catsVersion,
+  "org.typelevel" %% "mouse" % "0.24"
 )
 
 def zio = Seq(
@@ -115,7 +116,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     ) ++ logging
       ++ storage
       ++ apacheCommons
-      ++ scalaz
+      ++ cats
       ++ zio
   )
 
@@ -144,7 +145,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       },
       "elasticVersion" -> elasticVersion,
       "playVersion" -> play.core.PlayVersion.current,
-      "scalazVersion" -> scalazVersion,
+      "catsVersion" -> catsVersion,
       "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
     ),
     buildInfoPackage := "velocorner.build",

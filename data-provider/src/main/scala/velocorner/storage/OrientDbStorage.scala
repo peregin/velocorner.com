@@ -1,5 +1,6 @@
 package velocorner.storage
 
+import cats.data.OptionT
 import com.orientechnologies.orient.core.command.OCommandResultListener
 import com.orientechnologies.orient.core.config.OGlobalConfiguration
 import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig, OrientDBConfigBuilder}
@@ -20,13 +21,7 @@ import scala.util.Try
 import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
-import scalaz._
-import scalaz.syntax.functor._
-import scalaz.std.list._
-import scalaz.syntax.std.option._
-import scalaz.syntax.std.boolean._
-import scalaz.std.scalaFuture._
-import scalaz.syntax.traverse.ToTraverseOps
+import cats.implicits._
 import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
@@ -44,9 +39,9 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   @volatile var server: Option[OrientDB] = None
   @volatile var pool: Option[ODatabasePool] = None
-  private val dbUser = url.isDefined ? "root" | "admin"
+  private val dbUser = url.map(_ => "root").getOrElse("admin")
   private val dbUrl = url.map("remote:" + _).getOrElse("memory:")
-  private val dbType = url.isDefined ? ODatabaseType.PLOCAL | ODatabaseType.MEMORY
+  private val dbType = url.map(_ => ODatabaseType.PLOCAL).getOrElse(ODatabaseType.MEMORY)
 
   private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
@@ -69,7 +64,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     activities
       .toList
-      .traverseU(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id",
+      .traverse(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id",
         Map("id" -> a.id))
       )
       .void
@@ -135,7 +130,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
       forecast
         .toList
-        .traverseU(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
+        .traverse(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
         .void
     }
 
@@ -197,7 +192,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         activityName = activity.name,
         activityTime = activity.start_date
       )
-      result.run
+      result.value
     }
 
     private def maxOf(athleteId: Long, activityType: String, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
@@ -214,7 +209,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         activityName = activity.name,
         activityTime = activity.start_date
       )
-      result.run
+      result.value
     }
 
     override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_speed", _.average_speed.map(_.toDouble))
