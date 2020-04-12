@@ -235,8 +235,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def initialize(): Unit = {
     val config = OrientDBConfig
       .builder()
-      .addConfig(OGlobalConfiguration.DB_POOL_MIN, 4)
-      .addConfig(OGlobalConfiguration.DB_POOL_MAX, 20)
+      .addConfig(OGlobalConfiguration.DB_POOL_MIN, 2)
+      .addConfig(OGlobalConfiguration.DB_POOL_MAX, 10)
       .build()
     val orientDb: OrientDB = new OrientDB(dbUrl, dbUser, dbPassword, config)
     orientDb.createIfNotExists(DATABASE_NAME, dbType)
