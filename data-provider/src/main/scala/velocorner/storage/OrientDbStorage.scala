@@ -1,9 +1,8 @@
 package velocorner.storage
 
-import cats.data.OptionT
 import com.orientechnologies.orient.core.command.OCommandResultListener
 import com.orientechnologies.orient.core.config.OGlobalConfiguration
-import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig, OrientDBConfigBuilder}
+import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig}
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
@@ -21,11 +20,13 @@ import scala.util.Try
 import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
-import cats.implicits._
 import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.jdk.CollectionConverters._
+
+import cats.implicits._
+import cats.data.OptionT
 
 /**
   * Created by levi on 14.11.16.
@@ -115,14 +116,13 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
 
   // clubs
-  override def store(club: Club): Future[Unit] = {
-    upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = :id", Map("id" -> club.id))
+  override def getClubStorage: ClubStorage = clubStorage
+  private lazy val clubStorage = new ClubStorage {
+    override def store(club: Club): Future[Unit] = upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = :id", Map("id" -> club.id))
+    override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
   }
 
-  override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
-
-
-  lazy val weatherStorage = new WeatherStorage {
+  private lazy val weatherStorage = new WeatherStorage {
     override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
       queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
     }

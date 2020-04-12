@@ -38,8 +38,11 @@ trait Storage[M[_]] {
   def getAthlete(id: Long): M[Option[Athlete]]
 
   // clubs
-  def store(club: Club): M[Unit]
-  def getClub(id: Long): M[Option[Club]]
+  def getClubStorage: ClubStorage
+  trait ClubStorage {
+    def store(club: Club): M[Unit]
+    def getClub(id: Long): M[Option[Club]]
+  }
 
   def getWeatherStorage: WeatherStorage
   trait WeatherStorage {

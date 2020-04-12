@@ -8,7 +8,6 @@ import org.scalatestplus.play.PlaySpec
 import play.api.cache.SyncCacheApi
 import play.api.http.Status
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
-import velocorner.model.strava.Club
 import velocorner.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -29,7 +28,6 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
       val storageMock = mock[Storage[Future]]
 
       when(settingsMock.getStorage).thenReturn(storageMock)
-      when(storageMock.getClub(Club.Velocorner)).thenReturn(Future(None))
       when(storageMock.getAthlete(anyLong())).thenReturn(Future(None))
 
       val controller = new ActivityController(settingsMock, cacheApiMock, stubControllerComponents())

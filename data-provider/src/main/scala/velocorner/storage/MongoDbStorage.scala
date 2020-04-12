@@ -93,9 +93,12 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
 
   // clubs
-  override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
 
-  override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
+  override def getClubStorage: ClubStorage = clubStorage
+  private lazy val clubStorage = new ClubStorage {
+    override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
+    override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
+  }
 
   // weather
   override def getWeatherStorage: WeatherStorage = ???
