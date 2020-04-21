@@ -15,7 +15,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll {
   override def beforeAll(): Unit = {
     psql = EmbeddedPostgres.start()
     val port = psql.getPort
-    storage = new PsqlDbStorage(s"jdbc:postgresql://localhost:$port/velocorner", "test")
+    storage = new PsqlDbStorage(dbUrl = s"jdbc:postgresql://localhost:$port/postgres", dbUser = "postgres", dbPassword = "test")
     storage.initialize()
   }
 

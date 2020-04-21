@@ -5,15 +5,14 @@ import doobie.util.transactor.Transactor
 import org.flywaydb.core.Flyway
 
 import scala.concurrent.{ExecutionContext, Future}
-import PsqlDbStorage._
 import velocorner.api.{Activity, Athlete}
 import velocorner.model.Account
 
-class PsqlDbStorage(dbUrl: String, dbPassword: String) extends Storage[Future] {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] {
 
   implicit val cs = IO.contextShift(ExecutionContext.global)
   lazy val xa = Transactor.fromDriverManager[IO](
-    driver = "org.postgresql.Driver", url = dbUrl, user = USER, pass = dbPassword
+    driver = "org.postgresql.Driver", url = dbUrl, user = dbUser, pass = dbPassword
   )
 
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = ???
@@ -43,14 +42,10 @@ class PsqlDbStorage(dbUrl: String, dbPassword: String) extends Storage[Future] {
   override def getAchievementStorage: AchievementStorage = ???
 
   override def initialize(): Unit = {
-    val flyway = Flyway.configure().locations("db/migration").dataSource(dbUrl, USER, dbPassword).load()
+    val flyway = Flyway.configure().locations("db/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
   }
 
   override def destroy(): Unit = {
   }
-}
-
-object PsqlDbStorage {
-  val USER = "velocorner"
 }
