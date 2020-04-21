@@ -9,9 +9,10 @@ import play.sbt.PlayImport._
 
 val projectScalaVersion = "2.13.1"
 
-val catsVersion = "2.0.0"
+val catsVersion = "2.1.1"
 val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
+val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.30"
 val mongoDbVersion = "2.8.0"
 val rethinkDbVersion = "2.4.0"
@@ -24,6 +25,12 @@ val mockitoVersion = "3.3.3"
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
 val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
+val psqlDbClient = Seq(
+  "org.tpolecat" %% "doobie-core" % doobieVersion,
+  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+  "org.flywaydb" % "flyway-core" % "6.3.3",
+  "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % "test"
+)
 
 val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
 // for more than 22 parameter case classes
@@ -54,7 +61,7 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
 )
-def storage = Seq(rethinkClient, mongoClient, orientDbClient)
+def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
