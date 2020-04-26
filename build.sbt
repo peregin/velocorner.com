@@ -69,7 +69,7 @@ def cats = Seq(
 )
 
 def zio = Seq(
-  "dev.zio" %% "zio" % zioVersion,
+  "dev.zio" %% "zio" % zioVersion
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
