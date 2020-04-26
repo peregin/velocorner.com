@@ -8,9 +8,10 @@ import contrib.docker.DockerModule
 
 val projectScalaVersion = "2.13.1"
 
-val catsVersion = "2.0.0"
+val catsVersion = "2.1.1"
 val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
+val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.30"
 val mongoDbVersion = "2.8.0"
 val rethinkDbVersion = "2.4.0"
@@ -40,7 +41,10 @@ val zio = Agg(
 val storage = Agg(
   ivy"com.rethinkdb:rethinkdb-driver::$rethinkDbVersion",
   ivy"org.mongodb.scala::mongo-scala-driver::$mongoDbVersion",
-  ivy"com.orientechnologies:orientdb-client::$orientDbVersion"
+  ivy"com.orientechnologies:orientdb-client::$orientDbVersion",
+  ivy"org.tpolecat::doobie-core::$doobieVersion",
+  ivy"org.tpolecat::doobie-postgres::$doobieVersion",
+  ivy"org.flywaydb:flyway-core::6.3.3"
 )
 
 trait CommonModule extends SbtModule {
@@ -77,7 +81,8 @@ object dataProvider extends CommonModule {
     def testFrameworks = Seq("org.specs2.runner.Specs2Framework")
     def ivyDeps = Agg(
       ivy"org.specs2::specs2-core::$specsVersion",
-      ivy"org.specs2::specs2-junit::$specsVersion"
+      ivy"org.specs2::specs2-junit::$specsVersion",
+      ivy"com.opentable.components:otj-pg-embedded::0.13.3"
     )
   }
 }
