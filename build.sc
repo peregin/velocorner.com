@@ -111,6 +111,7 @@ object webApp extends CommonModule with PlayModule {
   def millSourcePath = velocorner.millSourcePath / "web-app"
   override def playVersion= T{"2.8.0"}
   override def twirlVersion= T{"1.4.0"}
+  def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
   object test extends PlayTests
 }
 
