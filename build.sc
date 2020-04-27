@@ -46,6 +46,15 @@ val storage = Agg(
   ivy"org.tpolecat::doobie-postgres::$doobieVersion",
   ivy"org.flywaydb:flyway-core::6.3.3"
 )
+val elastic4s = Agg(
+  ivy"com.sksamuel.elastic4s::elastic4s-core::$elasticVersion",
+  ivy"com.sksamuel.elastic4s::elastic4s-client-esjava::$elasticVersion",
+  ivy"com.sksamuel.elastic4s::elastic4s-http-streams::$elasticVersion"
+)
+val specs2 = Agg(
+  ivy"org.specs2::specs2-core::$specsVersion",
+  ivy"org.specs2::specs2-junit::$specsVersion"
+)
 
 trait CommonModule extends SbtModule {
   def scalaVersion = T{projectScalaVersion}
@@ -65,9 +74,22 @@ trait CommonModule extends SbtModule {
   )
 }
 
+object dataSearch extends CommonModule {
+  def millSourcePath = velocorner.millSourcePath / "data-search"
+  def ivyDeps = T {elastic4s}
+  def moduleDeps = Seq(dataProvider)
+  object test extends Tests {
+    def testFrameworks = Seq("org.specs2.runner.Specs2Framework")
+    def ivyDeps = T {Agg(
+      ivy"com.sksamuel.elastic4s::elastic4s-testkit::$elasticVersion"
+    )}
+    def moduleDeps = super.moduleDeps ++ Seq(dataProvider.test)
+  }
+}
+
 object dataProvider extends CommonModule {
   def millSourcePath = velocorner.millSourcePath / "data-provider"
-  def ivyDeps = T{Agg(
+  def ivyDeps = T {Agg(
     ivy"com.typesafe.play::play-json::$playJsonVersion",
     ivy"com.typesafe.play::play-json-joda::$playJsonVersion",
     ivy"com.typesafe.play::play-ahc-ws-standalone::$playWsVersion",
@@ -79,11 +101,9 @@ object dataProvider extends CommonModule {
   )
   object test extends Tests {
     def testFrameworks = Seq("org.specs2.runner.Specs2Framework")
-    def ivyDeps = Agg(
-      ivy"org.specs2::specs2-core::$specsVersion",
-      ivy"org.specs2::specs2-junit::$specsVersion",
+    def ivyDeps = T {Agg(
       ivy"com.opentable.components:otj-pg-embedded::0.13.3"
-    )
+    ) ++ specs2}
   }
 }
 
@@ -91,9 +111,10 @@ object webApp extends CommonModule with PlayModule {
   def millSourcePath = velocorner.millSourcePath / "web-app"
   override def playVersion= T{"2.8.0"}
   override def twirlVersion= T{"1.4.0"}
+  object test extends PlayTests
 }
 
 object velocorner extends CommonModule {
   def millSourcePath = os.pwd
-  def moduleDeps = Seq(dataProvider, webApp)
+  def moduleDeps = Seq(dataSearch, dataProvider, webApp)
 }
