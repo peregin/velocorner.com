@@ -14,12 +14,12 @@ val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.30"
-val mongoDbVersion = "2.8.0"
+val mongoDbVersion = "2.9.0"
 val rethinkDbVersion = "2.4.0"
-val elasticVersion = "7.6.0"
+val elasticVersion = "7.6.1"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
-val specsVersion = "4.9.3"
+val specsVersion = "4.9.4"
 val mockitoVersion = "3.3.3"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
@@ -28,7 +28,7 @@ val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersi
 val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "6.3.3",
+  "org.flywaydb" % "flyway-core" % "6.4.0",
   "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % "test"
 )
 
@@ -65,7 +65,7 @@ def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "mouse" % "0.24"
+  "org.typelevel" %% "mouse" % "0.25"
 )
 
 def zio = Seq(
@@ -174,7 +174,7 @@ lazy val gatewayService = (project in file("gateway-service") withId "gateway-se
   .settings(
     buildSettings,
     name := "gateway-service",
-    scalaVersion := "2.12.10", // because finagle is not fully supported in 2.13
+    scalaVersion := "2.12.11", // because finagle is not fully supported in 2.13
     libraryDependencies += "com.twitter" %% "finatra-http" % "20.1.0",
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
   )
