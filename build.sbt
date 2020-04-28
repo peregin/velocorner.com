@@ -7,7 +7,7 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
-val projectScalaVersion = "2.13.1"
+val projectScalaVersion = "2.13.2"
 
 val catsVersion = "2.1.1"
 val zioVersion = "1.0.0-RC18-2"

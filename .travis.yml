@@ -4,7 +4,7 @@ if: type = push AND commit_message !~ /Setting/
 language: scala
 
 scala:
-  - 2.13.1
+  - 2.13.2
 
 jdk:
   - openjdk9
