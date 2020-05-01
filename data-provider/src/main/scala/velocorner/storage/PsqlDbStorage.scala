@@ -10,8 +10,8 @@ import velocorner.model.Account
 
 class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] {
 
-  implicit val cs = IO.contextShift(ExecutionContext.global)
-  lazy val xa = Transactor.fromDriverManager[IO](
+  private implicit val cs = IO.contextShift(ExecutionContext.global)
+  private lazy val xa = Transactor.fromDriverManager[IO](
     driver = "org.postgresql.Driver", url = dbUrl, user = dbUser, pass = dbPassword
   )
 
@@ -42,7 +42,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def getAchievementStorage: AchievementStorage = ???
 
   override def initialize(): Unit = {
-    val flyway = Flyway.configure().locations("db/migration").dataSource(dbUrl, dbUser, dbPassword).load()
+    val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
   }
 

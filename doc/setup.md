@@ -22,8 +22,8 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local
 # on vm
 ./machine.sh local ssh
 # select the proper instance
-DB_ID=$(docker ps -aqf "name=velocorner_database")
-DB_PWD=???
+export DB_ID=$(docker ps -aqf "name=velocorner_database")
+export DB_PWD=???
 sudo docker cp velocorner.export.gz $DB_ID:/root
 sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
 ```
