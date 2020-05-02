@@ -32,7 +32,7 @@ object StatusInfo {
       applicationMode = applicationMode.toString,
       buildTime = velocorner.build.BuildInfo.buildTime,
       appVersion = velocorner.build.BuildInfo.version,
-      javaVersion = sys.props.get("java.runtime.version").getOrElse("n/a"),
+      javaVersion = s"${sys.props.get("java.runtime.name").getOrElse("n/a")} ${sys.props.get("java.runtime.version").getOrElse("n/a")}",
       scalaVersion = velocorner.build.BuildInfo.scalaVersion,
       sbtVersion = velocorner.build.BuildInfo.sbtVersion,
       catsVersion = velocorner.build.BuildInfo.catsVersion,
