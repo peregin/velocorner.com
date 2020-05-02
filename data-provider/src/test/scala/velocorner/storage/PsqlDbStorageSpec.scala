@@ -12,7 +12,6 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
   sequential
   stopOnFail
 
-  // can't be executed as root - travis ci need a non root user
   @volatile var psql: EmbeddedPostgres = _
   @volatile var psqlStorage: PsqlDbStorage = _
 
@@ -28,9 +27,16 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
   override def beforeAll(): Unit = {
     logger.info("starting embedded psql...")
     try {
+      // without won't work from IntelliJ/Mac, injects different locale
+      val locale = sys.props.get("os.name") match {
+        case Some(mac) if mac.toLowerCase.contains("mac") => "en_US"
+        case Some(win) if win.toLowerCase.contains("win") => "en_us"
+        case _ => "en_US.utf8"
+      }
+      // postgres can't be executed as root
       psql = EmbeddedPostgres.builder()
-        .setLocaleConfig("locale", "en_US.utf8") // without won't work from IntelliJ, injects different locale
-        .setLocaleConfig("lc-messages", "en_US.utf8")
+        .setLocaleConfig("locale", locale)
+        .setLocaleConfig("lc-messages", locale)
         .start()
       val port = psql.getPort
       psqlStorage = new PsqlDbStorage(dbUrl = s"jdbc:postgresql://localhost:$port/postgres", dbUser = "postgres", dbPassword = "test")

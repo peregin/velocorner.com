@@ -1,6 +1,16 @@
 # avoid infinite loop when travis is publishing a new version with sbt-release plugin
 if: type = push AND commit_message !~ /Setting/
 
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+
+before_cache:
+  # tricks to avoid unnecessary cache updates
+  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt -name "*.lock" -delete
+
 language: scala
 
 scala:
