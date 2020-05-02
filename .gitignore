@@ -8,8 +8,8 @@
 .gradle
 .cache
 /data-analytics/.idea/
+!.idea/runConfigurations/
 .idea/*
-!.idea/runConfigurations
 .idea_modules/*
 .bloop
 .metals
@@ -32,7 +32,6 @@ orientdb_data*/
 localhost/
 /elastic/
 spark-warehouse/
-node_modules
 /.pnp
 .pnp.js
 /build
@@ -42,16 +41,12 @@ yarn-error.log*
 /public
 # deployment, travis
 /script/deploy_key
-
 # web-front
 node_modules
 package-lock.json
 .pnp
-.pnp.js
 # testing
 coverage
-# production
-web-app//build
 # misc
 .env.local
 .env.development.local
