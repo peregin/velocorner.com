@@ -65,6 +65,9 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
 
+
+  override def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]] = Monad[M].pure(Iterable.empty)
+
   private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] =
     result.map(JSONObject.toJSONString).map(JsonIo.read[Activity])
 

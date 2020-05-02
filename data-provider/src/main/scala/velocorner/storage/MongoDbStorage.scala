@@ -38,7 +38,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
         .updateOne(equal("id", a.id), json, new UpdateOptions()
         .upsert(true))
         .toFuture()
-    }.map(_ => ())
+    }.void
   }
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
@@ -68,11 +68,14 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
+
+  override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = Future(Iterable.empty)
+
   private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)
     coll
       .updateOne(equal(idName, id), json, new UpdateOptions()
-        .upsert(true)).toFuture().map(_ => ())
+        .upsert(true)).toFuture().void
   }
 
   private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = {

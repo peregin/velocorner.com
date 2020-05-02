@@ -7,7 +7,7 @@ import org.specs2.specification.BeforeAfterAll
 import velocorner.api.Activity
 import velocorner.util.JsonIo
 
-class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragment with LazyLogging {
+class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragments with LazyLogging {
 
   sequential
   stopOnFail
@@ -17,9 +17,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
 
   "pqsl storage" should {
 
-    val activityFixtures = JsonIo
-      .readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
-      .filter(_.`type` == "Ride")
+    val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
     addFragmentsBlock(activityFragments(psqlStorage, activityFixtures))
   }

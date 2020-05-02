@@ -5,12 +5,10 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.api.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
-import velocorner.model.DailyProgress
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class OrientDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragment {
+class OrientDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragments {
 
   sequential
   stopOnFail
@@ -20,58 +18,9 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Activit
   "orientdb storage" should {
 
     val zhLocation = "Zurich,CH"
-    val activityFixtures = JsonIo
-      .readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
-      .filter(_.`type` == "Ride")
+    val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
     addFragmentsBlock(activityFragments(orientDbStorage, activityFixtures))
-
-    "add items as idempotent operation" in {
-      awaitOn(orientDbStorage.storeActivity(activityFixtures))
-      awaitOn(orientDbStorage.listRecentActivities(432909, 50)) must haveSize(24)
-
-      // is it idempotent
-      awaitOn(orientDbStorage.storeActivity(activityFixtures))
-      awaitOn(orientDbStorage.listRecentActivities(432909, 50)) must haveSize(24)
-    }
-
-    "retrieve recent activities for an athlete" in {
-      awaitOn(orientDbStorage.listRecentActivities(432909, 50)) must haveSize(24)
-    }
-
-    "retrieve daily stats for an athlete" in {
-      awaitOn(
-        orientDbStorage.listAllActivities(432909, "Ride").map(DailyProgress.from)
-      ) must haveSize(15)
-      awaitOn(orientDbStorage.listAllActivities(432909, "Hike")) must beEmpty
-    }
-
-    "suggest activities for a specific athlete" in {
-      val activities = awaitOn(orientDbStorage.suggestActivities("Stallikon", 432909, 10))
-      activities must haveSize(3)
-    }
-
-    "suggest no activities when athletes are not specified" in {
-      val activities = awaitOn(orientDbStorage.suggestActivities("Stallikon", 1, 10))
-      activities must beEmpty
-    }
-
-    "suggest activities case insensitive" in {
-      val activities = awaitOn(orientDbStorage.suggestActivities("stAlLIkon", 432909, 10))
-      activities must haveSize(3)
-    }
-
-    "retrieve existing activity" in {
-      awaitOn(orientDbStorage.getActivity(244993130)).map(_.id) should beSome(244993130L)
-    }
-
-    "return empty on non existent activity" in {
-      awaitOn(orientDbStorage.getActivity(111)) must beNone
-    }
-
-    "list activity types" in {
-      awaitOn(orientDbStorage.listActivityTypes(432909)) should containTheSameElementsAs(Seq("Ride"))
-    }
 
     "select achievements" in {
       awaitOn(orientDbStorage.getAchievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)

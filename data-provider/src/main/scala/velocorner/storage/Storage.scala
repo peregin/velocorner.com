@@ -18,16 +18,13 @@ trait Storage[M[_]] {
 
   // insert all activities, new ones are added, previous ones are overridden
   def storeActivity(activities: Iterable[Activity]): M[Unit]
-
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): M[Iterable[String]]
-
   def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]]
-
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
-
   def getActivity(id: Long): M[Option[Activity]]
+  def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]]
 
   // accounts
   def store(account: Account): M[Unit]
