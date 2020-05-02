@@ -3,11 +3,13 @@ if: type = push AND commit_message !~ /Setting/
 
 cache:
   directories:
+    - $HOME/.cache/coursier
     - $HOME/.ivy2/cache
     - $HOME/.sbt/boot
 
+# tricks to avoid unnecessary cache updates
 before_cache:
-  # tricks to avoid unnecessary cache updates
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
   - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
   - find $HOME/.sbt -name "*.lock" -delete
 

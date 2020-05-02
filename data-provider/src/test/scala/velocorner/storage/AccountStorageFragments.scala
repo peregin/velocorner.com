@@ -25,7 +25,11 @@ trait AccountStorageFragments extends Specification with AwaitSupport {
       awaitOn(accountStorage.store(account))
       awaitOn(accountStorage.store(account))
       val maybeAccount = awaitOn(accountStorage.getAccount(1))
-      maybeAccount === account.some
+      val dbAccount = maybeAccount.getOrElse(sys.error("not found"))
+      // without lastUpdate - has different timezone locally and on TravisCI
+      dbAccount.copy(lastUpdate = None) === account.copy(lastUpdate = None)
+      // check the local date part only
+      dbAccount.lastUpdate.getOrElse(sys.error("not found")).toLocalDate === account.lastUpdate.getOrElse(sys.error("not found")).toLocalDate
     }
   }
 }
