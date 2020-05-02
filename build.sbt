@@ -14,9 +14,10 @@ val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.30"
-val mongoDbVersion = "2.9.0"
+val mongoDbVersion = "4.0.2"
 val rethinkDbVersion = "2.4.0"
 val elasticVersion = "7.6.1"
+val finatraVersion = "20.4.1"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
 val specsVersion = "4.9.4"
@@ -175,7 +176,7 @@ lazy val gatewayService = (project in file("gateway-service") withId "gateway-se
     buildSettings,
     name := "gateway-service",
     scalaVersion := "2.12.11", // because finagle is not fully supported in 2.13
-    libraryDependencies += "com.twitter" %% "finatra-http" % "20.1.0",
+    libraryDependencies += "com.twitter" %% "finatra-http" % finatraVersion,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
   )
 
