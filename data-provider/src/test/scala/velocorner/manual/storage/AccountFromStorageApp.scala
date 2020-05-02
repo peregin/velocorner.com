@@ -11,7 +11,7 @@ object AccountFromStorageApp extends zio.App with LazyLogging with MyMacConfig {
     val res = for {
       storage <- ZIO.effect(Storage.create("or"))
       _ <- ZIO.effect(storage.initialize())
-      account <- ZIO.fromFuture(_ => storage.getAccount(432909))
+      account <- ZIO.fromFuture(_ => storage.getAccountStorage.getAccount(432909))
       _ <- ZIO.effect(logger.info(s"ACCOUNT ${account.toString}"))
       _ <- ZIO.effect(storage.destroy())
     } yield ()

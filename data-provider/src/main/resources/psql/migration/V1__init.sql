@@ -7,3 +7,8 @@ create table activity(
 
 create index activity_type_idx on activity(type);
 create index activity_athlete_id_idx on activity(athlete_id);
+
+create table account(
+    athlete_id bigint primary key,
+    data jsonb not null
+);

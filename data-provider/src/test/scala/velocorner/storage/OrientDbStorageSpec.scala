@@ -3,12 +3,13 @@ package velocorner.storage
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
+import org.specs2.specification.core.Fragments
 import velocorner.api.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
 
-class OrientDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragments {
+class OrientDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragments with AccountStorageFragments {
 
   sequential
   stopOnFail
@@ -21,6 +22,8 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll with Activit
     val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
     addFragmentsBlock(activityFragments(orientDbStorage, activityFixtures))
+
+    addFragmentsBlock(accountFragments(orientDbStorage))
 
     "select achievements" in {
       awaitOn(orientDbStorage.getAchievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)

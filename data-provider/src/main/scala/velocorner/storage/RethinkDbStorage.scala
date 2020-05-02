@@ -86,14 +86,18 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   }
 
   // accounts
-  override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
-
-  override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
+  override def getAccountStorage: AccountStorage = accountStorage
+  lazy val accountStorage = new AccountStorage {
+    override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
+    override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
+  }
 
   // athletes
-  override def store(athlete: Athlete): M[Unit] = upsert(JsonIo.write(athlete), ATHLETE_TABLE)
-
-  override def getAthlete(id: Long): M[Option[Athlete]] = Monad[M].map(getJsonById(id, ATHLETE_TABLE))(_.map(JsonIo.read[Athlete]))
+  override def getAthleteStorage: AthleteStorage = athleteStorage
+  lazy val athleteStorage = new AthleteStorage {
+    override def store(athlete: Athlete): M[Unit] = upsert(JsonIo.write(athlete), ATHLETE_TABLE)
+    override def getAthlete(id: Long): M[Option[Athlete]] = Monad[M].map(getJsonById(id, ATHLETE_TABLE))(_.map(JsonIo.read[Athlete]))
+  }
 
   // clubs
   override def getClubStorage: ClubStorage = clubStorage

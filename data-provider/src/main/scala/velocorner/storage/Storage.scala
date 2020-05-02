@@ -8,7 +8,6 @@ import velocorner.api.{Achievement, Activity, Athlete}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
-import scala.language.higherKinds
 
 import cats.instances.future._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -27,12 +26,18 @@ trait Storage[M[_]] {
   def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]]
 
   // accounts
-  def store(account: Account): M[Unit]
-  def getAccount(id: Long): M[Option[Account]]
+  def getAccountStorage: AccountStorage
+  trait AccountStorage {
+    def store(account: Account): M[Unit]
+    def getAccount(id: Long): M[Option[Account]]
+  }
 
   // athletes
-  def store(athlete: Athlete): M[Unit]
-  def getAthlete(id: Long): M[Option[Athlete]]
+  def getAthleteStorage: AthleteStorage
+  trait AthleteStorage {
+    def store(athlete: Athlete): M[Unit]
+    def getAthlete(id: Long): M[Option[Athlete]]
+  }
 
   // clubs
   def getClubStorage: ClubStorage

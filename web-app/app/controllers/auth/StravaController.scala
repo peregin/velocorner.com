@@ -93,7 +93,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def logout = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
-    val res = Redirect(controllers.routes.WebController.index)
+    val res = Redirect(controllers.routes.WebController.index())
     tokenAccessor.delete(res)
   }
 
@@ -109,7 +109,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   // the original API distinguishes between provider and consumer users
   def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
-    val token = accessToken.toString
+    val token = accessToken
     logger.info(s"retrieve provider user for $token")
     val athleteF = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
     athleteF.map{ athlete =>
@@ -122,8 +122,8 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     logger.info(s"oauth link succeeded with token[${resp.token}]")
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.map{providerUser =>
-      connectivity.getStorage.store(providerUser)
-      Redirect(controllers.routes.WebController.index)
+      connectivity.getStorage.getAccountStorage.store(providerUser)
+      Redirect(controllers.routes.WebController.index())
     }
   }
 
@@ -132,9 +132,10 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     val storage = connectivity.getStorage
     for {
       providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
-      consumerUserOpt <- storage.getAccount(providerUser.athleteId)
+      accountStorage = storage.getAccountStorage
+      consumerUserOpt <- accountStorage.getAccount(providerUser.athleteId)
       freshUser = consumerUserOpt.map(cu => providerUser.copy(lastUpdate = cu.lastUpdate)).getOrElse(providerUser)
-      _ <- storage.store(freshUser)
+      _ <- accountStorage.store(freshUser)
       result <- gotoLoginSucceeded(providerUser.athleteId)
     } yield result
   }

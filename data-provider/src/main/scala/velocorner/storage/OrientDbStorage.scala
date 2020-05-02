@@ -101,18 +101,22 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
 
   // accounts
-  override def store(account: Account): Future[Unit] = {
-    upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
+  override def getAccountStorage: AccountStorage = accountStorage
+  lazy val accountStorage = new AccountStorage {
+    override def store(account: Account): Future[Unit] = {
+      upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
+    }
+    override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
   }
-
-  override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
 
   // athletes
-  override def store(athlete: Athlete): Future[Unit] = {
-    upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = :id", Map("id" -> athlete.id))
+  override def getAthleteStorage: AthleteStorage = athleteStorage
+  lazy val athleteStorage = new AthleteStorage {
+    override def store(athlete: Athlete): Future[Unit] = {
+      upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = :id", Map("id" -> athlete.id))
+    }
+    override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
   }
-
-  override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
 
   // clubs
   override def getClubStorage: ClubStorage = clubStorage
@@ -164,7 +168,6 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   // various achievements
   lazy val achievementStorage = new AchievementStorage {
-
     object ResDoubleRow {
       implicit val doubleRowFormat = Format[ResDoubleRow](Json.reads[ResDoubleRow], Json.writes[ResDoubleRow])
     }

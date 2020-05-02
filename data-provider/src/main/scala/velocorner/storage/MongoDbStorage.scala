@@ -86,17 +86,20 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   }
 
   // accounts
-  override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
-
-  override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
+  override def getAccountStorage: AccountStorage = accountStorage
+  lazy val accountStorage = new AccountStorage {
+    override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
+    override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
+  }
 
   // athletes
-  override def store(athlete: Athlete): Future[Unit] = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
-
-  override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
+  override def getAthleteStorage: AthleteStorage = athleteStorage
+  lazy val athleteStorage = new AthleteStorage {
+    override def store(athlete: Athlete): Future[Unit] = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
+    override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
+  }
 
   // clubs
-
   override def getClubStorage: ClubStorage = clubStorage
   private lazy val clubStorage = new ClubStorage {
     override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), club.id, CLUB_TABLE)

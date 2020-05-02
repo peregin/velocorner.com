@@ -1,7 +1,6 @@
 package controllers
 
 import akka.util.Timeout
-import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -10,7 +9,6 @@ import play.api.http.Status
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
 import velocorner.storage.Storage
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -28,7 +26,6 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
       val storageMock = mock[Storage[Future]]
 
       when(settingsMock.getStorage).thenReturn(storageMock)
-      when(storageMock.getAthlete(anyLong())).thenReturn(Future(None))
 
       val controller = new ActivityController(settingsMock, cacheApiMock, stubControllerComponents())
       val result = controller.ytdProfile("Ride").apply(FakeRequest())

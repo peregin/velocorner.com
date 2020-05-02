@@ -33,7 +33,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
     }
 
   private implicit val activityMeta: Meta[Activity] = playJsonMeta[Activity]
-
+  private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
     def toFuture: Future[T] = cio.transact(xa).unsafeToFuture()
@@ -78,14 +78,24 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
     sql"""select data from activity where id = $id
          |""".stripMargin.query[Activity].option.toFuture
 
-  override def store(account: Account): Future[Unit] = ???
 
-  override def getAccount(id: Long): Future[Option[Account]] = ???
+  override def getAccountStorage: AccountStorage = accountStorage
+  lazy val accountStorage = new AccountStorage {
+    override def store(a: Account): Future[Unit] =
+      sql"""insert into account (athlete_id, data)
+           |values(${a.athleteId}, $a) on conflict(athlete_id)
+           |do update set data = $a
+           |""".stripMargin.update.run.void.toFuture
 
-  override def store(athlete: Athlete): Future[Unit] = ???
+  override def getAccount(id: Long): Future[Option[Account]] =
+    sql"""select data from account where athlete_id = $id
+         |""".stripMargin.query[Account].option.toFuture
+    }
 
-  override def getAthlete(id: Long): Future[Option[Athlete]] = ???
+  // not used anymore
+  override def getAthleteStorage: AthleteStorage = ???
 
+  // not used anymore
   override def getClubStorage: ClubStorage = ???
 
   override def getWeatherStorage: WeatherStorage = ???

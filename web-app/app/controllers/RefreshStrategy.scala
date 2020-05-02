@@ -39,7 +39,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
       maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
       _ = log.info(s"most recent activity retrieved is from $maybeMostRecent")
       _ <- storage.storeActivity(newActivities)
-      _ <- storage.store(account.copy(lastUpdate = Some(now)))
+      _ <- storage.getAccountStorage.store(account.copy(lastUpdate = Some(now)))
     } yield newActivities
 
     activitiesF <| (_.onComplete(_ => feed.close()))

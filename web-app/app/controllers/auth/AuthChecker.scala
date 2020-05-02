@@ -39,7 +39,7 @@ trait AuthChecker extends WebMetrics {
   // auth conf
   def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
     logger.info(s"resolving user[$id]")
-    connectivity.getStorage.getAccount(id)
+    connectivity.getStorage.getAccountStorage.getAccount(id)
   }
 
   class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
