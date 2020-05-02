@@ -6,7 +6,7 @@ import velocorner.api.Activity
 import velocorner.util.JsonIo
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll
-  with ActivityStorageFragments with AccountStorageFragments with WeatherStorageFragments {
+  with ActivityStorageFragments with AccountStorageFragments with WeatherStorageFragments with AttributeStorageFragments {
 
   sequential
   stopOnFail
@@ -23,27 +23,17 @@ class OrientDbStorageSpec extends Specification with BeforeAfterAll
 
     addFragmentsBlock(weatherFragments(orientDbStorage))
 
+    addFragmentsBlock(attributeFragments(orientDbStorage))
+
     "select achievements" in {
-      awaitOn(orientDbStorage.getAchievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
-      awaitOn(orientDbStorage.getAchievementStorage.maxDistance(432909, "Ride")).map(_.value) should beSome(90514.3984375d)
-      awaitOn(orientDbStorage.getAchievementStorage.maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
-      awaitOn(orientDbStorage.getAchievementStorage.maxHeartRate(432909, "Ride")).map(_.value) should beNone
-      awaitOn(orientDbStorage.getAchievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
-      awaitOn(orientDbStorage.getAchievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
-      awaitOn(orientDbStorage.getAchievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
-    }
-
-    "store/lookup attributes" in {
-      val attributeStorage = orientDbStorage.getAttributeStorage
-      awaitOn(attributeStorage.getAttribute("key", "test")) must beNone
-
-      awaitOn(attributeStorage.storeAttribute("key", "test", "value"))
-      awaitOn(attributeStorage.getAttribute("key", "test")) must beSome("value")
-
-      awaitOn(attributeStorage.getAttribute("key", "test2")) must beNone
-
-      awaitOn(attributeStorage.storeAttribute("key", "test", "value2"))
-      awaitOn(attributeStorage.getAttribute("key", "test")) must beSome("value2")
+      val achievementStorage = orientDbStorage.getAchievementStorage
+      awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
+      awaitOn(achievementStorage.maxDistance(432909, "Ride")).map(_.value) should beSome(90514.3984375d)
+      awaitOn(achievementStorage.maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
+      awaitOn(achievementStorage.maxHeartRate(432909, "Ride")).map(_.value) should beNone
+      awaitOn(achievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
+      awaitOn(achievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
+      awaitOn(achievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
     }
   }
 

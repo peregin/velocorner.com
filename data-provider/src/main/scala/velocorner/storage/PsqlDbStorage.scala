@@ -83,7 +83,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
 
   override def getAccountStorage: AccountStorage = accountStorage
-  lazy val accountStorage = new AccountStorage {
+  private lazy val accountStorage = new AccountStorage {
     override def store(a: Account): Future[Unit] =
       sql"""insert into account (athlete_id, data)
            |values(${a.athleteId}, $a) on conflict(athlete_id)
@@ -102,7 +102,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def getClubStorage: ClubStorage = ???
 
   override def getWeatherStorage: WeatherStorage = weatherStorage
-  lazy val weatherStorage = new WeatherStorage {
+  private lazy val weatherStorage = new WeatherStorage {
     override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] =
       sql"""select data from weather
            |where location = $location
@@ -129,7 +129,18 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |""".stripMargin.update.run.void.toFuture
   }
 
-  override def getAttributeStorage: AttributeStorage = ???
+  override def getAttributeStorage: AttributeStorage = attributeStorage
+  private lazy val attributeStorage = new AttributeStorage {
+    override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] =
+      sql"""insert into attribute (key, type, value)
+           |values($key, ${`type`}, $value) on conflict(key, type)
+           |do update set value = $value
+           |""".stripMargin.update.run.void.toFuture
+
+    override def getAttribute(key: String, `type`: String): Future[Option[String]] =
+      sql"""select value from attribute where key = $key and type = ${`type`}
+           |""".stripMargin.query[String].option.toFuture
+  }
 
   override def getAchievementStorage: AchievementStorage = ???
 

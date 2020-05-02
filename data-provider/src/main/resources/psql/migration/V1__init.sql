@@ -27,3 +27,10 @@ create table sun(
     primary key(location, update_date)
 );
 
+create table attribute(
+    key varchar,
+    type varchar,
+    value varchar not null,
+    primary key(key, type)
+);
+

@@ -8,7 +8,7 @@ import velocorner.api.Activity
 import velocorner.util.JsonIo
 
 class PsqlDbStorageSpec extends Specification with BeforeAfterAll
-  with ActivityStorageFragments with AccountStorageFragments with WeatherStorageFragments
+  with ActivityStorageFragments with AccountStorageFragments with WeatherStorageFragments with AttributeStorageFragments
   with LazyLogging {
 
   sequential
@@ -26,12 +26,14 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
     addFragmentsBlock(accountFragments(psqlStorage))
 
     addFragmentsBlock(weatherFragments(psqlStorage))
+
+    addFragmentsBlock(attributeFragments(psqlStorage))
   }
 
   override def beforeAll(): Unit = {
     logger.info("starting embedded psql...")
     try {
-      // without won't work from IntelliJ/Mac, injects different locale
+      // without won't work from IntelliJ/Mac/Ubuntu, injects different locale
       val locale = sys.props.get("os.name") match {
         case Some(mac) if mac.toLowerCase.contains("mac") => "en_US"
         case Some(win) if win.toLowerCase.contains("win") => "en_us"
