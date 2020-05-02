@@ -76,7 +76,7 @@ object Weather {
   implicit val weatherFormat = Format[Weather](Json.reads[Weather], writes)
 }
 
-// one of the entry points, the response contains a list of Weather structures
+// one of the entry points, the response contains a list of Weather structures, also stored in database
 case class Weather(
                     dt: DateTime,
                     main: WeatherInfo,

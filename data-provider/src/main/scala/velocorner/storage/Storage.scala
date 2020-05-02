@@ -91,7 +91,7 @@ object Storage extends LazyLogging {
   def create(dbType: String, config: SecretConfig): Storage[Future] = {
     logger.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
-      case any if any.startsWith("re") => new RethinkDbStorage[Future] // import for future instances implicit
+      case any if any.startsWith("re") => new RethinkDbStorage[Future]
       case any if any.startsWith("mo") => new MongoDbStorage
       case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
       case unknown => sys.error(s"unknown storage type $unknown")

@@ -7,7 +7,9 @@ import org.specs2.specification.BeforeAfterAll
 import velocorner.api.Activity
 import velocorner.util.JsonIo
 
-class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityStorageFragments with AccountStorageFragments with LazyLogging {
+class PsqlDbStorageSpec extends Specification with BeforeAfterAll
+  with ActivityStorageFragments with AccountStorageFragments with WeatherStorageFragments
+  with LazyLogging {
 
   sequential
   stopOnFail
@@ -22,6 +24,8 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
     addFragmentsBlock(activityFragments(psqlStorage, activityFixtures))
 
     addFragmentsBlock(accountFragments(psqlStorage))
+
+    addFragmentsBlock(weatherFragments(psqlStorage))
   }
 
   override def beforeAll(): Unit = {
