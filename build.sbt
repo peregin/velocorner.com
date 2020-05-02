@@ -159,7 +159,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
-    dockerBaseImage in Docker := "java:8",
+    dockerBaseImage in Docker := "openjdk:8-jre-alpine",
     dockerUsername := Some("peregin"),
     version in Docker := "latest",
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
