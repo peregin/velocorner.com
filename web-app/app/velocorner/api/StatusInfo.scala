@@ -32,6 +32,7 @@ object StatusInfo {
       applicationMode = applicationMode.toString,
       buildTime = velocorner.build.BuildInfo.buildTime,
       appVersion = velocorner.build.BuildInfo.version,
+      javaVersion = sys.props.get("java.runtime.version").getOrElse("n/a"),
       scalaVersion = velocorner.build.BuildInfo.scalaVersion,
       sbtVersion = velocorner.build.BuildInfo.sbtVersion,
       catsVersion = velocorner.build.BuildInfo.catsVersion,
@@ -49,6 +50,7 @@ case class StatusInfo(
                        applicationMode: String,
                        buildTime: String,
                        appVersion: String,
+                       javaVersion: String, // runtime
                        scalaVersion: String,
                        sbtVersion: String,
                        catsVersion: String,

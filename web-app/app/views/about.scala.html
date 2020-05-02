@@ -47,6 +47,10 @@
                                 <div class="VC_padding8">Build Time</div>
                             </li>
                             <li class="list-group-item">
+                                <span id="status-java-version" class="badge badge-sea rounded-2x">X</span>
+                                <div class="VC_padding8">Java Runtime Version</div>
+                            </li>
+                            <li class="list-group-item">
                                 <span id="status-scala-version" class="badge badge-yellow rounded-2x">X</span>
                                 <div class="VC_padding8">Scala Version</div>
                             </li>
@@ -106,6 +110,7 @@
                 $('#status-version').html(data.appVersion)
                 $('#status-build-time').html(data.buildTime)
                 $('#status-build-time-main').html(data.buildTime)
+                $('#status-java-version').html(data.javaVersion)
                 $('#status-scala-version').html(data.scalaVersion)
                 $('#status-scalaz-version').html(data.scalazVersion)
                 $('#status-elastic-version').html(data.elasticVersion)
