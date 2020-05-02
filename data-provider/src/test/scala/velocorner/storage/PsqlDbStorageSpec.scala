@@ -12,6 +12,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
   sequential
   stopOnFail
 
+  // can't be executed as root - travis ci need a non root user
   @volatile var psql: EmbeddedPostgres = _
   @volatile var psqlStorage: PsqlDbStorage = _
 

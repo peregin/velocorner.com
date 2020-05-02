@@ -1,8 +1,6 @@
 # avoid infinite loop when travis is publishing a new version with sbt-release plugin
 if: type = push AND commit_message !~ /Setting/
 
-dist: bionic
-
 language: scala
 
 scala:
@@ -27,6 +25,7 @@ before_install:
   - eval "$(ssh-agent -s)"
   - chmod 600 script/deploy_key
   - ssh-add script/deploy_key
+  - echo "current user is $USER"
 
 script:
   - sbt clean coverage test coverageReport
