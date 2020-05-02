@@ -29,8 +29,8 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll with ActivityS
     logger.info("starting embedded psql...")
     try {
       psql = EmbeddedPostgres.builder()
-        .setLocaleConfig("locale", "en_US") // without won't work from IntelliJ, injects different locale
-        .setLocaleConfig("lc-messages", "en_US")
+        .setLocaleConfig("locale", "en_US.utf8") // without won't work from IntelliJ, injects different locale
+        .setLocaleConfig("lc-messages", "en_US.utf8")
         .start()
       val port = psql.getPort
       psqlStorage = new PsqlDbStorage(dbUrl = s"jdbc:postgresql://localhost:$port/postgres", dbUser = "postgres", dbPassword = "test")
