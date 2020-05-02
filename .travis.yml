@@ -1,5 +1,7 @@
-# avoid infinite loop when travis is publishing a new version
+# avoid infinite loop when travis is publishing a new version with sbt-release plugin
 if: type = push AND commit_message !~ /Setting/
+
+dist: bionic
 
 language: scala
 
