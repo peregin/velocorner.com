@@ -1,7 +1,10 @@
 package velocorner.storage
 
+import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
+import doobie.util.fragment.Fragment
+import play.api.libs.json.Reads
 import velocorner.api.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.{Account, KeyValue}
@@ -10,27 +13,33 @@ import velocorner.util.Metrics
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+//for kestrel combinator
+import mouse.all._
+
 class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends LazyLogging with Metrics {
 
   def doIt(): Future[Unit] = {
     for {
-      accounts <- timedFuture("query accounts")(orient.queryFor[Account](s"SELECT FROM ${OrientDbStorage.ACCOUNT_CLASS}"))
-      _ = logger.info(s"found ${accounts.size} accounts in orient")
-      psqlAccounts <- psql.toFuture(sql"select count(*) from account".query[Int].unique)
-      _ = logger.info(s"found $psqlAccounts accounts in psql")
+      _ <- migrateTable[Account](OrientDbStorage.ACCOUNT_CLASS, "account", e => e.traverse(psql.getAccountStorage.store).void)
 
-      forecasts <- timedFuture("query forecasts")(orient.queryFor[WeatherForecast](s"SELECT FROM ${OrientDbStorage.WEATHER_CLASS}"))
-      _ = logger.info(s"found ${forecasts.size} forecasts")
+      _ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeWeather(e))
 
-      suns <- timedFuture("query suns")(orient.queryFor[SunriseSunset](s"SELECT FROM ${OrientDbStorage.SUN_CLASS}"))
-      _ = logger.info(s"found ${suns.size} suns")
+      _ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeSunriseSunset).void)
 
-      attributes <- timedFuture("query attributes")(orient.queryFor[KeyValue](s"SELECT FROM ${OrientDbStorage.ATTRIBUTE_CLASS}"))
-      _ = logger.info(s"found ${attributes.size} attributes")
+      _ <- migrateTable[KeyValue](OrientDbStorage.ATTRIBUTE_CLASS, "attribute", e => e.traverse(a => psql.getAttributeStorage.storeAttribute(a.key, a.`type`, a.value)).void)
 
-      activities <- timedFuture("query activities")(orient.queryFor[Activity](s"SELECT FROM ${OrientDbStorage.ACTIVITY_CLASS}"))
-      _ = logger.info(s"found ${activities.size} activities")
+      _ <- migrateTable[Activity](OrientDbStorage.ACTIVITY_CLASS, "activity", e => psql.storeActivity(e))
     } yield ()
   }
+
+  protected def migrateTable[T: Reads](orientTable: String, psqlTable: String, psqlStore: List[T] => Future[Unit]): Future[Unit] = for {
+    entries <- timedFuture(s"query $orientTable")(orient.queryFor[T](s"SELECT FROM $orientTable"))
+    _ = logger.info(s"found ${entries.size} $orientTable in orient")
+    psqlEntriesSize <- psql.toFuture((fr"select count(*) from " ++ Fragment.const(psqlTable)).query[Int].unique)
+    _ = logger.info(s"found $psqlEntriesSize $psqlTable in psql")
+    _ <- if (psqlEntriesSize > 0) Future.unit <| (_ => logger.info(s"no migration for $psqlTable"))
+    else timedFuture(s"store $psqlTable")(psqlStore(entries.toList)) <| (_ => logger.info(s"migrated $orientTable!"))
+    _ = logger.info("-----------------------------------------------")
+  } yield ()
 
 }

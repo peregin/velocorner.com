@@ -15,4 +15,5 @@
     <logger name="play.shaded.ahc.org.asynchttpclient" level="INFO"/>
     <logger name="play.shaded.ahc.io.netty" level="INFO"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG"/>
 </configuration>

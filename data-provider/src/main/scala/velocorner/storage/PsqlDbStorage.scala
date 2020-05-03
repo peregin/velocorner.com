@@ -1,39 +1,42 @@
 package velocorner.storage
 
-import cats.effect.{Blocker, IO, Resource}
+import cats.data.OptionT
+import cats.effect.IO
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
-import doobie.{ConnectionIO, _}
-import doobie.hikari.HikariTransactor
 import doobie.implicits._
+import doobie.{ConnectionIO, _}
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.Activity
+import velocorner.api.{Achievement, Activity}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.Account
 import velocorner.util.JsonIo
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
-//  private lazy val transactor = Transactor.fromDriverManager[IO](
-//    driver = "org.postgresql.Driver",
-//    url = dbUrl, user = dbUser, pass = dbPassword
-//  )
-  private lazy val transactor: Resource[IO, HikariTransactor[IO]] =
-    for {
-      ce <- ExecutionContexts.fixedThreadPool[IO](5) // our connect EC
-      be <- Blocker[IO] // our blocking EC
-      xa <- HikariTransactor.newHikariTransactor[IO](
-        driverClassName = "org.postgresql.Driver",
-        url = dbUrl, user = dbUser, pass = dbPassword,
-        ce, // await connection here
-        be // execute JDBC operations here
-      )
-    } yield xa
+  private lazy val transactor = Transactor.fromDriverManager[IO](
+    driver = "org.postgresql.Driver", url = dbUrl, user = dbUser, pass = dbPassword
+  )
+
+  //  private val config = new HikariConfig()
+  //  config.setDriverClassName("org.postgresql.Driver")
+  //  config.setJdbcUrl(dbUrl)
+  //  config.setUsername(dbUser)
+  //  config.setPassword(dbPassword)
+  //  config.setAutoCommit(true)
+  //  config.validate() // for printout
+  //  private lazy val connectEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5))
+  //  private lazy val transactor1 = Transactor.fromDataSource[IO](
+  //    dataSource = new HikariDataSource(config),
+  //    connectEC = connectEC,
+  //    blocker = Blocker.liftExecutionContext(connectEC)
+  //  )
 
 
   def playJsonMeta[A: Reads : Writes : Manifest]: Meta[A] = Meta
@@ -53,7 +56,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   private implicit val sunMeta: Meta[SunriseSunset] = playJsonMeta[SunriseSunset]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
-    def toFuture: Future[T] = transactor.use(cio.transact(_)).unsafeToFuture()
+    def toFuture: Future[T] = cio.transact(transactor).unsafeToFuture()
   }
 
   // to access it from the migration
@@ -162,17 +165,55 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |""".stripMargin.query[String].option.toFuture
   }
 
-  override def getAchievementStorage: AchievementStorage = ???
+  override def getAchievementStorage: AchievementStorage = achievementStorage
+
+  private lazy val achievementStorage = new AchievementStorage {
+
+    def metricOf(field: String, athleteId: Long, activityType: String, mapperFunc: Activity => Option[Double], max: Boolean = true): Future[Option[Achievement]] = {
+      implicit val han = LogHandler.jdkLogHandler
+      val clause = s" and data->>'$field' is not null order by data->>'$field' ${if (max) "desc" else "asc"} limit 1"
+      val fragment = fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
+        Fragment.const(clause)
+      val result = for {
+        activity <- OptionT(fragment.query[Activity].option.toFuture)
+        metric <- OptionT(Future(mapperFunc(activity)))
+      } yield Achievement(
+        value = metric,
+        activityId = activity.id,
+        activityName = activity.name,
+        activityTime = activity.start_date
+      )
+      result.value
+    }
+
+    override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_speed", athleteId, activity, _.average_speed.map(_.toDouble))
+
+    override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("distance", athleteId, activity, _.distance.toDouble.some)
+
+    override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("total_elevation_gain", athleteId, activity, _.total_elevation_gain.toDouble.some)
+
+    override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("max_heartrate", athleteId, activity, _.max_heartrate.map(_.toDouble))
+
+    override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_heartrate", athleteId, activity, _.average_heartrate.map(_.toDouble))
+
+    override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_watts", athleteId, activity, _.average_watts.map(_.toDouble))
+
+    override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble), max = false)
+
+    override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble))
+  }
 
   override def initialize(): Unit = {
     val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
-    transactor.use{ xa: HikariTransactor[IO] =>
-      for {
-        _ <- sql"select 1".query[Int].unique.transact(xa)
-        _ = logger.info(s"transactor ${xa.strategy}")
-      } yield ()
-    }.unsafeRunSync
   }
 
   override def destroy(): Unit = {

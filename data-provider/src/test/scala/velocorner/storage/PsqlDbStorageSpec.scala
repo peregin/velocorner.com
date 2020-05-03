@@ -28,6 +28,18 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
     addFragmentsBlock(weatherFragments(psqlStorage))
 
     addFragmentsBlock(attributeFragments(psqlStorage))
+
+    // TODO: check amx and min queries
+    "select achievements" in {
+      val achievementStorage = psqlStorage.getAchievementStorage
+      awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
+      awaitOn(achievementStorage.maxDistance(432909, "Ride")).map(_.value) should beSome(90514.3984375d)
+      //awaitOn(achievementStorage.maxElevation(432909, "Ride")).map(_.value) should beSome(1077d)
+      awaitOn(achievementStorage.maxHeartRate(432909, "Ride")).map(_.value) should beNone
+      awaitOn(achievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
+      awaitOn(achievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
+      //awaitOn(achievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
+    }
   }
 
   override def beforeAll(): Unit = {
