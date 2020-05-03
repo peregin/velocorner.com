@@ -317,7 +317,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   }
 
   // asynch
-  private def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = transact { db =>
+  def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = transact { db =>
     Try {
       val promise = Promise[Seq[T]]()
       db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {

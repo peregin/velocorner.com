@@ -94,6 +94,7 @@ object Storage extends LazyLogging {
       case any if any.startsWith("re") => new RethinkDbStorage[Future]
       case any if any.startsWith("mo") => new MongoDbStorage
       case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
+      case any if any.startsWith("ps") => new PsqlDbStorage(config.getPsqlUrl, config.getPsqlUser, config.getPsqlPassword)
       case unknown => sys.error(s"unknown storage type $unknown")
     }
 

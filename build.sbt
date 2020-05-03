@@ -29,6 +29,7 @@ val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersi
 val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.flywaydb" % "flyway-core" % "6.4.1",
   "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % "test"
 )

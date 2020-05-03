@@ -36,6 +36,9 @@ case class SecretConfig(config: Config) {
   def getStorageType: Option[String] = config.getOptAs[String]("storage")
   def getOrientDbUrl: Option[String] = config.getOptAs("orientdb.url")
   def getOrientDbPassword: String = config.getString("orientdb.password")
+  def getPsqlUrl: String = config.getString("psql.url")
+  def getPsqlUser: String = config.getString("psql.user")
+  def getPsqlPassword: String = config.getString("psql.password")
 
   def getProxyHost: Option[String] = config.getOptAs[String]("proxy.host")
   def getProxyPort: Option[Int] = config.getOptAs[Int]("proxy.port")

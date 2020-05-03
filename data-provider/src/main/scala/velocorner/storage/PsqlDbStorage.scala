@@ -1,10 +1,11 @@
 package velocorner.storage
 
-import cats.effect.IO
+import cats.effect.{Blocker, IO, Resource}
 import cats.implicits._
-import doobie._
+import com.typesafe.scalalogging.LazyLogging
+import doobie.{ConnectionIO, _}
+import doobie.hikari.HikariTransactor
 import doobie.implicits._
-import doobie.util.transactor.Transactor
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
@@ -15,12 +16,25 @@ import velocorner.util.JsonIo
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
-  private lazy val xa = Transactor.fromDriverManager[IO](
-    driver = "org.postgresql.Driver", url = dbUrl, user = dbUser, pass = dbPassword
-  )
+//  private lazy val transactor = Transactor.fromDriverManager[IO](
+//    driver = "org.postgresql.Driver",
+//    url = dbUrl, user = dbUser, pass = dbPassword
+//  )
+  private lazy val transactor: Resource[IO, HikariTransactor[IO]] =
+    for {
+      ce <- ExecutionContexts.fixedThreadPool[IO](5) // our connect EC
+      be <- Blocker[IO] // our blocking EC
+      xa <- HikariTransactor.newHikariTransactor[IO](
+        driverClassName = "org.postgresql.Driver",
+        url = dbUrl, user = dbUser, pass = dbPassword,
+        ce, // await connection here
+        be // execute JDBC operations here
+      )
+    } yield xa
+
 
   def playJsonMeta[A: Reads : Writes : Manifest]: Meta[A] = Meta
     .Advanced.other[PGobject]("jsonb")
@@ -39,8 +53,11 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   private implicit val sunMeta: Meta[SunriseSunset] = playJsonMeta[SunriseSunset]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
-    def toFuture: Future[T] = cio.transact(xa).unsafeToFuture()
+    def toFuture: Future[T] = transactor.use(cio.transact(_)).unsafeToFuture()
   }
+
+  // to access it from the migration
+  def toFuture[T](cio: ConnectionIO[T]): Future[T] = cio.toFuture
 
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] =
     activities.map { a =>
@@ -83,6 +100,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
 
   override def getAccountStorage: AccountStorage = accountStorage
+
   private lazy val accountStorage = new AccountStorage {
     override def store(a: Account): Future[Unit] =
       sql"""insert into account (athlete_id, data)
@@ -90,10 +108,10 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |do update set data = $a
            |""".stripMargin.update.run.void.toFuture
 
-  override def getAccount(id: Long): Future[Option[Account]] =
-    sql"""select data from account where athlete_id = $id
-         |""".stripMargin.query[Account].option.toFuture
-    }
+    override def getAccount(id: Long): Future[Option[Account]] =
+      sql"""select data from account where athlete_id = $id
+           |""".stripMargin.query[Account].option.toFuture
+  }
 
   // not used anymore
   override def getAthleteStorage: AthleteStorage = ???
@@ -102,6 +120,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def getClubStorage: ClubStorage = ???
 
   override def getWeatherStorage: WeatherStorage = weatherStorage
+
   private lazy val weatherStorage = new WeatherStorage {
     override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] =
       sql"""select data from weather
@@ -130,6 +149,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   }
 
   override def getAttributeStorage: AttributeStorage = attributeStorage
+
   private lazy val attributeStorage = new AttributeStorage {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] =
       sql"""insert into attribute (key, type, value)
@@ -147,6 +167,12 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def initialize(): Unit = {
     val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
+    transactor.use{ xa: HikariTransactor[IO] =>
+      for {
+        _ <- sql"select 1".query[Int].unique.transact(xa)
+        _ = logger.info(s"transactor ${xa.strategy}")
+      } yield ()
+    }.unsafeRunSync
   }
 
   override def destroy(): Unit = {

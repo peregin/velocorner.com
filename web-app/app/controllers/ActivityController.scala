@@ -43,7 +43,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         _ = logger.debug(s"found ${activities.size} activities for ${account.athleteId}")
-        ytdActivities = activities.filter(_.start_date_local.toLocalDate.getYear == currentYear)
+        ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.getYear == currentYear)
         ytdCommutes = ytdActivities.filter(_.commute.getOrElse(false))
       } yield ProfileStatistics.from(now, yearlyProgress(ytdActivities), yearlyProgress(ytdCommutes))
 

@@ -12,7 +12,7 @@ object DailyProgress {
       activity.average_speed.getOrElse(0f).toDouble,
       activity.total_elevation_gain, activity.total_elevation_gain
     )
-    DailyProgress(activity.start_date_local.toLocalDate, progress)
+    DailyProgress(activity.getStartDateLocal.toLocalDate, progress)
   }
 
   def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {

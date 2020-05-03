@@ -100,7 +100,7 @@ case class Activity(
   total_elevation_gain: Float,
   `type`: String,
   start_date: DateTime,
-  start_date_local: DateTime,
+  start_date_local: Option[DateTime],
   average_speed: Option[Float],
   max_speed: Option[Float],
   average_cadence: Option[Float],
@@ -116,4 +116,7 @@ case class Activity(
   elev_high: Option[Float],
   elev_low: Option[Float],
   pr_count: Option[Int]
-)
+) {
+  // for some devices the local_start_date is not set
+  def getStartDateLocal(): DateTime = start_date_local.getOrElse(start_date)
+}

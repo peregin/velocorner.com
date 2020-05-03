@@ -1,0 +1,27 @@
+{
+  "@type": "d",
+  "@rid": "#11:4200",
+  "@version": 1,
+  "@class": "Activity",
+  "upload_id": 138177658,
+  "distance": 18865.599609375,
+  "athlete": {
+    "id": 2126153,
+    "resource_state": 1,
+    "type": "Athlete"
+  },
+  "resource_state": 2,
+  "start_date_local": "2014-03-30T13:51:36Z",
+  "external_id": "43UD5136.fit",
+  "max_speed": 11.199999809265137,
+  "total_elevation_gain": 76,
+  "type": "Ride",
+  "average_watts": 158.5,
+  "name": "Jade Bike",
+  "elapsed_time": 2391,
+  "id": 126199417,
+  "average_speed": 7.889999866485596,
+  "start_date": "2014-03-30T02:51:36Z",
+  "moving_time": 2391,
+  "@fieldTypes": "distance=d,max_speed=d,average_watts=d,id=l,average_speed=d"
+}
