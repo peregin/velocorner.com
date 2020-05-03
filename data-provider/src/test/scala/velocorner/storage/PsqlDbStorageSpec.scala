@@ -39,7 +39,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(achievementStorage.maxAveragePower(432909, "Ride")).map(_.value) should beSome(233.89999389648438d)
       awaitOn(achievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
       awaitOn(achievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
-    }.pendingUntilFixed("max and min")
+    }
   }
 
   override def beforeAll(): Unit = {
