@@ -1,27 +1,16 @@
 package velocorner.manual.storage
 
-import com.opentable.db.postgres.embedded.EmbeddedPostgres
 import velocorner.manual.{AwaitSupport, MyMacConfig}
-import velocorner.storage.{MigrateOrient2Psql, OrientDbStorage, PsqlDbStorage, Storage}
+import velocorner.storage.{EmbeddedPsqlStorage, MigrateOrient2Psql, OrientDbStorage, PsqlDbStorage, Storage}
 
 object MigrateOrient2PsqlApp extends App with AwaitSupport with MyMacConfig {
 
-  local2local()
-  //local2embedded()
+  //local2local()
+  local2embedded()
 
   def local2embedded(): Unit = {
-    // without won't work from IntelliJ/Mac/Ubuntu, injects different locale
-    val locale = sys.props.get("os.name") match {
-      case Some(mac) if mac.toLowerCase.contains("mac") => "en_US"
-      case Some(win) if win.toLowerCase.contains("win") => "en_us"
-      case _ => "en_US.utf8"
-    }
-    // postgres can't be executed as root
-    val embeddedPotgres = EmbeddedPostgres.builder()
-      .setLocaleConfig("locale", locale)
-      .setLocaleConfig("lc-messages", locale)
-      .start()
-    val port = embeddedPotgres.getPort
+    val embeddedPostgres = EmbeddedPsqlStorage()
+    val port = embeddedPostgres.getPort
     val postgres = new PsqlDbStorage(dbUrl = s"jdbc:postgresql://localhost:$port/postgres", dbUser = "postgres", dbPassword = "test")
     postgres.initialize()
     val orient = Storage.create("or").asInstanceOf[OrientDbStorage]
@@ -32,7 +21,7 @@ object MigrateOrient2PsqlApp extends App with AwaitSupport with MyMacConfig {
 
     orient.destroy()
     postgres.destroy()
-    embeddedPotgres.close()
+    embeddedPostgres.close()
   }
 
   def local2local(): Unit = {
