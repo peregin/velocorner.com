@@ -1,9 +1,12 @@
 package velocorner.storage
 
+import java.util.concurrent.Executors
+
 import cats.data.OptionT
-import cats.effect.IO
+import cats.effect.{Blocker, IO}
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
+import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
 import org.flywaydb.core.Flyway
@@ -17,27 +20,35 @@ import velocorner.util.JsonIo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
+// for kestrel combinator
+import mouse.all._
+
 class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
-  private lazy val transactor = Transactor.fromDriverManager[IO](
-    driver = "org.postgresql.Driver", url = dbUrl, user = dbUser, pass = dbPassword
+
+  private val config = new HikariConfig()
+  config.setDriverClassName("org.postgresql.Driver")
+  config.setJdbcUrl(dbUrl)
+  config.setUsername(dbUser)
+  config.setPassword(dbPassword)
+  config.setMaximumPoolSize(5)
+  config.setMinimumIdle(2)
+  config.setPoolName("hikari-db-pool")
+  config.setAutoCommit(true)
+  config.validate() // for printout
+
+  private lazy val connectEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5, (r: Runnable) =>
+    new Thread(r, "connect ec") <| (_.setDaemon(true))
+  ))
+  private lazy val blockingEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5, (r: Runnable) =>
+    new Thread(r, "blocking ec") <| (_.setDaemon(true))
+  ))
+  private lazy val transactor = Transactor.fromDataSource[IO](
+    dataSource = new HikariDataSource(config),
+    connectEC = connectEC,
+    blocker = Blocker.liftExecutionContext(blockingEC)
   )
-
-  //  private val config = new HikariConfig()
-  //  config.setDriverClassName("org.postgresql.Driver")
-  //  config.setJdbcUrl(dbUrl)
-  //  config.setUsername(dbUser)
-  //  config.setPassword(dbPassword)
-  //  config.setAutoCommit(true)
-  //  config.validate() // for printout
-  //  private lazy val connectEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5))
-  //  private lazy val transactor1 = Transactor.fromDataSource[IO](
-  //    dataSource = new HikariDataSource(config),
-  //    connectEC = connectEC,
-  //    blocker = Blocker.liftExecutionContext(connectEC)
-  //  )
-
 
   def playJsonMeta[A: Reads : Writes : Manifest]: Meta[A] = Meta
     .Advanced.other[PGobject]("jsonb")
