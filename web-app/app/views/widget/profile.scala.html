@@ -120,8 +120,8 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
     function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
+        let field = $(entryName)
         if (entry) {
-            let field = $(entryName)
             field.html((entry.value*multiplier).toFixed(decimalPlaces)+' '+unitName)
             field.prop('title', entry.activityName+' at '+moment(entry.activityTime).format('DD MMM, YYYY, ddd HH:mm A'));
             field.prop('href', 'http://www.strava.com/activities/'+entry.activityId);
@@ -169,16 +169,16 @@
             url: "@urlAchievements/" + activityType,
             timeout: 20000,
             success: function(data) {
-                //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h')
-                showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, 'km/h')
-                showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, 'km')
-                showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, 'm')
-                //showEntry(data.maxPower, '#achievement-max-power', 1, 0, 'W')
-                showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W')
-                showEntry(data.maxHeartRate, '#achievement-max-hr', 1, 0, 'Bps')
-                showEntry(data.maxAverageHeartRate, '#achievement-max-avg-hr', 1, 0, 'Bps')
-                showEntry(data.minAverageTemperature, '#achievement-min-avg-temp', 1, 0, 'C')
-                showEntry(data.maxAverageTemperature, '#achievement-max-avg-temp', 1, 0, 'C')
+                //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h');
+                showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, 'km/h');
+                showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, 'km');
+                showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, 'm');
+                //showEntry(data.maxPower, '#achievement-max-power', 1, 0, 'W');
+                showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W');
+                showEntry(data.maxHeartRate, '#achievement-max-hr', 1, 0, 'Bps');
+                showEntry(data.maxAverageHeartRate, '#achievement-max-avg-hr', 1, 0, 'Bps');
+                showEntry(data.minAverageTemperature, '#achievement-min-avg-temp', 1, 0, 'C');
+                showEntry(data.maxAverageTemperature, '#achievement-max-avg-temp', 1, 0, 'C');
            }
         });
     }
