@@ -15,7 +15,8 @@ sbt -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf -Dlog.mode=pa
 for f in *.jpg; do cwebp $f -o "${f%.*}".webp; echo "converted $f file..."; done
 ```
 
-## Import local database
+## Local database
+### OrientDb Import
 ```shell script
 # from host to virtualbox vm
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i machine/local/.vagrant/machines/velocorner.local/virtualbox/private_key ~/Downloads/velocorner.export.gz vagrant@192.168.0.11:
@@ -26,6 +27,12 @@ export DB_ID=$(docker ps -aqf "name=velocorner_database")
 export DB_PWD=???
 sudo docker cp velocorner.export.gz $DB_ID:/root
 sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
+```
+### Psql Export
+```shell script
+DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
+DATETIME="`date '+%Y%m%d%H%M'`"
+docker exec -i d6064415c063 pg_dump -U velocorner -d velocorner -c | gzip > psql-${DATETIME}.sql.gz
 ```
 
 # Distribution
