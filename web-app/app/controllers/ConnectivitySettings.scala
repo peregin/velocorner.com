@@ -17,7 +17,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   val secretConfig = SecretConfig(configuration.underlying)
 
   private val logger = Logger.of(this.getClass)
-  private val storage = Storage.create("or", secretConfig)
+  private val storage = Storage.create("ps", secretConfig)
   storage.initialize
 
   logger.info("ready...")

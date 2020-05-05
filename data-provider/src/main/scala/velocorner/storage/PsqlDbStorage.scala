@@ -225,6 +225,17 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def initialize(): Unit = {
     val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
+
+    // migrate data from OrientDB
+    val orient = Storage.create("or").asInstanceOf[OrientDbStorage]
+    orient.initialize()
+
+    val migration = new MigrateOrient2Psql(orient, this)
+    import scala.concurrent.duration._
+    import scala.language.postfixOps
+    scala.concurrent.Await.result(migration.doIt(), 5 minutes)
+
+    orient.destroy()
   }
 
   override def destroy(): Unit = {
