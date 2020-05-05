@@ -181,7 +181,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   private lazy val achievementStorage = new AchievementStorage {
 
     def metricOf(field: String, athleteId: Long, activityType: String, mapperFunc: Activity => Option[Double], max: Boolean = true): Future[Option[Achievement]] = {
-      implicit val han = LogHandler.jdkLogHandler
+      //implicit val han = LogHandler.jdkLogHandler
       val clause = s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc" else "asc"} limit 1"
       val fragment = fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
         Fragment.const(clause)
