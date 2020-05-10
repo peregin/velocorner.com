@@ -1,0 +1,65 @@
+@(chartId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+
+<div id="@chartId" style="min-width: 260px; margin: 0 auto"></div>
+
+<script type="text/javascript">//<![CDATA[
+    var options1111 = {
+        series: [
+        {
+          name: "Series 1",
+          data: [{
+            x: 'W1',
+            y: 22
+          }, {
+            x: 'W2',
+            y: 29
+          }, {
+            x: 'W3',
+            y: 13
+          }, {
+            x: 'W4',
+            y: 32
+          }]
+        },
+        {
+          name: "Series 2",
+          data: [{
+            x: 'W1',
+            y: 43
+          }, {
+            x: 'W2',
+            y: 43
+          }, {
+            x: 'W3',
+            y: 43
+          }, {
+            x: 'W4',
+            y: 43
+          }]
+        }
+      ],
+      chart: {
+        height: 250,
+        type: 'heatmap',
+        toolbar: {
+          show: false
+        }
+      },
+      title: {
+        text: '@chartTitle',
+        align: 'center',
+      },
+      grid: {
+        padding: {
+          right: 20
+        }
+      }
+    }
+    var chart = new ApexCharts(document.querySelector("#@chartId"), options1111);
+    chart.render();
+//]]>
+
+</script>
+
+
+
