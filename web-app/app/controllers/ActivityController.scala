@@ -9,12 +9,11 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.api.{Achievements, Activity, Progress}
 import velocorner.model._
-import velocorner.storage.OrientDbStorage
+import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
 import velocorner.util.{JsonIo, Metrics}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import cats.implicits._
 import cats.data.{EitherT, OptionT}
 
@@ -64,7 +63,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
         activities <- OptionT.liftF(timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity)))
         dailyProgress = DailyProgress.from(activities)
-                          yearlyProgress = YearlyProgress.from(dailyProgress)
+        yearlyProgress = YearlyProgress.from(dailyProgress)
       } yield yearlyProgress
 
       result
@@ -158,16 +157,20 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
       logger.debug(s"suggesting for $query")
       val storage = connectivity.getStorage
-
-      val activitiesTF = for {
+      val suggestionsTF = for {
         account <- OptionT(Future(loggedIn))
-        orientDb <- OptionT(Future(
-          if (storage.isInstanceOf[OrientDbStorage]) storage.asInstanceOf[OrientDbStorage].some else none
-        ))
-        activities <- OptionT.liftF(orientDb.suggestActivities(query, account.athleteId, 10))
-      } yield activities
+        suggestions <- OptionT.liftF(
+          storage match {
+            case orientDb: OrientDbStorage => orientDb.suggestActivities(query, account.athleteId, 10)
+            case psqlDb: PsqlDbStorage => psqlDb.suggestActivities(query, account.athleteId, 10)
+            case other =>
+              logger.warn(s"$other is not supporting suggestions")
+              Future(Iterable.empty)
+          }
+        )
+      } yield suggestions
 
-      activitiesTF
+      suggestionsTF
         .getOrElse(Iterable.empty)
         .map { activities =>
           logger.debug(s"found ${activities.size} suggested activities ...")
