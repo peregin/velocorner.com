@@ -3,7 +3,7 @@
 <div id="@chartId" style="min-width: 260px; margin: 0 auto"></div>
 
 <script type="text/javascript">//<![CDATA[
-    var options1111 = {
+    var heatmapOption = {
         series: [
         {
           name: "Series 1",
@@ -55,8 +55,25 @@
         }
       }
     }
-    var chart = new ApexCharts(document.querySelector("#@chartId"), options1111);
+    var chart = new ApexCharts(document.querySelector("#@chartId"), heatmapOption);
     chart.render();
+
+    function loadHistogram(activityType) {
+        var fetchStatistics = $.ajax({
+            type: "GET",
+            url: "@restUrl/" + activityType,
+            timeout: 20000
+        });
+        fetchStatistics.done(function(histogram) {
+            console.log("got the data for @chartId");
+            chart.updateSeries([{
+                name: '2020',
+                data: histogram[0].data
+            }])
+        });
+    }
+
+    loadHistogram("Ride");
 //]]>
 
 </script>

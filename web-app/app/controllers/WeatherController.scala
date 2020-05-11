@@ -1,7 +1,6 @@
 package controllers
 
 import controllers.util.WebMetrics
-import highcharts._
 import javax.inject.Inject
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration, LocalDate}
@@ -12,10 +11,10 @@ import velocorner.util.{CountryIsoUtils, JsonIo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import cats.data.{EitherT, OptionT}
 import cats.implicits._
 import cats.instances.future.catsStdInstancesForFuture
+import model.highcharts
 
 
 class WeatherController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents)
@@ -61,7 +60,7 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
     // generate json or xml content
     type transform2Content = List[WeatherForecast] => String
     val contentGenerator: transform2Content = request.getQueryString("mode") match {
-      case Some("xml") => wt => toMeteoGramXml(wt).toString()
+      case Some("xml") => wt => highcharts.toMeteoGramXml(wt).toString()
       case _ => wt => JsonIo.write(DailyWeather.list(wt))
     }
 

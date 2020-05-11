@@ -1,7 +1,6 @@
 package controllers
 
 import controllers.auth.AuthChecker
-import highcharts._
 import javax.inject.Inject
 import org.joda.time.LocalDate
 import play.api.cache.SyncCacheApi
@@ -16,6 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import cats.implicits._
 import cats.data.{EitherT, OptionT}
+import model.{apexcharts, highcharts}
 
 
 class ActivityController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
@@ -70,9 +70,9 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         .getOrElse(Iterable.empty)
         .map { yearlyProgress =>
           action.toLowerCase match {
-            case "heatmap" => toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
-            case "distance" => toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
-            case "elevation" => toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
+            case "heatmap" => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
+            case "distance" => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
+            case "elevation" => highcharts.toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
             case other => sys.error(s"not supported action: $other")
           }
         }
@@ -82,7 +82,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // year to date aggregation
   // route mapped to /api/athletes/statistics/ytd/:action/:activity
   def ytdStatistics(action: String, activity: String): Action[AnyContent] =
-    AuthAsyncAction { implicit request =>
+    TimedAuthAsyncAction(s"query for ytd statistics in $action/$activity") { implicit request =>
 
       val now = LocalDate.now()
       val storage = connectivity.getStorage
@@ -103,13 +103,33 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         .getOrElse(Iterable.empty)
         .map { ytdProgress =>
           action.toLowerCase match {
-            case "distance" => toDistanceSeries(ytdProgress)
-            case "elevation" => toElevationSeries(ytdProgress)
+            case "distance" => highcharts.toDistanceSeries(ytdProgress)
+            case "elevation" => highcharts.toElevationSeries(ytdProgress)
             case other => sys.error(s"not supported action: $other")
           }
         }
         .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
     }
+
+  // yearly histogram based on predefined ranges
+  // route mapped to /api/athletes/statistics/histogram/:action/:activity
+  def yearlyHistogram(action: String, activity: String): Action[AnyContent] = {
+    TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity") { implicit request =>
+
+      val storage = connectivity.getStorage
+      val result = for {
+        account <- OptionT(Future(loggedIn))
+        activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
+        series = action.toLowerCase match {
+          case "distance" => apexcharts.toDistanceHeatmap(activities)
+          case "elevation" => apexcharts.toElevationHeatmap(activities)
+          case other => sys.error(s"not supported action: $other")
+        }
+      } yield series
+
+      result.getOrElse(List.empty).map(series => Json.toJson(series)).map(Ok(_))
+    }
+  }
 
   // list of achievements
   // route mapped to /api/statistics/achievements/:activity

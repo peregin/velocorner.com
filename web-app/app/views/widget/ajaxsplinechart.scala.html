@@ -94,6 +94,7 @@ $(function () {
 
     loadSplineChart("Ride");
 
+    // reload when activity type is changing
     let activityTabs = $("#activity-tabs")
     activityTabs.context.addEventListener('activityType', function(e) {
         let activityType = e.detail.activityType;

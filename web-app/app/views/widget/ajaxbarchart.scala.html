@@ -104,10 +104,11 @@ $(function () {
 
     loadBarChart("Ride");
 
+    // reload when activity type is changing
     let activityTabs = $("#activity-tabs")
     activityTabs.context.addEventListener('activityType', function(e) {
         let activityType = e.detail.activityType;
-        console.log("bart chart[@chartId] event: " + activityType);
+        console.log("bar chart[@chartId] event: " + activityType);
         loadBarChart(activityType);
     }, false);
 });

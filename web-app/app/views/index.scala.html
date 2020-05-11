@@ -27,7 +27,7 @@
             <div class="headline"><h2>Yearly Activities</h2></div>
             @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", "/api/athletes/statistics/yearly/heatmap")
             <div class="row">
-                @widget.heatmap("distanceDistribution", "Distance Distribution", "/api/athletes/statistics/ytd/distance")
+                @widget.heatmap("distanceHistogram", "Distance Distribution", "/api/athletes/statistics/histogram/distance")
             </div>
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">

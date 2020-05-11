@@ -1,3 +1,5 @@
+package model
+
 import org.joda.time.format.DateTimeFormat
 import velocorner.api.{Progress, chart}
 import velocorner.api.chart.{DailyPoint, DailySeries}
@@ -6,11 +8,11 @@ import velocorner.model.YearlyProgress
 
 import scala.xml.Elem
 
-package object highcharts {
+object highcharts {
 
-  def toDistanceSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.distance)
+  def toDistanceSeries(items: Iterable[YearlyProgress]): List[DailySeries] = toSeries(items, _.distance)
 
-  def toElevationSeries(items: Iterable[YearlyProgress]) = toSeries(items, _.elevation)
+  def toElevationSeries(items: Iterable[YearlyProgress]): List[DailySeries] = toSeries(items, _.elevation)
 
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] = {
     items.map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList))
