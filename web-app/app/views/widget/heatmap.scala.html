@@ -4,56 +4,26 @@
 
 <script type="text/javascript">//<![CDATA[
     var heatmapOption = {
-        series: [
-        {
-          name: "Series 1",
-          data: [{
-            x: 'W1',
-            y: 22
-          }, {
-            x: 'W2',
-            y: 29
-          }, {
-            x: 'W3',
-            y: 13
-          }, {
-            x: 'W4',
-            y: 32
-          }]
+        series: [],
+        chart: {
+            height: 250,
+            type: 'heatmap',
+            toolbar: {
+                show: false
+            }
         },
-        {
-          name: "Series 2",
-          data: [{
-            x: 'W1',
-            y: 43
-          }, {
-            x: 'W2',
-            y: 43
-          }, {
-            x: 'W3',
-            y: 43
-          }, {
-            x: 'W4',
-            y: 43
-          }]
+        title: {
+            text: '@chartTitle',
+            align: 'center',
+        },
+        grid: {
+            padding: {
+                right: 20
+            }
+        },
+        noData: {
+            text: 'Loading @chartTitle Data...'
         }
-      ],
-      chart: {
-        height: 250,
-        type: 'heatmap',
-        toolbar: {
-          show: false
-        }
-      },
-      title: {
-        text: '@chartTitle',
-        align: 'center',
-      },
-      grid: {
-        padding: {
-          right: 20
-        }
-      }
     }
     var chart = new ApexCharts(document.querySelector("#@chartId"), heatmapOption);
     chart.render();
@@ -66,14 +36,19 @@
         });
         fetchStatistics.done(function(histogram) {
             console.log("got the data for @chartId");
-            chart.updateSeries([{
-                name: '2020',
-                data: histogram[0].data
-            }])
+            chart.updateSeries(histogram);
         });
     }
 
     loadHistogram("Ride");
+
+    // reload when activity type is changing
+    let activityTabs = $("#activity-tabs")
+    activityTabs.context.addEventListener('activityType', function(e) {
+        let activityType = e.detail.activityType;
+        console.log("histogram chart[@chartId] event: " + activityType);
+        loadHistogram(activityType);
+    }, false);
 //]]>
 
 </script>

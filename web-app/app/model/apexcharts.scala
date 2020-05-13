@@ -6,7 +6,7 @@ import velocorner.api.heatmap.{HeatmapPoint, HeatmapSeries}
 object apexcharts {
 
   def toDistanceHeatmap(items: Iterable[Activity]): List[HeatmapSeries] =
-    toYearlyHeatmap(items, _.distance.toLong, List(
+    toYearlyHeatmap(items, _.distance.toLong / 1000, List(
       HeatmapPoint("10km", 10),
       HeatmapPoint("50km", 50),
       HeatmapPoint("100km", 100),
@@ -23,14 +23,21 @@ object apexcharts {
       HeatmapPoint("2000m", 2000)
     ))
 
-  private def toYearlyHeatmap(items: Iterable[Activity], fun: Activity => Long, ranges: List[HeatmapPoint]): List[HeatmapSeries] = {
+  // must return a list because of the swagger spec generator
+  private[model] def toYearlyHeatmap(items: Iterable[Activity], fun: Activity => Long, ranges: List[HeatmapPoint]): List[HeatmapSeries] = {
     val year2Values = items.groupMap(_.getStartDateLocal().year().get())(fun)
+    toYearlyHeatmap(year2Values, ranges)
+  }
+
+  // returns with a sorted series, sorted by year and ranges
+  private[model] def toYearlyHeatmap(year2Values: Map[Int, Iterable[Long]], ranges: List[HeatmapPoint]): List[HeatmapSeries] =
     year2Values.map{ case (year, sample) =>
       val biggest = ranges.last
       val namedPoints = sample.map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
       val heatmapPoints = namedPoints.groupBy(_.x).view.mapValues(_.size).map{ case (name, count) => HeatmapPoint(name, count)}.toList
-      HeatmapSeries(year.toString, heatmapPoints)
-    }
-  }.toList // must be a list because of the swagger spec generator
-
+      // sort by the order given in the ranges
+      val name2HeatmapPoints = heatmapPoints.groupBy(_.x)
+      val sortedHeatmapPoints = ranges.flatMap(r => name2HeatmapPoints.get(r.x)).flatten
+      HeatmapSeries(year.toString, sortedHeatmapPoints)
+    }.toList.sortBy(_.name).reverse
 }

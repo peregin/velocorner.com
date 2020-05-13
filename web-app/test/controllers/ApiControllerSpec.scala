@@ -20,7 +20,6 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
     implicit val timeout = new Timeout(10 seconds)
 
     "return system status" in {
-      val cacheApiMock = mock[SyncCacheApi]
       val settingsMock = mock[ConnectivitySettings]
 
       val controller = new ApiController(Environment.simple(), settingsMock, stubControllerComponents())
