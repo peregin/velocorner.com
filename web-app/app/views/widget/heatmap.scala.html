@@ -3,6 +3,7 @@
 <div id="@chartId" style="min-width: 260px; margin: 0 auto"></div>
 
 <script type="text/javascript">//<![CDATA[
+$(function () {
     var heatmapOption = {
         series: [],
         chart: {
@@ -23,6 +24,14 @@
         },
         noData: {
             text: 'Loading @chartTitle Data...'
+        },
+        plotOptions: {
+            heatmap: {
+                radius: 3,
+                enableShades: false,
+                shadeIntensity: 0.1,
+                useFillColorAsStroke: false
+            }
         }
     }
     var chart = new ApexCharts(document.querySelector("#@chartId"), heatmapOption);
@@ -49,8 +58,9 @@
         console.log("histogram chart[@chartId] event: " + activityType);
         loadHistogram(activityType);
     }, false);
-//]]>
 
+});
+//]]>
 </script>
 
 

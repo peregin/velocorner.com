@@ -11,7 +11,8 @@ object apexcharts {
       HeatmapPoint("50km", 50),
       HeatmapPoint("100km", 100),
       HeatmapPoint("150km", 150),
-      HeatmapPoint("200km", 200)
+      HeatmapPoint("200km", 200),
+      HeatmapPoint("250km", 250)
     ))
 
   def toElevationHeatmap(items: Iterable[Activity]): List[HeatmapSeries] =
@@ -20,7 +21,8 @@ object apexcharts {
       HeatmapPoint("600m", 600),
       HeatmapPoint("1000m", 1000),
       HeatmapPoint("1500m", 1500),
-      HeatmapPoint("2000m", 2000)
+      HeatmapPoint("2000m", 2000),
+      HeatmapPoint("3000m", 3000)
     ))
 
   // must return a list because of the swagger spec generator

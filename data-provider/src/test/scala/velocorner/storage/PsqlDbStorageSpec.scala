@@ -29,7 +29,6 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
 
     addFragmentsBlock(attributeFragments(psqlStorage))
 
-    // TODO: check max and min queries
     "select achievements" in {
       val achievementStorage = psqlStorage.getAchievementStorage
       awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) should beSome(7.932000160217285d)
