@@ -36,10 +36,12 @@ object apexcharts {
     year2Values.map{ case (year, sample) =>
       val biggest = ranges.last
       val namedPoints = sample.map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
-      val heatmapPoints = namedPoints.groupBy(_.x).view.mapValues(_.size).map{ case (name, count) => HeatmapPoint(name, count)}.toList
       // sort by the order given in the ranges
-      val name2HeatmapPoints = heatmapPoints.groupBy(_.x)
-      val sortedHeatmapPoints = ranges.flatMap(r => name2HeatmapPoints.get(r.x)).flatten
-      HeatmapSeries(year.toString, sortedHeatmapPoints)
+      val heatmapPoints = namedPoints.groupBy(_.x)
+        .view.mapValues(_.size)
+        .map{ case (name, count) => HeatmapPoint(name, count)}
+        .toList
+        .sortBy(hp => ranges.indexWhere(_.x == hp.x))
+      HeatmapSeries(year.toString, heatmapPoints)
     }.toList.sortBy(_.name).reverse
 }
