@@ -114,7 +114,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     val athleteF = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
     athleteF.map{ athlete =>
       logger.info(s"got provided athlete for user $athlete")
-      Account.from(athlete, token, None)
+      Account.from(athlete, token)
     }
   }
 

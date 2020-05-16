@@ -1,5 +1,6 @@
 package velocorner.model
 
+import cats.implicits._
 import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.api.Athlete
@@ -17,13 +18,14 @@ object Account {
 
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
-  def from(athlete: Athlete, token: String, lastUpdate: Option[DateTime]) = new Account(
+  def from(athlete: Athlete, token: String) = new Account(
     athlete.id,
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
     s"${athlete.city.mkString}, ${athlete.country.mkString}",
     athlete.profile_medium.getOrElse(""),
     accessToken = token,
-    lastUpdate
+    lastUpdate = none,
+    role = none
   )
 }
 
@@ -36,5 +38,6 @@ case class Account(
   displayLocation: String, // city, country
   avatarUrl: String,
   accessToken: String,
-  lastUpdate: Option[DateTime]
+  lastUpdate: Option[DateTime],
+  role: Option[Role.Entry]
 )

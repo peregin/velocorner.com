@@ -68,7 +68,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       val athlete = (json \ "athlete").as[Athlete]
       val token = (json \ "access_token").as[String]
       logger.info(s"got token[$token] for athlete $athlete")
-      AccessTokenResponse(token, Some(Account.from(athlete, token, None)))
+      AccessTokenResponse(token, Some(Account.from(athlete, token)))
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }

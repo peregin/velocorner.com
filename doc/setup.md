@@ -1,9 +1,3 @@
-# IP
-AHost to IP address
-MX Record velocorner.com
-CName www @
-CName dev @
-
 # How to run the web application
 The main configuration file is not part of the source code, should include the application.conf and the private data, such as Strava API token
 ```shell script
