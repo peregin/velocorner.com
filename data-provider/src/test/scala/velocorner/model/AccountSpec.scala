@@ -27,7 +27,7 @@ class AccountSpec extends Specification {
     }
 
     "serialize with role" in {
-      val account = Account(1, "name", "location", "profile", "token", lastUpdate = None, role = Role.Admin)
+      val account = Account(1, "name", "location", "profile", "token", lastUpdate = None, role = Role.Admin.some)
       val json = JsonIo.write(account)
       val ref = JsonIo.read[Account](json)
       ref.role === Role.Admin.some
