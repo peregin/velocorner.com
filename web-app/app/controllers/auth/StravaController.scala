@@ -119,7 +119,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth link succeeded with token[${resp.token}]")
+    logger.info(s"oauth LINK succeeded with token[${resp.token}]")
     val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
     providerUserFuture.map{providerUser =>
       connectivity.getStorage.getAccountStorage.store(providerUser)
@@ -127,14 +127,18 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     }
   }
 
+  // match provider and consumer users
   def onOAuthLoginSucceeded(resp: AccessTokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth login succeeded with token[${resp.token}]")
+    logger.info(s"oauth LOGIN succeeded with token[${resp.token}]")
     val storage = connectivity.getStorage
     for {
       providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
       accountStorage = storage.getAccountStorage
       consumerUserOpt <- accountStorage.getAccount(providerUser.athleteId)
-      freshUser = consumerUserOpt.map(cu => providerUser.copy(lastUpdate = cu.lastUpdate)).getOrElse(providerUser)
+      freshUser = consumerUserOpt.map{cu =>
+        // keep values from the database, like last update and role
+        providerUser.copy(lastUpdate = cu.lastUpdate, role = cu.role)
+      }.getOrElse(providerUser)
       _ <- accountStorage.store(freshUser)
       result <- gotoLoginSucceeded(providerUser.athleteId)
     } yield result

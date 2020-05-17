@@ -7,4 +7,9 @@ import velocorner.model.Account
   */
 case class PageContext(title: String, account: Option[Account],
                        isWithingsEnabled: Boolean,
-                       isWeatherEnabled: Boolean, weatherLocation: String)
+                       isWeatherEnabled: Boolean, weatherLocation: String) {
+
+  def isLoggedIn(): Boolean = account.isDefined
+
+  def isAdmin(): Boolean = account.exists(_.isAdmin())
+}

@@ -27,6 +27,7 @@ object Account {
 
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
+  // extract the user details from provider, e.g. Stava into the consumer one (velocorner.com)
   def from(athlete: Athlete, token: String) = new Account(
     athlete.id,
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
@@ -49,4 +50,7 @@ case class Account(
   accessToken: String,
   lastUpdate: Option[DateTime],
   role: Option[Role.Entry]
-)
+) {
+
+  def isAdmin(): Boolean = role.exists(_ == Role.Admin)
+}

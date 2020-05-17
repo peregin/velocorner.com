@@ -22,11 +22,16 @@ export DB_PWD=???
 sudo docker cp velocorner.export.gz $DB_ID:/root
 sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
 ```
-### Psql Export
+### Psql
+#### Export
 ```shell script
 DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
 DATETIME="`date '+%Y%m%d%H%M'`"
 docker exec -i d6064415c063 pg_dump -U velocorner -d velocorner -c | gzip > psql-${DATETIME}.sql.gz
+```
+#### ChangeAccount
+```shell script
+UPDATE account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athlete_id = 432909;
 ```
 
 # Distribution
