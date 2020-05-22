@@ -51,6 +51,10 @@ class WebController @Inject()
     Ok(views.html.about(getPageContext("About")))
   }
 
+  def admin = AuthAction { implicit request =>
+    Ok(views.html.admin(getPageContext("Admin")))
+  }
+
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
     val context = PageContext(title, maybeAccount,

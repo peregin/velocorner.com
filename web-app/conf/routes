@@ -11,6 +11,8 @@ GET     /refresh                                           controllers.WebContro
 GET     /search                                            controllers.WebController.search
 ### NoDocs ###
 GET     /about                                             controllers.WebController.about
+### NoDocs ###
+GET     /admin                                             controllers.WebController.admin
 
 # STRAVA AUTH
 ### NoDocs ###
