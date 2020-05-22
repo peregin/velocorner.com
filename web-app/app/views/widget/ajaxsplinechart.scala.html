@@ -1,4 +1,4 @@
-@(chartId: String, chartTitle: String, unit: String, restUrl: String)(implicit assets: AssetsFinder)
+@(chartId: String, chartTitle: String, unit: String, seriesToShow: Int, restUrl: String)(implicit assets: AssetsFinder)
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
@@ -64,13 +64,14 @@ $(function () {
             timeout: 20000
         });
         fetchStatistics.done(function(statisticsData) {
-            console.log("got the data for @chartId");
+            var seriesSize = statisticsData.series.length;
+            console.log("got the data for @chartId with "+seriesSize+" series");
             // remove old series
             while (chart.series.length > 0) {
                 chart.series[0].remove(true);
             }
             // add new data
-            $.each(statisticsData.series, function(key, value) {
+            $.each(statisticsData.series, function(ix, value) {
                 var series = {name:'', data:[]};
                 $.each(value, function(key, val) {
                     if (key == 'name') {
@@ -83,7 +84,11 @@ $(function () {
                         });
                     }
                 });
-                chart.addSeries(series);
+                var chartSeries = chart.addSeries(series);
+                // show only the given last years
+                if (ix < seriesSize-@seriesToShow) {
+                    chartSeries.hide();
+                }
             });
             chart.hideLoading();
             chart.chartBackground.attr({

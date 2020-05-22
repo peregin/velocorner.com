@@ -25,13 +25,13 @@
             @widget.profile(user, "/api/athletes/statistics/profile", "/api/athletes/statistics/achievements")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
-            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", "/api/athletes/statistics/yearly/heatmap")
+            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", "km", 2, "/api/athletes/statistics/yearly/heatmap")
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">
                     @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", "km", "/api/athletes/statistics/ytd/distance")
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "km", "/api/athletes/statistics/yearly/distance")
+                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", "km", 100, "/api/athletes/statistics/yearly/distance")
                 </div>
             </div>
             <div class="row">
@@ -39,7 +39,7 @@
                     @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", "meter", "/api/athletes/statistics/ytd/elevation")
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "meter", "/api/athletes/statistics/yearly/elevation")
+                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", "meter", 100, "/api/athletes/statistics/yearly/elevation")
                 </div>
             </div>
             <div class="row">
