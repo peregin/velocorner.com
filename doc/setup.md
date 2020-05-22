@@ -23,6 +23,11 @@ sudo docker cp velocorner.export.gz $DB_ID:/root
 sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
 ```
 ### Psql
+#### Import
+```shell script
+docker cp psql.export.gz ${DB_ID}:psql.export.gz
+gunzip < psql.export.gz | psql -U velocorner -d velocorner
+```
 #### Export
 ```shell script
 DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
