@@ -25,10 +25,18 @@ $(function () {
         noData: {
             text: 'Loading @chartTitle Data...'
         },
+        dataLabels: {
+            enabled: true,
+            style: {
+                colors: ['#888888']
+            }
+        },
         plotOptions: {
             heatmap: {
                 radius: 3,
-                enableShades: false
+                enableShades: true,
+                distributed: true,
+                shadeIntensity: 0.9
             }
         }
     }
