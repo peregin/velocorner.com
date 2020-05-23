@@ -35,13 +35,20 @@ object apexcharts {
   private[model] def toYearlyHeatmap(year2Values: Map[Int, Iterable[Long]], ranges: List[HeatmapPoint]): List[HeatmapSeries] =
     year2Values.map{ case (year, sample) =>
       val biggest = ranges.last
-      val namedPoints = sample.map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
-      // sort by the order given in the ranges
-      val heatmapPoints = namedPoints.groupBy(_.x)
+      val name2Count = sample
+        .map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
+        .groupBy(_.x)
         .view.mapValues(_.size)
-        .map{ case (name, count) => HeatmapPoint(name, count)}
-        .toList
-        .sortBy(hp => ranges.indexWhere(_.x == hp.x))
+      // collect in the order given in the ranges and fill missing buckets with zero
+      val heatmapPoints = ranges
+        .foldRight(List.empty[HeatmapPoint])(
+          (ref: HeatmapPoint, accu: List[HeatmapPoint]) =>
+            accu :+ name2Count
+              .get(ref.x)
+              .map(HeatmapPoint(ref.x, _))
+              .getOrElse(HeatmapPoint(ref.x, 0))
+        )
+        .reverse
       HeatmapSeries(year.toString, heatmapPoints)
     }.toList.sortBy(_.name).reverse
 }
