@@ -16,7 +16,8 @@ val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.31"
 val mongoDbVersion = "4.0.3"
 val rethinkDbVersion = "2.4.0"
-val elasticVersion = "7.6.1"
+val flywayVersion = "6.4.2"
+val elasticVersion = "7.7.0"
 val finatraVersion = "20.4.1"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.8.1"
@@ -30,7 +31,7 @@ val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % "6.4.1",
+  "org.flywaydb" % "flyway-core" % flywayVersion,
   "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % "test"
 )
 
