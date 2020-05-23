@@ -24,10 +24,22 @@ class HistogramSpec extends Specification {
       histogram must have size 2
       val first = histogram(0)
       first.name === "2020"
-      first.data should containTheSameElementsAs(List(HeatmapPoint("50km", 2), HeatmapPoint("200km", 2)))
+      first.data should containTheSameElementsAs(List(
+        HeatmapPoint("10km", 0),
+        HeatmapPoint("50km", 2),
+        HeatmapPoint("100km", 0),
+        HeatmapPoint("150km", 0),
+        HeatmapPoint("200km", 2)
+      ))
       val second = histogram(1)
       second.name === "2018"
-      second.data should containTheSameElementsAs(List(HeatmapPoint("10km", 2), HeatmapPoint("100km", 1)))
+      second.data should containTheSameElementsAs(List(
+        HeatmapPoint("10km", 2),
+        HeatmapPoint("50km", 0),
+        HeatmapPoint("100km", 1),
+        HeatmapPoint("150km", 0),
+        HeatmapPoint("200km", 0)
+      ))
     }
   }
 }
