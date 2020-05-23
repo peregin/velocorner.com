@@ -44,13 +44,15 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
-  def login(scope: String) = Action { implicit request =>
-    logger.info(s"login($scope)")
-    loggedIn(request) match {
-      case Some(account) =>
-        Redirect(controllers.routes.WebController.index())
-      case None =>
-        redirectToAuthorization(scope, request)
+  def login(scope: String) = timed("LOGIN") {
+    Action { implicit request =>
+      logger.info(s"LOGIN($scope)")
+      loggedIn(request) match {
+        case Some(account) =>
+          Redirect(controllers.routes.WebController.index())
+        case None =>
+          redirectToAuthorization(scope, request)
+      }
     }
   }
 
@@ -58,7 +60,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def authorize = Action.async { implicit request =>
     val form = Form(
       tuple(
-        "code"  -> nonEmptyText,
+        "code" -> nonEmptyText,
         "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
       )
     ).bindFromRequest
@@ -66,11 +68,13 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
     def formSuccess(v: (String, String)): Future[Result] = {
       val (code, state) = v
-      val accessTokenResponse = authenticator.retrieveAccessToken(code)
-      loggedIn(request) match {
-        case Some(account) => accessTokenResponse.flatMap(resp => onOAuthLinkSucceeded(resp, account))
-        case None => accessTokenResponse.flatMap(onOAuthLoginSucceeded)
-      }
+      for {
+        accessTokenResponse <- authenticator.retrieveAccessToken(code)
+        oauthResult <- loggedIn(request) match {
+          case Some(account) => onOAuthLinkSucceeded(accessTokenResponse, account)
+          case None => onOAuthLoginSucceeded(accessTokenResponse)
+        }
+      } yield oauthResult
     }
 
     val result = form.value match {
@@ -83,38 +87,37 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   def logout = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
-    val res = Redirect(controllers.routes.WebController.index())
-    tokenAccessor.delete(res)
+    val result = Redirect(controllers.routes.WebController.index())
+    tokenAccessor.delete(result)
   }
 
   // - utility methods below -
 
   private def redirectToAuthorization(scope: String, request: Request[AnyContent]) = {
     // TODO: propagate an applications state
-    val state =  UUID.randomUUID().toString
+    val state = UUID.randomUUID().toString
     Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
       request.session + (OAuth2StateKey -> state)
     )
   }
 
   // the original API distinguishes between provider and consumer users
-  def retrieveProviderUser(accessToken: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
-    val token = accessToken
+  def retrieveProviderUser(token: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     logger.info(s"retrieve provider user for $token")
-    val athleteF = withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
-    athleteF.map{ athlete =>
-      logger.info(s"got provided athlete for user $athlete")
-      Account.from(athlete, token)
-    }
+    for {
+      athlete <- withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
+      _ = logger.info(s"got provided athlete for user $athlete")
+    } yield Account.from(athlete, token)
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth LINK succeeded with token[${resp.token}]")
-    val providerUserFuture = resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
-    providerUserFuture.map{providerUser =>
-      connectivity.getStorage.getAccountStorage.store(providerUser)
-      Redirect(controllers.routes.WebController.index())
-    }
+    val storage = connectivity.getStorage
+    for {
+      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
+      accountStorage = storage.getAccountStorage
+      _ <- accountStorage.store(providerUser)
+    } yield Redirect(controllers.routes.WebController.index())
   }
 
   // match provider and consumer users
@@ -125,24 +128,13 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
       providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
       accountStorage = storage.getAccountStorage
       consumerUserOpt <- accountStorage.getAccount(providerUser.athleteId)
-      freshUser = consumerUserOpt.map{cu =>
+      freshUser = consumerUserOpt.map { cu =>
         // keep values from the database, like last update and role
         providerUser.copy(lastUpdate = cu.lastUpdate, role = cu.role)
       }.getOrElse(providerUser)
       _ <- accountStorage.store(freshUser)
-      result <- gotoLoginSucceeded(providerUser.athleteId)
-    } yield result
-  }
-
-  def gotoLoginSucceeded(athleteId: Long)(implicit request: RequestHeader): Future[Result] = {
-    for {
-      token <- idContainer.startNewSession(athleteId, sessionTimeoutInSeconds)
-      r     <- loginSucceeded(request)
-    } yield tokenAccessor.put(token)(r)
-  }
-
-  // auth control
-  def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] = {
-    Future.successful(Redirect(controllers.routes.WebController.index()))
+      token <- idContainer.startNewSession(providerUser.athleteId, sessionTimeoutInSeconds)
+      result <- Future.successful(Redirect(controllers.routes.WebController.index()))
+    } yield tokenAccessor.put(token)(result)
   }
 }

@@ -21,7 +21,6 @@ case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser]
 
 /**
   * Created by levi on 09/12/15.
-  * TODO: OauthAuthenticator
   */
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
