@@ -25,16 +25,16 @@ sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root
 ### Psql
 #### Import
 ```shell script
+DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
 docker cp psql.export.gz ${DB_ID}:psql.export.gz
 gunzip < psql.export.gz | psql -U velocorner -d velocorner
 ```
 #### Export
 ```shell script
-DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
-DATETIME="`date '+%Y%m%d%H%M'`"
-docker exec -i d6064415c063 pg_dump -U velocorner -d velocorner -c | gzip > psql-${DATETIME}.sql.gz
+# login to the provisioned
+backup-psql.sh
 ```
-#### ChangeAccount
+#### Change Account
 ```shell script
 UPDATE account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athlete_id = 432909;
 ```
