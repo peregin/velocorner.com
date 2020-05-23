@@ -28,6 +28,12 @@ GET     /login/withings                                    controllers.auth.With
 ### NoDocs ###
 GET     /authorize/withings                                controllers.auth.WithingsController.authorize
 
+### NoDocs ###
+GET     /ws                                                controllers.ApiController.ws
+
+### NoDocs ###
+GET     /api/admin/status                                  controllers.AdminController.status
+
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
 #  tags:
@@ -239,8 +245,6 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 ###
 GET     /api/weather/sunrise/:location                     controllers.WeatherController.sunrise(location: String)
 
-### NoDocs ###
-GET     /ws                                                controllers.ApiController.ws
 
 # DOC
 ### NoDocs ###

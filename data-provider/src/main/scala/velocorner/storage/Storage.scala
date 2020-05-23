@@ -76,6 +76,12 @@ trait Storage[M[_]] {
     def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
   }
 
+  def getAdminStorage: AdminStorage
+  trait AdminStorage {
+    def countAccounts: M[Long]
+    def countActivities: M[Long]
+  }
+
   // initializes any connections, pools, resources needed to open a storage session
   def initialize(): Unit
 

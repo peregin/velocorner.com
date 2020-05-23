@@ -115,6 +115,8 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   // various achievements
   override def getAchievementStorage: AchievementStorage = ???
 
+  override def getAdminStorage: AdminStorage = ???
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     db = Some(client.getDatabase(DB_NAME))

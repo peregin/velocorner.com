@@ -222,11 +222,21 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble))
   }
 
+  private def count(table: String): Future[Long] = {
+    val fr = fr"select count(*) from" ++ Fragment.const(table)
+    fr.query[Long].unique.toFuture
+  }
+
+  override def getAdminStorage: AdminStorage = adminStorage
+  lazy val adminStorage = new AdminStorage {
+    override def countAccounts: Future[Long] = count("account")
+    override def countActivities: Future[Long] = count("activity")
+  }
+
   override def initialize(): Unit = {
     val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
     flyway.migrate()
   }
 
-  override def destroy(): Unit = {
-  }
+  override def destroy(): Unit = {}
 }

@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="web-app" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
-        <option name="allowRunningInParallel" value="false" />
-        <option name="tasks" value="&quot;project web-app&quot; run" />
-        <option name="useSbtShell" value="false" />
-        <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -Dhttp.port=9001 -Dconfig.file=$USER_HOME$/Downloads/velo/velocorner/local.conf" />
-        <option name="workingDir" value="$PROJECT_DIR$" />
-        <method v="2" />
-    </configuration>
+  <configuration default="false" name="web-app" type="SbtRunConfiguration" factoryName="sbt Task" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="tasks" value="&quot;project web-app&quot; run" />
+    <option name="useSbtShell" value="false" />
+    <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -Dhttp.port=9001 -Dconfig.file=$PROJECT_DIR$/../../conf/velocorner/local.conf" />
+    <option name="workingDir" value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
 </component>

@@ -39,6 +39,12 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(achievementStorage.minAverageTemperature(432909, "Ride")).map(_.value) should beSome(-1d)
       awaitOn(achievementStorage.maxAverageTemperature(432909, "Ride")).map(_.value) should beSome(11d)
     }
+
+    "count entries" in {
+      val adminStorage = psqlStorage.getAdminStorage
+      awaitOn(adminStorage.countAccounts) === 1L
+      awaitOn(adminStorage.countActivities) === activityFixtures.size
+    }
   }
 
   override def beforeAll(): Unit = {

@@ -233,6 +233,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   override def getAchievementStorage: AchievementStorage = achievementStorage
 
+  override def getAdminStorage: AdminStorage = ???
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     val config = OrientDBConfig
