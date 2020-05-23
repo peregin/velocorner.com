@@ -25,7 +25,6 @@ object StravaController {
   type User = Account
   type Id = Long
   type AuthenticityToken = String
-  type SignedToken = String
   type ResultUpdater = Result => Result
 
   val OAuth2CookieKey = "velocorner.oauth2.id"
@@ -55,16 +54,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     }
   }
 
-  def link(scope: String) = Action { implicit request =>
-    logger.info(s"link($scope)")
-    loggedIn(request) match {
-      case Some(a) =>
-        redirectToAuthorization(scope, request)
-      case None =>
-        Unauthorized
-    }
-  }
-
+  // callback from OAuth2
   def authorize = Action.async { implicit request =>
     val form = Form(
       tuple(
