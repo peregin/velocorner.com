@@ -16,11 +16,11 @@ object apexcharts {
         HeatmapPoint("250km", 250)
       )
       case _ => List(
-        HeatmapPoint("10km", 3),
-        HeatmapPoint("50km", 5),
-        HeatmapPoint("100km", 10),
-        HeatmapPoint("150km", 15),
-        HeatmapPoint("200km", 20)
+        HeatmapPoint("3km", 3),
+        HeatmapPoint("5km", 5),
+        HeatmapPoint("10km", 10),
+        HeatmapPoint("15km", 15),
+        HeatmapPoint("20km", 20)
       )
     }
     toYearlyHeatmap(items, _.distance.toLong / 1000, ranges)
