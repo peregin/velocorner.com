@@ -121,7 +121,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         account <- OptionT(Future(loggedIn))
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
-          case "distance" => apexcharts.toDistanceHeatmap(activities)
+          case "distance" => apexcharts.toDistanceHeatmap(activities, activity)
           case "elevation" => apexcharts.toElevationHeatmap(activities)
           case other => sys.error(s"not supported action: $other")
         }

@@ -5,15 +5,26 @@ import velocorner.api.heatmap.{HeatmapPoint, HeatmapSeries}
 
 object apexcharts {
 
-  def toDistanceHeatmap(items: Iterable[Activity]): List[HeatmapSeries] =
-    toYearlyHeatmap(items, _.distance.toLong / 1000, List(
-      HeatmapPoint("10km", 10),
-      HeatmapPoint("50km", 50),
-      HeatmapPoint("100km", 100),
-      HeatmapPoint("150km", 150),
-      HeatmapPoint("200km", 200),
-      HeatmapPoint("250km", 250)
-    ))
+  def toDistanceHeatmap(items: Iterable[Activity], activityType: String): List[HeatmapSeries] = {
+    val ranges = activityType match {
+      case "Ride" => List(
+        HeatmapPoint("10km", 10),
+        HeatmapPoint("50km", 50),
+        HeatmapPoint("100km", 100),
+        HeatmapPoint("150km", 150),
+        HeatmapPoint("200km", 200),
+        HeatmapPoint("250km", 250)
+      )
+      case _ => List(
+        HeatmapPoint("10km", 3),
+        HeatmapPoint("50km", 5),
+        HeatmapPoint("100km", 10),
+        HeatmapPoint("150km", 15),
+        HeatmapPoint("200km", 20)
+      )
+    }
+    toYearlyHeatmap(items, _.distance.toLong / 1000, ranges)
+  }
 
   def toElevationHeatmap(items: Iterable[Activity]): List[HeatmapSeries] =
     toYearlyHeatmap(items, _.total_elevation_gain.toLong, List(
