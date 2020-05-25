@@ -25,13 +25,11 @@ sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root
 ### Psql
 #### Import
 ```shell script
-DB_ID=$(docker ps -aqf "name=velocorner_psql_database")
-docker cp psql.export.gz ${DB_ID}:psql.export.gz
-gunzip < psql.export.gz | psql -U velocorner -d velocorner
+import_psql.sh <filename>
 ```
 #### Export
 ```shell script
-# login to the provisioned
+# login to the provisioned machine
 backup-psql.sh
 ```
 #### Change Account
