@@ -7,7 +7,7 @@ import velocorner.api.Activity
 import velocorner.manual.MyMacConfig
 import velocorner.storage.{OrientDbStorage, Storage}
 import velocorner.util.JsonIo
-import zio.{Task, ZIO}
+import zio.{ExitCode, Task, URIO, ZIO}
 
 object ExportFromOrientDbApp extends zio.App with LazyLogging with MyMacConfig {
 
@@ -21,7 +21,7 @@ object ExportFromOrientDbApp extends zio.App with LazyLogging with MyMacConfig {
       }
   }
 
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val athleteId = 432909
     val res = for {
       storage <- ZIO.effect(Storage.create("or"))
@@ -33,8 +33,8 @@ object ExportFromOrientDbApp extends zio.App with LazyLogging with MyMacConfig {
     } yield ()
     res.fold(err => {
       logger.error("failed to extract data", err)
-      1
-    }, _ => 0)
+      ExitCode.failure
+    }, _ => ExitCode.success)
   }
 
 }

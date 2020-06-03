@@ -10,17 +10,17 @@ import play.sbt.PlayImport._
 val projectScalaVersion = "2.13.2"
 
 val catsVersion = "2.1.1"
-val zioVersion = "1.0.0-RC18-2"
+val zioVersion = "1.0.0-RC20"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.0.31"
-val mongoDbVersion = "4.0.3"
+val mongoDbVersion = "4.0.4"
 val rethinkDbVersion = "2.4.0"
-val flywayVersion = "6.4.2"
+val flywayVersion = "6.4.3"
 val elasticVersion = "7.7.0"
 val finatraVersion = "20.4.1"
 val playWsVersion = "2.1.2" // standalone version
-val playJsonVersion = "2.8.1"
+val playJsonVersion = "2.9.0"
 val specsVersion = "4.9.4"
 val mockitoVersion = "3.3.3"
 
@@ -43,7 +43,7 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 
 val apacheCommons = Seq(
-  "commons-io" % "commons-io" % "2.6",
+  "commons-io" % "commons-io" % "2.7",
   "commons-codec" % "commons-codec" % "1.14"
 )
 

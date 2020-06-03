@@ -3,11 +3,11 @@ package velocorner.manual.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.MyMacConfig
 import velocorner.storage.Storage
-import zio.ZIO
+import zio.{ExitCode, URIO, ZIO}
 
 object AccountFromStorageApp extends zio.App with LazyLogging with MyMacConfig {
 
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {
       storage <- ZIO.effect(Storage.create("or"))
       _ <- ZIO.effect(storage.initialize())
@@ -15,11 +15,11 @@ object AccountFromStorageApp extends zio.App with LazyLogging with MyMacConfig {
       _ <- ZIO.effect(logger.info(s"ACCOUNT ${account.toString}"))
       _ <- ZIO.effect(storage.destroy())
     } yield ()
-    res.foldM(err => {
+    res.fold(err => {
         logger.error(s"failed", err)
-        ZIO.succeed(1)
+      ExitCode.failure
       },
-      _ => ZIO.succeed(0))
+      _ => ExitCode.success)
   }
 }
 

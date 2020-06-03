@@ -3,11 +3,11 @@ package velocorner.manual
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
-import zio.ZIO
+import zio.{ExitCode, URIO, ZIO}
 
 object OpenWeatherApp extends zio.App with LazyLogging with MyMacConfig {
 
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {
       config <- ZIO.apply(SecretConfig.load())
       feed <- ZIO.succeed(new OpenWeatherFeed(config))
@@ -22,6 +22,6 @@ object OpenWeatherApp extends zio.App with LazyLogging with MyMacConfig {
       _ <- ZIO.apply(feed.close())
       _ <- ZIO.apply(HttpFeed.shutdown())
     } yield ()
-    res.fold(_ => 1, _ => 0)
+    res.fold(_ => ExitCode.failure, _ => ExitCode.success)
   }
 }
