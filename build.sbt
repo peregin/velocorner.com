@@ -10,7 +10,7 @@ import play.sbt.PlayImport._
 val projectScalaVersion = "2.13.2"
 
 val catsVersion = "2.1.1"
-val zioVersion = "1.0.0-RC20"
+val zioVersion = "1.0.0-RC21-1"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.1.0"
@@ -72,7 +72,8 @@ def cats = Seq(
 )
 
 def zio = Seq(
-  "dev.zio" %% "zio" % zioVersion
+  "dev.zio" %% "zio" % zioVersion,
+  "dev.zio" %% "zio-logging" % "0.3.2"
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(

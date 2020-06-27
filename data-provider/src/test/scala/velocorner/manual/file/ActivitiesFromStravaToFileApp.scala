@@ -5,11 +5,11 @@ import java.io.PrintWriter
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
-import velocorner.manual.{AwaitSupport, MyMacConfig}
+import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.util.JsonIo
 
 
-object ActivitiesFromStravaToFileApp extends App with AwaitSupport with LazyLogging with MyMacConfig {
+object ActivitiesFromStravaToFileApp extends App with AwaitSupport with LazyLogging with MyLocalConfig {
 
   implicit val feed = new StravaActivityFeed(None, SecretConfig.load())
   //val activities = await(feed.recentClubActivities(Club.Velocorner))

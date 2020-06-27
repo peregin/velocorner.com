@@ -4,12 +4,12 @@ import java.io.PrintWriter
 
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Activity
-import velocorner.manual.MyMacConfig
+import velocorner.manual.MyLocalConfig
 import velocorner.storage.{OrientDbStorage, Storage}
 import velocorner.util.JsonIo
 import zio.{ExitCode, Task, URIO, ZIO}
 
-object ExportFromOrientDbApp extends zio.App with LazyLogging with MyMacConfig {
+object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig {
 
   def writeJson(name: String, activities: Iterable[Activity]): Task[Unit] = {
     ZIO.effect(new PrintWriter(name))

@@ -3,7 +3,7 @@ package velocorner.search.manual
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.manual.{AwaitSupport, MyMacConfig}
+import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.search.ElasticSupport
 import velocorner.storage.{OrientDbStorage, Storage}
 
@@ -15,7 +15,7 @@ import cats.implicits._
 /**
   * Simple utility to read the activities from the storage and feed it to elastic.
   */
-object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitSupport with LazyLogging with MyMacConfig {
+object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
   val bulkSize = 20
   val athleteId = 432909

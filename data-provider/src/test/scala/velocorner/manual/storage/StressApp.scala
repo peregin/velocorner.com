@@ -4,7 +4,7 @@ import java.util.concurrent.{CountDownLatch, Executors, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Activity
-import velocorner.manual.{AggregateActivities, MyMacConfig}
+import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.storage.Storage
 import velocorner.util.{CloseableResource, JsonIo}
 
@@ -17,7 +17,7 @@ import mouse.all._
 /**
   * Created by levi on 19.11.16.
   */
-object StressApp extends App with CloseableResource with LazyLogging with AggregateActivities with MyMacConfig {
+object StressApp extends App with CloseableResource with LazyLogging with AggregateActivities with MyLocalConfig {
 
   val par = 10
   val latch = new CountDownLatch(par)

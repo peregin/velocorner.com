@@ -1,9 +1,9 @@
 package velocorner.manual.storage
 
-import velocorner.manual.{AwaitSupport, MyMacConfig}
+import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.storage.{EmbeddedPsqlStorage, MigrateOrient2Psql, OrientDbStorage, PsqlDbStorage, Storage}
 
-object MigrateOrient2PsqlApp extends App with AwaitSupport with MyMacConfig {
+object MigrateOrient2PsqlApp extends App with AwaitSupport with MyLocalConfig {
 
   //local2local()
   local2embedded()

@@ -10,7 +10,7 @@ import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-object StravaFeedApp extends App with LazyLogging with MyMacConfig {
+object StravaFeedApp extends App with LazyLogging with MyLocalConfig {
 
   val config = SecretConfig.load()
   val feed = new StravaActivityFeed(None, config)

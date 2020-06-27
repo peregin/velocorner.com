@@ -9,7 +9,7 @@ import velocorner.util.CloseableResource
 /**
   * Created by levi on 23.10.16.
   */
-object WithingsMeasuresApp extends App with LazyLogging with CloseableResource with MyMacConfig {
+object WithingsMeasuresApp extends App with LazyLogging with CloseableResource with MyLocalConfig {
 
   val config = SecretConfig.load()
   withCloseable(new WithingsMeasureFeed(3112606, oauth.RequestToken(args(0), args(1)), config)) { feed =>

@@ -1,12 +1,12 @@
 package velocorner.manual.storage
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.manual.MyMacConfig
+import velocorner.manual.MyLocalConfig
 import velocorner.storage.Storage
 import zio.{ExitCode, URIO, ZIO}
 
 
-object AchievementsFromStorageApp extends zio.App with LazyLogging with MyMacConfig {
+object AchievementsFromStorageApp extends zio.App with LazyLogging with MyLocalConfig {
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {

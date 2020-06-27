@@ -3,12 +3,12 @@ package velocorner.manual.club
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
-import velocorner.manual.{AwaitSupport, MyMacConfig}
+import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.model.strava.Club
 import velocorner.storage.Storage
 import velocorner.util.CloseableResource
 
-object ClubActivitiesFromStravaToStorageApp extends App with LazyLogging with CloseableResource with AwaitSupport with MyMacConfig {
+object ClubActivitiesFromStravaToStorageApp extends App with LazyLogging with CloseableResource with AwaitSupport with MyLocalConfig {
 
   logger.info("initializing...")
   withCloseable(new StravaActivityFeed(None, SecretConfig.load())) { feed =>

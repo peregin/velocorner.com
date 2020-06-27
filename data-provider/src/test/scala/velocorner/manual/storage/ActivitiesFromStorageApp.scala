@@ -1,11 +1,11 @@
 package velocorner.manual.storage
 
-import velocorner.manual.{AggregateActivities, MyMacConfig}
+import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.model.DailyProgress
 import velocorner.storage.Storage
 import zio.{ExitCode, URIO, ZIO}
 
-object ActivitiesFromStorageApp extends zio.App with AggregateActivities with MyMacConfig {
+object ActivitiesFromStorageApp extends zio.App with AggregateActivities with MyLocalConfig {
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {

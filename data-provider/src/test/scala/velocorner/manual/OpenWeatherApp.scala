@@ -1,27 +1,30 @@
 package velocorner.manual
 
-import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
+import zio.logging._
 import zio.{ExitCode, URIO, ZIO}
 
-object OpenWeatherApp extends zio.App with LazyLogging with MyMacConfig {
+object OpenWeatherApp extends zio.App with MyLocalConfig {
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {
-      config <- ZIO.apply(SecretConfig.load())
-      feed <- ZIO.succeed(new OpenWeatherFeed(config))
-
-      res <- ZIO.fromFuture(_ => feed.forecast("Zurich,CH"))
-      _ <- ZIO.effect(logger.info(s"result is $res"))
-      _ <- ZIO.effect(logger.info(s"${res.points.size} items"))
-
-      cur <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
-      _ <- ZIO.effect(logger.info(s"current sunrise/sunset is $cur"))
-
-      _ <- ZIO.apply(feed.close())
-      _ <- ZIO.apply(HttpFeed.shutdown())
+      config <- ZIO.effect(SecretConfig.load())
+      _ <- ZIO.effect(new OpenWeatherFeed(config)).bracket{ feed =>
+        ZIO.effectTotal{
+          feed.close()
+          HttpFeed.shutdown()
+        }
+      }{feed =>
+        for {
+          forecast <- ZIO.fromFuture(_ => feed.forecast("Zurich,CH"))
+          _ <- log.info(s"result is $forecast")
+          _ <- log.info(s"${forecast.points.size} items")
+          sunset <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
+          _ <- log.info(s"current sunrise/sunset is $sunset")
+        } yield ()
+      }
     } yield ()
-    res.fold(_ => ExitCode.failure, _ => ExitCode.success)
+    res.fold(_ => ExitCode.failure, _ => ExitCode.success).provideLayer(zEnv)
   }
 }

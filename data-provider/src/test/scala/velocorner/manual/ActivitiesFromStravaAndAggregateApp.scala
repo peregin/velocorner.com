@@ -6,8 +6,9 @@ import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.model.DailyProgress
 import velocorner.storage.Storage
 import zio.{ExitCode, Task, URIO}
+import zio.logging._
 
-object ActivitiesFromStravaAndAggregateApp extends zio.App with LazyLogging with AggregateActivities with MyMacConfig {
+object ActivitiesFromStravaAndAggregateApp extends zio.App with AggregateActivities with MyLocalConfig {
 
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
@@ -24,16 +25,16 @@ object ActivitiesFromStravaAndAggregateApp extends zio.App with LazyLogging with
         storage <- Task.effect(Storage.create("or"))
         _ <- Task.effect(storage.initialize())
         activities <- Task.fromFuture(_ => StravaActivityFeed.listRecentAthleteActivities)
-        _ <- Task.effectTotal(logger.info(s"retrieved ${activities.size} activities"))
+        _ <- log.info(s"retrieved ${activities.size} activities")
         progress <- Task.fromFuture(_ => storage.listAllActivities(432909, "Ride")).map(DailyProgress.from)
         _ <- Task.effectTotal(printAllProgress(progress))
-        _ <- Task.effect(storage.destroy())
+        _ <- Task.effectTotal(storage.destroy())
       } yield ()
     }
     res.fold(err => {
       logger.error("failed", err)
       ExitCode.failure
-    }, _ => ExitCode.success)
+    }, _ => ExitCode.success).provideLayer(zEnv)
 
   }
 }
