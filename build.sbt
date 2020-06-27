@@ -7,7 +7,7 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
-val projectScalaVersion = "2.13.2"
+val projectScalaVersion = "2.13.3"
 
 val catsVersion = "2.1.1"
 val zioVersion = "1.0.0-RC21-1"
@@ -18,7 +18,7 @@ val mongoDbVersion = "4.0.4"
 val rethinkDbVersion = "2.4.0"
 val flywayVersion = "6.5.0"
 val elasticVersion = "7.8.0"
-val finatraVersion = "20.5.0"
+val finatraVersion = "20.6.0"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.9.0"
 val specsVersion = "4.10.0"
