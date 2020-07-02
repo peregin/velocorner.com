@@ -1,6 +1,5 @@
 package velocorner.manual
 
-import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.model.DailyProgress
