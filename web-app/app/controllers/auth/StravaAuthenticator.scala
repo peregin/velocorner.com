@@ -2,22 +2,24 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
-import StravaController.{AccessToken, ProviderUser}
 import controllers.ConnectivitySettings
+import controllers.auth.StravaController.{AccessToken, ProviderUser, RefreshToken}
+import org.joda.time.DateTime
 import play.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.JsValue
+import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
+import velocorner.api.Athlete
 import velocorner.feed.StravaActivityFeed
 import velocorner.model.Account
+import velocorner.util.Metrics
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
-import play.api.libs.ws.DefaultBodyWritables._
-import velocorner.api.Athlete
 
-case class AccessTokenResponse(token: AccessToken, athlete: Option[ProviderUser])
+case class AccessTokenResponse(accessToken: AccessToken, expiresAt: DateTime, refreshToken: RefreshToken, athlete: Option[ProviderUser])
 
 /**
   * Created by levi on 09/12/15.
@@ -65,9 +67,16 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     try {
       val json = response.body[JsValue]
       val athlete = (json \ "athlete").as[Athlete]
-      val token = (json \ "access_token").as[String]
-      logger.info(s"got token[$token] for athlete $athlete")
-      AccessTokenResponse(token, Some(Account.from(athlete, token)))
+      // access token, expires usually in 6 hours
+      val accessToken = (json \ "access_token").as[String]
+      // refresh token allows to retrieve a new access token when the current has been expired
+      val refreshToken = (json \ "refresh_token").as[String]
+      // access token expires in seconds
+      val expiresInSec = (json \ "expires_in").as[Int]
+      logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
+      val expiresAt = DateTime.now().plusSeconds(expiresInSec)
+      logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
+      AccessTokenResponse(accessToken, expiresAt, refreshToken, Some(Account.from(athlete, accessToken)))
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }

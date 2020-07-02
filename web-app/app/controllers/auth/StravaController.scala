@@ -18,8 +18,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object StravaController {
 
-  // package object?
   type AccessToken = String
+  type RefreshToken = String
   type ProviderUser = Account
   type ConsumerUser = Account
   type User = Account
@@ -63,7 +63,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
         "code" -> nonEmptyText,
         "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
       )
-    ).bindFromRequest
+    ).bindFromRequest()
     logger.info(s"authorize ${form.data}")
 
     def formSuccess(v: (String, String)): Future[Result] = {
@@ -111,10 +111,10 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth LINK succeeded with token[${resp.token}]")
+    logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
     val storage = connectivity.getStorage
     for {
-      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
+      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
       accountStorage = storage.getAccountStorage
       _ <- accountStorage.store(providerUser)
     } yield Redirect(controllers.routes.WebController.index())
@@ -122,10 +122,10 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   // match provider and consumer users
   def onOAuthLoginSucceeded(resp: AccessTokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth LOGIN succeeded with token[${resp.token}]")
+    logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
     val storage = connectivity.getStorage
     for {
-      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.token))
+      providerUser <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
       accountStorage = storage.getAccountStorage
       consumerUserOpt <- accountStorage.getAccount(providerUser.athleteId)
       freshUser = consumerUserOpt.map { cu =>

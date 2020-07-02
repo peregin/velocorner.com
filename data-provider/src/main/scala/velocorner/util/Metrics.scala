@@ -1,15 +1,35 @@
 package velocorner.util
 
 import com.typesafe.scalalogging.LazyLogging
+import org.joda.time.Period
+import org.joda.time.format.PeriodFormatterBuilder
 
 import scala.concurrent.{ExecutionContext, Future}
 
 // for kestrel combinator and unsafeTap
 import mouse.all._
 
-/**
- * Created by levi on 07/02/15.
- */
+object Metrics {
+  val formatter = new PeriodFormatterBuilder()
+    .appendDays()
+    .appendSuffix(" day,", " days,")
+    .appendSeparator(" ")
+    .printZeroIfSupported()
+    .minimumPrintedDigits(2)
+    .appendHours()
+    .appendSeparator(":")
+    .appendMinutes()
+    .printZeroIfSupported()
+    .minimumPrintedDigits(2)
+    .appendSeparator(":")
+    .appendSeconds()
+    .minimumPrintedDigits(2)
+    .toFormatter()
+
+  def elapsedTimeText(durationInMillis: Long): String = formatter.print(new Period(durationInMillis).normalizedStandard())
+}
+
+
 trait Metrics extends LazyLogging {
 
   def timed[T](text: => String)(body: => T): T = {
