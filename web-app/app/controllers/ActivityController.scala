@@ -6,7 +6,7 @@ import org.joda.time.LocalDate
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-import velocorner.api.{Achievements, Activity, Progress}
+import velocorner.api.{Achievements, Progress}
 import velocorner.model._
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
 import velocorner.util.{JsonIo, Metrics}
@@ -16,6 +16,7 @@ import scala.concurrent.Future
 import cats.implicits._
 import cats.data.{EitherT, OptionT}
 import model.{apexcharts, highcharts}
+import velocorner.api.strava.Activity
 
 
 class ActivityController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)

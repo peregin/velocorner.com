@@ -1,7 +1,7 @@
-package velocorner.api
+package velocorner.api.strava
 
-import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.DateTimeFormat
+import org.joda.time.{DateTime, DateTimeZone}
 import org.specs2.mutable.Specification
 import velocorner.model.DateTimePattern
 import velocorner.util.JsonIo

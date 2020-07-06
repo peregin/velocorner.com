@@ -2,12 +2,11 @@ package velocorner.storage
 
 import org.specs2.mutable.Specification
 import org.specs2.specification.core.Fragment
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.manual.AwaitSupport
 import velocorner.model.DailyProgress
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scala.concurrent.Future
 
 trait ActivityStorageFragments extends Specification with AwaitSupport {

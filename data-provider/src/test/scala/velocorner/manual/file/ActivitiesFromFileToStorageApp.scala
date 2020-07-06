@@ -1,7 +1,7 @@
 package velocorner.manual.file
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.manual.{AggregateActivities, AwaitSupport, MyLocalConfig}
 import velocorner.model.DailyProgress
 import velocorner.storage.Storage

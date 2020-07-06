@@ -4,7 +4,7 @@ import com.opentable.db.postgres.embedded.EmbeddedPostgres
 import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
 class PsqlDbStorageSpec extends Specification with BeforeAfterAll

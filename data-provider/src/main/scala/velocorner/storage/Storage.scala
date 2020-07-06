@@ -3,13 +3,14 @@ package velocorner.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
-import velocorner.model.strava.Club
-import velocorner.api.{Achievement, Activity, Athlete}
+import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.api.Achievement
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
-
 import cats.instances.future._
+import velocorner.api.strava.Activity
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
@@ -32,18 +33,11 @@ trait Storage[M[_]] {
     def getAccount(id: Long): M[Option[Account]]
   }
 
-  // athletes
-  def getAthleteStorage: AthleteStorage
-  trait AthleteStorage {
-    def store(athlete: Athlete): M[Unit]
-    def getAthlete(id: Long): M[Option[Athlete]]
-  }
-
-  // clubs
-  def getClubStorage: ClubStorage
-  trait ClubStorage {
-    def store(club: Club): M[Unit]
-    def getClub(id: Long): M[Option[Club]]
+  // gears
+  def getGearStorage: GearStorage
+  trait GearStorage {
+    def store(gear: Gear, `type`: String): M[Unit]
+    def getGear(id: Long): M[Option[Gear]]
   }
 
   def getWeatherStorage: WeatherStorage

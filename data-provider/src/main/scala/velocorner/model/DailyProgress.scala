@@ -1,7 +1,8 @@
 package velocorner.model
 
 import org.joda.time.LocalDate
-import velocorner.api.{Activity, Progress}
+import velocorner.api.Progress
+import velocorner.api.strava.Activity
 
 
 object DailyProgress {
@@ -12,7 +13,7 @@ object DailyProgress {
       activity.average_speed.getOrElse(0f).toDouble,
       activity.total_elevation_gain, activity.total_elevation_gain
     )
-    DailyProgress(activity.getStartDateLocal.toLocalDate, progress)
+    DailyProgress(activity.getStartDateLocal().toLocalDate(), progress)
   }
 
   def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {

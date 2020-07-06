@@ -1,12 +1,14 @@
 package velocorner.storage
 
+import cats.implicits._
 import com.mongodb.client.model.{IndexModel, UpdateOptions}
 import com.typesafe.scalalogging.LazyLogging
-import org.mongodb.scala._
 import org.bson.BsonDocument
+import org.mongodb.scala._
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
+import velocorner.api.strava.Activity
 import velocorner.model._
 import velocorner.model.strava.Club
 import velocorner.storage.MongoDbStorage._
@@ -15,8 +17,6 @@ import velocorner.util.JsonIo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
-import cats.implicits._
-import velocorner.api.{Activity, Athlete}
 
 /**
   * Created by levi on 28/09/16.
@@ -81,7 +81,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = {
     val coll = db.getCollection(collName)
     for {
-      doc <- coll.find(equal(idName, id)).headOption
+      doc <- coll.find(equal(idName, id)).headOption()
     } yield doc.map(_.toJson())
   }
 
@@ -90,13 +90,6 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   lazy val accountStorage = new AccountStorage {
     override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
     override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
-  }
-
-  // athletes
-  override def getAthleteStorage: AthleteStorage = athleteStorage
-  lazy val athleteStorage = new AthleteStorage {
-    override def store(athlete: Athlete): Future[Unit] = upsert(JsonIo.write(athlete), athlete.id, ATHLETE_TABLE)
-    override def getAthlete(id: Long): Future[Option[Athlete]] = getJsonById(id, ATHLETE_TABLE).map(_.map(JsonIo.read[Athlete]))
   }
 
   // clubs
@@ -123,7 +116,6 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
     db.getCollection(ACTIVITY_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
     db.getCollection(ACCOUNT_TABLE).createIndexes(Seq(new IndexModel("{athleteId:1}", new IndexOptions().name("athleteId").unique(true))))
     db.getCollection(CLUB_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
-    db.getCollection(ATHLETE_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
   }
 
   // releases any connections, resources used
@@ -138,7 +130,6 @@ object MongoDbStorage {
   val ACTIVITY_TABLE = "activity"
   val ACCOUNT_TABLE = "account"
   val CLUB_TABLE = "club"
-  val ATHLETE_TABLE = "athlete"
 
   implicit def dbOrFail(db: Option[MongoDatabase]): MongoDatabase = db.getOrElse(sys.error("db is not initialized"))
 

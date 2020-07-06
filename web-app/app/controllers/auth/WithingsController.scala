@@ -62,7 +62,7 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
           logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
           maybeUserId match {
             case Some(userId) =>
-              Redirect(controllers.routes.WebController.index)
+              Redirect(controllers.routes.WebController.index())
                 .withSession("token" -> t.token, "secret" -> t.secret, "withingsId" -> userId)
             case _ =>
               BadRequest

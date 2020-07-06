@@ -3,7 +3,7 @@ package velocorner.manual.storage
 import java.io.PrintWriter
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.manual.MyLocalConfig
 import velocorner.storage.{OrientDbStorage, Storage}
 import velocorner.util.JsonIo

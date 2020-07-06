@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
 

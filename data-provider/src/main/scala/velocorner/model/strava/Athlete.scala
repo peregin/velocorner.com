@@ -1,4 +1,4 @@
-package velocorner.api
+package velocorner.model.strava
 
 import play.api.libs.json.{Format, Json, _}
 
@@ -6,6 +6,7 @@ import play.api.libs.json.{Format, Json, _}
   * Represents an athlete from the Strava feed and storage layer.
   *
   * The feed provides the following superset of data:
+  *
   * "id": 227615,
   * "resource_state": 2,
   * "firstname": "John",
@@ -22,12 +23,19 @@ import play.api.libs.json.{Format, Json, _}
   * "created_at": "2011-03-19T21:59:57Z",
   * "updated_at": "2013-09-05T16:46:54Z"
   * "bikes" : [ {
-  * "id" : "b12345678987655",
-  * "primary" : true,
-  * "name" : "EMC",
-  * "resource_state" : 2,
-  * "distance" : 0
+  *   "id" : "b12345678987655",
+  *   "primary" : true,
+  *   "name" : "EMC",
+  *   "resource_state" : 2,
+  *   "distance" : 0
   * } ],
+  * "shoes" : [ {
+  *   "id" : "g12345678987655",
+  *   "primary" : true,
+  *   "name" : "adidas",
+  *   "resource_state" : 2,
+  *   "distance" : 4904
+  * } ]
   *
   */
 object Athlete {
@@ -47,5 +55,7 @@ case class Athlete(
   lastname: Option[String],
   profile_medium: Option[String], // URL to a 62x62 pixel profile picture
   city: Option[String],
-  country: Option[String]
+  country: Option[String],
+  bikes: List[Gear],
+  shoes: List[Gear]
 )

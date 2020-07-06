@@ -3,7 +3,6 @@ package velocorner.manual.storage
 import java.util.concurrent.{CountDownLatch, Executors, TimeUnit}
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.Activity
 import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.storage.Storage
 import velocorner.util.{CloseableResource, JsonIo}
@@ -11,8 +10,8 @@ import velocorner.util.{CloseableResource, JsonIo}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
 import scala.util.control.Exception._
-
 import mouse.all._
+import velocorner.api.strava.Activity
 
 /**
   * Created by levi on 19.11.16.

@@ -12,7 +12,8 @@ import doobie.{ConnectionIO, _}
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.{Achievement, Activity}
+import velocorner.api.Achievement
+import velocorner.api.strava.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.Account
 import velocorner.util.JsonIo
@@ -126,9 +127,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       sql"""select data from account where athlete_id = $id
            |""".stripMargin.query[Account].option.toFuture
   }
-
-  // not used anymore
-  override def getAthleteStorage: AthleteStorage = ???
 
   // not used anymore
   override def getClubStorage: ClubStorage = ???

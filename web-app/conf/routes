@@ -141,7 +141,7 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityC
 #          schema:
 #            type: array
 #            items:
-#              $ref: '#/components/schemas/velocorner.api.Activity'
+#              $ref: '#/components/schemas/velocorner.api.strava.Activity'
 ###
 GET     /api/activities/suggest                            controllers.ActivityController.suggest(query: String)
 
@@ -172,7 +172,7 @@ GET     /api/activities/type                               controllers.ActivityC
 #      content:
 #        application/json:
 #          schema:
-#            $ref: '#/components/schemas/velocorner.api.Activity'
+#            $ref: '#/components/schemas/velocorner.api.strava.Activity'
 #    403:
 #      description: Forbidden
 #    404:

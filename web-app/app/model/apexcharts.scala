@@ -1,7 +1,7 @@
 package model
 
-import velocorner.api.Activity
 import velocorner.api.heatmap.{HeatmapPoint, HeatmapSeries}
+import velocorner.api.strava.Activity
 
 object apexcharts {
 

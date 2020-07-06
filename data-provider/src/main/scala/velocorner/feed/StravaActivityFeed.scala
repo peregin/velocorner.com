@@ -3,7 +3,8 @@ package velocorner.feed
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.SecretConfig
-import velocorner.api.{Activity, Athlete}
+import velocorner.api.strava.Activity
+import velocorner.model.strava.Athlete
 import velocorner.util.JsonIo
 
 import scala.concurrent.Future

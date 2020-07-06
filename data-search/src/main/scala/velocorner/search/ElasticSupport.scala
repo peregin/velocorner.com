@@ -6,11 +6,10 @@ import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexApi, In
 import com.sksamuel.elastic4s.requests.searches.GeoPoint
 import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
 import play.api.libs.json.{JsObject, JsString, Json}
-import velocorner.api.Activity
 import velocorner.util.JsonIo
-
 import cats.Show
 import cats.implicits._
+import velocorner.api.strava.Activity
 
 trait ElasticSupport extends IndexApi {
 

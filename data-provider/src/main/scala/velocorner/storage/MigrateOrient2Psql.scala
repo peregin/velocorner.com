@@ -5,7 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
 import doobie.util.fragment.Fragment
 import play.api.libs.json.Reads
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.{Account, KeyValue}
 import velocorner.util.Metrics

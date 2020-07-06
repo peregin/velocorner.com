@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.Logger
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.model.Account
 import velocorner.feed.{ActivityFeed, StravaActivityFeed}
 import velocorner.storage.Storage
@@ -27,22 +27,23 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
 
   // query from the storage and eventually from the activity feed
   def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
-    // allow refresh after some time only
-    val now = DateTime.now()
-    val storage = connectivity.getStorage
-    val feed = connectivity.getStravaFeed(account.accessToken)
-    log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
+    account.stravaAccessToken.map { accessToken =>
+      // allow refresh after some time only
+      val now = DateTime.now()
+      val storage = connectivity.getStorage
+      val feed = connectivity.getStravaFeed(accessToken)
+      log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")
 
-    val activitiesF = for {
-      newActivities: Iterable[Activity] <- retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
-      // log the most recent activity
-      maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
-      _ = log.info(s"most recent activity retrieved is from $maybeMostRecent")
-      _ <- storage.storeActivity(newActivities)
-      _ <- storage.getAccountStorage.store(account.copy(lastUpdate = Some(now)))
-    } yield newActivities
-
-    activitiesF <| (_.onComplete(_ => feed.close()))
+      val activitiesF = for {
+        newActivities: Iterable[Activity] <- retrieveNewActivities(feed, storage, account.athleteId, account.lastUpdate, now)
+        // log the most recent activity
+        maybeMostRecent = newActivities.map(_.start_date).toSeq.sortWith((a, b) => a.compareTo(b) > 0).headOption
+        _ = log.info(s"most recent activity retrieved is from $maybeMostRecent")
+        _ <- storage.storeActivity(newActivities)
+        _ <- storage.getAccountStorage.store(account.copy(lastUpdate = Some(now)))
+      } yield newActivities
+      activitiesF <| (_.onComplete(_ => feed.close()))
+    }.getOrElse(Future(Iterable.empty))
   }
 
   protected def retrieveNewActivities(feed: ActivityFeed, storage: Storage[Future], athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {

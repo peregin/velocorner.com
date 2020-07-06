@@ -18,7 +18,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   private val logger = Logger.of(this.getClass)
   private val storage = Storage.create("ps", secretConfig)
-  storage.initialize
+  storage.initialize()
 
   logger.info("ready...")
 
@@ -32,7 +32,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def disconnect(): Unit = {
     logger.info("releasing storage connections...")
-    getStorage.destroy
+    getStorage.destroy()
     logger.info("stopped...")
   }
 

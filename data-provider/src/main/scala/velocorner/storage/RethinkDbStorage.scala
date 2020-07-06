@@ -5,13 +5,12 @@ import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
-import velocorner.api.{Activity, Athlete}
 import velocorner.model.Account
-import velocorner.model.strava.Club
+import velocorner.model.strava.{Athlete, Club, Gear}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
-
 import cats._
+import velocorner.api.strava.Activity
 
 import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
@@ -92,19 +91,11 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
   }
 
-  // athletes
-  override def getAthleteStorage: AthleteStorage = athleteStorage
-  lazy val athleteStorage = new AthleteStorage {
-    override def store(athlete: Athlete): M[Unit] = upsert(JsonIo.write(athlete), ATHLETE_TABLE)
-    override def getAthlete(id: Long): M[Option[Athlete]] = Monad[M].map(getJsonById(id, ATHLETE_TABLE))(_.map(JsonIo.read[Athlete]))
-  }
-
-  // clubs
-  override def getClubStorage: ClubStorage = clubStorage
-  private lazy val clubStorage = new ClubStorage {
-    override def store(club: Club): M[Unit] = upsert(JsonIo.write(club), CLUB_TABLE)
-
-    override def getClub(id: Long): M[Option[Club]] = Monad[M].map(getJsonById(id, CLUB_TABLE))(_.map(JsonIo.read[Club]))
+  // gears
+  def getGearStorage: GearStorage
+  trait ClubStorage {
+    def store(gear: Gear, `type`: String): M[Unit] = upsert(JsonIo.write(gear), GEAR_TABLE)
+    def getGear(id: Long): M[Option[Gear]] = Monad[M].map(getJsonById(id, GEAR_TABLE))(_.map(JsonIo.read[Gear]))
   }
 
   // weather
@@ -135,7 +126,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
         if (!tableNames.contains(t)) client.tableCreate(t).run(conn)
       }
     }
-    createIfNotExists(ACTIVITY_TABLE, ACCOUNT_TABLE, ATHLETE_TABLE, CLUB_TABLE)
+    createIfNotExists(ACTIVITY_TABLE, ACCOUNT_TABLE, GEAR_TABLE)
 
     maybeConn = Some(conn)
     logger.info(s"connected with $conn")
@@ -150,8 +141,7 @@ object RethinkDbStorage {
   val DB_NAME = "velocorner"
   val ACTIVITY_TABLE = "activity"
   val ACCOUNT_TABLE = "account"
-  val CLUB_TABLE = "club"
-  val ATHLETE_TABLE = "athlete"
+  val GEAR_TABLE = "gear"
 
   implicit def convert(conn: Option[Connection]): Connection = conn.getOrElse(sys.error("connection is not initialized"))
 

@@ -2,7 +2,7 @@ package velocorner.storage
 
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
-import velocorner.api.Activity
+import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
 class OrientDbStorageSpec extends Specification with BeforeAfterAll

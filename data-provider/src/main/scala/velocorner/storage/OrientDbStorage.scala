@@ -9,7 +9,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
-import velocorner.model.strava.Club
+import velocorner.model.strava.{Athlete, Club}
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
@@ -20,13 +20,13 @@ import scala.util.Try
 import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.{Achievement, Activity, Athlete}
+import velocorner.api.Achievement
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.jdk.CollectionConverters._
-
 import cats.implicits._
 import cats.data.OptionT
+import velocorner.api.strava.Activity
 
 /**
   * Created by levi on 14.11.16.
@@ -107,15 +107,6 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
     }
     override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
-  }
-
-  // athletes
-  override def getAthleteStorage: AthleteStorage = athleteStorage
-  lazy val athleteStorage = new AthleteStorage {
-    override def store(athlete: Athlete): Future[Unit] = {
-      upsert(athlete, ATHLETE_CLASS, s"SELECT FROM $ATHLETE_CLASS WHERE id = :id", Map("id" -> athlete.id))
-    }
-    override def getAthlete(id: Long): Future[Option[Athlete]] = lookup[Athlete](ATHLETE_CLASS, "id", id)
   }
 
   // clubs
@@ -283,14 +274,12 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("athlete.id", OType.LONG))
       createIxIfNeeded(ACCOUNT_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("athleteId", OType.LONG))
       createIxIfNeeded(CLUB_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.INTEGER))
-      createIxIfNeeded(ATHLETE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.LONG))
       createIxIfNeeded(WEATHER_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(SUN_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
       createIxIfNeeded(ATTRIBUTE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("key", OType.STRING))
 
       odb.browseClass(ACCOUNT_CLASS).setFetchPlan("*:0")
       odb.browseClass(ACTIVITY_CLASS).setFetchPlan("*:0")
-      odb.browseClass(ATHLETE_CLASS).setFetchPlan("*:0")
       odb.browseClass(WEATHER_CLASS).setFetchPlan("*:0")
       odb.browseClass(SUN_CLASS).setFetchPlan("*:0")
       odb.browseClass(ATTRIBUTE_CLASS).setFetchPlan("*:0")
@@ -379,7 +368,6 @@ object OrientDbStorage {
   val ACTIVITY_CLASS = "Activity"
   val ACCOUNT_CLASS = "Account"
   val CLUB_CLASS = "Club"
-  val ATHLETE_CLASS = "Athlete"
   val WEATHER_CLASS = "Weather"
   val SUN_CLASS = "Sun"
   val ATTRIBUTE_CLASS = "Attribute"

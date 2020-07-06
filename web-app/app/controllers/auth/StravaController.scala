@@ -12,6 +12,7 @@ import play.api.data.Forms.{nonEmptyText, tuple}
 import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import velocorner.model.Account
+import velocorner.model.strava.Athlete
 import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,7 +21,7 @@ object StravaController {
 
   type AccessToken = String
   type RefreshToken = String
-  type ProviderUser = Account
+  type ProviderUser = Athlete
   type ConsumerUser = Account
   type User = Account
   type Id = Long
@@ -94,7 +95,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   // - utility methods below -
 
   private def redirectToAuthorization(scope: String, request: Request[AnyContent]) = {
-    // TODO: propagate an applications state
+    // state is use to validate redirect from the OAuth provider with a unique identifier
     val state = UUID.randomUUID().toString
     Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
       request.session + (OAuth2StateKey -> state)

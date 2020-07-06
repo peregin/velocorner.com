@@ -18,7 +18,7 @@
             </h2>
         </div>
 
-    @if(context.isLoggedIn) {
+    @if(context.isLoggedIn()) {
         <!--  Search input form -->
         <div class="input-group col-md-6 col-xs-12" style="float: left; margin: 10px;">
             <input id="search" name="search" type="text" class="form-control" placeholder="Search for activities ...">
@@ -35,7 +35,7 @@
                 <li class="@(if (context.title == "Home") "active" else "")"><a href="/">Home</a></li>
                 <!-- About -->
                 <li class="@(if (context.title == "About") "active" else "")"><a href="/about">About Us</a></li>
-            @if(context.isAdmin) {
+            @if(context.isAdmin()) {
                 <!-- Admin -->
                 <li class="@(if (context.title == "Admin") "active" else "")"><a href="/admin">Admin</a></li>
             }

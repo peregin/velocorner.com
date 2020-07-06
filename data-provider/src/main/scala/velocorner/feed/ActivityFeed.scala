@@ -1,6 +1,7 @@
 package velocorner.feed
 
-import velocorner.api.{Activity, Athlete}
+import velocorner.api.strava.Activity
+import velocorner.model.strava.Athlete
 
 import scala.concurrent.Future
 

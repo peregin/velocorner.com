@@ -1,4 +1,4 @@
-package velocorner.api
+package velocorner.model.strava
 
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
@@ -11,7 +11,8 @@ class AthleteSpec extends Specification {
   "model" should {
     "add type to the json" in {
       val athlete = Athlete(
-        10, 1, Some("levi"), Some("rider"), Some("profile picture url"), None, Some("Switzerland")
+        10, 1, Some("levi"), Some("rider"), Some("profile picture url"), None, Some("Switzerland"),
+        bikes = List.empty, shoes = List.empty
       )
       val json = JsonIo.write(athlete)
       json ===

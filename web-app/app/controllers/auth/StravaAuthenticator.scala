@@ -11,9 +11,9 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
-import velocorner.api.Athlete
 import velocorner.feed.StravaActivityFeed
 import velocorner.model.Account
+import velocorner.model.strava.Athlete
 import velocorner.util.Metrics
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -76,7 +76,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
       val expiresAt = DateTime.now().plusSeconds(expiresInSec)
       logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
-      AccessTokenResponse(accessToken, expiresAt, refreshToken, Some(Account.from(athlete, accessToken)))
+      AccessTokenResponse(accessToken, expiresAt, refreshToken, Some(Account.from(athlete, accessToken, expiresAt, refreshToken)))
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }

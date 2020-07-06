@@ -3,7 +3,18 @@ package velocorner.model
 import cats.implicits._
 import org.joda.time.DateTime
 import play.api.libs.json._
-import velocorner.api.Athlete
+import velocorner.model.strava.Athlete
+
+object StravaAccess {
+  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
+  implicit val dataFormat = Format[StravaAccess](Json.reads[StravaAccess], Json.writes[StravaAccess])
+}
+
+case class StravaAccess(
+                         accessToken: String,
+                         accessExpiresAt: DateTime,
+                         refreshToken: String
+                       )
 
 object Account {
 
@@ -28,29 +39,33 @@ object Account {
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
   // extract the user details from provider, e.g. Stava into the consumer one (velocorner.com)
-  def from(athlete: Athlete, token: String) = new Account(
+  def from(athlete: Athlete, stravaAccessToken: String, stravaAccessExpiresAt: DateTime, stravaRefreshToken: String) = new Account(
     athlete.id,
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
     s"${athlete.city.mkString}, ${athlete.country.mkString}",
     athlete.profile_medium.getOrElse(""),
-    accessToken = token,
     lastUpdate = none,
-    role = none
+    role = none,
+    stravaAccess = StravaAccess(
+      accessToken = stravaAccessToken,
+      accessExpiresAt = stravaAccessExpiresAt,
+      refreshToken = stravaRefreshToken
+    ).some
   )
 }
 
 /**
- * Represents a generic account used in the storage layer.
- */
+  * Represents a generic account used in the storage layer.
+  */
 case class Account(
-  athleteId: Long,
-  displayName: String,
-  displayLocation: String, // city, country
-  avatarUrl: String,
-  accessToken: String,
-  lastUpdate: Option[DateTime],
-  role: Option[Role.Entry]
-) {
+                    athleteId: Long,
+                    displayName: String, // first name
+                    displayLocation: String, // city, country
+                    avatarUrl: String,
+                    lastUpdate: Option[DateTime],
+                    role: Option[Role.Entry],
+                    stravaAccess: Option[StravaAccess]
+                  ) {
 
   def isAdmin(): Boolean = role.exists(_ == Role.Admin)
 }
