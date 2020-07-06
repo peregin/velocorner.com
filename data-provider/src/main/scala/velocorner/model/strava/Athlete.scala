@@ -56,6 +56,6 @@ case class Athlete(
   profile_medium: Option[String], // URL to a 62x62 pixel profile picture
   city: Option[String],
   country: Option[String],
-  bikes: List[Gear],
-  shoes: List[Gear]
+  bikes: Option[List[Gear]],
+  shoes: Option[List[Gear]]
 )

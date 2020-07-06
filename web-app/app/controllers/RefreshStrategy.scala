@@ -27,7 +27,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
 
   // query from the storage and eventually from the activity feed
   def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
-    account.stravaAccessToken.map { accessToken =>
+    account.stravaAccess.map(_.accessToken).map { accessToken =>
       // allow refresh after some time only
       val now = DateTime.now()
       val storage = connectivity.getStorage

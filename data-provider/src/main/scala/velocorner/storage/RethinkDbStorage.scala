@@ -62,7 +62,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     activities
   }
 
-  override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
+  override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id.toString, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
 
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]] = Monad[M].pure(Iterable.empty)
@@ -76,7 +76,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     logger.debug(s"result $result")
   }
 
-  private def getJsonById(id: Long, table: String) = Monad[M].pure {
+  private def getJsonById(id: String, table: String) = Monad[M].pure {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("id")
       field1.eq(id)
@@ -86,16 +86,16 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   // accounts
   override def getAccountStorage: AccountStorage = accountStorage
-  lazy val accountStorage = new AccountStorage {
+  private lazy val accountStorage = new AccountStorage {
     override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
-    override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
+    override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id.toString, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
   }
 
   // gears
-  def getGearStorage: GearStorage
-  trait ClubStorage {
-    def store(gear: Gear, `type`: String): M[Unit] = upsert(JsonIo.write(gear), GEAR_TABLE)
-    def getGear(id: Long): M[Option[Gear]] = Monad[M].map(getJsonById(id, GEAR_TABLE))(_.map(JsonIo.read[Gear]))
+  override def getGearStorage: GearStorage = gearStorage
+  private lazy val gearStorage = new GearStorage {
+    def store(gear: Gear, `type`: Gear.Entry): M[Unit] = upsert(JsonIo.write(gear), GEAR_TABLE)
+    def getGear(id: String): M[Option[Gear]] = Monad[M].map(getJsonById(id, GEAR_TABLE))(_.map(JsonIo.read[Gear]))
   }
 
   // weather

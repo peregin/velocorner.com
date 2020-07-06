@@ -9,7 +9,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model._
-import velocorner.model.strava.{Athlete, Club}
+import velocorner.model.strava.{Athlete, Club, Gear}
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
@@ -44,7 +44,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   private val dbUrl = url.map("remote:" + _).getOrElse("memory:")
   private val dbType = url.map(_ => ODatabaseType.PLOCAL).getOrElse(ODatabaseType.MEMORY)
 
-  private def lookup[T](className: String, propertyName: String, propertyValue: Long)(implicit fjs: Reads[T]): Future[Option[T]] = {
+  private def lookup[T](className: String, propertyName: String, propertyValue: String)(implicit fjs: Reads[T]): Future[Option[T]] = {
     val sql = s"SELECT FROM $className WHERE $propertyName = $propertyValue"
     queryForOption[T](sql)
   }
@@ -98,22 +98,22 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
   }
 
-  override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id)
+  override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id.toString)
 
   // accounts
   override def getAccountStorage: AccountStorage = accountStorage
-  lazy val accountStorage = new AccountStorage {
+  private lazy val accountStorage = new AccountStorage {
     override def store(account: Account): Future[Unit] = {
       upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
     }
-    override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id)
+    override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id.toString)
   }
 
-  // clubs
-  override def getClubStorage: ClubStorage = clubStorage
-  private lazy val clubStorage = new ClubStorage {
-    override def store(club: Club): Future[Unit] = upsert(club, CLUB_CLASS, s"SELECT FROM $CLUB_CLASS WHERE id = :id", Map("id" -> club.id))
-    override def getClub(id: Long): Future[Option[Club]] = lookup[Club](CLUB_CLASS, "id", id)
+  // gears
+  override def getGearStorage: GearStorage = gearStorage
+  private lazy val gearStorage = new GearStorage {
+    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] = upsert(gear, GEAR_CLASS, s"SELECT FROM $GEAR_CLASS WHERE id = :id", Map("id" -> gear.id))
+    override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
   private lazy val weatherStorage = new WeatherStorage {
@@ -273,7 +273,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("type", OType.STRING))
       createIxIfNeeded(ACTIVITY_CLASS, OClass.INDEX_TYPE.NOTUNIQUE, IndexSetup("athlete.id", OType.LONG))
       createIxIfNeeded(ACCOUNT_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("athleteId", OType.LONG))
-      createIxIfNeeded(CLUB_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.INTEGER))
+      createIxIfNeeded(GEAR_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("id", OType.INTEGER))
       createIxIfNeeded(WEATHER_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("timestamp", OType.LONG))
       createIxIfNeeded(SUN_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("location", OType.STRING), IndexSetup("date", OType.STRING))
       createIxIfNeeded(ATTRIBUTE_CLASS, OClass.INDEX_TYPE.UNIQUE, IndexSetup("key", OType.STRING))
@@ -367,7 +367,7 @@ object OrientDbStorage {
 
   val ACTIVITY_CLASS = "Activity"
   val ACCOUNT_CLASS = "Account"
-  val CLUB_CLASS = "Club"
+  val GEAR_CLASS = "Gear"
   val WEATHER_CLASS = "Weather"
   val SUN_CLASS = "Sun"
   val ATTRIBUTE_CLASS = "Attribute"

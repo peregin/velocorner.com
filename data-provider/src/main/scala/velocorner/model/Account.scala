@@ -39,18 +39,14 @@ object Account {
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
   // extract the user details from provider, e.g. Stava into the consumer one (velocorner.com)
-  def from(athlete: Athlete, stravaAccessToken: String, stravaAccessExpiresAt: DateTime, stravaRefreshToken: String) = new Account(
+  def from(athlete: Athlete, stravaAccess: StravaAccess) = new Account(
     athlete.id,
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
     s"${athlete.city.mkString}, ${athlete.country.mkString}",
     athlete.profile_medium.getOrElse(""),
     lastUpdate = none,
     role = none,
-    stravaAccess = StravaAccess(
-      accessToken = stravaAccessToken,
-      accessExpiresAt = stravaAccessExpiresAt,
-      refreshToken = stravaRefreshToken
-    ).some
+    stravaAccess = stravaAccess.some
   )
 }
 

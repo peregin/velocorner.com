@@ -10,7 +10,7 @@ import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
 import velocorner.api.strava.Activity
 import velocorner.model._
-import velocorner.model.strava.Club
+import velocorner.model.strava.Gear
 import velocorner.storage.MongoDbStorage._
 import velocorner.util.JsonIo
 
@@ -66,19 +66,19 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
     } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
 
-  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
+  override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id.toString, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = Future(Iterable.empty)
 
-  private def upsert(json: String, id: Long, collName: String, idName: String = "id"): Future[Unit] = {
+  private def upsert(json: String, id: String, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)
     coll
       .updateOne(equal(idName, id), json, new UpdateOptions()
         .upsert(true)).toFuture().void
   }
 
-  private def getJsonById(id: Long, collName: String, idName: String = "id"): Future[Option[String]] = {
+  private def getJsonById(id: String, collName: String, idName: String = "id"): Future[Option[String]] = {
     val coll = db.getCollection(collName)
     for {
       doc <- coll.find(equal(idName, id)).headOption()
@@ -87,16 +87,16 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   // accounts
   override def getAccountStorage: AccountStorage = accountStorage
-  lazy val accountStorage = new AccountStorage {
-    override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId, ACCOUNT_TABLE, "athleteId")
-    override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
+  private lazy val accountStorage = new AccountStorage {
+    override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId.toString, ACCOUNT_TABLE, "athleteId")
+    override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id.toString, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
   }
 
-  // clubs
-  override def getClubStorage: ClubStorage = clubStorage
-  private lazy val clubStorage = new ClubStorage {
-    override def store(club: Club): Future[Unit] = upsert(JsonIo.write(club), club.id, CLUB_TABLE)
-    override def getClub(id: Long): Future[Option[Club]] = getJsonById(id, CLUB_TABLE).map(_.map(JsonIo.read[Club]))
+  // gears
+  override def getGearStorage: GearStorage = gearStorage
+  private lazy val gearStorage = new GearStorage {
+    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] = upsert(JsonIo.write(gear), gear.id, GEAR_TABLE)
+    override def getGear(id: String): Future[Option[Gear]] = getJsonById(id, GEAR_TABLE).map(_.map(JsonIo.read[Gear]))
   }
 
   // weather
@@ -115,7 +115,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
     db = Some(client.getDatabase(DB_NAME))
     db.getCollection(ACTIVITY_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
     db.getCollection(ACCOUNT_TABLE).createIndexes(Seq(new IndexModel("{athleteId:1}", new IndexOptions().name("athleteId").unique(true))))
-    db.getCollection(CLUB_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
+    db.getCollection(GEAR_TABLE).createIndexes(Seq(new IndexModel("{id:1}", new IndexOptions().name("id").unique(true))))
   }
 
   // releases any connections, resources used
@@ -129,7 +129,7 @@ object MongoDbStorage {
   val DB_NAME = "velocorner"
   val ACTIVITY_TABLE = "activity"
   val ACCOUNT_TABLE = "account"
-  val CLUB_TABLE = "club"
+  val GEAR_TABLE = "gear"
 
   implicit def dbOrFail(db: Option[MongoDatabase]): MongoDatabase = db.getOrElse(sys.error("db is not initialized"))
 

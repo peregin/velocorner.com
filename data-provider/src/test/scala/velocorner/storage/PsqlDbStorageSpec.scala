@@ -5,6 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.api.strava.Activity
+import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
 
 class PsqlDbStorageSpec extends Specification with BeforeAfterAll
@@ -44,6 +45,14 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       val adminStorage = psqlStorage.getAdminStorage
       awaitOn(adminStorage.countAccounts) === 1L
       awaitOn(adminStorage.countActivities) === activityFixtures.size
+    }
+
+    "store and lookup gears" in {
+      lazy val gearStorage = psqlStorage.getGearStorage
+      val gear = Gear("id1", "BMC", 12.4f)
+      awaitOn(gearStorage.store(gear, Gear.Bike))
+      awaitOn(gearStorage.getGear("id20")) should beNone
+      awaitOn(gearStorage.getGear("id1")) should beSome(gear)
     }
   }
 

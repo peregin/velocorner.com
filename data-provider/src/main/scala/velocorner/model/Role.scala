@@ -2,7 +2,7 @@ package velocorner.model
 
 object Role {
 
-  sealed class Entry
+  sealed abstract class Entry
 
   case object Admin extends Entry
 }

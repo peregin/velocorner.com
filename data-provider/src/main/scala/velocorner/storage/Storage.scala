@@ -36,8 +36,8 @@ trait Storage[M[_]] {
   // gears
   def getGearStorage: GearStorage
   trait GearStorage {
-    def store(gear: Gear, `type`: String): M[Unit]
-    def getGear(id: Long): M[Option[Gear]]
+    def store(gear: Gear, `type`: Gear.Entry): M[Unit]
+    def getGear(id: String): M[Option[Gear]]
   }
 
   def getWeatherStorage: WeatherStorage

@@ -4,6 +4,10 @@ import play.api.libs.json._
 
 object Gear {
 
+  sealed abstract class Entry
+  case object Bike extends Entry
+  case object Shoe extends Entry
+
   val writes = new Writes[Gear] {
     override def writes(o: Gear): JsValue = {
       val baseJs: JsObject = Json.writes[Gear].writes(o).as[JsObject]

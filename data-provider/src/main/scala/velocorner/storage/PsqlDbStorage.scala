@@ -16,6 +16,7 @@ import velocorner.api.Achievement
 import velocorner.api.strava.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.Account
+import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -66,6 +67,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
   private implicit val weatherMeta: Meta[WeatherForecast] = playJsonMeta[WeatherForecast]
   private implicit val sunMeta: Meta[SunriseSunset] = playJsonMeta[SunriseSunset]
+  private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
     def toFuture: Future[T] = cio.transact(transactor).unsafeToFuture()
@@ -128,8 +130,19 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |""".stripMargin.query[Account].option.toFuture
   }
 
-  // not used anymore
-  override def getClubStorage: ClubStorage = ???
+  // gears
+  override def getGearStorage: GearStorage = gearStorage
+  private lazy val gearStorage = new GearStorage {
+    override def store(gear: Gear, gearType: Gear.Entry): Future[Unit] =
+      sql"""insert into gear (id, type, data)
+           |values(${gear.id}, ${gearType.toString}, $gear) on conflict(id)
+           |do update set data = $gear
+           |""".stripMargin.update.run.void.toFuture
+
+    override def getGear(id: String): Future[Option[Gear]] =
+      sql"""select data from gear where id = $id
+           |""".stripMargin.query[Gear].option.toFuture
+  }
 
   override def getWeatherStorage: WeatherStorage = weatherStorage
 

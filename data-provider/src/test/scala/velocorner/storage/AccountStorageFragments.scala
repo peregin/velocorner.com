@@ -14,7 +14,7 @@ trait AccountStorageFragments extends Specification with AwaitSupport {
   def accountFragments(storage: => Storage[Future]): Fragment = {
 
     lazy val accountStorage = storage.getAccountStorage
-    val now = DateTime.parse("2020-05-02T20:33:20.000+02:00").withZone(DateTimeZone.forID("Europe/Zurich"))
+    val now = DateTime.parse("2020-05-02T20:33:20.000+02:00").withZone(DateTimeZone.UTC)
     lazy val account = Account(1, "display name", "display location", "profile url", lastUpdate = now.some, None,
       StravaAccess("accessToken", now.plusHours(6), "refreshToken").some)
 

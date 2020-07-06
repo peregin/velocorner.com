@@ -2,6 +2,7 @@ package controllers.auth
 
 import java.net.{URI, URLEncoder}
 
+import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{AccessToken, ProviderUser, RefreshToken}
 import org.joda.time.DateTime
@@ -12,14 +13,21 @@ import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
 import velocorner.feed.StravaActivityFeed
-import velocorner.model.Account
+import velocorner.model.StravaAccess
 import velocorner.model.strava.Athlete
 import velocorner.util.Metrics
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-case class AccessTokenResponse(accessToken: AccessToken, expiresAt: DateTime, refreshToken: RefreshToken, athlete: Option[ProviderUser])
+case class AccessTokenResponse(accessToken: AccessToken, expiresAt: DateTime, refreshToken: RefreshToken, athlete: Option[ProviderUser]) {
+
+  def toStravaAccess = StravaAccess(
+    accessToken = accessToken,
+    accessExpiresAt = expiresAt,
+    refreshToken = refreshToken
+  )
+}
 
 /**
   * Created by levi on 09/12/15.
@@ -76,7 +84,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
       val expiresAt = DateTime.now().plusSeconds(expiresInSec)
       logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
-      AccessTokenResponse(accessToken, expiresAt, refreshToken, Some(Account.from(athlete, accessToken, expiresAt, refreshToken)))
+      AccessTokenResponse(accessToken, expiresAt, refreshToken, athlete.some)
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }

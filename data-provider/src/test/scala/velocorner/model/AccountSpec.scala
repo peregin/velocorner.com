@@ -28,7 +28,11 @@ class AccountSpec extends Specification {
           |  "displayName" : "display name",
           |  "displayLocation" : "display location",
           |  "avatarUrl" : "profile url",
-          |  "stravaAccessToken" : "accessToken",
+          |  "stravaAccess" : {
+          |    "accessToken" : "accessToken",
+          |    "accessExpiresAt" : "2020-05-02T20:33:20Z",
+          |    "refreshToken" : "refreshToken"
+          |  },
           |  "type" : "Account"
           |}""".stripMargin
     }
