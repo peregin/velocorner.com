@@ -50,10 +50,10 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
-        case Some(account) =>
-          Redirect(controllers.routes.WebController.index())
+        case Some(_) =>
+          Redirect(controllers.routes.WebController.index()) // already logged in
         case None =>
-          redirectToAuthorization(scope, request)
+          redirectToAuthorization(scope, request) // authorize
       }
     }
   }
