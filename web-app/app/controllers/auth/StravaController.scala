@@ -115,9 +115,12 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
     val storage = connectivity.getStorage
     for {
-      athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
+      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
+      // retrieve the provider user has more details than the user got at authentication
+      athlete <- retrieveProviderUser(resp.accessToken)
       _ = assert(athlete.id == consumerUser.athleteId) // link logged in user with the account accessed via the token
-      account = Account.from(athlete, resp.toStravaAccess)
+      // keep values from the database, like last update and role
+      account = Account.from(athlete, resp.toStravaAccess, consumerUser.lastUpdate, consumerUser.role)
       _ <- storage.getAccountStorage.store(account)
       _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
       _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
@@ -129,15 +132,13 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
     val storage = connectivity.getStorage
     for {
-      athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
-      accountStorage = storage.getAccountStorage
-      maybeAccount <- accountStorage.getAccount(athlete.id)
-      account = Account.from(athlete, resp.toStravaAccess)
-      freshAccount = maybeAccount.map { cu =>
-        // keep values from the database, like last update and role
-        account.copy(lastUpdate = cu.lastUpdate, role = cu.role)
-      }.getOrElse(account)
-      _ <- accountStorage.store(freshAccount)
+      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
+      // retrieve the provider user has more details than the user got at authentication
+      athlete <- retrieveProviderUser(resp.accessToken)
+      maybeAccount <- storage.getAccountStorage.getAccount(athlete.id)
+      // keep values from the database, like last update and role
+      account = Account.from(athlete, resp.toStravaAccess, maybeAccount.flatMap(_.lastUpdate), maybeAccount.flatMap(_.role))
+      _ <- storage.getAccountStorage.store(account)
       _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
       _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
       token <- idContainer.startNewSession(athlete.id, sessionTimeoutInSeconds)
