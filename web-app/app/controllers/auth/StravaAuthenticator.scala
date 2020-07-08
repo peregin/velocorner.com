@@ -70,6 +70,8 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
      resp
   }
 
+  // TODO: refreshAccessToken
+
   def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
     logger.info(s"parsing token from $response")
     try {

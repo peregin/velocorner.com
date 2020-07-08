@@ -26,6 +26,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
   val stalePeriodInMillis = 60000 // more than a minute
 
   // query from the storage and eventually from the activity feed
+  // TODO: refresh token if iit has been expired
   def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
     account.stravaAccess.map(_.accessToken).map { accessToken =>
       // allow refresh after some time only
@@ -49,7 +50,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
   protected def retrieveNewActivities(feed: ActivityFeed, storage: Storage[Future], athleteId: Long, lastUpdate: Option[DateTime], now: DateTime): Future[Iterable[Activity]] = {
     lastUpdate.map(_.getMillis) match {
 
-      case None => // it was never synched, do a full update
+      case None => // it was never synchronized, do a full update
         log.info(s"retrieving all activities as it was never synched")
         StravaActivityFeed.listAllAthleteActivities(feed)
 
