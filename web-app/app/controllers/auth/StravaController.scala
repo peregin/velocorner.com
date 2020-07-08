@@ -113,36 +113,33 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
-    val storage = connectivity.getStorage
     for {
-      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
-      // retrieve the provider user has more details than the user got at authentication
-      athlete <- retrieveProviderUser(resp.accessToken)
-      _ = assert(athlete.id == consumerUser.athleteId) // link logged in user with the account accessed via the token
-      // keep values from the database, like last update and role
-      account = Account.from(athlete, resp.toStravaAccess, consumerUser.lastUpdate, consumerUser.role)
-      _ <- storage.getAccountStorage.store(account)
-      _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
-      _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
+      _ <- login(resp, consumerUser.some)
     } yield Redirect(controllers.routes.WebController.index())
   }
 
   // matches the provider and consumer users
   def onOAuthLoginSucceeded(resp: AccessTokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
-    val storage = connectivity.getStorage
     for {
-      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
-      // retrieve the provider user has more details than the user got at authentication
-      athlete <- retrieveProviderUser(resp.accessToken)
-      maybeAccount <- storage.getAccountStorage.getAccount(athlete.id)
-      // keep values from the database, like last update and role
-      account = Account.from(athlete, resp.toStravaAccess, maybeAccount.flatMap(_.lastUpdate), maybeAccount.flatMap(_.role))
-      _ <- storage.getAccountStorage.store(account)
-      _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
-      _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
+      athlete <- login(resp, none)
       token <- idContainer.startNewSession(athlete.id, sessionTimeoutInSeconds)
       result <- Future.successful(Redirect(controllers.routes.WebController.index()))
     } yield tokenAccessor.put(token)(result)
   }
+
+  // same functionality when the account is linked with a given consumerUser or logged in to an existing mapping
+  private def login(resp: AccessTokenResponse, consumerUser: Option[ConsumerUser])(implicit ctx: ExecutionContext): Future[ProviderUser] = for {
+    //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
+    // retrieve the provider user has more details than the user got at authentication
+    athlete <- retrieveProviderUser(resp.accessToken)
+    storage = connectivity.getStorage
+    maybeAccount <- Future(consumerUser).orElse(storage.getAccountStorage.getAccount(athlete.id))
+    _ = assert(consumerUser.forall(_.athleteId == athlete.id))
+    // keep values from the database, like last update and role
+    account = Account.from(athlete, resp.toStravaAccess, maybeAccount.flatMap(_.lastUpdate), maybeAccount.flatMap(_.role))
+    _ <- storage.getAccountStorage.store(account)
+    _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
+    _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
+  } yield athlete
 }
