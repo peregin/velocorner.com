@@ -33,7 +33,6 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     val json = JsonIo.write(a)
     client.json(json)
   }.foreach { json =>
-    // TODO: bulk store
     val result: java.util.HashMap[String, String] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
     logger.debug(s"result $result")
   })
