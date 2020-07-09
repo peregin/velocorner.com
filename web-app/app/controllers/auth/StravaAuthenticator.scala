@@ -15,7 +15,7 @@ import play.api.libs.ws.StandaloneWSResponse
 import velocorner.feed.StravaActivityFeed
 import velocorner.model.StravaAccess
 import velocorner.model.strava.Athlete
-import velocorner.util.Metrics
+import velocorner.util.{CloseableResource, Metrics}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -32,7 +32,7 @@ case class AccessTokenResponse(accessToken: AccessToken, expiresAt: DateTime, re
 /**
   * Created by levi on 09/12/15.
   */
-class StravaAuthenticator(connectivity: ConnectivitySettings) {
+class StravaAuthenticator(connectivity: ConnectivitySettings) extends CloseableResource {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
   val clientSecret: String = connectivity.secretConfig.getSecret("strava")
@@ -56,27 +56,39 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   }
 
   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
-     logger.info(s"retrieve token for code[$code]")
-     val feed = connectivity.getStravaFeed
-     val resp = feed.ws(_.url(accessTokenUrl))
-      .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .post(Map(
-        "client_id" -> clientId,
-        "client_secret" -> clientSecret,
-        "code" -> code)
-      )
-      .map(parseAccessTokenResponse)
-     resp.onComplete(_ => feed.close())
-     resp
+    logger.info(s"retrieve token for code[$code]")
+    withCloseable(connectivity.getStravaFeed) {
+      _.ws(_.url(accessTokenUrl))
+        .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+        .post(Map(
+          "client_id" -> clientId,
+          "client_secret" -> clientSecret,
+          "code" -> code)
+        )
+        .map(parseAccessTokenResponse)
+    }
   }
 
-  // TODO: refreshAccessToken
+  def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
+    logger.info(s"refreshing token with[$refreshToken]")
+    withCloseable(connectivity.getStravaFeed) {
+      _.ws(_.url(accessTokenUrl))
+        .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+        .post(Map(
+          "client_id" -> clientId,
+          "client_secret" -> clientSecret,
+          "grant_type" -> "refresh_token",
+          "refresh_token" -> refreshToken
+        ))
+        .map(parseAccessTokenResponse)
+    }
+  }
 
   def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
     logger.info(s"parsing token from $response")
     try {
       val json = response.body[JsValue]
-      val athlete = (json \ "athlete").as[Athlete]
+      val athlete = (json \ "athlete").asOpt[Athlete]
       // access token, expires usually in 6 hours
       val accessToken = (json \ "access_token").as[String]
       // refresh token allows to retrieve a new access token when the current has been expired
@@ -86,7 +98,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
       val expiresAt = DateTime.now().plusSeconds(expiresInSec)
       logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
-      AccessTokenResponse(accessToken, expiresAt, refreshToken, athlete.some)
+      AccessTokenResponse(accessToken, expiresAt, refreshToken, athlete)
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }

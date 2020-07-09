@@ -26,7 +26,7 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
   val stalePeriodInMillis = 60000 // more than a minute
 
   // query from the storage and eventually from the activity feed
-  // TODO: refresh token if iit has been expired
+  // TODO: refresh token if it has been expired
   def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
     account.stravaAccess.map(_.accessToken).map { accessToken =>
       // allow refresh after some time only
