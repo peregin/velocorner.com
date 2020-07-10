@@ -24,8 +24,6 @@ object SecretConfig {
 
 case class SecretConfig(config: Config) {
 
-
-  def isWeatherEnabled(): Boolean = config.getOptAs[Boolean]("weather.enabled").getOrElse(false)
   def isWithingsEnabled(): Boolean = config.getOptAs[Boolean]("withings.enabled").getOrElse(false)
 
   def getId(application: String) = config.getString(s"$application.application.id")

@@ -10,9 +10,8 @@ import scala.concurrent.Future
 class ErrorController @Inject()(implicit assets: AssetsFinder) extends DefaultHttpErrorHandler {
 
   override protected def onNotFound(request: RequestHeader, message: String): Future[Result] = {
-    val context = PageContext(title = "Not Found", account = None,
-      isWithingsEnabled = false,
-      isWeatherEnabled = false, weatherLocation = "")
+    val context = PageContext(title = "Not Found", account = None, weatherLocation = "",
+      isWithingsEnabled = false)
     Future.successful(NotFound(views.html.notFound(context)(assets = assets)))
   }
 }

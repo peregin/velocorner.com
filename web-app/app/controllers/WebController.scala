@@ -68,9 +68,8 @@ class WebController @Inject()
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
-    val context = PageContext(title, maybeAccount,
-      connectivity.secretConfig.isWithingsEnabled(),
-      connectivity.secretConfig.isWeatherEnabled(), WeatherCookie.retrieve
+    val context = PageContext(title, maybeAccount, WeatherCookie.retrieve,
+      connectivity.secretConfig.isWithingsEnabled()
     )
     logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context
