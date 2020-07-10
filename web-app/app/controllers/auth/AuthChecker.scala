@@ -48,8 +48,8 @@ trait AuthChecker extends WebMetrics {
     override def parser: BodyParser[AnyContent] = parse.default
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       implicit val r = request
-      val maybeUserFuture = restoreUser.recover { case _ => None -> identity[Result] _ }
-      maybeUserFuture.flatMap { case (maybeUser, cookieUpdater) =>
+      val maybeUserF = restoreUser.recover { case _ => None -> identity[Result] _ }
+      maybeUserF.flatMap { case (maybeUser, cookieUpdater) =>
         val richReq = maybeUser.map(u => request.addAttr(OAuth2AttrKey, u)).getOrElse(request)
         val eventualResult = block(richReq)
         eventualResult.map(cookieUpdater)

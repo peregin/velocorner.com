@@ -26,11 +26,9 @@ class RefreshStrategy @Inject()(connectivity: ConnectivitySettings) {
   val stalePeriodInMillis = 60000 // more than a minute
 
   // query from the storage and eventually from the activity feed
-  // TODO: refresh token if it has been expired
-  def refreshAccountActivities(account: Account): Future[Iterable[Activity]] = {
+  def refreshAccountActivities(account: Account, now: DateTime): Future[Iterable[Activity]] = {
     account.stravaAccess.map(_.accessToken).map { accessToken =>
       // allow refresh after some time only
-      val now = DateTime.now()
       val storage = connectivity.getStorage
       val feed = connectivity.getStravaFeed(accessToken)
       log.info(s"refresh for athlete: ${account.athleteId}, last update: ${account.lastUpdate}")

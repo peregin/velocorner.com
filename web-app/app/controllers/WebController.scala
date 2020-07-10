@@ -1,6 +1,6 @@
 package controllers
 
-import controllers.auth.AuthChecker
+import controllers.auth.{AuthChecker, StravaAuthenticator}
 import javax.inject.Inject
 import play.Logger
 import play.api.cache.SyncCacheApi
@@ -8,9 +8,9 @@ import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import cats.implicits._
 import cats.data.OptionT
+import org.joda.time.DateTime
 
 /**
   * Serves the web pages, rendered from server side.
@@ -31,7 +31,18 @@ class WebController @Inject()
     logger.info(s"refreshing page for $maybeAccount")
     val result = for {
       account <- OptionT(Future(maybeAccount))
-      activities <- OptionT.liftF(strategy.refreshAccountActivities(account))
+      now = DateTime.now()
+      // if the access token is expired refresh it and store it
+      refreshAccount <- OptionT.liftF(account.stravaAccess.filter(_.accessExpiresAt.isBefore(now)).map { stravaAccess =>
+        val authenticator = new StravaAuthenticator(connectivity)
+        logger.info(s"refreshing access token expired at ${stravaAccess.accessExpiresAt}")
+        for {
+          resp <- authenticator.refreshAccessToken(stravaAccess.refreshToken)
+          refreshAccount = account.copy(stravaAccess = resp.toStravaAccess.some)
+          _ <- connectivity.getStorage.getAccountStorage.store(refreshAccount)
+        } yield refreshAccount
+      }.getOrElse(Future(account)))
+      activities <- OptionT.liftF(strategy.refreshAccountActivities(refreshAccount, now))
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
     result.value
