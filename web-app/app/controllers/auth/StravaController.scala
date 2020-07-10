@@ -137,10 +137,11 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     // retrieve the provider user has more details than the user got at authentication
     athlete <- retrieveProviderUser(resp.accessToken)
     storage = connectivity.getStorage
-    maybeAccount <- Future(consumerUser).orElse(storage.getAccountStorage.getAccount(athlete.id))
+    maybeAccount <- consumerUser.fold(storage.getAccountStorage.getAccount(athlete.id))(_ => Future(consumerUser))
     _ = assert(consumerUser.forall(_.athleteId == athlete.id))
     // keep values from the database, like last update and role
     account = Account.from(athlete, resp.toStravaAccess, maybeAccount.flatMap(_.lastUpdate), maybeAccount.flatMap(_.role))
+    _ = logger.info(s"last updated at ${account.lastUpdate.mkString}")
     _ <- storage.getAccountStorage.store(account)
     _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
     _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
