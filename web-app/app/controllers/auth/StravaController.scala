@@ -13,10 +13,12 @@ import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.{Athlete, Gear}
-import velocorner.util.CloseableResource
 
 import scala.concurrent.{ExecutionContext, Future}
+
 import cats.implicits._
+//for kestrel combinator
+import mouse.all._
 
 object StravaController {
 
@@ -42,7 +44,7 @@ object StravaController {
 }
 
 class StravaController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker with CloseableResource {
+  extends AbstractController(components) with AuthChecker {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
@@ -108,7 +110,8 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
   // consumer user is the account
   def retrieveProviderUser(token: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
     logger.info(s"retrieve provider user for $token")
-    withCloseable(connectivity.getStravaFeed(token))(_.getAthlete)
+    val feed = connectivity.getStravaFeed(token)
+    feed.getAthlete <| (_.onComplete(_ => feed.close()))
   }
 
   def onOAuthLinkSucceeded(resp: AccessTokenResponse, consumerUser: ConsumerUser)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
