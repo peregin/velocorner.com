@@ -34,7 +34,8 @@ backup-psql.sh
 ```
 #### Change Account
 ```shell script
-UPDATE account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athlete_id = 432909;
+update account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athlete_id = 432909;
+select data->>'role' from account where athlete_id = 432909;
 ```
 
 # Distribution
