@@ -5,16 +5,6 @@ import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.model.strava.Athlete
 
-object StravaAccess {
-  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
-  implicit val dataFormat = Format[StravaAccess](Json.reads[StravaAccess], Json.writes[StravaAccess])
-}
-
-case class StravaAccess(
-                         accessToken: String,
-                         accessExpiresAt: DateTime,
-                         refreshToken: String
-                       )
 
 object Account {
 
@@ -39,7 +29,7 @@ object Account {
   implicit val accountFormat = Format[Account](Json.reads[Account], writes)
 
   // extract the user details from provider, e.g. Stava into the consumer one (velocorner.com)
-  def from(athlete: Athlete, stravaAccess: StravaAccess, lastUpdate: Option[DateTime], role: Option[Role.Entry]) = new Account(
+  def from(athlete: Athlete, stravaAccess: OAuth2Access, lastUpdate: Option[DateTime], role: Option[Role.Entry]) = new Account(
     athlete.id,
     athlete.firstname.orElse(athlete.lastname).getOrElse(""),
     s"${athlete.city.mkString}, ${athlete.country.mkString}",
@@ -60,7 +50,7 @@ case class Account(
                     avatarUrl: String,
                     lastUpdate: Option[DateTime],
                     role: Option[Role.Entry],
-                    stravaAccess: Option[StravaAccess]
+                    stravaAccess: Option[OAuth2Access]
                   ) {
 
   def isAdmin(): Boolean = role.exists(_ == Role.Admin)

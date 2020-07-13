@@ -14,7 +14,7 @@ class AccountSpec extends Specification {
 
     "add type to the json" in {
       val now = DateTime.parse("2020-05-02T20:33:20.000+02:00").withZone(DateTimeZone.forID("Europe/Zurich"))
-      val access = StravaAccess(
+      val access = OAuth2Access(
         "accessToken", accessExpiresAt = now, "refreshToken"
       )
       val account = Account(

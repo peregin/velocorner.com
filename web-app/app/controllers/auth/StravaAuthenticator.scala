@@ -3,7 +3,6 @@ package controllers.auth
 import java.net.{URI, URLEncoder}
 
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{AccessToken, ProviderUser, RefreshToken}
 import org.joda.time.DateTime
 import play.Logger
 import play.api.http.{HeaderNames, MimeTypes}
@@ -11,8 +10,8 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
+import velocorner.feed.OAuth2._
 import velocorner.feed.StravaActivityFeed
-import velocorner.model.StravaAccess
 import velocorner.model.strava.Athlete
 import velocorner.util.Metrics
 
@@ -21,15 +20,6 @@ import scala.util.control.NonFatal
 
 // for kestrel combinator and unsafeTap
 import mouse.all._
-
-case class AccessTokenResponse(accessToken: AccessToken, expiresAt: DateTime, refreshToken: RefreshToken, athlete: Option[ProviderUser]) {
-
-  def toStravaAccess = StravaAccess(
-    accessToken = accessToken,
-    accessExpiresAt = expiresAt,
-    refreshToken = refreshToken
-  )
-}
 
 /**
   * Created by levi on 09/12/15.
@@ -57,7 +47,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri&state=$encodedState&response_type=code&approval_prompt=auto&scope=$encodedScope"
   }
 
-  def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
+  def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"retrieve token for code[$code]")
     val feed = connectivity.getStravaFeed
     val resp = feed.ws(_.url(accessTokenUrl))
@@ -71,7 +61,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     resp <| (_.onComplete(_ => feed.close()))
   }
 
-  def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[AccessTokenResponse] = {
+  def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"refreshing token with[$refreshToken]")
     val feed = connectivity.getStravaFeed
     val resp = feed.ws(_.url(accessTokenUrl))
@@ -86,7 +76,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     resp <| (_.onComplete(_ => feed.close()))
   }
 
-  def parseAccessTokenResponse(response: StandaloneWSResponse): AccessTokenResponse = {
+  def parseAccessTokenResponse(response: StandaloneWSResponse): OAuth2TokenResponse = {
     logger.info(s"parsing token from $response")
     try {
       val json = response.body[JsValue]
@@ -100,7 +90,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
       val expiresAt = DateTime.now().plusSeconds(expiresInSec)
       logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
-      AccessTokenResponse(accessToken, expiresAt, refreshToken, athlete)
+      OAuth2TokenResponse(accessToken, expiresAt, refreshToken, athlete)
     } catch {
       case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
     }
