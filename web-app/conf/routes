@@ -245,6 +245,21 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 ###
 GET     /api/weather/sunrise/:location                     controllers.WeatherController.sunrise(location: String)
 
+###
+#  summary: Suggests a list of locations based on the query parameter
+#  tags:
+#    - weather
+#  responses:
+#    200:
+#      description: Returns a list of activities
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items: string
+###
+GET     /api/weather/suggest                               controllers.WeatherController.suggest(query: String)
+
 
 # DOC
 ### NoDocs ###
