@@ -19,5 +19,20 @@ class CountryIsoUtilsSpec extends Specification {
       CountryIsoUtils.iso("Zurich, Helvetica") === "Zurich, Helvetica"
       CountryIsoUtils.iso("Budapest, Hungary") === "Budapest,HU"
     }
+
+    "normalize list of locations" in {
+      val locations = List(
+        "adliswil, ch",
+        "Adliswil, ch",
+        "adliswil",
+        "adliswil,CH",
+        "Adliswil,CH",
+        "Adliswil",
+        "Budapest"
+      )
+      // TODO: normalize location suggestions
+      //CountryIsoUtils.normalize(locations) should containTheSameElementsAs(List("Adliswil,CH", "Budapest"))
+      1 === 1
+    }
   }
 }
