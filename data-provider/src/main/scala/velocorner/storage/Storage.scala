@@ -48,6 +48,7 @@ trait Storage[M[_]] {
     def storeWeather(forecast: Iterable[WeatherForecast]): M[Unit]
     def getSunriseSunset(location: String, localDate: String): M[Option[SunriseSunset]]
     def storeSunriseSunset(sunriseSunset: SunriseSunset): M[Unit]
+    def suggestLocations(snippet: String): M[Iterable[String]]
   }
 
   // key value pairs - generic attribute storage

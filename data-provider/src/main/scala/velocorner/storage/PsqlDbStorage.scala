@@ -132,6 +132,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
   // gears
   override def getGearStorage: GearStorage = gearStorage
+
   private lazy val gearStorage = new GearStorage {
     override def store(gear: Gear, gearType: Gear.Entry): Future[Unit] =
       sql"""insert into gear (id, type, data)
@@ -171,6 +172,13 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |values(${sunriseSunset.location}, ${sunriseSunset.date}, $sunriseSunset) on conflict(location, update_date)
            |do update set data = $sunriseSunset
            |""".stripMargin.update.run.void.toFuture
+
+    override def suggestLocations(snippet: String): Future[Iterable[String]] = {
+      val searchPattern = "%" + snippet.toLowerCase + "%"
+      sql"""select distinct location from weather
+           |where lower(location) like $searchPattern
+           |""".stripMargin.query[String].to[List].toFuture
+    }
   }
 
   override def getAttributeStorage: AttributeStorage = attributeStorage
@@ -239,8 +247,10 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   }
 
   override def getAdminStorage: AdminStorage = adminStorage
+
   lazy val adminStorage = new AdminStorage {
     override def countAccounts: Future[Long] = count("account")
+
     override def countActivities: Future[Long] = count("activity")
   }
 

@@ -5,7 +5,9 @@ import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.api.strava.Activity
+import velocorner.api.weather.WeatherForecast
 import velocorner.model.strava.Gear
+import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
 
 class PsqlDbStorageSpec extends Specification with BeforeAfterAll
@@ -53,6 +55,16 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(gearStorage.store(gear, Gear.Bike))
       awaitOn(gearStorage.getGear("id20")) should beNone
       awaitOn(gearStorage.getGear("id1")) should beSome(gear)
+    }
+
+    "suggest weather locations" in {
+      lazy val weatherStorage = psqlStorage.getWeatherStorage
+      lazy val fixtures = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
+      awaitOn(weatherStorage.storeWeather(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt.getMillis, e))))
+      awaitOn(weatherStorage.storeWeather(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt.getMillis, e))))
+      awaitOn(weatherStorage.suggestLocations("zur")) should containTheSameElementsAs(List("Zurich,CH"))
+      awaitOn(weatherStorage.suggestLocations("bud")) should containTheSameElementsAs(List("Budapest,HU"))
+      awaitOn(weatherStorage.suggestLocations("wien")) should beEmpty
     }
   }
 

@@ -136,6 +136,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
         Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date))
     }
+
+    override def suggestLocations(snippet: String): Future[Iterable[String]] = ???
   }
 
   override def getWeatherStorage: WeatherStorage = weatherStorage
