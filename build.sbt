@@ -10,11 +10,11 @@ import play.sbt.PlayImport._
 val projectScalaVersion = "2.13.3"
 
 val catsVersion = "2.1.1"
-val zioVersion = "1.0.0-RC21-2"
+val zioVersion = "1.0.0"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.1.1"
-val mongoDbVersion = "4.0.5"
+val mongoDbVersion = "4.1.0"
 val rethinkDbVersion = "2.4.0"
 val flywayVersion = "6.5.3"
 val elasticVersion = "7.8.1"
