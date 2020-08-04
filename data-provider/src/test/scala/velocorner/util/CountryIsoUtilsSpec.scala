@@ -30,9 +30,7 @@ class CountryIsoUtilsSpec extends Specification {
         "Adliswil",
         "Budapest"
       )
-      // TODO: normalize location suggestions
-      //CountryIsoUtils.normalize(locations) should containTheSameElementsAs(List("Adliswil,CH", "Budapest"))
-      1 === 1
+      CountryIsoUtils.normalize(locations) should containTheSameElementsAs(List("Adliswil,CH", "Budapest"))
     }
   }
 }

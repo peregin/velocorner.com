@@ -1,6 +1,6 @@
-@(location: String, restUrl: String)(implicit assets: AssetsFinder)
+@(location: String)(implicit assets: AssetsFinder)
 
-<!-- Wather widget with 5 days forecast -->
+<!-- Weather widget with 5 days forecast -->
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
     <div class="row">
         <div class="col-md-3 col-sm-12">
@@ -44,59 +44,4 @@
 <script type="text/javascript" src="@routes.Assets.at("javascripts/meteogram.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/windbarb.src.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/pattern-fill.js")"></script>
-<script type="text/javascript">//<![CDATA[
-    $(document).ready(function() {
-        $('#weather_button').click(function() {
-            triggerForecast();
-        });
-        $('#weather').keypress(function(e) {
-            if (e.which == 13) {
-                triggerForecast()
-            }
-        });
-
-        triggerForecast();
-    });
-
-    function triggerForecast() {
-        var place = $('#weather').val();
-        if (place) {
-            console.log('forecast for ' + place);
-            weatherForecast(place);
-        } else {
-            console.log("won't request weather forecast, place is not set");
-        }
-    }
-
-    function weatherForecast(place) {
-        $('#weather-progress').css("visibility","visible");
-
-        // meteogram
-        $.ajax({
-            dataType: 'xml',
-            url: "@restUrl/weather/forecast/" + place + "?mode=xml",
-            success: function (xml) {
-                $('#weather-progress').css("visibility","hidden");
-                $('#weather-container').css('display', 'block');
-                window.meteogram = new Meteogram(xml, 'weather-container');
-            },
-            error: function(e) {
-                $('#weather-progress').css("visibility","hidden");
-                console.error("meteogram with " + e);
-            }
-        });
-
-        // sunrise and sunset
-        $.ajax({
-            dataType: 'json',
-            url: "@restUrl/weather/sunrise/" + place,
-            success: function (data) {
-                $('#sunrise-sunset').css("visibility","visible");
-                $('#weather-sunrise').html(moment.unix(data.sunrise).format('H:mm'));
-                $('#weather-sunset').html(moment.unix(data.sunset).format('H:mm'));
-            }
-        });
-
-    }
-//]]>
-</script>
+<script src="@assets.path("javascripts/weather.js")" type="text/javascript"></script>

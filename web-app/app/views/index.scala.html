@@ -1,7 +1,7 @@
 @(context: PageContext)(implicit request: play.api.mvc.Request[Any], assets: AssetsFinder)
 @common.main(context) {
 
-    @widget.weather(context.weatherLocation, "/api")
+    @widget.weather(context.weatherLocation)
 
     @if(context.isWithingsEnabled) {
         <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
