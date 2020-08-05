@@ -74,7 +74,7 @@ def cats = Seq(
 
 def zio = Seq(
   "dev.zio" %% "zio" % zioVersion,
-  "dev.zio" %% "zio-logging" % "0.3.2"
+  "dev.zio" %% "zio-logging" % "0.4.0"
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
