@@ -202,7 +202,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
-  def activity(id: Int): Action[AnyContent] =
+  def activity(id: Long): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for activity $id") { implicit request =>
 
       val resultET = for {

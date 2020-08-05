@@ -180,7 +180,7 @@ GET     /api/activities/type                               controllers.ActivityC
 #    500:
 #      description: Internal error
 ###
-GET     /api/activities/:id                                controllers.ActivityController.activity(id: Int)
+GET     /api/activities/:id                                controllers.ActivityController.activity(id: Long)
 
 ###
 #  summary: Retrieves the weather forecast for a specific place
