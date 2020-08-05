@@ -2,9 +2,17 @@
         $('#weather_button').click(function() {
             triggerForecast();
         });
-        $('#weather').keypress(function(e) {
+        var weatherField = $('#weather')
+        weatherField.keypress(function(e) {
             if (e.which == 13) {
                 triggerForecast()
+            }
+        });
+        weatherField.autocomplete({
+            serviceUrl: '/api/weather/suggest',
+            onSelect: function (suggestion) {
+                console.log('selected location: ' + suggestion.value);
+                triggerForecast();
             }
         });
 
