@@ -1,16 +1,16 @@
 package velocorner.storage
 
+import cats._
 import com.rethinkdb.RethinkDB
 import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Cursor}
 import com.typesafe.scalalogging.LazyLogging
 import org.json.simple.JSONObject
+import velocorner.api.strava.Activity
 import velocorner.model.Account
-import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.model.strava.Gear
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
-import cats._
-import velocorner.api.strava.Activity
 
 import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
@@ -75,7 +75,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     logger.debug(s"result $result")
   }
 
-  private def getJsonById(id: String, table: String) = Monad[M].pure {
+  private def getJsonById(id: String, table: String): M[Option[String]] = Monad[M].pure {
     val result: Cursor[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
       val field1 = arg1.getField("id")
       field1.eq(id)
@@ -127,7 +127,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     }
     createIfNotExists(ACTIVITY_TABLE, ACCOUNT_TABLE, GEAR_TABLE)
 
-    maybeConn = Some(conn)
+    maybeConn = Option(conn)
     logger.info(s"connected with $conn")
   }
 
