@@ -16,12 +16,12 @@ val doobieVersion = "0.9.0"
 val orientDbVersion = "3.1.1"
 val mongoDbVersion = "4.1.0"
 val rethinkDbVersion = "2.4.0"
-val flywayVersion = "6.5.3"
+val flywayVersion = "6.5.4"
 val elasticVersion = "7.8.1"
-val finatraVersion = "20.7.0"
+val finatraVersion = "20.8.0"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.9.0"
-val specsVersion = "4.10.2"
+val specsVersion = "4.10.3"
 val mockitoVersion = "3.4.6"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
