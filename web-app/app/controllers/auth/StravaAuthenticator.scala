@@ -32,6 +32,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   val providerName: String = "strava"
   val clientId: String = connectivity.secretConfig.getId("strava")
   val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
+  val callbackUri = new URI(callbackUrl)
 
   private val logger = Logger.of(this.getClass)
 
@@ -39,8 +40,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     logger.info(s"authorization url for scope[$host]")
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     // scope is the host name localhost:9000 or www.velocorner.com
-    val uri = new URI(callbackUrl)
-    val adjustedCallbackUrl = s"${uri.getScheme}://$host${uri.getPath}"
+    val adjustedCallbackUrl = s"${callbackUri.getScheme}://$host${callbackUri.getPath}"
     val encodedRedirectUri = URLEncoder.encode(adjustedCallbackUrl, "utf-8")
     val encodedState = URLEncoder.encode(state, "utf-8")
     val encodedScope = URLEncoder.encode("read,activity:read", "utf-8")
