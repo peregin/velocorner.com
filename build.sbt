@@ -17,12 +17,12 @@ val orientDbVersion = "3.1.2"
 val mongoDbVersion = "4.1.0"
 val rethinkDbVersion = "2.4.0"
 val flywayVersion = "6.5.5"
-val elasticVersion = "7.8.1"
-val finatraVersion = "20.8.0"
+val elasticVersion = "7.9.0"
+val finatraVersion = "20.8.1"
 val playWsVersion = "2.1.2" // standalone version
 val playJsonVersion = "2.9.0"
 val specsVersion = "4.10.3"
-val mockitoVersion = "3.5.5"
+val mockitoVersion = "3.5.7"
 
 val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
