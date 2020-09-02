@@ -44,7 +44,7 @@ val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % pl
 
 val apacheCommons = Seq(
   "commons-io" % "commons-io" % "2.7",
-  "commons-codec" % "commons-codec" % "1.14"
+  "commons-codec" % "commons-codec" % "1.15"
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
@@ -74,7 +74,7 @@ def cats = Seq(
 
 def zio = Seq(
   "dev.zio" %% "zio" % zioVersion,
-  "dev.zio" %% "zio-logging" % "0.4.0"
+  "dev.zio" %% "zio-logging" % "0.5.0"
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
