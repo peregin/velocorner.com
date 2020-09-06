@@ -11,6 +11,7 @@ val projectScalaVersion = "2.13.3"
 
 val catsVersion = "2.1.1"
 val zioVersion = "1.0.1"
+val shapelessVersion = "2.3.3"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
 val orientDbVersion = "3.1.2"
@@ -70,6 +71,10 @@ def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
 def cats = Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
   "org.typelevel" %% "mouse" % "0.25"
+)
+
+def scalaz = Seq(
+  "org.scalaz" %% "scalaz-core" % "7.3.2"
 )
 
 def zio = Seq(
@@ -180,7 +185,10 @@ lazy val gatewayService = (project in file("gateway-service") withId "gateway-se
     buildSettings,
     name := "gateway-service",
     scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13
-    libraryDependencies += "com.twitter" %% "finatra-http" % finatraVersion,
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finatra-http" % finatraVersion,
+      "com.chuusai" %% "shapeless" % shapelessVersion
+    ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
   )
 
