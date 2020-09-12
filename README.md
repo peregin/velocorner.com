@@ -29,3 +29,22 @@ Also using this project to experiment with technologies.
 Follows the infrastructure as code approach, see more details in this [repo](https://github.com/peregin/my-little-infra "Infrastructure") .
 
 ![Infrastructure](https://raw.github.com/peregin/my-little-infra/master/doc/infra.png "Infrastructure")
+
+## Local Setup
+### Mirror Infrastructure
+Start local infrastructure and deploy the stack
+### Individual Services
+Start database
+```shell script
+# start and import database
+./script/start_psql.sh
+./script/import_psql.sh ~/Downloads/velo/velocorner/backup/psql-202008031826.sql.gz
+# start web application
+sbt -Xms512M \
+    -Xmx2048M \
+    -Xss1M \
+    -XX:+CMSClassUnloadingEnabled \
+    -Dhttp.port=9001 \
+    -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf \
+  "project web-app" run
+```

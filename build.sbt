@@ -13,7 +13,7 @@ val catsVersion = "2.2.0"
 val zioVersion = "1.0.1"
 val shapelessVersion = "2.3.3"
 val logbackVersion = "1.2.3"
-val doobieVersion = "0.9.0"
+val doobieVersion = "0.9.2"
 val orientDbVersion = "3.1.2"
 val mongoDbVersion = "4.1.0"
 val rethinkDbVersion = "2.4.0"
@@ -21,7 +21,7 @@ val flywayVersion = "6.5.5"
 val elasticVersion = "7.9.0"
 val finatraVersion = "20.8.1"
 val playWsVersion = "2.1.2" // standalone version
-val playJsonVersion = "2.9.0"
+val playJsonVersion = "2.9.1"
 val specsVersion = "4.10.3"
 val mockitoVersion = "3.5.10"
 
@@ -44,7 +44,7 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % play
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
 
 val apacheCommons = Seq(
-  "commons-io" % "commons-io" % "2.7",
+  "commons-io" % "commons-io" % "2.8.0",
   "commons-codec" % "commons-codec" % "1.15"
 )
 
@@ -79,7 +79,7 @@ def scalaz = Seq(
 
 def zio = Seq(
   "dev.zio" %% "zio" % zioVersion,
-  "dev.zio" %% "zio-logging" % "0.5.0"
+  "dev.zio" %% "zio-logging" % "0.5.1"
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
