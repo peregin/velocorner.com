@@ -7,41 +7,23 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
-val projectScalaVersion = "2.13.3"
-
-val catsVersion = "2.2.0"
-val zioVersion = "1.0.1"
-val shapelessVersion = "2.3.3"
-val logbackVersion = "1.2.3"
-val doobieVersion = "0.9.2"
-val orientDbVersion = "3.1.2"
-val mongoDbVersion = "4.1.0"
-val rethinkDbVersion = "2.4.0"
-val flywayVersion = "6.5.5"
-val elasticVersion = "7.9.0"
-val finatraVersion = "20.8.1"
-val playWsVersion = "2.1.2" // standalone version
-val playJsonVersion = "2.9.1"
-val specsVersion = "4.10.3"
-val mockitoVersion = "3.5.10"
-
-val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % rethinkDbVersion
-val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % mongoDbVersion
-val orientDbClient = "com.orientechnologies" % "orientdb-client" % orientDbVersion
+val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % CommonDependencies.rethinkDbVersion
+val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % CommonDependencies.mongoDbVersion
+val orientDbClient = "com.orientechnologies" % "orientdb-client" % CommonDependencies.orientDbVersion
 val psqlDbClient = Seq(
-  "org.tpolecat" %% "doobie-core" % doobieVersion,
-  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
-  "org.flywaydb" % "flyway-core" % flywayVersion,
+  "org.tpolecat" %% "doobie-core" % CommonDependencies.doobieVersion,
+  "org.tpolecat" %% "doobie-postgres" % CommonDependencies.doobieVersion,
+  "org.tpolecat" %% "doobie-hikari" % CommonDependencies.doobieVersion,
+  "org.flywaydb" % "flyway-core" % CommonDependencies.flywayVersion,
   "com.opentable.components" % "otj-pg-embedded" % "0.13.3" % "test"
 )
 
-val playJson = "com.typesafe.play" %% "play-json" % playJsonVersion
+val playJson = "com.typesafe.play" %% "play-json" % CommonDependencies.playJsonVersion
 // for more than 22 parameter case classes
 val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.40.2"
-val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % playJsonVersion
-val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % playWsVersion
-val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % playWsVersion
+val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % CommonDependencies.playJsonVersion
+val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % CommonDependencies.playWsVersion
+val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % CommonDependencies.playWsVersion
 
 val apacheCommons = Seq(
   "commons-io" % "commons-io" % "2.8.0",
@@ -50,26 +32,26 @@ val apacheCommons = Seq(
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
 val playTestPlus = "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test"
-val scalaSpec = "org.specs2" %% "specs2-core" % specsVersion % "test"
-val scalaSpecJunit = "org.specs2" %% "specs2-junit" % specsVersion % "test"
-val mockito = "org.mockito" % "mockito-core" % mockitoVersion % "test"
+val scalaSpec = "org.specs2" %% "specs2-core" % CommonDependencies.specsVersion % "test"
+val scalaSpecJunit = "org.specs2" %% "specs2-junit" % CommonDependencies.specsVersion % "test"
+val mockito = "org.mockito" % "mockito-core" % CommonDependencies.mockitoVersion % "test"
 
 def logging = Seq(
-  "ch.qos.logback" % "logback-classic" % logbackVersion,
+  "ch.qos.logback" % "logback-classic" % CommonDependencies.logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.codehaus.janino" % "janino" % "3.1.2", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
-  "com.sksamuel.elastic4s" %% "elastic4s-core" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elasticVersion % "test"
+  "com.sksamuel.elastic4s" %% "elastic4s-core" % CommonDependencies.elasticVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % CommonDependencies.elasticVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % CommonDependencies.elasticVersion,
+  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % CommonDependencies.elasticVersion % "test"
 )
 def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
 
 def cats = Seq(
-  "org.typelevel" %% "cats-core" % catsVersion,
+  "org.typelevel" %% "cats-core" % CommonDependencies.catsVersion,
   "org.typelevel" %% "mouse" % "0.25"
 )
 
@@ -78,7 +60,7 @@ def scalaz = Seq(
 )
 
 def zio = Seq(
-  "dev.zio" %% "zio" % zioVersion,
+  "dev.zio" %% "zio" % CommonDependencies.zioVersion,
   "dev.zio" %% "zio-logging" % "0.5.1"
 )
 
@@ -98,7 +80,7 @@ lazy val runWebAppDockerPush: ReleaseStep = ReleaseStep(
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (version in ThisBuild).value,
-  scalaVersion := projectScalaVersion,
+  scalaVersion := CommonDependencies.projectScalaVersion,
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
@@ -160,9 +142,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       BuildInfoKey.action("buildTime") {
         java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
       },
-      "elasticVersion" -> elasticVersion,
+      "elasticVersion" -> CommonDependencies.elasticVersion,
       "playVersion" -> play.core.PlayVersion.current,
-      "catsVersion" -> catsVersion,
+      "catsVersion" -> CommonDependencies.catsVersion,
       "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
     ),
     buildInfoPackage := "velocorner.build",
@@ -186,8 +168,8 @@ lazy val gatewayService = (project in file("gateway-service") withId "gateway-se
     name := "gateway-service",
     scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13
     libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % finatraVersion,
-      "com.chuusai" %% "shapeless" % shapelessVersion
+      "com.twitter" %% "finatra-http" % CommonDependencies.finatraVersion,
+      "com.chuusai" %% "shapeless" % CommonDependencies.shapelessVersion
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
   )

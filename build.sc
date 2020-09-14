@@ -6,9 +6,10 @@ import $ivy.`com.lihaoyi::mill-contrib-playlib:$MILL_VERSION`, mill.playlib._
 import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
 import contrib.docker.DockerModule
 
-val projectScalaVersion = "2.13.1"
+// import from project the shared value
+val projectScalaVersion = "2.13.2"
 
-val catsVersion = "2.1.1"
+val catsVersion = "2.2.0"
 val zioVersion = "1.0.0-RC18-2"
 val logbackVersion = "1.2.3"
 val doobieVersion = "0.9.0"
