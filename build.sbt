@@ -179,6 +179,25 @@ lazy val root = (project in file(".") withId "velocorner")
   .aggregate(gatewayService, dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
-    buildSettings
+    buildSettings,
+    onLoadMessage := welcomeMessage.value
   )
+
+def welcomeMessage = Def.setting {
+  import scala.Console
+
+  def red(text: String): String = s"${Console.RED}$text${Console.RESET}"
+  def item(text: String): String = s"${Console.GREEN}▶ ${Console.CYAN}$text${Console.RESET}"
+
+  s"""|${red("""                                         """)}
+      |${red("""          _                              """)}
+      |${red(""" __ _____| |___  __ ___ _ _ _ _  ___ _ _ """)}
+      |${red(""" \ V / -_) / _ \/ _/ _ \ '_| ' \/ -_) '_|""")}
+      |${red("""  \_/\___|_\___/\__\___/_| |_||_\___|_|  """)}
+      |${red("""                                         """+ version.value)}
+      |
+      |Useful sbt tasks:
+      |${item("\"project web-app\" run")} - run web application
+      """.stripMargin
+}
 
