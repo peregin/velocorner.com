@@ -1,4 +1,4 @@
-object CommonDependencies {
+object Dependencies {
 
   val projectScalaVersion = "2.13.3"
 
