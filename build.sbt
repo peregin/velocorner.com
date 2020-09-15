@@ -198,6 +198,7 @@ def welcomeMessage = Def.setting {
       |
       |Useful sbt tasks:
       |${item("\"project web-app\" run")} - run web application
+      |${item("scalafmtManagedSrc")} - formats generated scala sources
       """.stripMargin
 }
 
