@@ -6,21 +6,24 @@ import $ivy.`com.lihaoyi::mill-contrib-playlib:$MILL_VERSION`, mill.playlib._
 import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
 import contrib.docker.DockerModule
 
-// import from project the shared value
+// import from shared location
 val projectScalaVersion = "2.13.2"
 
 val catsVersion = "2.2.0"
-val zioVersion = "1.0.0-RC18-2"
+val zioVersion = "1.0.1"
+val shapelessVersion = "2.3.3"
 val logbackVersion = "1.2.3"
-val doobieVersion = "0.9.0"
-val orientDbVersion = "3.0.30"
-val mongoDbVersion = "2.8.0"
+val doobieVersion = "0.9.2"
+val orientDbVersion = "3.1.2"
+val mongoDbVersion = "4.1.0"
 val rethinkDbVersion = "2.4.0"
-val elasticVersion = "7.6.0"
+val flywayVersion = "6.5.6"
+val elasticVersion = "7.9.0"
+val finatraVersion = "20.8.1"
 val playWsVersion = "2.1.2" // standalone version
-val playJsonVersion = "2.8.1"
-val specsVersion = "4.9.3"
-val mockitoVersion = "3.3.3"
+val playJsonVersion = "2.9.1"
+val specsVersion = "4.10.3"
+val mockitoVersion = "3.5.11"
 
 val logging = Agg(
   ivy"ch.qos.logback:logback-classic::$logbackVersion",
@@ -37,7 +40,8 @@ val cats = Agg(
   ivy"org.typelevel::mouse::0.24"
 )
 val zio = Agg(
-  ivy"dev.zio::zio::$zioVersion"
+  ivy"dev.zio::zio::$zioVersion",
+  ivy"dev.zio::zio-logging::0.5.1"
 )
 val storage = Agg(
   ivy"com.rethinkdb:rethinkdb-driver::$rethinkDbVersion",
@@ -45,6 +49,7 @@ val storage = Agg(
   ivy"com.orientechnologies:orientdb-client::$orientDbVersion",
   ivy"org.tpolecat::doobie-core::$doobieVersion",
   ivy"org.tpolecat::doobie-postgres::$doobieVersion",
+  ivy"org.tpolecat::doobie-hikari::$doobieVersion",
   ivy"org.flywaydb:flyway-core::6.3.3"
 )
 val elastic4s = Agg(
