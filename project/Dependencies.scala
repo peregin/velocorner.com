@@ -16,5 +16,5 @@ object Dependencies {
   val playWsVersion = "2.1.2" // standalone version
   val playJsonVersion = "2.9.1"
   val specsVersion = "4.10.3"
-  val mockitoVersion = "3.5.10"
+  val mockitoVersion = "3.5.11"
 }
