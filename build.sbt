@@ -32,9 +32,10 @@ val apacheCommons = Seq(
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
 val playTestPlus = "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test"
-val scalaSpec = "org.specs2" %% "specs2-core" % Dependencies.specsVersion % "test"
-val scalaSpecJunit = "org.specs2" %% "specs2-junit" % Dependencies.specsVersion % "test"
+val scalaSpec = "org.specs2" %% "specs2-core" % Dependencies.scalaSpecVersion % "test"
+val scalaSpecJunit = "org.specs2" %% "specs2-junit" % Dependencies.scalaSpecVersion % "test"
 val mockito = "org.mockito" % "mockito-core" % Dependencies.mockitoVersion % "test"
+val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion % "test"
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
@@ -61,7 +62,7 @@ def scalaz = Seq(
 
 def zio = Seq(
   "dev.zio" %% "zio" % Dependencies.zioVersion,
-  "dev.zio" %% "zio-logging" % "0.5.1"
+  "dev.zio" %% "zio-logging" % Dependencies.zioLoggingVersion
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
@@ -162,21 +163,24 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
-lazy val gatewayService = (project in file("gateway-service") withId "gateway-service")
+lazy val analyticsService = (project in file("analytics-service") withId "analytics-service")
   .settings(
     buildSettings,
-    name := "gateway-service",
+    name := "analytics-service",
     scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
-      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion
+      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
+      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
+      "io.argonaut" %% "argonaut" % "6.3.1",
+      scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
   )
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(gatewayService, dataProvider, dataSearch, webApp)
+  .aggregate(analyticsService, dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
     buildSettings,
@@ -184,10 +188,9 @@ lazy val root = (project in file(".") withId "velocorner")
   )
 
 def welcomeMessage = Def.setting {
-  import scala.Console
-
-  def red(text: String): String = s"${Console.RED}$text${Console.RESET}"
-  def item(text: String): String = s"${Console.GREEN}▶ ${Console.CYAN}$text${Console.RESET}"
+  import scala.Console._
+  def red(text: String): String = s"$RED$text$RESET"
+  def item(text: String): String = s"$GREEN▶ $CYAN$text$RESET"
 
   s"""|${red("""                                         """)}
       |${red("""          _                              """)}
