@@ -16,7 +16,7 @@ class MeasureResponseSpec extends Specification {
       measures.body.timezone === "Europe/Zurich"
       measures.body.measuregrps must haveSize(49)
       val first = measures.body.measuregrps.head
-      first.grpid === 999543286
+      first.grpid === 999543286L
       first.attrib === 0
       first.date.compareTo(DateTime.parse("2018-01-05T23:16:56.000+01:00")) === 0
       first.category === 1

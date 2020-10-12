@@ -46,7 +46,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
     "count entries" in {
       val adminStorage = psqlStorage.getAdminStorage
       awaitOn(adminStorage.countAccounts) === 1L
-      awaitOn(adminStorage.countActivities) === activityFixtures.size
+      awaitOn(adminStorage.countActivities) === activityFixtures.size.toLong
     }
 
     "store and lookup gears" in {

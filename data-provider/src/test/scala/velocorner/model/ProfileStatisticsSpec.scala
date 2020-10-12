@@ -15,12 +15,12 @@ class ProfileStatisticsSpec extends Specification {
       val statistics = ProfileStatistics.from(50, 100, progress, progress)
       statistics.yearlyPercentile === 50
       statistics.estimate.rides === 20
-      statistics.estimate.distance === 2400
-      statistics.estimate.longestDistance === 1500
-      statistics.estimate.movingTime === 2000
-      statistics.estimate.averageSpeed === 27.2
-      statistics.estimate.elevation === 1024
-      statistics.estimate.longestElevation === 602
+      statistics.estimate.distance === 2400d
+      statistics.estimate.longestDistance === 1500d
+      statistics.estimate.movingTime === 2000L
+      statistics.estimate.averageSpeed === 27.2d
+      statistics.estimate.elevation === 1024d
+      statistics.estimate.longestElevation === 602d
     }
 
     "estimate progress" in {

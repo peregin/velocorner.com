@@ -18,12 +18,12 @@ class ActivitySpec extends Specification {
 
     "read ice skating activities" in {
       val ice = JsonIo.readReadFromResource[Activity]("/data/strava/ice_skating.json")
-      ice.id === 2006731126
+      ice.id === 2006731126L
     }
 
     "read activity where upload_id is greater than int32" in {
       val activity = JsonIo.readReadFromResource[Activity]("/data/strava/fails.json")
-      activity.id === 2010477317
+      activity.id === 2010477317L
       activity.upload_id === Some(2148810482L)
     }
 
@@ -38,8 +38,8 @@ class ActivitySpec extends Specification {
       startDate.getHourOfDay === 2
 
       val activity = JsonIo.readReadFromResource[Activity]("/data/strava/no_start_date_local.json")
-      activity.id === 126199417
-      activity.upload_id === Some(138177658)
+      activity.id === 126199417L
+      activity.upload_id === Some(138177658L)
       activity.getStartDateLocal().getYear === 2014
       activity.getStartDateLocal().getHourOfDay === 13
     }
