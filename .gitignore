@@ -28,6 +28,7 @@ logs/
 RemoteSystemsTempFiles/
 rethinkdb_data/
 projectFilesBackup*/
+backup/
 orientdb_data*/
 localhost/
 /elastic/
