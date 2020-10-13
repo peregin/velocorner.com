@@ -6,7 +6,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.cache.SyncCacheApi
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
-import velocorner.SecretConfig
+import velocorner.{SecretConfig, ServiceProvider}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -29,7 +29,7 @@ class WebControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
     val secretConfigMock = mock[SecretConfig]
 
     when(settingsMock.secretConfig).thenReturn(secretConfigMock)
-    when(secretConfigMock.isWithingsEnabled()).thenReturn(false)
+    when(secretConfigMock.isServiceEnabled(ServiceProvider.Withings)).thenReturn(false)
 
     "render landing page" in {
       val controller = new WebController(

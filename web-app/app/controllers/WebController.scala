@@ -11,6 +11,7 @@ import scala.concurrent.Future
 import cats.implicits._
 import cats.data.OptionT
 import org.joda.time.DateTime
+import velocorner.ServiceProvider
 
 /**
   * Serves the web pages, rendered from server side.
@@ -68,8 +69,11 @@ class WebController @Inject()
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
-    val context = PageContext(title, maybeAccount, WeatherCookie.retrieve,
-      connectivity.secretConfig.isWithingsEnabled()
+    val context = PageContext(title, maybeAccount,
+      WeatherCookie.retrieve,
+      isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
+      isWindyEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Windy),
+      connectivity.secretConfig.getToken(ServiceProvider.Windy)
     )
     logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context

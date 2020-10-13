@@ -1,4 +1,9 @@
     $(document).ready(function() {
+        setupWeather();
+        triggerForecast();
+    });
+
+    function setupWeather() {
         $('#weather_button').click(function() {
             triggerForecast();
         });
@@ -15,15 +20,14 @@
                 triggerForecast();
             }
         });
-
-        triggerForecast();
-    });
+    }
 
     function triggerForecast() {
         var place = $('#weather').val();
         if (place) {
             console.log('forecast for ' + place);
             weatherForecast(place);
+            windyForecast(place);
         } else {
             console.log("won't request weather forecast, place is not set");
         }
@@ -57,5 +61,37 @@
                 $('#weather-sunset').html(moment.unix(data.sunset).format('H:mm'));
             }
         });
+    }
 
+    function windyForecast(place) {
+        var windy = $('#windy')
+        if (windy) {
+            let enabled = windy.attr('windy-enabled');
+            let key = windy.attr('windy-key');
+            if (enabled === 'true' && key.length > 0) {
+                console.log("windy forecast enabled", enabled);
+                const options = {
+                    key: key,
+                    // Put additional console output
+                    verbose: true,
+                    // Optional: Initial state of the map
+                    lat: 50.4,
+                    lon: 14.3,
+                    zoom: 5,
+                };
+                // Initialize Windy API
+                windyInit(options, windyAPI => {
+                    // windyAPI is ready, and contain 'map', 'store',
+                    // 'picker' and other usefull stuff
+
+                    const { map } = windyAPI;
+                    // .map is instance of Leaflet map
+
+                    L.popup()
+                        .setLatLng([50.4, 14.3])
+                        .setContent('Hello World')
+                        .openOn(map);
+                });
+            }
+        }
     }

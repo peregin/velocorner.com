@@ -1,18 +1,18 @@
 package controllers.auth
 
 import javax.inject.Inject
-
 import controllers.ConnectivitySettings
 import play.Logger
 import play.api.libs.oauth.{ConsumerKey, OAuth, RequestToken, ServiceInfo}
 import play.api.mvc._
+import velocorner.ServiceProvider
 import velocorner.model.Account
 
 class WithingsController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents) extends AbstractController(components) {
 
-  val clientToken: String = connectivity.secretConfig.getToken("withings")
-  val clientSecret: String = connectivity.secretConfig.getSecret("withings")
-  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("withings")
+  val clientToken: String = connectivity.secretConfig.getToken(ServiceProvider.Withings)
+  val clientSecret: String = connectivity.secretConfig.getSecret(ServiceProvider.Withings)
+  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl(ServiceProvider.Withings)
   val KEY = ConsumerKey(clientToken, clientSecret)
 
   val OAuthStateKey = "velocorner.oauth.state"

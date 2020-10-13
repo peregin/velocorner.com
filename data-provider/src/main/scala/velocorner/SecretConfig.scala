@@ -24,12 +24,12 @@ object SecretConfig {
 
 case class SecretConfig(config: Config) {
 
-  def isWithingsEnabled(): Boolean = config.getOptAs[Boolean]("withings.enabled").getOrElse(false)
+  def isServiceEnabled(application: ServiceProvider.Value): Boolean = config.getOptAs[Boolean](s"$application.enabled").getOrElse(false)
 
-  def getId(application: String) = config.getString(s"$application.application.id")
-  def getToken(application: String) = config.getString(s"$application.application.token")
-  def getSecret(application: String) = config.getString(s"$application.application.secret")
-  def getCallbackUrl(application: String) = config.getString(s"$application.application.callback.url")
+  def getId(application: ServiceProvider.Value) = config.getString(s"$application.application.id")
+  def getToken(application: ServiceProvider.Value) = config.getString(s"$application.application.token")
+  def getSecret(application: ServiceProvider.Value) = config.getString(s"$application.application.secret")
+  def getCallbackUrl(application: ServiceProvider.Value) = config.getString(s"$application.application.callback.url")
 
   def getStorageType: Option[String] = config.getOptAs[String]("storage")
   def getOrientDbUrl: Option[String] = config.getOptAs("orientdb.url")
