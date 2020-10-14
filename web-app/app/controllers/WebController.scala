@@ -2,7 +2,6 @@ package controllers
 
 import controllers.auth.{AuthChecker, StravaAuthenticator}
 import javax.inject.Inject
-import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 
@@ -69,11 +68,12 @@ class WebController @Inject()
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
+    val windyEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Windy)
     val context = PageContext(title, maybeAccount,
-      WeatherCookie.retrieve,
+      weatherLocation = WeatherCookie.retrieve,
       isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
-      isWindyEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Windy),
-      connectivity.secretConfig.getToken(ServiceProvider.Windy)
+      isWindyEnabled = windyEnabled,
+      windyApiKey = if (windyEnabled) connectivity.secretConfig.getToken(ServiceProvider.Windy) else ""
     )
     logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context
