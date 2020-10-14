@@ -1,7 +1,6 @@
 package velocorner.api.weather
 
 import play.api.libs.json.{Format, Json}
-;
 
 /**
   * The structure from the storage layer.

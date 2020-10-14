@@ -6,7 +6,7 @@ import velocorner.util.JsonIo
 
 class WeatherResponseSpec extends Specification {
 
-  "response" should {
+  "weather response" should {
 
     val response =
       """{
@@ -53,7 +53,7 @@ class WeatherResponseSpec extends Specification {
         |  "cod": 200
         |}""".stripMargin
 
-    "be parsed" in {
+    "be parsed into model" in {
       val model = JsonIo.read[WeatherResponse](response)
       model.cod === 200
       model.sys.map(_.sunrise) should beSome(DateTime
