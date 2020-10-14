@@ -5,7 +5,7 @@ import velocorner.feed.{HttpFeed, OpenWeatherFeed}
 import zio.logging._
 import zio.{ExitCode, URIO, ZIO}
 
-object OpenWeatherApp extends zio.App with MyLocalConfig {
+object OpenWeatherFeedApp extends zio.App with MyLocalConfig {
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
     val res = for {
