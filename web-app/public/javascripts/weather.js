@@ -70,27 +70,48 @@
             let key = windy.attr('windy-key');
             if (enabled === 'true' && key.length > 0) {
                 console.log("windy forecast enabled", enabled);
-                const options = {
-                    key: key,
-                    // Put additional console output
-                    verbose: true,
-                    // Optional: Initial state of the map
-                    lat: 50.4,
-                    lon: 14.3,
-                    zoom: 5,
-                };
-                // Initialize Windy API
-                windyInit(options, windyAPI => {
-                    // windyAPI is ready, and contain 'map', 'store',
-                    // 'picker' and other usefull stuff
+                $.ajax({
+                    dataType: 'json',
+                    url: "/api/location/geo/" + place,
+                    success: function (geo) {
+                        windy.css('width','100%');
+                        windy.css('height','250px');
+                        console.log("windy geo position", geo);
+                        const options = {
+                            key: key,
+                            // Put additional console output or not
+                            verbose: false,
+                            hourFormat: '12h',
+                            // Optional: Initial state of the map
+                            lat: geo.latitude,
+                            lon: geo.longitude,
+                            zoom: 11,
+                        };
+                        // Initialize Windy API
+                        windyInit(options, windyAPI => {
+                            // windyAPI is ready, and contain 'map', 'store',
+                            // 'picker' and other useful stuff
 
-                    const { map } = windyAPI;
-                    // .map is instance of Leaflet map
+                            // .map is instance of Leaflet map
+                            const { picker, overlays, broadcast, map } = windyAPI;
+                            overlays.wind.setMetric('km/h');
 
-                    L.popup()
-                        .setLatLng([50.4, 14.3])
-                        .setContent('Hello World')
-                        .openOn(map);
+                            L.popup()
+                                .setLatLng([geo.latitude, geo.longitude])
+                                .setContent(place)
+                                .openOn(map);
+
+                            // Wait since weather is rendered
+                            broadcast.once('redrawFinished', () => {
+                                picker.open({ lat: geo.latitude, lon: geo.longitude });
+                                // Opening of a picker (async)
+                            });
+                        });
+                    },
+                    error: function(e) {
+                        windy.css('height','0px');
+                        console.error("location not found", place);
+                    }
                 });
             }
         }

@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.{Athlete, Club, Gear}
-import velocorner.api.Achievement
+import velocorner.api.{Achievement, GeoPosition}
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
@@ -69,6 +69,12 @@ trait Storage[M[_]] {
     def maxAveragePower(athleteId: Long, activity: String): M[Option[Achievement]]
     def minAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+  }
+
+  def getLocationStorage: LocationStorage
+  trait LocationStorage {
+    def store(location: String, position: GeoPosition): M[Unit]
+    def getPosition(location: String): M[Option[GeoPosition]]
   }
 
   def getAdminStorage: AdminStorage

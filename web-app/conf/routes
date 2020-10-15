@@ -260,6 +260,30 @@ GET     /api/weather/sunrise/:location                     controllers.WeatherCo
 ###
 GET     /api/weather/suggest                               controllers.WeatherController.suggest(query: String)
 
+###
+#  summary: Retrieves the geo position (lat, long) based on the location
+#  tags:
+#    - location
+#  parameters:
+#    - in: path
+#      name: location
+#      required: true
+#      schema:
+#        type: string
+#      example: Zurich, Switzerland
+#      description: City and country of the location, comma separated
+#  responses:
+#    200:
+#      description: latitude, longitude
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.GeoPosition'
+#    404:
+#      description: Location not found
+###
+GET     /api/location/geo/:location                        controllers.LocationController.geo(location: String)
+
 
 # DOC
 ### NoDocs ###

@@ -235,6 +235,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
   override def getAdminStorage: AdminStorage = ???
 
+  override def getLocationStorage: LocationStorage = ???
+
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     val config = OrientDBConfig
