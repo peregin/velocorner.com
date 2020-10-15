@@ -28,6 +28,13 @@ import cats.implicits._
 import cats.data.OptionT
 import velocorner.api.strava.Activity
 
+
+object Counter {
+  implicit val entryFormat = Format[Counter](Json.reads[Counter], Json.writes[Counter])
+}
+
+case class Counter(name: String, counter: Long)
+
 /**
   * Created by levi on 14.11.16.
   * Improvements to do:
@@ -227,6 +234,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def getAchievementStorage: AchievementStorage = achievementStorage
 
   override def getAdminStorage: AdminStorage = ???
+
+  override def getLocationStorage: LocationStorage = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

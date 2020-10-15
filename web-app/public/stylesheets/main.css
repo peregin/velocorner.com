@@ -57,3 +57,12 @@
         padding-right: 8px;
     }
 }
+
+#windy #logo-wrapper {
+    top: initial;
+    top: 10px;
+}
+
+#windy #logo-wrapper #logo {
+    left: 80px;
+}

@@ -12,7 +12,7 @@ import doobie.{ConnectionIO, _}
 import org.flywaydb.core.Flyway
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.Achievement
+import velocorner.api.{Achievement, GeoPosition}
 import velocorner.api.strava.Activity
 import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import velocorner.model.Account
@@ -25,7 +25,9 @@ import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
 import mouse.all._
 
-class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
+    extends Storage[Future]
+    with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
 
@@ -40,20 +42,26 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   config.setAutoCommit(true)
   config.validate() // for printout
 
-  private lazy val connectEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5, (r: Runnable) =>
-    new Thread(r, "connect ec") <| (_.setDaemon(true))
-  ))
-  private lazy val blockingEC = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(5, (r: Runnable) =>
-    new Thread(r, "blocking ec") <| (_.setDaemon(true))
-  ))
+  private lazy val connectEC = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(
+      5,
+      (r: Runnable) => new Thread(r, "connect ec") <| (_.setDaemon(true))
+    )
+  )
+  private lazy val blockingEC = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(
+      5,
+      (r: Runnable) => new Thread(r, "blocking ec") <| (_.setDaemon(true))
+    )
+  )
   private lazy val transactor = Transactor.fromDataSource[IO](
     dataSource = new HikariDataSource(config),
     connectEC = connectEC,
     blocker = Blocker.liftExecutionContext(blockingEC)
   )
 
-  def playJsonMeta[A: Reads : Writes : Manifest]: Meta[A] = Meta
-    .Advanced.other[PGobject]("jsonb")
+  def playJsonMeta[A: Reads: Writes: Manifest]: Meta[A] = Meta.Advanced
+    .other[PGobject]("jsonb")
     .timap[A] { pgo =>
       JsonIo.read[A](pgo.getValue)
     } { json =>
@@ -65,56 +73,71 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
   private implicit val activityMeta: Meta[Activity] = playJsonMeta[Activity]
   private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
-  private implicit val weatherMeta: Meta[WeatherForecast] = playJsonMeta[WeatherForecast]
-  private implicit val sunMeta: Meta[SunriseSunset] = playJsonMeta[SunriseSunset]
+  private implicit val weatherMeta: Meta[WeatherForecast] =
+    playJsonMeta[WeatherForecast]
+  private implicit val sunMeta: Meta[SunriseSunset] =
+    playJsonMeta[SunriseSunset]
   private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
-    def toFuture: Future[T] = cio.transact(transactor).unsafeToFuture()
+    def transactToFuture: Future[T] = cio.transact(transactor).unsafeToFuture()
   }
 
   // to access it from the migration
-  def toFuture[T](cio: ConnectionIO[T]): Future[T] = cio.toFuture
+  def toFuture[T](cio: ConnectionIO[T]): Future[T] = cio.transactToFuture
 
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] =
-    activities.map { a =>
-      sql"""insert into activity (id, type, athlete_id, data)
+    activities
+      .map { a =>
+        sql"""insert into activity (id, type, athlete_id, data)
            |values(${a.id}, ${a.`type`}, ${a.athlete.id}, $a) on conflict(id)
            |do update set type = ${a.`type`}, athlete_id = ${a.athlete.id}, data = $a
            |""".stripMargin.update.run.void
-    }.toList.traverse(identity).void.toFuture
+      }
+      .toList
+      .traverse(identity)
+      .void
+      .transactToFuture
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] =
     sql"""select type as name, count(*) as counter from activity
          |where athlete_id = $athleteId
          |group by name
          |order by counter desc
-         |""".stripMargin.query[String].to[List].toFuture
+         |""".stripMargin.query[String].to[List].transactToFuture
 
-  override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
+  override def listAllActivities(
+      athleteId: Long,
+      activityType: String
+  ): Future[Iterable[Activity]] =
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
-         |""".stripMargin.query[Activity].to[List].toFuture
+         |""".stripMargin.query[Activity].to[List].transactToFuture
 
-
-  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] =
+  override def listRecentActivities(
+      athleteId: Long,
+      limit: Int
+  ): Future[Iterable[Activity]] =
     sql"""select data from activity
          |where athlete_id = $athleteId limit $limit
-         |""".stripMargin.query[Activity].to[List].toFuture
+         |""".stripMargin.query[Activity].to[List].transactToFuture
 
-  override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = {
+  override def suggestActivities(
+      snippet: String,
+      athleteId: Long,
+      max: Int
+  ): Future[Iterable[Activity]] = {
     val searchPattern = "%" + snippet.toLowerCase + "%"
     sql"""select data from activity
          |where athlete_id = $athleteId and lower(data->>'name') like $searchPattern
          |order by data->>'start_date' desc
          |limit $max
-         |""".stripMargin.query[Activity].to[List].toFuture
+         |""".stripMargin.query[Activity].to[List].transactToFuture
   }
 
   override def getActivity(id: Long): Future[Option[Activity]] =
     sql"""select data from activity where id = $id
-         |""".stripMargin.query[Activity].option.toFuture
-
+         |""".stripMargin.query[Activity].option.transactToFuture
 
   override def getAccountStorage: AccountStorage = accountStorage
 
@@ -123,11 +146,11 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       sql"""insert into account (athlete_id, data)
            |values(${a.athleteId}, $a) on conflict(athlete_id)
            |do update set data = $a
-           |""".stripMargin.update.run.void.toFuture
+           |""".stripMargin.update.run.void.transactToFuture
 
     override def getAccount(id: Long): Future[Option[Account]] =
       sql"""select data from account where athlete_id = $id
-           |""".stripMargin.query[Account].option.toFuture
+           |""".stripMargin.query[Account].option.transactToFuture
   }
 
   // gears
@@ -138,74 +161,104 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       sql"""insert into gear (id, type, data)
            |values(${gear.id}, ${gearType.toString}, $gear) on conflict(id)
            |do update set data = $gear
-           |""".stripMargin.update.run.void.toFuture
+           |""".stripMargin.update.run.void.transactToFuture
 
     override def getGear(id: String): Future[Option[Gear]] =
       sql"""select data from gear where id = $id
-           |""".stripMargin.query[Gear].option.toFuture
+           |""".stripMargin.query[Gear].option.transactToFuture
   }
 
   override def getWeatherStorage: WeatherStorage = weatherStorage
 
   private lazy val weatherStorage = new WeatherStorage {
-    override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] =
+    override def listRecentForecast(
+        location: String,
+        limit: Int
+    ): Future[Iterable[WeatherForecast]] =
       sql"""select data from weather
            |where location = $location
            |order by update_time desc
            |limit $limit
-           |""".stripMargin.query[WeatherForecast].to[List].toFuture
+           |""".stripMargin.query[WeatherForecast].to[List].transactToFuture
 
-    override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] =
-      forecast.map { a =>
-        sql"""insert into weather (location, update_time, data)
+    override def storeWeather(
+        forecast: Iterable[WeatherForecast]
+    ): Future[Unit] =
+      forecast
+        .map { a =>
+          sql"""insert into weather (location, update_time, data)
              |values(${a.location}, ${a.timestamp}, $a) on conflict(location, update_time)
              |do update set data = $a
              |""".stripMargin.update.run.void
-      }.toList.traverse(identity).void.toFuture
+        }
+        .toList
+        .traverse(identity)
+        .void
+        .transactToFuture
 
-    override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
+    override def getSunriseSunset(
+        location: String,
+        localDate: String
+    ): Future[Option[SunriseSunset]] =
       sql"""select data from sun where location = $location and update_date = $localDate
-           |""".stripMargin.query[SunriseSunset].option.toFuture
+           |""".stripMargin.query[SunriseSunset].option.transactToFuture
 
-    override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] =
+    override def storeSunriseSunset(
+        sunriseSunset: SunriseSunset
+    ): Future[Unit] =
       sql"""insert into sun (location, update_date, data)
            |values(${sunriseSunset.location}, ${sunriseSunset.date}, $sunriseSunset) on conflict(location, update_date)
            |do update set data = $sunriseSunset
-           |""".stripMargin.update.run.void.toFuture
+           |""".stripMargin.update.run.void.transactToFuture
 
     override def suggestLocations(snippet: String): Future[Iterable[String]] = {
       val searchPattern = "%" + snippet.toLowerCase + "%"
       sql"""select distinct location from weather
            |where lower(location) like $searchPattern
-           |""".stripMargin.query[String].to[List].toFuture
+           |""".stripMargin.query[String].to[List].transactToFuture
     }
   }
 
   override def getAttributeStorage: AttributeStorage = attributeStorage
 
   private lazy val attributeStorage = new AttributeStorage {
-    override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] =
+    override def storeAttribute(
+        key: String,
+        `type`: String,
+        value: String
+    ): Future[Unit] =
       sql"""insert into attribute (key, type, value)
            |values($key, ${`type`}, $value) on conflict(key, type)
            |do update set value = $value
-           |""".stripMargin.update.run.void.toFuture
+           |""".stripMargin.update.run.void.transactToFuture
 
-    override def getAttribute(key: String, `type`: String): Future[Option[String]] =
+    override def getAttribute(
+        key: String,
+        `type`: String
+    ): Future[Option[String]] =
       sql"""select value from attribute where key = $key and type = ${`type`}
-           |""".stripMargin.query[String].option.toFuture
+           |""".stripMargin.query[String].option.transactToFuture
   }
 
   override def getAchievementStorage: AchievementStorage = achievementStorage
 
   private lazy val achievementStorage = new AchievementStorage {
 
-    def metricOf(field: String, athleteId: Long, activityType: String, mapperFunc: Activity => Option[Double], max: Boolean = true): Future[Option[Achievement]] = {
+    def metricOf(
+        field: String,
+        athleteId: Long,
+        activityType: String,
+        mapperFunc: Activity => Option[Double],
+        max: Boolean = true
+    ): Future[Option[Achievement]] = {
       //implicit val han = LogHandler.jdkLogHandler
-      val clause = s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc" else "asc"} limit 1"
-      val fragment = fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
-        Fragment.const(clause)
+      val clause =
+        s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc" else "asc"} limit 1"
+      val fragment =
+        fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
+          Fragment.const(clause)
       val result = for {
-        activity <- OptionT(fragment.query[Activity].option.toFuture)
+        activity <- OptionT(fragment.query[Activity].option.transactToFuture)
         metric <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = metric,
@@ -216,46 +269,129 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       result.value
     }
 
-    override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("average_speed", athleteId, activity, _.average_speed.map(_.toDouble))
+    override def maxAverageSpeed(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "average_speed",
+        athleteId,
+        activity,
+        _.average_speed.map(_.toDouble)
+      )
 
-    override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] =
+    override def maxDistance(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
       metricOf("distance", athleteId, activity, _.distance.toDouble.some)
 
-    override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("total_elevation_gain", athleteId, activity, _.total_elevation_gain.toDouble.some)
+    override def maxElevation(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "total_elevation_gain",
+        athleteId,
+        activity,
+        _.total_elevation_gain.toDouble.some
+      )
 
-    override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("max_heartrate", athleteId, activity, _.max_heartrate.map(_.toDouble))
+    override def maxHeartRate(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "max_heartrate",
+        athleteId,
+        activity,
+        _.max_heartrate.map(_.toDouble)
+      )
 
-    override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("average_heartrate", athleteId, activity, _.average_heartrate.map(_.toDouble))
+    override def maxAverageHeartRate(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "average_heartrate",
+        athleteId,
+        activity,
+        _.average_heartrate.map(_.toDouble)
+      )
 
-    override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("average_watts", athleteId, activity, _.average_watts.map(_.toDouble))
+    override def maxAveragePower(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "average_watts",
+        athleteId,
+        activity,
+        _.average_watts.map(_.toDouble)
+      )
 
-    override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble), max = false)
+    override def minAverageTemperature(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "average_temp",
+        athleteId,
+        activity,
+        _.average_temp.map(_.toDouble),
+        max = false
+      )
 
-    override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
-      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble))
+    override def maxAverageTemperature(
+        athleteId: Long,
+        activity: String
+    ): Future[Option[Achievement]] =
+      metricOf(
+        "average_temp",
+        athleteId,
+        activity,
+        _.average_temp.map(_.toDouble)
+      )
   }
 
   private def count(table: String): Future[Long] = {
     val fr = fr"select count(*) from" ++ Fragment.const(table)
-    fr.query[Long].unique.toFuture
+    fr.query[Long].unique.transactToFuture
   }
 
   override def getAdminStorage: AdminStorage = adminStorage
-
   lazy val adminStorage = new AdminStorage {
     override def countAccounts: Future[Long] = count("account")
 
     override def countActivities: Future[Long] = count("activity")
   }
 
+  override def getLocationStorage: LocationStorage = locationStorage
+  lazy val locationStorage = new LocationStorage {
+    override def store(
+        location: String,
+        position: GeoPosition
+    ): Future[Unit] =
+      sql"""insert into location (location, latitude, longitude)
+           |values(${location.toLowerCase}, ${position.latitude}, ${position.longitude}) on conflict(location)
+           |do update set latitude = ${position.latitude}, longitude = ${position.longitude}
+           |""".stripMargin.update.run.void.transactToFuture
+
+    override def getPosition(location: String): Future[Option[GeoPosition]] =
+      sql"""select latitude, longitude from location where location = ${location.toLowerCase}
+           |""".stripMargin
+        .query[(Double, Double)]
+        .map(q => GeoPosition(q._1, q._2))
+        .option
+        .transactToFuture
+  }
+
   override def initialize(): Unit = {
-    val flyway = Flyway.configure().locations("psql/migration").dataSource(dbUrl, dbUser, dbPassword).load()
+    val flyway = Flyway
+      .configure()
+      .locations("psql/migration")
+      .dataSource(dbUrl, dbUser, dbPassword)
+      .load()
     flyway.migrate()
   }
 

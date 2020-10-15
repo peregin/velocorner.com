@@ -1,5 +1,5 @@
 if (window.console) {
-  console.log("Welcome to Velocorner!");
+  console.log("Welcome to velocorner.com!");
 }
 
 function formatBytes(bytes, decimals = 2) {

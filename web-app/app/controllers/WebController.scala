@@ -2,7 +2,6 @@ package controllers
 
 import controllers.auth.{AuthChecker, StravaAuthenticator}
 import javax.inject.Inject
-import play.Logger
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 
@@ -11,6 +10,7 @@ import scala.concurrent.Future
 import cats.implicits._
 import cats.data.OptionT
 import org.joda.time.DateTime
+import velocorner.ServiceProvider
 
 /**
   * Serves the web pages, rendered from server side.
@@ -68,8 +68,12 @@ class WebController @Inject()
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
     val maybeAccount = loggedIn
-    val context = PageContext(title, maybeAccount, WeatherCookie.retrieve,
-      connectivity.secretConfig.isWithingsEnabled()
+    val windyEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Windy)
+    val context = PageContext(title, maybeAccount,
+      weatherLocation = WeatherCookie.retrieve,
+      isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
+      isWindyEnabled = windyEnabled,
+      windyApiKey = if (windyEnabled) connectivity.secretConfig.getToken(ServiceProvider.Windy) else ""
     )
     logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context

@@ -3,7 +3,7 @@ package velocorner.feed
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.oauth.{ConsumerKey, OAuthCalculator, RequestToken}
 import play.shaded.ahc.org.asynchttpclient.{Request, RequestBuilderBase}
-import velocorner.SecretConfig
+import velocorner.{SecretConfig, ServiceProvider}
 
 import scala.concurrent.Await
 import scala.language.postfixOps
@@ -17,7 +17,7 @@ object WithingsMeasureFeed {
   // for getting body measures
   val baseUrl = "https://api.health.nokia.com"
 
-  def consumerKey(config: SecretConfig) = ConsumerKey(config.getToken("withings"), config.getSecret("withings"))
+  def consumerKey(config: SecretConfig) = ConsumerKey(config.getToken(ServiceProvider.Withings), config.getSecret(ServiceProvider.Withings))
 }
 
 class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretConfig) extends HttpFeed with MeasureFeed with LazyLogging {

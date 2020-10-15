@@ -36,6 +36,7 @@
     <logger name="net.sf.ehcache" level="INFO"/>
     <logger name="akka.stream.impl" level="INFO"/>
     <logger name="akka.actor" level="INFO"/>
+    <logger name="akka.serialization.jackson" level="INFO"/>
     <logger name="akka.io" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
     <logger name="unknown.jul.logger" level="WARN"/>

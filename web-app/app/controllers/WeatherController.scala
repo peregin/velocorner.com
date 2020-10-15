@@ -16,6 +16,7 @@ import cats.implicits._
 import cats.instances.future.catsStdInstancesForFuture
 import model.highcharts
 import play.api.libs.json.Json
+import velocorner.api.GeoPosition
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
 import velocorner.util.CountryIsoUtils.normalize
 
@@ -81,11 +82,14 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
     val weatherStorage = connectivity.getStorage.getWeatherStorage
     logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")
 
+    // store sunrise/sunset and location geo position
     def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
       response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
-      newEntry <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-      _ <- OptionT.liftF(weatherStorage.storeSunriseSunset(newEntry))
-    } yield newEntry
+      newSunriseSunset <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
+      _ <- OptionT.liftF(weatherStorage.storeSunriseSunset(newSunriseSunset))
+      newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
+      _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(isoLocation, newGeoLocation))
+    } yield newSunriseSunset
 
     val resultET = for {
       place <- EitherT(Future(Option(isoLocation)

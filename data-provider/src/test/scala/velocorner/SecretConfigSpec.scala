@@ -32,7 +32,7 @@ class SecretConfigSpec extends Specification {
 
     "mark disabled missing withings enabling" in {
       val conf = new SecretConfig(ConfigFactory.parseString(""))
-      conf.isWithingsEnabled() must beFalse
+      conf.isServiceEnabled(ServiceProvider.Withings) must beFalse
     }
 
     "mark enabled explicit withings setup" in {
@@ -41,7 +41,7 @@ class SecretConfigSpec extends Specification {
           |withings.enabled=true
         """.stripMargin
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
-      conf.isWithingsEnabled() must beTrue
+      conf.isServiceEnabled(ServiceProvider.Withings) must beTrue
     }
   }
 }

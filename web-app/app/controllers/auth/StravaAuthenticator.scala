@@ -10,6 +10,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.JsonBodyReadables._
 import play.api.libs.ws.StandaloneWSResponse
+import velocorner.ServiceProvider
 import velocorner.feed.OAuth2._
 import velocorner.feed.StravaActivityFeed
 import velocorner.model.strava.Athlete
@@ -27,11 +28,11 @@ import mouse.all._
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
-  val clientSecret: String = connectivity.secretConfig.getSecret("strava")
+  val clientSecret: String = connectivity.secretConfig.getSecret(ServiceProvider.Strava)
   val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
   val providerName: String = "strava"
-  val clientId: String = connectivity.secretConfig.getId("strava")
-  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl("strava")
+  val clientId: String = connectivity.secretConfig.getId(ServiceProvider.Strava)
+  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl(ServiceProvider.Strava)
   val callbackUri = new URI(callbackUrl)
 
   private val logger = Logger.of(this.getClass)

@@ -1,7 +1,7 @@
 package velocorner.feed
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.SecretConfig
+import velocorner.{SecretConfig, ServiceProvider}
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
 import velocorner.util.JsonIo
 import cats.implicits._
@@ -21,7 +21,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/forecast")
       .withQueryStringParameters(
         ("q", location),
-        ("appid", config.getId("weather")),
+        ("appid", config.getId(ServiceProvider.Weather)),
         ("units", "metric"),
         ("lang", "en")
       )
@@ -37,7 +37,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
     val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/weather")
       .withQueryStringParameters(
         ("q", location),
-        ("appid", config.getId("weather")),
+        ("appid", config.getId(ServiceProvider.Weather)),
         ("units", "metric"),
         ("lang", "en")
       )

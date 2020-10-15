@@ -4,6 +4,7 @@ import com.opentable.db.postgres.embedded.EmbeddedPostgres
 import com.typesafe.scalalogging.LazyLogging
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
+import velocorner.api.GeoPosition
 import velocorner.api.strava.Activity
 import velocorner.api.weather.WeatherForecast
 import velocorner.model.strava.Gear
@@ -20,7 +21,7 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
   @volatile var psql: EmbeddedPostgres = _
   @volatile var psqlStorage: PsqlDbStorage = _
 
-  "pqsl storage" should {
+  "psql storage" should {
 
     val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
@@ -65,6 +66,15 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(weatherStorage.suggestLocations("zur")) should containTheSameElementsAs(List("Zurich,CH"))
       awaitOn(weatherStorage.suggestLocations("bud")) should containTheSameElementsAs(List("Budapest,HU"))
       awaitOn(weatherStorage.suggestLocations("wien")) should beEmpty
+    }
+
+    "store and lookup geo positions" in {
+      lazy val locationStorage = psqlStorage.getLocationStorage
+      awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
+      awaitOn(locationStorage.getPosition("Zurich,CH")) should beSome(GeoPosition(8.52, 47.31))
+      awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.1, 7.2)))
+      awaitOn(locationStorage.getPosition("Zurich,CH")) should beSome(GeoPosition(8.1, 7.2))
+      awaitOn(locationStorage.getPosition("Budapest,HU")) should beNone
     }
   }
 

@@ -1,14 +1,15 @@
-@(location: String)(implicit assets: AssetsFinder)
+@(context: PageContext)(implicit assets: AssetsFinder)
 
 <!-- Weather widget with 5 days forecast -->
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+
     <div class="row">
         <div class="col-md-3 col-sm-12">
             <label>
                 <img style="width: 16px; height:16px;" src="@assets.path("images/icons/sun-64.png")" alt="Forecast">
                 Forecast
                 <div class="input-group animated fadeInDown">
-                    <input id="weather" name="weather" type="text" value="@location" class="form-control" placeholder="Location">
+                    <input id="weather" name="weather" type="text" value="@context.weatherLocation" class="form-control" placeholder="Location">
                     <span class="input-group-btn">
                         <button id="weather_button" name="weather_button" class="btn-u rounded btn-block" type="button"><i class="fa fa-refresh"></i> Weather</button>
                     </span>
@@ -37,11 +38,24 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    @if(context.isWindyEnabled) {
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div id="windy"
+                 windy-enabled="@context.isWindyEnabled" windy-key="@context.windyApiKey">
+            </div>
+        </div>
+    </div>
+    }
 </div>
 
 <script type="text/javascript" src="@routes.Assets.at("javascripts/meteogram.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/windbarb.src.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/pattern-fill.js")"></script>
-<script src="@assets.path("javascripts/weather.js")" type="text/javascript"></script>
+<script type="text/javascript" src="@assets.path("javascripts/weather.js")"></script>
+@if(context.isWindyEnabled) {
+<script type="text/javascript" src="https://unpkg.com/leaflet@@1.4.0/dist/leaflet.js"></script>
+<script type="text/javascript" src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
+}
