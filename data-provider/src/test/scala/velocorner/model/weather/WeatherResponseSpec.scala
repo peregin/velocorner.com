@@ -56,10 +56,10 @@ class WeatherResponseSpec extends Specification {
     "be parsed into model" in {
       val model = JsonIo.read[WeatherResponse](response)
       model.cod === 200
-      model.sys.map(_.sunrise.dayOfYear()) should beSome(DateTime
+      model.sys.map(_.sunrise.dayOfYear().get()) should beSome(DateTime
         .parse("2020-10-14T07:43:05.000+02:00")
         .withZone(DateTimeZone.forID("Europe/Zurich"))
-        .dayOfYear()
+        .dayOfYear().get()
       )
       model.coord.map(_.lon) should beSome(8.52d)
       model.coord.map(_.lat) should beSome(47.31d)
