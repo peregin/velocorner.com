@@ -31,11 +31,8 @@ object StravaController {
   val OAuth2StateKey = "velocorner.oauth2.state"
   val OAuth2AttrKey = TypedKey[Account]
 
-  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => {
-    val t = new Thread(r, "play worker")
-    t.setDaemon(true)
-    t
-  }
+  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) =>
+    new Thread(r, "play worker") <| (_.setDaemon(true))
   ))
 }
 
