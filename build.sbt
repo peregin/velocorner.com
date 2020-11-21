@@ -172,7 +172,7 @@ lazy val analyticsService = (project in file("analytics-service") withId "analyt
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % "6.3.1",
+      "io.argonaut" %% "argonaut" % "6.3.2",
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"

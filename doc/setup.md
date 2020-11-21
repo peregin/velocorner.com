@@ -23,6 +23,8 @@ sudo docker cp velocorner.export.gz $DB_ID:/root
 sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root $DB_PWD; import database /root/velocorner.export.gz"
 ```
 ### Psql
+Test are using an embedded psql instance `otj-pg-embedded` from opentable.
+If for any reason stops working (new Mac OS) then reinstall the missing libraries with `brew install postgresql`.
 #### Import
 ```shell script
 import_psql.sh <filename>
