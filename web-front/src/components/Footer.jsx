@@ -13,7 +13,7 @@ class Footer extends Component {
                                     
                                     <div className="col-md-8 md-margin-bottom-40">
                                         <script src="http://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-                                        <iframe title="Instagram" src="//lightwidget.com/widgets/aa5ba80ed03c5bc187d1419e2a57bac8.html" 
+                                        <iframe title="Instagram" src="//lightwidget.com/widgets/7e189a75033c5aaaba216b818e656c0b.html"
                                           scrolling="no" allowtransparency="true" className="lightwidget-widget" 
                                           style = {{
                                               width: '100%',
