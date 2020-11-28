@@ -38,9 +38,9 @@ class Header extends Component {
                         <div className="collapse navbar-collapse navbar-responsive-collapse">
                             <ul className="nav navbar-nav">
                                 {/* Home */}
-                                <li className={ this.props.page == "Home" ? 'active' : '' }><a href="/">Home</a></li>
+                                <li className={ this.props.page === "Home" ? 'active' : '' }><a href="/">Home</a></li>
                                 {/* About */}
-                                <li className={ this.props.page == "About" ? 'active' : '' }><a href="/about">About Us</a></li>
+                                <li className={ this.props.page === "About" ? 'active' : '' }><a href="/about">About Us</a></li>
                             </ul>
                         </div> {/* navbar-collapse */}
                     </div>
@@ -53,8 +53,8 @@ class Header extends Component {
                         <Link id="logo" to="/" title="Velocorner" />
                         <nav>
                             <ul>
-                                <li><Link to="/" className={ this.props.page == "main" ? 'current' : '' }>Home</Link></li>
-                                <li><Link to="/about" className={ this.props.page == "about" ? 'current' : '' }>About</Link></li>
+                                <li><Link to="/" className={ this.props.page === "main" ? 'current' : '' }>Home</Link></li>
+                                <li><Link to="/about" className={ this.props.page === "about" ? 'current' : '' }>About</Link></li>
                             </ul>
                         </nav>
                     </section>
