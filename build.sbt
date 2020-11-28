@@ -163,17 +163,17 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
-lazy val analyticsService = (project in file("analytics-service") withId "analytics-service")
+lazy val demoService = (project in file("demo-service") withId "demo-service")
   .settings(
     buildSettings,
-    name := "analytics-service",
+    name := "demo-service",
     scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
       "io.argonaut" %% "argonaut" % "6.3.2",
-      "org.springframework.boot" % "spring-boot-starter-web" % springVersion,
+      "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
@@ -181,7 +181,7 @@ lazy val analyticsService = (project in file("analytics-service") withId "analyt
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(analyticsService, dataProvider, dataSearch, webApp)
+  .aggregate(demoService, dataProvider, dataSearch, webApp)
   .settings(
     name := "velocorner",
     buildSettings,
