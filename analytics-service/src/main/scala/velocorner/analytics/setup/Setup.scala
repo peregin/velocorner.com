@@ -1,10 +1,10 @@
-package velocorner.gateway.setup
+package velocorner.analytics.setup
 
 import cats.Semigroup
 import cats.data._
 import cats.implicits._
 import shapeless._
-import velocorner.gateway.setup.Converter.SValidated
+import velocorner.analytics.setup.Converter.SValidated
 
 import scala.collection.immutable.{:: => Cons}
 

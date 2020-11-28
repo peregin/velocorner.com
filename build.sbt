@@ -173,6 +173,7 @@ lazy val analyticsService = (project in file("analytics-service") withId "analyt
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
       "io.argonaut" %% "argonaut" % "6.3.2",
+      "org.springframework.boot" % "spring-boot-starter-web" % springVersion,
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"

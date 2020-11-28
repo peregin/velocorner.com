@@ -1,4 +1,4 @@
-package velocorner.gateway
+package velocorner.analytics
 
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.routing.HttpRouter
