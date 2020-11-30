@@ -2,9 +2,10 @@ package velocorner.model
 
 import argonaut._
 import argonaut.Argonaut._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ModelConversionTest extends FlatSpec with Matchers {
+class ModelConversionTest extends AnyFlatSpec with Matchers {
 
   case class TestResult(validLines: Int, invalidLines: Int)
 

@@ -17,7 +17,7 @@ object Dependencies {
   val playWsVersion = "2.1.2" // standalone version
   val playJsonVersion = "2.9.1"
   val scalaSpecVersion = "4.10.5"
-  val scalaTestVersion = "3.0.9"
+  val scalaTestVersion = "3.2.3"
   val mockitoVersion = "3.6.28"
 
   val springVersion = "2.4.0" // java world
