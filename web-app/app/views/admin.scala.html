@@ -12,6 +12,10 @@
                         <div class="VC_padding8">Accounts</div>
                     </li>
                     <li class="list-group-item">
+                        <span id="admin-active-accounts" class="badge badge-orange rounded-2x">X</span>
+                        <div class="VC_padding8">Active Accounts</div>
+                    </li>
+                    <li class="list-group-item">
                         <span id="admin-activities" class="badge badge-yellow rounded-2x">X</span>
                         <div class="VC_padding8">Activities</div>
                     </li>
@@ -34,6 +38,7 @@
             success: function(data) {
                 console.log(data);
                 $('#admin-accounts').html(data.accounts)
+                $('#admin-active-accounts').html(data.activeAccounts)
                 $('#admin-activities').html(data.activities)
            }
         });

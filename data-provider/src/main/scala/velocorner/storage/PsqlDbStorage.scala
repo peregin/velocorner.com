@@ -354,16 +354,22 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
       )
   }
 
-  private def count(table: String): Future[Long] = {
-    val fr = fr"select count(*) from" ++ Fragment.const(table)
-    fr.query[Long].unique.transactToFuture
-  }
-
   override def getAdminStorage: AdminStorage = adminStorage
   lazy val adminStorage = new AdminStorage {
     override def countAccounts: Future[Long] = count("account")
 
     override def countActivities: Future[Long] = count("activity")
+
+    private def count(table: String): Future[Long] = {
+      val fr = fr"select count(*) from" ++ Fragment.const(table)
+      fr.query[Long].unique.transactToFuture
+    }
+
+    override def countActiveAccounts: Future[Long] =
+      sql"""select count(*) from account
+           |where cast(data->>'lastUpdate' as timestamp) > current_date - interval '90' day
+           |""".stripMargin.query[Long].unique.transactToFuture
+
   }
 
   override def getLocationStorage: LocationStorage = locationStorage

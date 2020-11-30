@@ -22,9 +22,11 @@ class AdminController @Inject()(val connectivity: ConnectivitySettings, val cach
       _ <- OptionT(Future(loggedIn.filter(_.isAdmin())))
       adminStorage = connectivity.getStorage.getAdminStorage
       accounts <- OptionT.liftF(adminStorage.countAccounts)
+      activeAccounts <- OptionT.liftF(adminStorage.countActiveAccounts)
       activities <- OptionT.liftF(adminStorage.countActivities)
     } yield AdminInfo(
       accounts = accounts,
+      activeAccounts = activeAccounts,
       activities = activities
     )
     res.map(info => Ok(Json.toJson(info))).getOrElse(Forbidden)

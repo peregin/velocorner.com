@@ -81,6 +81,7 @@ trait Storage[M[_]] {
   trait AdminStorage {
     def countAccounts: M[Long]
     def countActivities: M[Long]
+    def countActiveAccounts: M[Long]
   }
 
   // initializes any connections, pools, resources needed to open a storage session
