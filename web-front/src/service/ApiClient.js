@@ -10,7 +10,18 @@ function getStatus(cb) {
   return fetch('/api/status', requestOptions)
     .then(checkStatus)
     .then(parseJSON)
-    .then(cb);
+    .then(cb)
+}
+
+function login() {
+  const requestOptions = {
+    method: 'GET',
+    accept: "application/json"
+  }
+  return fetch('/api/login/strava', requestOptions)
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(a => console.log(`LOGIN response ${a}`))
 }
 
 // Utility functions
@@ -30,16 +41,20 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-  const error = new Error(`HTTP Error ${response.statusText}`);
+  const error = new Error(`HTTP Error ${response.statusText}`)
   error.status = response.statusText;
   error.response = response;
   console.log(error);
   throw error;
 }
 
-const parseJSON = (response) => response.json()
+const parseJSON = (response) => {
+  if (response && response.length > 0) return response.json()
+  else return {}
+}
 
 const ApiClient = {
-  getSummary: getStatus
-};
+  getStatus,
+  login
+}
 export default ApiClient;

@@ -1,8 +1,12 @@
 import React from 'react';
+import ApiClient from "../service/ApiClient";
 
 const Home = () => {
 
-    const handleClick = () => console.log("TEST")
+    const handleClick = () => {
+        console.log("LOGGING IN")
+        ApiClient.login()
+    }
 
     return (
         <div>

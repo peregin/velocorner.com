@@ -9,7 +9,7 @@ import About from "./pages/About";
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-import ApiClient from "./ApiClient";
+import ApiClient from "./service/ApiClient";
 
 import './App.css';
 
@@ -20,7 +20,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    ApiClient.getSummary(summary => {
+    ApiClient.getStatus(summary => {
       this.setState({
         title: 'Velocorner, Memory Usage: ' + summary.memoryUsedPercentile + '%'
       });
@@ -43,7 +43,7 @@ class App extends Component {
 
         </div>
       </Router>
-    );
+    )
   }
 }
 

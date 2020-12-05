@@ -18,6 +18,8 @@ GET     /admin                                             controllers.WebContro
 ### NoDocs ###
 GET     /login/strava                                      controllers.auth.StravaController.login(scope: String)
 ### NoDocs ###
+GET     /api/login/strava                                  controllers.auth.StravaController.apiLogin
+### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout

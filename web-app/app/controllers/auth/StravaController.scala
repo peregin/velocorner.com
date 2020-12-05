@@ -53,6 +53,11 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     }
   }
 
+  def apiLogin = Action { implicit request =>
+    logger.info(s"API LOGIN")
+    Ok
+  }
+
   // callback from OAuth2
   def authorize = Action.async { implicit request =>
     val form = Form(
