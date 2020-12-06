@@ -2,14 +2,16 @@ package controllers.auth
 
 import java.util.UUID
 import java.util.concurrent.Executors
-
 import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{OAuth2StateKey, ec}
+import pdi.jwt.JwtJson
+
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
+import play.api.libs.json.Json
 import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import velocorner.model.Account
@@ -41,6 +43,7 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
+  // from FE web
   def login(scope: String) = timed("LOGIN") {
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
@@ -53,9 +56,19 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     }
   }
 
+  // from FE api
   def apiLogin = Action { implicit request =>
+    logout()
     logger.info(s"API LOGIN")
-    Ok
+    redirectToAuthorization("localhost", request)
+    logger.info(s"API LOGIN READY?")
+    loggedIn(request) match {
+      case Some(account) =>
+        val token = JwtUser.toJwtUser(account).toToken()
+        logger.info(s"token = $token")
+        Ok(token)
+      case None => Forbidden
+    }
   }
 
   // callback from OAuth2

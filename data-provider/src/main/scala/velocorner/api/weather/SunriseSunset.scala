@@ -3,7 +3,6 @@ package velocorner.api.weather
 import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.model.EpochFormatter
-;
 
 /**
   * Structure from the storage layer and exposed in the external API.

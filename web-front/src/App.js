@@ -16,13 +16,14 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: 'Velocorner' };
+    this.state = { memoryUsage: 50 };
   }
 
   async componentDidMount() {
     ApiClient.getStatus(summary => {
+      console.log(summary)
       this.setState({
-        title: 'Velocorner, Memory Usage: ' + summary.memoryUsedPercentile + '%'
+        memoryUsage: summary.memoryUsedPercentile
       });
     });
   }
@@ -33,8 +34,9 @@ class App extends Component {
         <div className="wrapper">
 
           <Header />
+         
+          <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
 
-          <h1>Welcome to {this.state.title}!</h1>
 
           <Route exact path="/" component={Home} />
           <Route path="/about" component={About} />

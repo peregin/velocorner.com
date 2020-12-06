@@ -135,6 +135,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     libraryDependencies ++= Seq(
       guice, ehcache,
       playWsJsonStandalone,
+      "com.pauldijou" %% "jwt-play-json" % "4.2.0",
       playTest, playTestPlus, mockito, scalaSpec
     ),
     routesGenerator := InjectedRoutesGenerator,

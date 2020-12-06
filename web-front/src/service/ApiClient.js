@@ -9,7 +9,7 @@ function getStatus(cb) {
   }
   return fetch('/api/status', requestOptions)
     .then(checkStatus)
-    .then(parseJSON)
+    .then(r => r.json())
     .then(cb)
 }
 
@@ -20,8 +20,8 @@ function login() {
   }
   return fetch('/api/login/strava', requestOptions)
     .then(checkStatus)
-    .then(parseJSON)
-    .then(a => console.log(`LOGIN response ${a}`))
+    .then(r => r.text())
+    .then(a => console.log(`LOGIN response[${a}]`))
 }
 
 // Utility functions
@@ -48,13 +48,8 @@ function checkStatus(response) {
   throw error;
 }
 
-const parseJSON = (response) => {
-  if (response && response.length > 0) return response.json()
-  else return {}
-}
-
 const ApiClient = {
-  getStatus,
-  login
+  getStatus: getStatus,
+  login: login
 }
 export default ApiClient;
