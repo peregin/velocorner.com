@@ -53,7 +53,7 @@ def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % Dependencies.catsVersion,
-  "org.typelevel" %% "mouse" % "0.25"
+  "org.typelevel" %% "mouse" % Dependencies.mouseVersion
 )
 
 def scalaz = Seq(
