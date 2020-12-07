@@ -7,7 +7,10 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 
-val rethinkClient = "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion
+val rethinkClient = Seq(
+  "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion,
+  "com.googlecode.json-simple" % "json-simple" % "1.1.1"
+)
 val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % Dependencies.mongoDbVersion
 val orientDbClient = "com.orientechnologies" % "orientdb-client" % Dependencies.orientDbVersion
 val psqlDbClient = Seq(
@@ -49,7 +52,7 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % Dependencies.elasticVersion % "test"
 )
-def storage = Seq(rethinkClient, mongoClient, orientDbClient) ++ psqlDbClient
+def storage = Seq(mongoClient, orientDbClient) ++ psqlDbClient ++ rethinkClient
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % Dependencies.catsVersion,
