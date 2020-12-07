@@ -58,16 +58,22 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
 
   // from FE api
   def apiLogin = Action { implicit request =>
-    logout()
     logger.info(s"API LOGIN")
-    redirectToAuthorization("localhost", request)
-    logger.info(s"API LOGIN READY?")
     loggedIn(request) match {
       case Some(account) =>
+        logger.info("already logged in")
         val token = JwtUser.toJwtUser(account).toToken()
         logger.info(s"token = $token")
         Ok(token)
-      case None => Forbidden
+      case None =>
+        // state is use to validate redirect from the OAuth provider with a unique identifier
+        val state = UUID.randomUUID().toString
+        val scope = "localhost"
+        // ws.url(...).get
+        Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
+          request.session + (OAuth2StateKey -> state)
+        )
+        //Forbidden
     }
   }
 
