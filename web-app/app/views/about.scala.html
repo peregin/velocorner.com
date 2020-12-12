@@ -70,6 +70,10 @@
                                 <span id="status-play-mode" class="badge badge-aqua rounded-2x">X</span>
                                 <div class="VC_padding8">Play Version</div>
                             </li>
+                            <li class="list-group-item">
+                                <span id="status-pings" class="badge badge-red rounded-2x">X</span>
+                                <div class="VC_padding8">Pings</div>
+                            </li>
                         </ul>
                     </span>
                 </div>
@@ -124,6 +128,7 @@
                 $('#memory-progress-bar').html(data.memoryUsedPercentile + '% Used');
                 $('#memory-total-bytes').html(formatBytes(data.memoryTotal));
                 $('#up-time').html(data.upTime);
+                $('#status-pings').html(data.pings);
            }
         });
 

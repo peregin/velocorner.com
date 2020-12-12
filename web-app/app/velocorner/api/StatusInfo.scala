@@ -24,7 +24,7 @@ object StatusInfo {
 
   implicit val statusFormat: Format[StatusInfo] = Format[StatusInfo](Json.reads[StatusInfo], writes)
 
-  def compute(applicationMode: play.api.Mode): StatusInfo = {
+  def compute(applicationMode: play.api.Mode, pings: Long): StatusInfo = {
     val memoryTotal = sys.runtime.maxMemory()
     val memoryUsed = memoryTotal - sys.runtime.freeMemory()
     val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
@@ -41,7 +41,8 @@ object StatusInfo {
       gitHash = velocorner.build.BuildInfo.gitHash,
       memoryTotal = memoryTotal,
       memoryUsedPercentile = memoryUsedPercentile,
-      upTime = StartupService.elapsedTimeText()
+      upTime = StartupService.elapsedTimeText(),
+      pings = pings
     )
   }
 }
@@ -59,5 +60,6 @@ case class StatusInfo(
                        gitHash: String,
                        memoryTotal: Long,
                        memoryUsedPercentile: Int,
-                       upTime: String
+                       upTime: String,
+                       pings: Long
                      )

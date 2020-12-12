@@ -39,8 +39,6 @@ GET     /api/admin/status                                  controllers.AdminCont
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
 #  tags:
-#    - activity
-#  tags:
 #    - status
 #  responses:
 #    200:
@@ -51,6 +49,22 @@ GET     /api/admin/status                                  controllers.AdminCont
 #            $ref: '#/components/schemas/velocorner.api.StatusInfo'
 ###
 GET     /api/status                                        controllers.ApiController.status
+
+###
+#  summary: Collects ping notification
+#  tags:
+#    - status
+#  post:
+#    requestBody:
+#      content:
+#        application/json:
+#          schema:
+#             type: string
+#  responses:
+#    200:
+#      description: information has been collected
+###
+POST    /api/ping/                                         controllers.ApiController.ping
 
 ###
 #  summary: Retrieves current year's statistics for the logged in athlete

@@ -2,6 +2,7 @@ package controllers
 
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
+
 import javax.inject.Inject
 import org.reactivestreams.Subscriber
 import play.api.libs.json.Json
@@ -9,6 +10,7 @@ import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
 
+import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -16,13 +18,23 @@ import scala.concurrent.Future
 class ApiController @Inject()(environment: Environment, val connectivity: ConnectivitySettings, components: ControllerComponents)
   extends AbstractController(components) with OriginChecker {
 
+  val pings = new AtomicLong
+
   val allowedHosts: Seq[String] = connectivity.allowedHosts
   private val logger = Logger(getClass)
 
   // def mapped to /api/status
   def status = Action { implicit request =>
-    val statusInfo = StatusInfo.compute(environment.mode)
+    val statusInfo = StatusInfo.compute(environment.mode, pings.get())
     Ok(Json.toJson(statusInfo))
+  }
+
+  // def mapped to /api/ping/
+  def ping = Action { implicit request =>
+    val counter = pings.incrementAndGet()
+    val payload = request.body.asText.getOrElse("")
+    logger.info(s"PING[$counter]=[$payload]")
+    Ok
   }
 
   // WebSocket to update the client
