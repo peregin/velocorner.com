@@ -32,7 +32,10 @@ class ApiController @Inject()(environment: Environment, val connectivity: Connec
   // def mapped to /api/ping/
   def ping = Action { implicit request =>
     val counter = pings.incrementAndGet()
-    val payload = request.body.asText.getOrElse("")
+    val payload = request.contentType match {
+      case Some("application/json") => request.body.asJson.toString
+      case _ => request.body.asText.getOrElse("")
+    }
     logger.info(s"PING[$counter]=[$payload]")
     Ok
   }
