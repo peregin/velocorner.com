@@ -1,6 +1,15 @@
 @(context: PageContext)(implicit request: play.api.mvc.Request[Any], assets: AssetsFinder)
 @common.main(context) {
 
+@if(controllers.util.HolidayUtil.isWinterHoliday()) {
+    <div class="alert alert-block alert-success fade in">
+        <button data-dismiss="alert" class="close" type="button">×</button>
+        <p align="center" class="strong" style="font-size: 1.5em;">
+            <img align="middle" src="@assets.path("images/christmas-tree.png")" alt="Christmas Tree"/>Merry Christmas and a Happy New Year!
+        </p>
+    </div>
+}
+
     @widget.weather(context)
 
     @if(context.isWithingsEnabled) {
@@ -62,13 +71,8 @@
     }
 
     @if(context.isWindyEnabled) {
-        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1c" style="height: 280px">
-            <div class="col-md-12 col-sm-12">
-            Wind map
-                <div id="windy"
-                     windy-enabled="@context.isWindyEnabled" windy-key="@context.windyApiKey">
-                </div>
-            </div>
+        <div id="windy"
+             windy-enabled="@context.isWindyEnabled" windy-key="@context.windyApiKey">
         </div>
     }
 

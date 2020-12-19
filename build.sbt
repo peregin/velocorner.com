@@ -176,7 +176,7 @@ lazy val demoService = (project in file("demo-service") withId "demo-service")
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % "6.3.2",
+      "io.argonaut" %% "argonaut" % "6.3.3",
       "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
       scalaTest
     ) ++ cats,
