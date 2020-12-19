@@ -71,3 +71,7 @@ if $programname == "dhclient" and ($msg contains "DHCP" or $msg contains "renewa
 if $programname == "dockerd" then stop
 if $programname == "sshd" then stop
 ```
+
+## Images
+Free for commercial use
+https://pixabay.com/illustrations/christmas-tree-twigs-christmas-pine-1853582/
