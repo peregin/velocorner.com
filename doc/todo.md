@@ -7,5 +7,5 @@
 # Done
 - implement refresh token after access token expires
 - persist gears when retrieving provider user
-- distinguish provider between consumer users for OAuth2
-- Account holds Strava amd Withings related info in different structures
+- distinguish the provider between consumer users for OAuth2
+- Account holds Strava and Withings related info in different structures
