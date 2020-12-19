@@ -40,22 +40,9 @@
         </div>
     </div>
 
-    @if(context.isWindyEnabled) {
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <div id="windy"
-                 windy-enabled="@context.isWindyEnabled" windy-key="@context.windyApiKey">
-            </div>
-        </div>
-    </div>
-    }
 </div>
 
 <script type="text/javascript" src="@routes.Assets.at("javascripts/meteogram.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/windbarb.src.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("highcharts/modules/pattern-fill.js")"></script>
 <script type="text/javascript" src="@assets.path("javascripts/weather.js")"></script>
-@if(context.isWindyEnabled) {
-<script type="text/javascript" src="https://unpkg.com/leaflet@@1.4.0/dist/leaflet.js"></script>
-<script type="text/javascript" src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
-}

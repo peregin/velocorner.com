@@ -59,8 +59,16 @@
             &nbsp;Login with your Strava account, you will be able to see your yearly progress and various statistics.
             <img src="@assets.path("images/yearly-heatmap200.png")" alt="Heatmap">
         </div>
+    }
 
-        <div class="tag-box">
+    @if(context.isWindyEnabled) {
+        <div class="tag-box tag-box-v2 box-shadow shadow-effect-1c" style="height: 280px">
+            <div class="col-md-12 col-sm-12">
+            Wind map
+                <div id="windy"
+                     windy-enabled="@context.isWindyEnabled" windy-key="@context.windyApiKey">
+                </div>
+            </div>
         </div>
     }
 
@@ -72,6 +80,10 @@
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/counter/jquery.counterup.min.js")"></script>
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/circles-master/circles.js")"></script>
 <script type="text/javascript" src="@assets.path("unify/assets/js/plugins/circles-master.js")"></script>
+@if(context.isWindyEnabled) {
+<script type="text/javascript" src="https://unpkg.com/leaflet@@1.4.0/dist/leaflet.js"></script>
+<script type="text/javascript" src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
+}
 <script type="text/javascript">//<![CDATA[
     $(document).ready(function() {
         @if(context.account.nonEmpty) {
