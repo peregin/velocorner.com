@@ -8,7 +8,6 @@ object HolidayUtil {
 
   def isWinterHoliday(now: LocalDate): Boolean = {
     val day = now.getDayOfYear
-    println(s"day is $day")
     day < 7 || day > 350
   }
 }
