@@ -75,3 +75,9 @@ if $programname == "sshd" then stop
 ## Images
 Free for commercial use
 https://pixabay.com/illustrations/christmas-tree-twigs-christmas-pine-1853582/
+
+# Troubleshooting
+if embedded psql fails to start
+```shell script
+brew install postgresql
+```
