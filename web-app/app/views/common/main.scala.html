@@ -73,6 +73,10 @@
         <div class="tp-banner-container @{if (context.account.isDefined) "VC_height200" else "VC_height300"} hidden-sm hidden-xs">
             <div class="tp-banner">
                 <ul>
+                @if(controllers.util.HolidayUtil.isWinterHoliday()) {
+                    @slide_item("images/background/new-year.webp", "Merry Christmas and a Happy New Year!")
+                } else {
+
                     @slide_item("images/background/davos.webp", "Davos")
 
                     @slide_item("images/background/colnago.webp", "Colnago")
@@ -90,12 +94,12 @@
                     @slide_item("images/background/schwialp.webp", "Schwialppass")
 
                     @slide_item("images/background/colnagov1r.webp", "Colnago V1R")
+                }
                 </ul>
                 <div class="tp-bannertimer tp-bottom"></div>
             </div>
         </div>
         <!--=== End Slider ===-->
-
 
         <!--=== Content Part ===-->
         <div class="container content">

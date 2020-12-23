@@ -74,7 +74,10 @@ if $programname == "sshd" then stop
 
 ## Images
 Free for commercial use
+No attribution required
+
 https://pixabay.com/illustrations/christmas-tree-twigs-christmas-pine-1853582/
+https://pixabay.com/illustrations/new-year-s-eve-christmas-ornament-1911483/
 
 # Troubleshooting
 if embedded psql fails to start
