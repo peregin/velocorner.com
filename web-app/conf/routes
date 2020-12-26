@@ -56,10 +56,11 @@ GET     /api/status                                        controllers.ApiContro
 #    - status
 #  post:
 #    requestBody:
+#      required: true
 #      content:
 #        application/json:
 #          schema:
-#             type: string
+#             $ref: '#/components/schemas/velocorner.api.Ping'
 #  responses:
 #    200:
 #      description: information has been collected

@@ -7,12 +7,12 @@ object Achievements {
 }
 
 case class Achievements(
-                         maxAverageSpeed: Option[Achievement],
-                         maxDistance: Option[Achievement],
-                         maxElevation: Option[Achievement],
-                         maxAveragePower: Option[Achievement],
-                         maxHeartRate: Option[Achievement],
-                         maxAverageHeartRate: Option[Achievement],
-                         minAverageTemperature: Option[Achievement],
-                         maxAverageTemperature: Option[Achievement]
-                       )
+    maxAverageSpeed: Option[Achievement],
+    maxDistance: Option[Achievement],
+    maxElevation: Option[Achievement],
+    maxAveragePower: Option[Achievement],
+    maxHeartRate: Option[Achievement],
+    maxAverageHeartRate: Option[Achievement],
+    minAverageTemperature: Option[Achievement],
+    maxAverageTemperature: Option[Achievement]
+)
