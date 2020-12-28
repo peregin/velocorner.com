@@ -23,7 +23,7 @@ val psqlDbClient = Seq(
 
 val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
 // for more than 22 parameter case classes
-val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.40.2"
+val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.42.0"
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % Dependencies.playJsonVersion
 val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % Dependencies.playWsVersion
@@ -138,7 +138,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     libraryDependencies ++= Seq(
       guice, ehcache,
       playWsJsonStandalone,
-      "com.pauldijou" %% "jwt-play-json" % "4.2.0",
+      "com.pauldijou" %% "jwt-play-json" % "4.3.0",
       playTest, playTestPlus, mockito, scalaSpec
     ),
     routesGenerator := InjectedRoutesGenerator,
@@ -178,7 +178,7 @@ lazy val testService = (project in file("test-service") withId "test-service")
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
       "io.argonaut" %% "argonaut" % "6.3.3",
       "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
-      "javax.servlet" % "javax.servlet-api" % "3.1.0",
+      "javax.servlet" % "javax.servlet-api" % "4.0.1",
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"

@@ -1,6 +1,6 @@
 package velocorner.api.strava
 
-import ai.x.play.json.Jsonx
+import ai.x.play.json.{CamelToSnakeNameEncoder, Jsonx, NameEncoder}
 import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.model.DateTimePattern
@@ -83,6 +83,7 @@ object Activity {
 
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter
   // generates a PlayJson Format[T] for a case class T with any number of fields
+  implicit val encoder: NameEncoder = CamelToSnakeNameEncoder()
   implicit val activityFormat: OFormat[Activity] = Jsonx.formatCaseClass[Activity]
   implicit val listActivities: Reads[List[Activity]] = Reads.list(activityFormat)
 }
