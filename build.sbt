@@ -171,7 +171,7 @@ lazy val testService = (project in file("test-service") withId "test-service")
   .settings(
     buildSettings,
     name := "test-service",
-    scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13
+    //scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13 - it is now
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
