@@ -22,8 +22,24 @@
     box-shadow: 8px 8px 15px 1px rgba(13,13,18,0.16);
 }
 
+.VC_profile {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .counters span {
-    font-size: 25px;
+    font-size: 18px;
+    text-align: center;
+}
+.counters span.counter-icon i {
+    padding: 18px;
+    min-width: 25px;
+    font-size: 30px;
+}
+.counters h4 {
+    font-size: 15px;
+    text-align: center;
 }
 
 @media (max-width: 992px) {
@@ -35,7 +51,7 @@
         min-width: 28px;
         font-size: 20px;
     }
-    h4, .h4 {
+    .counters h4, .h4 {
         font-size: 12px;
     }
 }
@@ -45,7 +61,7 @@
         display: inline-table;
     }
     .counters span {
-        font-size: 12px;
+        font-size: 10px;
     }
     .counters span.counter-icon i {
         padding: 5px;
@@ -53,8 +69,8 @@
         font-size: 15px;
     }
     .col-sm-1 {
-        padding-left: 8px;
-        padding-right: 8px;
+        padding-left: 2px;
+        padding-right: 2px;
     }
 }
 

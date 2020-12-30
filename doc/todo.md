@@ -1,7 +1,7 @@
 # ToDo
-- add active days stats
 - add years tab to the profile ytd
-- add yearly achievements
+- add calendar heatmap
+- add yearly/monthly achievements
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
@@ -9,6 +9,7 @@
 - return JWT after login 
 
 # Done
+- add active days stats
 - add Merry Christmas snackbar during the holidays
 - make windy frame expandable, do not show it by default
 - implement refresh token after access token expires
