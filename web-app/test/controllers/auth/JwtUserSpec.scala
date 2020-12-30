@@ -11,7 +11,7 @@ class JwtUserSpec extends Specification {
         location = "Veloland",
         avatarUrl = "avatarUrl"
       )
-      val token = user.toToken
+      val token = user.toToken()
       val claim = JwtUser.fromToken(token)
       user === claim
     }

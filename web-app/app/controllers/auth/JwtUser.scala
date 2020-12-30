@@ -11,6 +11,8 @@ object JwtUser {
 
   implicit val format = Format[JwtUser](Json.reads[JwtUser], Json.writes[JwtUser])
 
+  val secret = "key"
+
   def toJwtUser(account: Account) =
     JwtUser(
       name = account.displayName,
@@ -19,7 +21,7 @@ object JwtUser {
     )
 
   def fromToken(token: String): JwtUser = {
-    JwtJson.decode(token, "key", Seq(JwtAlgorithm.HS256)) match {
+    JwtJson.decode(token, secret, Seq(JwtAlgorithm.HS256)) match {
       case Success(claim) =>
         val json = Json.parse(claim.content)
         (json \ "user").get.validate[JwtUser] match {
@@ -37,6 +39,6 @@ case class JwtUser(name: String, location: String, avatarUrl: String) {
     val json = Json.toJson(this)
     val obj = JsObject(Seq("user" -> json))
     val header = Json.obj(("typ", "JWT"), ("alg", "HS256"))
-    JwtJson.encode(header, obj, "key")
+    JwtJson.encode(header, obj, JwtUser.secret)
   }
 }
