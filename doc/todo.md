@@ -1,6 +1,8 @@
 # ToDo
+- add active days stats
+- add years tab to the profile ytd
 - add where to ride section
-- add hps overlay over video section
+- add gps overlay over video section
 - add garmin data field section
 - implement JWT between Frontend and Backend
 - return JWT after login 
