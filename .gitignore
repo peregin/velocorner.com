@@ -7,9 +7,11 @@
 .settings
 .gradle
 .cache
-/data-analytics/.idea/
-!.idea/runConfigurations/
+.vscode
+go.sum
 .idea/*
+!.idea/runConfigurations/
+*/.idea/*
 .idea_modules/*
 .bloop
 .metals
