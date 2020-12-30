@@ -8,19 +8,21 @@ import velocorner.api.strava.Activity
 object DailyProgress {
 
   def from(activity: Activity): DailyProgress = {
-    val progress = new Progress(1,
+    val progress = new Progress(1,1,
       activity.distance / 1000, activity.distance / 1000, activity.moving_time,
       activity.average_speed.getOrElse(0f).toDouble,
       activity.total_elevation_gain, activity.total_elevation_gain
     )
-    DailyProgress(activity.getStartDateLocal().toLocalDate(), progress)
+    DailyProgress(activity.getStartDateLocal().toLocalDate, progress)
   }
 
   def from(activities: Iterable[Activity]): Iterable[DailyProgress] = {
     activities.map(from)
       .groupBy(_.day)
       .map{ case (day, progressPerDay) =>
-        DailyProgress(day, progressPerDay.foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress))
+        DailyProgress(day, progressPerDay
+          .foldLeft(Progress.zero)((accu, dailyProgress) => accu + dailyProgress.progress)
+          .copy(days = 1))
       }.toSeq.sortBy(_.day.toString)
   }
 

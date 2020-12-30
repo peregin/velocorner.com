@@ -8,7 +8,7 @@ import velocorner.util.JsonIo
   */
 class ProgressSpec extends Specification {
 
-  val progress = Progress(10, 1200, 1500, 1000, 27.2, 512, 602)
+  private val progress = Progress(1, 10, 1200, 1500, 1000, 27.2, 512, 602)
 
   "model" should {
 
@@ -16,6 +16,7 @@ class ProgressSpec extends Specification {
       val json = JsonIo.write(progress)
       json ===
         """{
+          |  "days" : 1,
           |  "rides" : 10,
           |  "distance" : 1200,
           |  "longestDistance" : 1500,
@@ -27,8 +28,8 @@ class ProgressSpec extends Specification {
     }
 
     "aggregate" in {
-      val progress2 = Progress(2, 1230, 1600, 1100, 28.1, 515, 602)
-      progress + progress2 === Progress(12, 2430, 1600, 2100, 28.1, 1027, 602)
+      val progress2 = Progress(2, 2, 1230, 1600, 1100, 28.1, 515, 602)
+      progress + progress2 === Progress(3, 12, 2430, 1600, 2100, 28.1, 1027, 602)
     }
   }
 }

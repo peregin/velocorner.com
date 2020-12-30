@@ -9,8 +9,8 @@ import velocorner.api.Progress
  */
 class YearlyProgressSpec extends Specification {
 
-  val today = LocalDate.parse("2015-07-10")
-  val progress = Progress(1, 10, 10, 1000, 3, 30, 30)
+  private val today = LocalDate.parse("2015-07-10")
+  private val progress = Progress(1, 1, 10, 10, 1000, 3, 30, 30)
 
   "model" should {
 

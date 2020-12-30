@@ -7,7 +7,7 @@ import velocorner.util.JsonIo
 
 class ProfileStatisticsSpec extends Specification {
 
-  private val progress = Progress(10, 1200, 1500, 1000, 27.2, 512, 602)
+  private val progress = Progress(2, 10, 1200, 1500, 1000, 27.2, 512, 602)
 
   "model" should {
 
