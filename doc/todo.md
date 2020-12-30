@@ -1,6 +1,7 @@
 # ToDo
 - add active days stats
 - add years tab to the profile ytd
+- add yearly achievements
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
