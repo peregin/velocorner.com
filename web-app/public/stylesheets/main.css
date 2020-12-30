@@ -54,6 +54,9 @@
     .counters h4, .h4 {
         font-size: 12px;
     }
+    .VC_profile {
+        font-size: 10px;
+    }
 }
 
 @media (max-width: 768px) {
