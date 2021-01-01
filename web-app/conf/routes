@@ -114,12 +114,12 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityC
 GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityController.ytdStatistics(action: String, activity: String)
 
 ###
-#  summary: Lists daily activities for the logged in athlete
+#  summary: Lists all daily activities for the logged in athlete from the last 12 months
 #  tags:
 #    - activity
 #  responses:
 #    200:
-#      description: Returns the daily activities for distance and elevation
+#      description: Returns all daily activities for distance and elevation from the last 12 months
 #      content:
 #        application/json:
 #          schema:
@@ -127,7 +127,7 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityC
 #    404:
 #      description: Not found
 ###
-GET     /api/athletes/statistics/daily/:action/:activity        controllers.ActivityController.dailyStatistics(action: String, activity: String)
+GET     /api/athletes/statistics/daily/:action             controllers.ActivityController.dailyStatistics(action: String)
 
 ###
 #  summary: Lists yearly histogram for distance and elevation for the logged in athlete

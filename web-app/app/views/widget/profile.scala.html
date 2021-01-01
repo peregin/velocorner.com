@@ -112,7 +112,7 @@
 
         <div class="col-sm-3 sm-margin-bottom-40">
             <div class="funny-boxes funny-boxes-top-yellow" style="padding-top: 8px; height: 100%;">
-                <div class="row"><h4><i class="fa fa-trophy rounded"></i> Achievements</h4></div>
+                <div class="row"><h4><i class="fa fa-trophy rounded"></i> Best Achievements</h4></div>
                 <div class="row">
                     <div>Max average speed: <a id="achievement-max-avg-speed" href="#">-</a></div>
                     <div>Longest activity: <a id="achievement-max-distance" href="#">-</a></div>
@@ -147,7 +147,7 @@
 	    var stats = {};
         for (var d in data) {
             var date = moment(data[d].day) / 1000;
-            stats[date] = data[d].value;
+            stats[date] = Number.parseFloat(data[d].value.toFixed(2));
         }
         return stats;
 	};
@@ -158,9 +158,10 @@
 	    subDomain: "day",
 	    cellSize: 14,
 	    range: 12,
+	    itemName: "km",
 	    subDomainTextFormat: "%d",
 	    displayLegend: false,
-	    data: "/api/athletes/statistics/daily/distance/Ride",
+	    data: "/api/athletes/statistics/daily/distance",
 	    afterLoadData: parseDailySeries
 	});
 //]]>

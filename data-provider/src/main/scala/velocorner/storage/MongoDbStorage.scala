@@ -4,6 +4,7 @@ import cats.implicits._
 import com.mongodb.client.model.{IndexModel, UpdateOptions}
 import com.typesafe.scalalogging.LazyLogging
 import org.bson.BsonDocument
+import org.joda.time.DateTime
 import org.mongodb.scala._
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
@@ -51,6 +52,8 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
       docs <- results
     } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
+
+  override def listActivities(athleteId: Long, from: DateTime, to: DateTime): Future[Iterable[Activity]] = ???
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {

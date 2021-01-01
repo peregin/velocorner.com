@@ -3,7 +3,7 @@ package controllers
 import controllers.auth.AuthChecker
 
 import javax.inject.Inject
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -114,21 +114,20 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
     }
 
-  // daily activity achievements list
+  // all daily activity list for the last 12 months
   // route mapped to /api/athletes/statistics/daily/:action/:activity
-  def dailyStatistics(action: String, activity: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for daily statistics in $action/$activity") { implicit request =>
+  def dailyStatistics(action: String): Action[AnyContent] =
+    TimedAuthAsyncAction(s"query for all daily activities in $action") { implicit request =>
 
-      val last12Month = LocalDate.now().minusMonths(11).withDayOfMonth(1)
+      val now = DateTime.now(DateTimeZone.UTC)
+      val last12Month = now.minusMonths(12)
       val storage = connectivity.getStorage
 
       val result = for {
         account <- OptionT(Future(loggedIn))
         _ = logger.info(s"athlete daily statistics from date $last12Month statistics for ${account.displayName}")
-        // TODO: here list activities from the given date, instead of all
-        activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
-        dailyProgress = DailyProgress.from(activities).filter(_.day.compareTo(last12Month) >= 0)
-      } yield dailyProgress
+        activities <- OptionT.liftF(storage.listActivities(account.athleteId, last12Month, now.plusDays(1)))
+      } yield DailyProgress.from(activities)
 
       result
         .getOrElse(Iterable.empty)

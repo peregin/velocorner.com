@@ -26,6 +26,7 @@ import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 import scala.jdk.CollectionConverters._
 import cats.implicits._
 import cats.data.OptionT
+import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
 
@@ -94,6 +95,15 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         "type" -> activityType
       )
     )
+
+  override def listActivities(athleteId: Long, from: DateTime, to: DateTime): Future[Iterable[Activity]] =
+    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND date_from > :dateFrom AND date_from < :dateTo",
+    Map(
+      "id" -> athleteId,
+      "dateFrom" -> from,
+      "dateTo" -> to
+    )
+  )
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {

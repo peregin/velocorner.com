@@ -5,6 +5,7 @@ import com.rethinkdb.RethinkDB
 import com.rethinkdb.gen.ast.{ReqlExpr, ReqlFunction1}
 import com.rethinkdb.net.{Connection, Result}
 import com.typesafe.scalalogging.LazyLogging
+import org.joda.time.DateTime
 import org.json.simple.JSONObject
 import velocorner.api.strava.Activity
 import velocorner.model.Account
@@ -12,6 +13,7 @@ import velocorner.model.strava.Gear
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
+import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 
@@ -52,6 +54,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     }).run(maybeConn).asInstanceOf[Result[java.util.HashMap[String, String]]]
     result2Activity(result.toList.asScala.toList)
   }
+
+  override def listActivities(athleteId: Long, from: DateTime, to: DateTime): M[Iterable[Activity]] = ???
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]] = Monad[M].pure {

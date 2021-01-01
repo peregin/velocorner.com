@@ -1,7 +1,6 @@
 package velocorner.storage
 
 import java.util.concurrent.Executors
-
 import cats.data.OptionT
 import cats.effect.{Blocker, IO}
 import cats.implicits._
@@ -9,7 +8,10 @@ import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
+// needed for sql interpolator when filtering on start date
+import doobie.implicits.javatime._
 import org.flywaydb.core.Flyway
+import org.joda.time.DateTime
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
 import velocorner.api.{Achievement, GeoPosition}
@@ -19,6 +21,7 @@ import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
 
+import java.time.ZoneId
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -113,6 +116,21 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
          |""".stripMargin.query[Activity].to[List].transactToFuture
+
+  override def listActivities(
+      athleteId: Long,
+      from: DateTime,
+      to: DateTime
+  ): Future[Iterable[Activity]] = {
+    val fromDate = java.time.OffsetDateTime.ofInstant(java.time.Instant.ofEpochMilli(from.getMillis), ZoneId.of("UTC"))
+    val toDate = java.time.OffsetDateTime.ofInstant(java.time.Instant.ofEpochMilli(to.getMillis), ZoneId.of("UTC"))
+    sql"""select data from activity
+         |where athlete_id = $athleteId
+         |and cast(data->>'start_date' as timestamp) > $fromDate
+         |and cast(data->>'start_date' as timestamp) < $toDate
+         |order by data->>'start_date' desc
+         |""".stripMargin.query[Activity].to[List].transactToFuture
+  }
 
   override def listRecentActivities(
       athleteId: Long,

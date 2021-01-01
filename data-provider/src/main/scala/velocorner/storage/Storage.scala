@@ -9,6 +9,7 @@ import velocorner.api.weather.{SunriseSunset, WeatherForecast}
 
 import scala.concurrent.Future
 import cats.instances.future._
+import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,6 +22,7 @@ trait Storage[M[_]] {
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): M[Iterable[String]]
   def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]]
+  def listActivities(athleteId: Long, from: DateTime, to: DateTime): M[Iterable[Activity]]
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
   def getActivity(id: Long): M[Option[Activity]]
