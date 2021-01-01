@@ -1,8 +1,7 @@
-package velocorner.model
+package velocorner.api
 
 import org.joda.time.LocalDate
 import org.specs2.mutable.Specification
-import velocorner.api.Progress
 import velocorner.util.JsonIo
 
 class ProfileStatisticsSpec extends Specification {

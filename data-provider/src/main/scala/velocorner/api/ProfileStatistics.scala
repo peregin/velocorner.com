@@ -1,8 +1,7 @@
-package velocorner.model
+package velocorner.api
 
 import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
-import velocorner.api.Progress
 
 case class ProfileStatistics(yearlyPercentile: Int, estimate: Progress, progress: Progress, commute: Progress)
 

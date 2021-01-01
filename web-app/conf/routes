@@ -77,7 +77,7 @@ POST    /api/ping/                                         controllers.ApiContro
 #      content:
 #        application/json:
 #          schema:
-#            $ref: '#/components/schemas/velocorner.api.Progress'
+#            $ref: '#/components/schemas/velocorner.api.ProfileStatistics'
 ###
 GET     /api/athletes/statistics/profile/:activity         controllers.ActivityController.ytdProfile(activity: String)
 
@@ -103,7 +103,7 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityC
 #    - activity
 #  responses:
 #    200:
-#      description: Returns the year to date series
+#      description: Returns the year to date series for distance and elevation
 #      content:
 #        application/json:
 #          schema:
@@ -114,12 +114,28 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityC
 GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityController.ytdStatistics(action: String, activity: String)
 
 ###
+#  summary: Lists daily activities for the logged in athlete
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Returns the daily activities for distance and elevation
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailyPoint'
+#    404:
+#      description: Not found
+###
+GET     /api/athletes/statistics/daily/:action/:activity        controllers.ActivityController.dailyStatistics(action: String, activity: String)
+
+###
 #  summary: Lists yearly histogram for distance and elevation for the logged in athlete
 #  tags:
 #    - activity
 #  responses:
 #    200:
-#      description: Returns the yearly histogram
+#      description: Returns the yearly histogram for distance and elevation
 #      content:
 #        application/json:
 #          schema:

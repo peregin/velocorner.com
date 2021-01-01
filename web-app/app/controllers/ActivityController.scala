@@ -1,12 +1,13 @@
 package controllers
 
 import controllers.auth.AuthChecker
+
 import javax.inject.Inject
 import org.joda.time.LocalDate
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
-import velocorner.api.{Achievements, Progress}
+import velocorner.api.{Achievements, ProfileStatistics, Progress}
 import velocorner.model._
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
 import velocorner.util.{JsonIo, Metrics}
@@ -16,6 +17,7 @@ import scala.concurrent.Future
 import cats.implicits._
 import cats.data.{EitherT, OptionT}
 import model.{apexcharts, highcharts}
+import velocorner.api.chart.{DailyPoint, DailySeries}
 import velocorner.api.strava.Activity
 
 
@@ -110,6 +112,34 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
           }
         }
         .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
+    }
+
+  // daily activity achievements list
+  // route mapped to /api/athletes/statistics/daily/:action/:activity
+  def dailyStatistics(action: String, activity: String): Action[AnyContent] =
+    TimedAuthAsyncAction(s"query for daily statistics in $action/$activity") { implicit request =>
+
+      val last12Month = LocalDate.now().minusMonths(11).withDayOfMonth(1)
+      val storage = connectivity.getStorage
+
+      val result = for {
+        account <- OptionT(Future(loggedIn))
+        _ = logger.info(s"athlete daily statistics from date $last12Month statistics for ${account.displayName}")
+        // TODO: here list activities from the given date, instead of all
+        activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
+        dailyProgress = DailyProgress.from(activities).filter(_.day.compareTo(last12Month) >= 0)
+      } yield dailyProgress
+
+      result
+        .getOrElse(Iterable.empty)
+        .map { dailyProgress =>
+          action.toLowerCase match {
+            case "distance" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.distance))
+            case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.elevation))
+            case other => sys.error(s"not supported action: $other")
+          }
+        }
+        .map(series => Ok(Json.toJson(series)))
     }
 
   // yearly histogram based on predefined ranges

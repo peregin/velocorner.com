@@ -127,10 +127,44 @@
         </div>
 
     </div>
+
+    <div class="row hidden-md hidden-sm hidden-xs">
+        <div class="col-sm-12 sm-margin-bottom-40" style="padding-top: 10px;">
+            <div class="funny-boxes funny-boxes-top-sea">
+                <div class="row"><h4><i class="fa fa-calendar rounded"></i> Latest activities</h4></div>
+                <div id="cal-heatmap" align="center"></div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- End Counters -->
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript">//<![CDATA[
+    var last12Month = moment(new Date()).add(-11, 'months');
+    console.log("last12Month is " + last12Month);
+	var parseDailySeries = function(data) {
+	    var stats = {};
+        for (var d in data) {
+            var date = moment(data[d].day) / 1000;
+            stats[date] = data[d].value;
+        }
+        return stats;
+	};
+	var cal = new CalHeatMap();
+	cal.init({
+	    domain: "month",
+	    start: last12Month.toDate(),
+	    subDomain: "day",
+	    cellSize: 14,
+	    range: 12,
+	    subDomainTextFormat: "%d",
+	    displayLegend: false,
+	    data: "/api/athletes/statistics/daily/distance/Ride",
+	    afterLoadData: parseDailySeries
+	});
+//]]>
+</script>
 <script type="text/javascript">//<![CDATA[
     function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
         let field = $(entryName)
