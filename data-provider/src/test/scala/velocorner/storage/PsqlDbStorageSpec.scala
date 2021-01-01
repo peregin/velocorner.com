@@ -2,7 +2,7 @@ package velocorner.storage
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres
 import com.typesafe.scalalogging.LazyLogging
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 import velocorner.api.GeoPosition
@@ -29,8 +29,8 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
     addFragmentsBlock(activityFragments(psqlStorage, activityFixtures))
 
     "list all activities between dates" in {
-      val date = DateTime.parse("2015-01-23T16:18:17Z")
-      val activities = awaitOn(psqlStorage.listActivities(432909, date.minusDays(1), date.plusDays(1)))
+      val date = DateTime.parse("2015-01-23T16:18:17Z").withZone(DateTimeZone.UTC)
+      val activities = awaitOn(psqlStorage.listActivities(432909, date.minusDays(1), date))
       activities must haveSize(2)
     }
 
