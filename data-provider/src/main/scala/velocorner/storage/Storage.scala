@@ -21,6 +21,9 @@ trait Storage[M[_]] {
   def storeActivity(activities: Iterable[Activity]): M[Unit]
   // e.g. Ride, Run, etc.
   def listActivityTypes(athleteId: Long): M[Iterable[String]]
+  // e.g. 2021, 2020, 2018, etc.
+  def listActivityYears(athleteId: Long): M[Iterable[Int]]
+  // to create the ytd and aggregated statistics
   def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]]
   def listActivities(athleteId: Long, from: DateTime, to: DateTime): M[Iterable[Activity]]
   // to check how much needs to be imported from the feed

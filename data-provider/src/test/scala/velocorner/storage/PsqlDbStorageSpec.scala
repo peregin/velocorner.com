@@ -34,6 +34,10 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       activities must haveSize(2)
     }
 
+    "list activity years" in {
+      awaitOn(psqlStorage.listActivityYears(432909)) should containTheSameElementsAs(Seq(2015, 2014))
+    }
+
     addFragmentsBlock(accountFragments(psqlStorage))
 
     addFragmentsBlock(weatherFragments(psqlStorage))

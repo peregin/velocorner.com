@@ -1,9 +1,7 @@
 # ToDo
-- show active days in the last 12 months
 - show consecutive sport days
 - add last activity details in the profile
 - add 3D profile of the last activity gpx 
-- add years tab to the profile ytd
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
@@ -13,8 +11,10 @@
 - distribution heatmap, show the range instead of a single value
 
 # InProgress
+- add years tab to the profile ytd
 
 # Done
+- show active days in the last 12 months (in the current year)
 - make calendar heatmap responsive
 - show calendar for all activity types
 - use optimized activity query for a given range

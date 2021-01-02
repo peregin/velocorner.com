@@ -109,6 +109,12 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
          |order by counter desc
          |""".stripMargin.query[String].to[List].transactToFuture
 
+  override def listActivityYears(athleteId: Long): Future[Iterable[Int]] =
+    sql"""select distinct extract(year from (data->>'start_date')::timestamp) as years from activity
+         |where athlete_id = $athleteId
+         |order by years desc
+         |""".stripMargin.query[Int].to[List].transactToFuture
+
   override def listAllActivities(
       athleteId: Long,
       activityType: String

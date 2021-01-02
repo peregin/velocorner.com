@@ -88,6 +88,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     }
   }
 
+  override def listActivityYears(athleteId: Long): Future[Iterable[Int]] = ???
+
   override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
     queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND type = :type",
       Map(
