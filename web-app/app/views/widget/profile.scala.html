@@ -128,7 +128,7 @@
 
     </div>
 
-    <div class="row hidden-md hidden-sm hidden-xs">
+    <div class="row">
         <div class="col-sm-12 sm-margin-bottom-40" style="padding-top: 10px;">
             <div class="funny-boxes funny-boxes-top-sea">
                 <div class="row"><h4><i class="fa fa-calendar rounded"></i> Latest activities</h4></div>
@@ -141,7 +141,8 @@
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
-    var last12Month = moment(new Date()).add(-11, 'months');
+    var now = new Date();
+    var last12Month = now.setMonth(now.getMonth() - 11);
     console.log("last12Month is " + last12Month);
 	var parseDailySeries = function(data) {
 	    var stats = {};
@@ -151,22 +152,53 @@
         }
         return stats;
 	};
-	var cal = new CalHeatMap();
-	cal.init({
+
+	function responsiveCal(options) {
+        var now = new Date();
+        if ($(window).width() < 420) {
+            console.log("resizing 420");
+            options.start = now;
+            options.range = 1;
+            options.cellSize = 25;
+        } else if ($(window).width() < 730) {
+            console.log("resizing 730");
+            options.start = now.setMonth(now.getMonth() - 2);
+            options.range = 3;
+            options.cellSize = 18;
+        } else if ($(window).width() < 1400) {
+            console.log("resizing 1400");
+            options.start = now.setMonth(now.getMonth() - 4);
+            options.range = 5;
+            options.cellSize = 22;
+        } else {
+            console.log("resizing default");
+            options.start = now.setMonth(now.getMonth() - 11);
+            options.range = 12;
+            options.cellSize = 14;
+        }
+
+        if (typeof cal === "object") {
+            $('#cal-heatmap').html('');
+            cal = cal.destroy();
+        }
+        cal = new CalHeatMap();
+        cal.init(options);
+    };
+
+    var calOptions = {
 	    domain: "month",
-	    start: last12Month.toDate(),
+	    start: last12Month,
 	    subDomain: "day",
-	    cellSize: 14,
 	    range: 12,
-	    itemName: "km",
+	    cellSize: 14,
+	    itemName: ["km", "km"],
 	    subDomainTextFormat: "%d",
+	    tooltip: true,
 	    displayLegend: false,
 	    data: "/api/athletes/statistics/daily/distance",
 	    afterLoadData: parseDailySeries
-	});
-//]]>
-</script>
-<script type="text/javascript">//<![CDATA[
+	};
+
     function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
         let field = $(entryName)
         if (entry) {
@@ -235,7 +267,10 @@
     }
 
     $(document).ready(function() {
+        // load default activity profile
         loadProfile('Ride');
+        // load calendar heatmap based on the current window size
+        responsiveCal(calOptions);
 
         // reload when activity type is changing
         let activityTabs = $("#activity-tabs")
@@ -244,6 +279,19 @@
             console.log("profile event: " + activityType);
             loadProfile(activityType);
         }, false);
+
+        // smooth resize binding
+        $(window).resize(function() {
+            if (this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 500);
+        });
+
+        // resize on resizeEnd function, make responsive calendar
+        $(window).bind('resizeEnd', function() {
+            responsiveCal(calOptions);
+        });
     });
 //]]>
 </script>

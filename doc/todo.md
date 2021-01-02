@@ -1,7 +1,6 @@
 # ToDo
 - show active days in the last 12 months
 - show consecutive sport days
-- make calendar heatmap responsive
 - add last activity details in the profile
 - add 3D profile of the last activity gpx 
 - add years tab to the profile ytd
@@ -16,6 +15,7 @@
 # InProgress
 
 # Done
+- make calendar heatmap responsive
 - show calendar for all activity types
 - use optimized activity query for a given range
 - add calendar heatmap
