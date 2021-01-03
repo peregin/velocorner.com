@@ -1,24 +1,23 @@
 package controllers
 
+import cats.data.{EitherT, OptionT}
+import cats.implicits._
 import controllers.auth.AuthChecker
-
-import javax.inject.Inject
+import model.{apexcharts, highcharts}
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
+import velocorner.api.chart.DailyPoint
+import velocorner.api.strava.Activity
 import velocorner.api.{Achievements, ProfileStatistics, Progress}
 import velocorner.model._
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
 import velocorner.util.{JsonIo, Metrics}
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import cats.implicits._
-import cats.data.{EitherT, OptionT}
-import model.{apexcharts, highcharts}
-import velocorner.api.chart.{DailyPoint, DailySeries}
-import velocorner.api.strava.Activity
 
 
 class ActivityController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
@@ -26,28 +25,34 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
-  def ytdProfile(activity: String): Action[AnyContent] =
+  def profile(activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for profile in $activity") { implicit request =>
 
       val storage = connectivity.getStorage
       val now = LocalDate.now()
       val currentYear = now.getYear
 
-      def yearlyProgress(activities: Iterable[Activity]): Progress = {
+      def yearlyProgress(activities: Iterable[Activity], unit: Units.Entry): Progress = {
         val dailyProgress = DailyProgress.from(activities)
         val yearlyProgress = YearlyProgress.from(dailyProgress)
         val aggregatedYearlyProgress = YearlyProgress.aggregate(yearlyProgress)
-        aggregatedYearlyProgress.headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
+        val progress = aggregatedYearlyProgress.headOption.map(_.progress.last.progress).getOrElse(Progress.zero)
+        progress.to(unit)
       }
 
       val statisticsOT = for {
         account <- OptionT(Future(loggedIn))
+        imperial = account.isImperial()
         _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         _ = logger.debug(s"found ${activities.size} activities for ${account.athleteId}")
         ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.getYear == currentYear)
         ytdCommutes = ytdActivities.filter(_.commute.getOrElse(false))
-      } yield ProfileStatistics.from(now, yearlyProgress(ytdActivities), yearlyProgress(ytdCommutes))
+      } yield ProfileStatistics.from(
+        now,
+        yearlyProgress(ytdActivities, account.units()),
+        yearlyProgress(ytdCommutes, account.units())
+      )
 
       statisticsOT
         .getOrElse(ProfileStatistics.zero)
@@ -67,18 +72,16 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         activities <- OptionT.liftF(timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity)))
         dailyProgress = DailyProgress.from(activities)
         yearlyProgress = YearlyProgress.from(dailyProgress)
-      } yield yearlyProgress
+        series = action.toLowerCase match {
+          case "heatmap" => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress), account.units())
+          case "distance" => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress), account.units())
+          case "elevation" => highcharts.toElevationSeries(YearlyProgress.aggregate(yearlyProgress), account.units())
+          case other => sys.error(s"not supported action: $other")
+        }
+      } yield series
 
       result
         .getOrElse(Iterable.empty)
-        .map { yearlyProgress =>
-          action.toLowerCase match {
-            case "heatmap" => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress))
-            case "distance" => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress))
-            case "elevation" => highcharts.toElevationSeries(YearlyProgress.aggregate(yearlyProgress))
-            case other => sys.error(s"not supported action: $other")
-          }
-        }
         .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
     }
 
@@ -100,21 +103,19 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
           YearlyProgress(ytd.year, Seq(
             DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))
           ))
-      } yield ytdProgress
+        series = action.toLowerCase match {
+          case "distance" => highcharts.toDistanceSeries(ytdProgress, account.units())
+          case "elevation" => highcharts.toElevationSeries(ytdProgress, account.units())
+          case other => sys.error(s"not supported action: $other")
+        }
+      } yield series
 
       result
         .getOrElse(Iterable.empty)
-        .map { ytdProgress =>
-          action.toLowerCase match {
-            case "distance" => highcharts.toDistanceSeries(ytdProgress)
-            case "elevation" => highcharts.toElevationSeries(ytdProgress)
-            case other => sys.error(s"not supported action: $other")
-          }
-        }
         .map(dataSeries => Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(dataSeries))))
     }
 
-  // all daily activity list for the last 12 months
+  // all daily activity list for the last 12 months, shown in the calendar heatmap
   // route mapped to /api/athletes/statistics/daily/:action/:activity
   def dailyStatistics(action: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for all daily activities in $action") { implicit request =>
@@ -127,17 +128,16 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         account <- OptionT(Future(loggedIn))
         _ = logger.info(s"athlete daily statistics from date $last12Month statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listActivities(account.athleteId, last12Month, now.plusDays(1)))
-      } yield DailyProgress.from(activities)
+        dailyProgress = DailyProgress.from(activities)
+        series = action.toLowerCase match {
+          case "distance" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(account.units()).distance))
+          case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(account.units()).elevation))
+          case other => sys.error(s"not supported action: $other")
+        }
+      } yield series
 
       result
         .getOrElse(Iterable.empty)
-        .map { dailyProgress =>
-          action.toLowerCase match {
-            case "distance" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.distance))
-            case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.elevation))
-            case other => sys.error(s"not supported action: $other")
-          }
-        }
         .map(series => Ok(Json.toJson(series)))
     }
 
@@ -151,8 +151,8 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         account <- OptionT(Future(loggedIn))
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
-          case "distance" => apexcharts.toDistanceHeatmap(activities, activity)
-          case "elevation" => apexcharts.toElevationHeatmap(activities)
+          case "distance" => apexcharts.toDistanceHeatmap(activities, activity, account.units())
+          case "elevation" => apexcharts.toElevationHeatmap(activities, account.units())
           case other => sys.error(s"not supported action: $other")
         }
       } yield series
@@ -195,7 +195,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
           maxAverageHeartRate = maxAverageHeartRate,
           minAverageTemperature = minTemperature,
           maxAverageTemperature = maxTemperature
-        )
+        ).to(account.units())
         achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
       }.getOrElse(Future(Unauthorized))
     }

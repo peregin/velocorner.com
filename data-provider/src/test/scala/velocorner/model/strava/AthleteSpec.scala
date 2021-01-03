@@ -3,9 +3,6 @@ package velocorner.model.strava
 import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
 
-/**
- * Created by levi on 10/07/15.
- */
 class AthleteSpec extends Specification {
 
   "model" should {

@@ -157,7 +157,9 @@ class StravaController @Inject()(val connectivity: ConnectivitySettings, val cac
     maybeAccount <- consumerUser.fold(storage.getAccountStorage.getAccount(athlete.id))(_ => Future(consumerUser))
     _ = assert(consumerUser.forall(_.athleteId == athlete.id))
     // keep values from the database, like last update and role
-    account = Account.from(athlete, resp.toStravaAccess, maybeAccount.flatMap(_.lastUpdate), maybeAccount.flatMap(_.role))
+    account = Account.from(athlete, resp.toStravaAccess,
+      lastUpdate = maybeAccount.flatMap(_.lastUpdate),
+      role = maybeAccount.flatMap(_.role), unit = maybeAccount.flatMap(_.unit))
     _ = logger.info(s"last updated at ${account.lastUpdate.mkString}")
     _ <- storage.getAccountStorage.store(account)
     _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))

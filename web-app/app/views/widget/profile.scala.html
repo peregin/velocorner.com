@@ -1,6 +1,6 @@
 @(account: velocorner.model.Account, urlProgress: String, urlAchievements: String)(implicit assets: AssetsFinder)
 
-<!-- Profile and Counters -->
+<!-- Profile calendar and counters -->
 <div class="main-counters margin-bottom-20">
 
     <div class="row VC_equal_height">
@@ -16,10 +16,24 @@
                             <li><i class="fa-fw fa fa-history"></i> Last refresh: @account.lastUpdate.map(u => org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:MM").print(u)).getOrElse("not yet")</li>
                         </ul>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 sky-form" style="padding-left: 10px; padding-right: 10px;">
                         <p>
                             <button id="refresh" class="btn-u rounded btn-block btn-u-orange" type="button" onclick="window.location.href = '/refresh';"><i class="fa fa-refresh"></i> Refresh</button>
                             <button id="logout" class="btn-u rounded btn-block btn-u-orange" type="button" onclick="window.location.href = '/logout/strava';"><i class="fa fa-sign-out"></i> Logout</button>
+                            <section style="padding-top: 5px;">
+                                <label class="select">
+                                    <select id="units-selection">
+                                        @if(account.isImperial()) {
+                                        <option value="imperial">Imperial</option>
+                                        <option value="metric">Metric</option>
+                                        } else {
+                                        <option value="metric">Metric</option>
+                                        <option value="imperial">Imperial</option>
+                                        }
+                                    </select>
+                                    <i></i>
+                                </label>
+                            </section>
                         </p>
                     </div>
                 </div>
@@ -49,12 +63,12 @@
                     </div>
                     <div class="counters col-md-2 col-sm-1">
                         <span class="counter-icon"><i class="fa fa-globe rounded"></i></span>
-                        <span id="profile-distance" class="counter">0</span><span style="font-size: 0.7em;">km</span>
+                        <span id="profile-distance" class="counter">0</span><span style="font-size: 0.7em;">@account.units().distanceLabel</span>
                         <h4>Distance</h4>
                     </div>
                     <div class="counters col-md-2 col-sm-1">
                         <span class="counter-icon"><i class="fa fa-rocket rounded"></i></span>
-                        <span id="profile-elevation" class="counter">0</span><span style="font-size: 0.7em;">m</span>
+                        <span id="profile-elevation" class="counter">0</span><span style="font-size: 0.7em;">@account.units().elevationLabel</span>
                         <h4>Elevation</h4>
                     </div>
                     <div class="counters col-md-2 col-sm-1">
@@ -76,10 +90,10 @@
                             <span id="commute-rides" style="text-align: center;">0</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
-                            <span id="commute-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">km</span>
+                            <span id="commute-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">@account.units().distanceLabel</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
-                            <span id="commute-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">m</span>
+                            <span id="commute-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">@account.units().elevationLabel</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
                             <span id="commute-hours" style="text-align: center;">0</span><span style="font-size: 0.7em;">h</span>
@@ -104,10 +118,10 @@
                             <span id="estimate-rides" style="text-align: center;">0</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
-                            <span id="estimate-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">km</span>
+                            <span id="estimate-distance" style="text-align: center;">0</span><span style="font-size: 0.7em;">@account.units().distanceLabel</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
-                            <span id="estimate-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">m</span>
+                            <span id="estimate-elevation" style="text-align: center;">0</span><span style="font-size: 0.7em;">@account.units().elevationLabel</span>
                         </div>
                         <div class="col-md-2 col-sm-2 col-xs-2 VC_profile">
                             <span id="estimate-hours" style="text-align: center;">0</span><span style="font-size: 0.7em;">h</span>
@@ -152,9 +166,6 @@
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
-    var now = new Date();
-    var last12Month = now.setMonth(now.getMonth() - 11);
-    console.log("last12Month is " + last12Month);
 	var parseDailySeries = function(data) {
 	    var stats = {};
         for (var d in data) {
@@ -196,13 +207,16 @@
         cal.init(options);
     };
 
+    var now = new Date();
+    var last12Month = now.setMonth(now.getMonth() - 11);
+    console.log("last12Month is " + last12Month);
     var calOptions = {
 	    domain: "month",
 	    start: last12Month,
 	    subDomain: "day",
 	    range: 12,
 	    cellSize: 14,
-	    itemName: ["km", "km"],
+	    itemName: ["@account.units().distanceLabel", "@account.units().distanceLabel"],
 	    subDomainTextFormat: "%d",
 	    tooltip: true,
 	    displayLegend: false,
@@ -264,32 +278,46 @@
             timeout: 20000,
             success: function(data) {
                 //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h');
-                showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, 'km/h');
-                showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, 'km');
-                showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, 'm');
+                showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, '@account.units().speedLabel');
+                showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, '@account.units().distanceLabel');
+                showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, '@account.units().elevationLabel');
                 //showEntry(data.maxPower, '#achievement-max-power', 1, 0, 'W');
                 showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W');
                 showEntry(data.maxHeartRate, '#achievement-max-hr', 1, 0, 'Bps');
                 showEntry(data.maxAverageHeartRate, '#achievement-max-avg-hr', 1, 0, 'Bps');
-                showEntry(data.minAverageTemperature, '#achievement-min-avg-temp', 1, 0, 'C');
-                showEntry(data.maxAverageTemperature, '#achievement-max-avg-temp', 1, 0, 'C');
+                showEntry(data.minAverageTemperature, '#achievement-min-avg-temp', 1, 0, '@account.units().temperatureLabel');
+                showEntry(data.maxAverageTemperature, '#achievement-max-avg-temp', 1, 0, '@account.units().temperatureLabel');
            }
         });
     }
 
+    function setupUnits() {
+        // store units setup when dropdown value is changed
+        let unitsSelection = $("#units-selection");
+        unitsSelection.on('change', function() {
+            var selectedUnit = unitsSelection.val();
+            console.log("selected="+selectedUnit);
+            $.ajax({
+                type: "PUT",
+                dataType: "text",
+                url: "api/athletes/units/" + selectedUnit,
+                timeout: 20000,
+                success: function() {
+                    console.log("selected unit has been stored");
+                    // reload the page to update the unit of measurement
+                    location.reload();
+                }
+            });
+        });
+    }
+
     $(document).ready(function() {
+        setupUnits();
+
         // load default activity profile
         loadProfile('Ride');
         // load calendar heatmap based on the current window size
         responsiveCal(calOptions);
-
-        // reload when activity type is changing
-        let activityTabs = $("#activity-tabs")
-        activityTabs.context.addEventListener('activityType', function(e) {
-            let activityType = e.detail.activityType;
-            console.log("profile event: " + activityType);
-            loadProfile(activityType);
-        }, false);
 
         // smooth resize binding
         $(window).resize(function() {
@@ -303,6 +331,14 @@
         $(window).bind('resizeEnd', function() {
             responsiveCal(calOptions);
         });
+
+        // reload when activity type is changing
+        let activityTabs = $("#activity-tabs")
+        activityTabs.context.addEventListener('activityType', function(e) {
+            let activityType = e.detail.activityType;
+            console.log("profile event: " + activityType);
+            loadProfile(activityType);
+        }, false);
     });
 //]]>
 </script>

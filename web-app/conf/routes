@@ -68,6 +68,17 @@ GET     /api/status                                        controllers.ApiContro
 POST    /api/ping/                                         controllers.ApiController.ping
 
 ###
+#  summary: Stores preferences for units of measurement
+#  tags:
+#    - athlete
+#  responses:
+#    200:
+#      description: Successfully stored
+###
++nocsrf
+PUT      /api/athletes/units/:unit                         controllers.ProfileController.unit(unit: String)
+
+###
 #  summary: Retrieves current year's statistics for the logged in athlete
 #  tags:
 #    - activity
@@ -79,7 +90,7 @@ POST    /api/ping/                                         controllers.ApiContro
 #          schema:
 #            $ref: '#/components/schemas/velocorner.api.ProfileStatistics'
 ###
-GET     /api/athletes/statistics/profile/:activity         controllers.ActivityController.ytdProfile(activity: String)
+GET     /api/athletes/statistics/profile/:activity         controllers.ActivityController.profile(activity: String)
 
 ###
 #  summary: Lists yearly series for the logged in athlete

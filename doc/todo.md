@@ -12,6 +12,7 @@
 
 # InProgress
 - add years tab to the profile ytd
+- units of measurement (attached to the user account)
 
 # Done
 - show active days in the last 12 months (in the current year)

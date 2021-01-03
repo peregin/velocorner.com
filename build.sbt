@@ -68,6 +68,10 @@ def zio = Seq(
   "dev.zio" %% "zio-logging" % Dependencies.zioLoggingVersion
 )
 
+def squants = Seq(
+  "org.typelevel" %% "squants"  % "1.6.0"
+)
+
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -121,6 +125,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       ++ apacheCommons
       ++ cats
       ++ zio
+      ++ squants
   )
 
 lazy val dataSearch = (project in file("data-search") withId "data-search")

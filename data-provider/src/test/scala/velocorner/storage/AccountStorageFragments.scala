@@ -17,7 +17,8 @@ trait AccountStorageFragments extends Specification with AwaitSupport {
     // use now as last updated field, as the admin page shows active accounts (had logins in the last 90 days)
     val now = DateTime.now().withZone(DateTimeZone.UTC)
     val expiresAt = DateTime.parse("2020-05-02T20:33:20.000+02:00").withZone(DateTimeZone.UTC)
-    lazy val account = Account(1, "display name", "display location", "profile url", lastUpdate = now.some, None,
+    lazy val account = Account(1, "display name", "display location", "profile url", lastUpdate = now.some,
+      role = None, unit = None,
       OAuth2Access("accessToken", expiresAt.plusHours(6), "refreshToken").some)
 
     "read empty for non existent account" in {

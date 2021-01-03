@@ -1,7 +1,11 @@
 package velocorner.api
 
 import play.api.libs.json._
+import squants.Meters
+import squants.motion.KilometersPerHour
+import squants.space.Kilometers
 import velocorner.api.Progress._
+import velocorner.model.Units
 
 import scala.Numeric.Implicits._
 
@@ -60,4 +64,21 @@ case class Progress(days: Int, rides: Int,
   )
 
   def factor[T : Numeric : FromDouble](v: T, f: Double): T = v.toDouble * f
+
+  def to(unit: Units.Entry): Progress = unit match {
+    case Units.Imperial => this.toImperial()
+    case Units.Metric => this
+    case other => throw new IllegalArgumentException(s"unknown unit $other")
+  }
+
+  private def toImperial(): Progress = Progress(
+    days = this.days,
+    rides = this.rides,
+    distance = Kilometers(this.distance).toInternationalMiles,
+    longestDistance = Kilometers(this.longestDistance).toInternationalMiles,
+    movingTime = this.movingTime,
+    averageSpeed = KilometersPerHour(this.averageSpeed).toInternationalMilesPerHour,
+    elevation = Meters(this.elevation).toFeet,
+    longestElevation = Meters(this.longestElevation).toFeet
+  )
 }

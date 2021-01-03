@@ -14,4 +14,6 @@ case class Achievement(
                         activityId: Long,
                         activityName: String,
                         activityTime: DateTime
-                      )
+                      ) {
+  def convert(fun: Double => Double): Achievement = this.copy(value = fun(this.value))
+}
