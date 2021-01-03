@@ -12,9 +12,9 @@
 
 # InProgress
 - add years tab to the profile ytd
-- units of measurement (attached to the user account)
 
 # Done
+- units of measurement (attached to the user account)
 - show active days in the last 12 months (in the current year)
 - make calendar heatmap responsive
 - show calendar for all activity types
