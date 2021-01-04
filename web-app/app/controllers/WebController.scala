@@ -58,6 +58,10 @@ class WebController @Inject()
     Ok(views.html.search(getPageContext("Search")))
   }
 
+  def map = AuthAction { implicit request =>
+    Ok(views.html.map(getPageContext("Explore")))
+  }
+
   def about = AuthAction { implicit request =>
     Ok(views.html.about(getPageContext("About")))
   }

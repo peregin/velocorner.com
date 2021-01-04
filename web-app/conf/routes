@@ -10,6 +10,8 @@ GET     /refresh                                           controllers.WebContro
 ### NoDocs ###
 GET     /search                                            controllers.WebController.search
 ### NoDocs ###
+GET     /map                                               controllers.WebController.map
+### NoDocs ###
 GET     /about                                             controllers.WebController.about
 ### NoDocs ###
 GET     /admin                                             controllers.WebController.admin

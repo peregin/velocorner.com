@@ -33,6 +33,8 @@
             <ul class="nav navbar-nav">
                 <!-- Home -->
                 <li class="@(if (context.title == "Home") "active" else "")"><a href="/">Home</a></li>
+                <!-- Navigation -->
+                <li class="@(if (context.title == "Explore") "active" else "")"><a href="/map">Explore</a></li>
                 <!-- About -->
                 <li class="@(if (context.title == "About") "active" else "")"><a href="/about">About Us</a></li>
             @if(context.isAdmin()) {

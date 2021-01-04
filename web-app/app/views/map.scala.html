@@ -1,0 +1,80 @@
+@(context: PageContext)(implicit assets: AssetsFinder)
+@common.main(context) {
+
+    <h1 xmlns="http://www.w3.org/1999/html">Explore</h1>
+    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1" style="height: 600px;">
+        <div id="map-div">
+        </div>
+    </div>
+}
+
+<!-- end of common main section -->
+
+<script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></script>
+
+<script type="text/javascript">//<![CDATA[
+    // self executing function
+
+    var browser = null;
+    var list = null;
+    (function startDemo() {
+        // create map in the html div with id 'map-div'
+        // parameter 'map' sets path to the map which will be displayed
+        // you can create your own map on melown.com
+        // position parameter is described in documentation
+        // https://github.com/Melown/vts-browser-js/wiki/VTS-Browser-Map-API#position
+        browser = vts.browser('map-div', {
+            map: 'https://cdn.melown.com/mario/store/melown2015/map-config/melown/VTS-Tutorial-map/mapConfig.json',
+            position: ['obj', 84.93164, 28.351981, 'fix', 2728.74, -109.06, -27.28, 0.00, 38255.68, 55.00]
+        });
+
+        //check whether browser is supported
+        if (!browser) {
+            console.log('Your web browser does not support WebGL');
+            return;
+        }
+
+        var profilePanel = browser.ui.addControl('profile-panel',
+            '<div id="profile-div" class="profile-div">' +
+                '<div id="profile-canvas-holder" class="profile-canvas-holder">' +
+                    '<canvas id="profile-canvas" class="profile-canvas">' +
+                    '</canvas>' +
+                '</div>' +
+            '</div>');
+
+        canvas = profilePanel.getElement('profile-canvas');
+
+        // Load GPX file
+        canvas.on('dragover', onDragover);
+        canvas.on('drop', onDrop);
+    })();
+
+    function onDragover(event) {
+        var e = event.event;
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    };
+
+    function onDrop(event) {
+        var e = event.event;
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+
+        for (var i = 0; i < files.length; i++) {
+            var reader = new FileReader();
+
+            reader.onloadend = function (event) {
+                var parser = new DOMParser();
+                var data = parser.parseFromString(event.target.result, 'text/xml');
+                loadGPX(data);
+            };
+
+            reader.readAsText(files[i], 'text/plain');
+        }
+    }
+
+//]]>
+</script>
