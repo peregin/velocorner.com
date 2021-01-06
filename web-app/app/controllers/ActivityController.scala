@@ -42,8 +42,8 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
 
       val statisticsOT = for {
         account <- OptionT(Future(loggedIn))
-        imperial = account.isImperial()
-        _ = logger.info(s"athletes' $activity statistics for ${account.displayName}")
+        _ = logger.info(s"athletes' $activity profile for ${account.displayName}")
+        // TODO: do it for the current or given year only
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         _ = logger.debug(s"found ${activities.size} activities for ${account.athleteId}")
         ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.getYear == currentYear)
