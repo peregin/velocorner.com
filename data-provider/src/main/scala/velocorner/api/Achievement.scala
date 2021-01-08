@@ -6,8 +6,7 @@ import velocorner.model.DateTimePattern
 
 object Achievement {
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter
-  implicit val achievmentFormat =
-    Format[Achievement](Json.reads[Achievement], Json.writes[Achievement])
+  implicit val achievmentFormat = Format[Achievement](Json.reads[Achievement], Json.writes[Achievement])
 }
 
 case class Achievement(
