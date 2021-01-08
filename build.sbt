@@ -69,7 +69,7 @@ def zio = Seq(
 )
 
 def squants = Seq(
-  "org.typelevel" %% "squants"  % "1.6.0"
+  "org.typelevel" %% "squants"  % Dependencies.squantsVersion
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
