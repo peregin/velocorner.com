@@ -86,12 +86,15 @@
         <!--=== End Header ===-->
 
         <!--=== Slider ===-->
+        @if(controllers.util.HolidayUtil.isWinterHoliday()) {
+        <!-- this section is for the mobile only -->
         <div class="visible-sm visible-xs">
             <p align="center" style="padding-left:20px; padding-top:10px;font-size: 1.5em; font-family:'MountainsofChristmas';font-weight:normal;font-style:normal;">
                 <img align="left" style="width:72px;height:80px;" src="@assets.path("images/christmas-tree.png")" alt="Christmas Tree"/>
                 Merry Christmas</br> and a Happy New Year!
             </p>
         </div>
+        }
         <div class="tp-banner-container @{if (context.account.isDefined) "VC_height200" else "VC_height300"} hidden-sm hidden-xs">
             <div class="tp-banner">
                 <ul>

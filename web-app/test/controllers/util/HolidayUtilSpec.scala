@@ -10,6 +10,7 @@ class HolidayUtilSpec extends Specification {
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-12-15")) should beFalse
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-12-19")) should beTrue
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-01-5")) should beTrue
+      HolidayUtil.isWinterHoliday(LocalDate.parse("2020-01-09")) should beFalse
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-01-15")) should beFalse
     }
   }
