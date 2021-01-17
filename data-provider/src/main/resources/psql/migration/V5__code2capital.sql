@@ -1,0 +1,1 @@
+update ip2nation set country = upper(country);

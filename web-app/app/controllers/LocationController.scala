@@ -3,17 +3,22 @@ package controllers
 import cats.data.OptionT
 import cats.instances.future.catsStdInstancesForFuture
 import controllers.util.WebMetrics
+import play.api.{Environment, Mode}
 
 import javax.inject.Inject
 import play.api.mvc.{AbstractController, ControllerComponents}
 import velocorner.api.GeoLocation
 import velocorner.util.{CountryUtils, JsonIo}
 
+import java.net.{Inet4Address, InetAddress}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LocationController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
-    extends AbstractController(components)
+class LocationController @Inject() (
+    val connectivity: ConnectivitySettings,
+    environment: Environment,
+    components: ControllerComponents
+) extends AbstractController(components)
     with WebMetrics {
 
   // retrieves geo position for the given location
@@ -33,8 +38,9 @@ class LocationController @Inject() (val connectivity: ConnectivitySettings, comp
   def ip() = Action.async {
     timedRequest(s"query location for ip") { implicit request =>
       val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress) match {
-        case "0:0:0:0:0:0:0:1" => "127.0.0.1"
-        case other => other
+        case "0:0:0:0:0:0:0:1" if environment.mode == Mode.Dev => "85.1.45.35"
+        case "0:0:0:0:0:0:0:1"                                 => "127.0.0.1"
+        case other                                             => other
       }
       logger.debug(s"searching for $remoteAddress")
       val result = for {

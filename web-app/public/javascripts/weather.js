@@ -25,16 +25,31 @@
     function triggerForecast() {
         var place = $('#weather').val();
         if (place) {
-            console.log('forecast for ' + place);
-            weatherForecast(place);
-            windyForecast(place);
+            forecast(place);
         } else {
+            // detect capital
+            $.ajax({
+                dataType: 'json',
+                url: "/api/location/ip",
+                success: function (data) {
+                    let location = data.city+', '+data.country;
+                    console.log('detected location is ' + location);
+                    $('#weather').val(location);
+                    forecast(location);
+                }
+            });
             console.log("won't request weather forecast, place is not set");
         }
     }
 
+    function forecast(place) {
+        console.log('forecast for ' + place);
+        weatherForecast(place);
+        windyForecast(place);
+    }
+
     function weatherForecast(place) {
-        $('#weather-progress').css("visibility","visible");
+        $('#weather-progress').css("visibility", "visible");
 
         // meteogram
         $.ajax({
