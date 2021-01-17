@@ -9,10 +9,10 @@ object Dependencies {
   val shapelessVersion = "2.3.3"
   val logbackVersion = "1.2.3"
   val doobieVersion = "0.10.0"
-  val orientDbVersion = "3.1.6"
+  val orientDbVersion = "3.1.7"
   val mongoDbVersion = "4.1.1"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "7.4.0"
+  val flywayVersion = "7.5.0"
   val elasticVersion = "7.10.2"
   val finatraVersion = "20.12.0"
   val playWsVersion = "2.1.2" // standalone version
