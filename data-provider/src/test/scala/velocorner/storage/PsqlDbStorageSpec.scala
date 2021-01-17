@@ -91,8 +91,8 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
 
     "lookup ip to country" in {
       lazy val locationStorage = psqlStorage.getLocationStorage
-      awaitOn(locationStorage.getCountry("85.1.45.31")) should beSome("ch")
-      awaitOn(locationStorage.getCountry("188.156.14.255")) should beSome("hu")
+      awaitOn(locationStorage.getCountry("85.1.45.31")) should beSome("CH")
+      awaitOn(locationStorage.getCountry("188.156.14.255")) should beSome("HU")
     }
   }
 

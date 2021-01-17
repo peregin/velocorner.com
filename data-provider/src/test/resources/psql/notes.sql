@@ -48,5 +48,5 @@ select country from ip2nation where ip < (('85.1.45.31'::inet - '0.0.0.0'::inet)
 
 select * from ip2nation where ip < (('188.156.14.255'::inet - '0.0.0.0'::inet)::numeric) order by ip desc limit 1;
 
-select * from ip2nation where country = 'hu';
+select * from ip2nation where country = 'HU';
 
