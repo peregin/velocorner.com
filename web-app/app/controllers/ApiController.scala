@@ -36,7 +36,8 @@ class ApiController @Inject()(environment: Environment, val connectivity: Connec
       case Some("application/json") => request.body.asJson.toString
       case _ => request.body.asText.getOrElse("")
     }
-    logger.info(s"PING[$counter]=[$payload], request=${request.remoteAddress}")
+    val remoreAddr = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
+    logger.info(s"PING[$counter]=[$payload], remote=$remoreAddr")
     Ok
   }
 
