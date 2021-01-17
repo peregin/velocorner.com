@@ -36,7 +36,7 @@ class ApiController @Inject()(environment: Environment, val connectivity: Connec
       case Some("application/json") => request.body.asJson.toString
       case _ => request.body.asText.getOrElse("")
     }
-    logger.info(s"PING[$counter]=[$payload], request=${request.host}")
+    logger.info(s"PING[$counter]=[$payload], request=${request.remoteAddress}")
     Ok
   }
 

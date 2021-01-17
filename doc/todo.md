@@ -1,4 +1,5 @@
 # ToDo
+- improve landing page when not logged in: demonstrate what the site could do for you
 - show consecutive sport days
 - add last activity details in the profile
 - add 3D profile of the last activity gpx 
