@@ -9,13 +9,20 @@ import velocorner.model.CountryIso
   * Zurich,Switzerland = Zurich,CH
   * London = London
   */
-object CountryIsoUtils {
+object CountryUtils {
 
-  lazy val country2Code: Map[String, String] = fromResources()
+  // Switzerland -> CH
+  lazy val country2Code: Map[String, String] = readCountries()
+  // CH -> Bern
+  lazy val code2Capital: Map[String, String] = readCapitals()
 
-  def fromResources(): Map[String, String] = {
+  def readCountries(): Map[String, String] = {
     val countries = JsonIo.readReadFromResource[List[CountryIso]]("/countries.json")
     countries.map(ci => (ci.name.toLowerCase, ci.code)).toMap
+  }
+
+  def readCapitals(): Map[String, String] = {
+    JsonIo.readReadFromResource[Map[String, String]]("/capitals.json")
   }
 
   // converts location as Zurich,CH

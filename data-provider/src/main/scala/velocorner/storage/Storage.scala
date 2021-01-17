@@ -80,6 +80,7 @@ trait Storage[M[_]] {
   trait LocationStorage {
     def store(location: String, position: GeoPosition): M[Unit]
     def getPosition(location: String): M[Option[GeoPosition]]
+    def getCountry(ip: String): M[Option[String]]
   }
 
   def getAdminStorage: AdminStorage

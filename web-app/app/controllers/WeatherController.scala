@@ -7,7 +7,7 @@ import org.joda.time.{DateTime, Duration, LocalDate}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.api.weather.{DailyWeather, SunriseSunset, WeatherForecast}
 import velocorner.model._
-import velocorner.util.{CountryIsoUtils, JsonIo}
+import velocorner.util.{CountryUtils, JsonIo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,7 +18,7 @@ import model.highcharts
 import play.api.libs.json.Json
 import velocorner.api.GeoPosition
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
-import velocorner.util.CountryIsoUtils.normalize
+import velocorner.util.CountryUtils.normalize
 
 
 class WeatherController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents)
@@ -29,7 +29,7 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
   // route mapped to /api/weather/:location
   def forecast(location: String)= Action.async { timedRequest(s"query weather forecast for $location") { implicit request =>
     // convert city[,country] to city[,isoCountry]
-    val isoLocation = CountryIsoUtils.iso(location)
+    val isoLocation = CountryUtils.iso(location)
     val now = DateTime.now() // inject time iterator instead
     val refreshTimeoutInMinutes = 15 // make it configurable instead
     val weatherStorage = connectivity.getStorage.getWeatherStorage
@@ -77,7 +77,7 @@ class WeatherController @Inject()(val connectivity: ConnectivitySettings, compon
   // route mapped to /api/sunrise/:location
   def sunrise(location: String)= Action.async { timedRequest(s"query sunrise sunset for $location") { implicit request =>
     // convert city[,country] to city[,isoCountry]
-    val isoLocation = CountryIsoUtils.iso(location)
+    val isoLocation = CountryUtils.iso(location)
     val now = LocalDate.now.toString
     val weatherStorage = connectivity.getStorage.getWeatherStorage
     logger.debug(s"collecting sunrise/sunset times for [$location] -> [$isoLocation] at [$now]")

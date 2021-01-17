@@ -1,5 +1,8 @@
 # ToDo
 - improve landing page when not logged in: demonstrate what the site could do for you
+  * detect rough location and show the weather and wind information for logged out users (when is not in the cookie)
+  * show stats with sample data (heatmap, ytd) 
+    
 - show consecutive sport days
 - add last activity details in the profile
 - add 3D profile of the last activity gpx 

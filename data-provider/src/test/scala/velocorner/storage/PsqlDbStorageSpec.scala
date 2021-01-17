@@ -88,6 +88,12 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(locationStorage.getPosition("Zurich,CH")) should beSome(GeoPosition(8.1, 7.2))
       awaitOn(locationStorage.getPosition("Budapest,HU")) should beNone
     }
+
+    "lookup ip to country" in {
+      lazy val locationStorage = psqlStorage.getLocationStorage
+      awaitOn(locationStorage.getCountry("85.1.45.31")) should beSome("ch")
+      awaitOn(locationStorage.getCountry("188.156.14.255")) should beSome("hu")
+    }
   }
 
   override def beforeAll(): Unit = {

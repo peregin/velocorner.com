@@ -28,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
 import mouse.all._
 
-class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
-    extends Storage[Future]
-    with LazyLogging {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
 
@@ -277,7 +275,8 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
     ): Future[Option[Achievement]] = {
       //implicit val han = LogHandler.jdkLogHandler
       val clause =
-        s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc" else "asc"} limit 1"
+        s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc"
+        else "asc"} limit 1"
       val fragment =
         fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
           Fragment.const(clause)
@@ -408,10 +407,17 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String)
            |""".stripMargin.update.run.void.transactToFuture
 
     override def getPosition(location: String): Future[Option[GeoPosition]] =
-      sql"""select latitude, longitude from location where location = ${location.toLowerCase}
-           |""".stripMargin
+      sql"""select latitude, longitude from location where location = ${location.toLowerCase}""".stripMargin
         .query[(Double, Double)]
         .map(q => GeoPosition(q._1, q._2))
+        .option
+        .transactToFuture
+
+    override def getCountry(ip: String): Future[Option[String]] =
+      sql"""select country from ip2nation 
+           |where ip < ((${ip.toLowerCase}::inet - '0.0.0.0'::inet)::numeric)
+           |order by ip desc limit 1 """.stripMargin
+        .query[String]
         .option
         .transactToFuture
   }
