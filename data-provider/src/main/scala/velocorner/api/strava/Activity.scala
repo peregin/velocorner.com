@@ -21,10 +21,10 @@ import velocorner.model.strava.Athlete
       "resource_state": 1
     },
     "name": "Sihltal Round",
-    "distance": 29154.4,
-    "moving_time": 6450,
+    "distance": 29154.4, -- in meters
+    "moving_time": 6450, -- in seconds
     "elapsed_time": 6768,
-    "total_elevation_gain": 638.0,
+    "total_elevation_gain": 638.0, -- in meters
     "type": "Ride",
     "start_date": "2016-12-18T09:56:53Z",
     "start_date_local": "2016-12-18T10:56:53Z",
