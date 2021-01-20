@@ -7,7 +7,7 @@ class DemoActivityUtilsSpec extends Specification {
   "utility" should {
 
     "should generate a stream of activities" in {
-      DemoActivityUtils.generate() must beEmpty
+      DemoActivityUtils.generate() must not be empty
     }
   }
 }

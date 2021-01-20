@@ -27,7 +27,7 @@ object DemoActivityUtils {
 
   def generate(until: LocalDate = LocalDate.now(DateTimeZone.UTC), yearsBack: Int = 4): Iterable[Activity] = {
     val from = until.minusYears(yearsBack).withDayOfMonth(1).withMonthOfYear(1)
-    val timeIt = LazyList.iterate(from)(_.plusDays(rnd.between(1, 5))).takeWhile(_.compareTo(until) < 0).map { day =>
+    val activityStream = LazyList.iterate(from)(_.plusDays(rnd.between(1, 5))).takeWhile(_.compareTo(until) < 0).map { day =>
       val movingTime = rnd.between(60000, 6000000)
       Activity(
         id = day.toDate.getTime,
@@ -43,25 +43,23 @@ object DemoActivityUtils {
         `type` = "Ride",
         start_date = day.toDateTimeAtCurrentTime,
         start_date_local = None,
-        average_speed: Option[Float],
-        max_speed: Option[Float],
-        average_cadence: Option[Float],
-        average_temp: Option[Float],
-        average_watts: Option[Float],
-        max_watts: Option[Float],
-        average_heartrate: Option[Float],
-        max_heartrate: Option[Float],
-        gear_id: Option[String],
-        start_latitude: Option[Float],
-        start_longitude: Option[Float],
-        commute: Option[Boolean],
-        elev_high: Option[Float],
-        elev_low: Option[Float],
-        pr_count: Option[Int]
+        average_speed = None,
+        max_speed = None,
+        average_cadence = None,
+        average_temp = None,
+        average_watts = None,
+        max_watts = None,
+        average_heartrate = None,
+        max_heartrate = None,
+        gear_id = None,
+        start_latitude = None,
+        start_longitude = None,
+        commute = None,
+        elev_high = None,
+        elev_low = None,
+        pr_count = None
       )
-      day
     }
-    println(timeIt.toList)
-    Nil
+    activityStream
   }
 }
