@@ -127,6 +127,22 @@ GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityC
 GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityController.ytdStatistics(action: String, activity: String)
 
 ###
+#  summary: Lists year to date series with sample data to demo the capabilities of the site
+#  tags:
+#    - demo
+#  responses:
+#    200:
+#      description: Returns the year to date series for distance and elevation
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
+#    404:
+#      description: Not found
+###
+GET     /api/demo/statistics/ytd/:action                   controllers.DemoController.ytdStatistics(action: String)
+
+###
 #  summary: Lists all daily activities for the logged in athlete from the last 12 months
 #  tags:
 #    - activity
