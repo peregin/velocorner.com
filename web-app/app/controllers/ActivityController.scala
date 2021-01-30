@@ -3,6 +3,7 @@ package controllers
 import cats.data.{EitherT, OptionT}
 import cats.implicits._
 import controllers.auth.AuthChecker
+import controllers.util.ActivityOps
 import model.{apexcharts, highcharts}
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.cache.SyncCacheApi
@@ -21,7 +22,7 @@ import scala.concurrent.Future
 
 
 class ActivityController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker with Metrics {
+  extends AbstractController(components) with ActivityOps with AuthChecker with Metrics {
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
@@ -70,14 +71,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         account <- OptionT(Future(loggedIn))
         _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
         activities <- OptionT.liftF(timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity)))
-        dailyProgress = DailyProgress.from(activities)
-        yearlyProgress = YearlyProgress.from(dailyProgress)
-        series = action.toLowerCase match {
-          case "heatmap" => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress), account.units())
-          case "distance" => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress), account.units())
-          case "elevation" => highcharts.toElevationSeries(YearlyProgress.aggregate(yearlyProgress), account.units())
-          case other => sys.error(s"not supported action: $other")
-        }
+        series = toYearlySeries(activities, action, account.units())
       } yield series
 
       result
@@ -89,26 +83,14 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/athletes/statistics/ytd/:action/:activity
   def ytdStatistics(action: String, activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for ytd statistics in $action/$activity") { implicit request =>
-
       val now = LocalDate.now()
       val storage = connectivity.getStorage
-
       val result = for {
         account <- OptionT(Future(loggedIn))
+        units = account.units()
         _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
-        dailyProgress = DailyProgress.from(activities)
-        yearlyProgress = YearlyProgress.from(dailyProgress)
-        ytdProgress = yearlyProgress.map(_.ytd(now)).map(ytd =>
-          YearlyProgress(ytd.year, Seq(
-            DailyProgress(LocalDate.parse(s"${ytd.year}-01-01"), ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)))
-          ))
-        series = action.toLowerCase match {
-          case "distance" => highcharts.toDistanceSeries(ytdProgress, account.units())
-          case "elevation" => highcharts.toElevationSeries(ytdProgress, account.units())
-          case other => sys.error(s"not supported action: $other")
-        }
-      } yield series
+      } yield toSumYtdSeries(activities, now, action, units)
 
       result
         .getOrElse(Iterable.empty)

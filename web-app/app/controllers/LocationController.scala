@@ -10,7 +10,6 @@ import play.api.mvc.{AbstractController, ControllerComponents}
 import velocorner.api.GeoLocation
 import velocorner.util.{CountryUtils, JsonIo}
 
-import java.net.{Inet4Address, InetAddress}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

@@ -111,6 +111,22 @@ GET     /api/athletes/statistics/profile/:activity         controllers.ActivityC
 GET     /api/athletes/statistics/yearly/:action/:activity  controllers.ActivityController.yearlyStatistics(action: String, activity: String)
 
 ###
+#  summary: Lists yearly series with sample data
+#  tags:
+#    - demo
+#  responses:
+#    200:
+#      description: Returns the yearly series for heatmap, distance or elevation
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailySeries'
+#    404:
+#      description: Not found
+###
+GET     /api/demo/statistics/yearly/:action/:activity     controllers.DemoController.yearlyStatistics(action: String, activity: String)
+
+###
 #  summary: Lists year to date series for the logged in athlete
 #  tags:
 #    - activity
@@ -140,7 +156,7 @@ GET     /api/athletes/statistics/ytd/:action/:activity     controllers.ActivityC
 #    404:
 #      description: Not found
 ###
-GET     /api/demo/statistics/ytd/:action                   controllers.DemoController.ytdStatistics(action: String)
+GET     /api/demo/statistics/ytd/:action/:activity         controllers.DemoController.ytdStatistics(action: String, activity: String)
 
 ###
 #  summary: Lists all daily activities for the logged in athlete from the last 12 months

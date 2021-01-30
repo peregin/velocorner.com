@@ -18,13 +18,16 @@ case class YearlyProgress(year: Int, progress: Iterable[DailyProgress]) {
   def ytd(now: LocalDate): YearlyProgress = {
     val monthToDate = now.monthOfYear().get()
     val dayToDate = now.getDayOfMonth
-    YearlyProgress(year, progress.filter{ a =>
-      val m = a.day.monthOfYear().get()
-      val d = a.day.dayOfMonth().get()
-      if (m < monthToDate) true
-      else if (m == monthToDate) d <= dayToDate
-      else false
-    })
+    YearlyProgress(
+      year,
+      progress.filter { a =>
+        val m = a.day.monthOfYear().get()
+        val d = a.day.dayOfMonth().get()
+        if (m < monthToDate) true
+        else if (m == monthToDate) d <= dayToDate
+        else false
+      }
+    )
   }
 }
 
@@ -33,7 +36,7 @@ object YearlyProgress {
   def from(progress: Iterable[DailyProgress]): Iterable[YearlyProgress] = {
     // group by year
     val byYear = progress.groupBy(_.day.year().get())
-    byYear.map { case (year, list) => YearlyProgress(year, list)}.toList.sortBy(_.year)
+    byYear.map { case (year, list) => YearlyProgress(year, list) }.toList.sortBy(_.year)
   }
 
   // each daily progress will be summed up with the previously aggregated progress
@@ -45,4 +48,19 @@ object YearlyProgress {
   def zeroOnMissingDate(progress: Iterable[YearlyProgress]): Iterable[YearlyProgress] = {
     progress.map(_.zeroOnMissingDate)
   }
+
+  // sum up ytd progress
+  def sumYtd(progress: Iterable[YearlyProgress], until: LocalDate): Iterable[YearlyProgress] = progress
+    .map(_.ytd(until))
+    .map(ytd =>
+      YearlyProgress(
+        ytd.year,
+        Seq(
+          DailyProgress(
+            LocalDate.parse(s"${ytd.year}-01-01"),
+            ytd.progress.map(_.progress).foldLeft(Progress.zero)(_ + _)
+          )
+        )
+      )
+    )
 }

@@ -23,21 +23,21 @@
             @widget.profile(user, "/api/athletes/statistics/profile", "/api/athletes/statistics/achievements")
 
             <div class="headline"><h2>Yearly Activities</h2></div>
-            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", user.units().distanceLabel, 2, "/api/athletes/statistics/yearly/heatmap")
+            @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", user.units().distanceLabel, 2, "/api/athletes/statistics/yearly/heatmap", 400)
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">
-                    @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", user.units().distanceLabel, "/api/athletes/statistics/ytd/distance")
+                    @widget.ajaxbarchart("ytdDistance", "Year To Date Distance", user.units().distanceLabel, "/api/athletes/statistics/ytd/distance", 400)
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", user.units().distanceLabel, 100, "/api/athletes/statistics/yearly/distance")
+                    @widget.ajaxsplinechart("yearlyDistance", "Yearly Distance", user.units().distanceLabel, 100, "/api/athletes/statistics/yearly/distance", 400)
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4 md-margin-bottom-50">
-                    @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", user.units().elevationLabel, "/api/athletes/statistics/ytd/elevation")
+                    @widget.ajaxbarchart("ytdElevation", "Year To Date Elevation", user.units().elevationLabel, "/api/athletes/statistics/ytd/elevation", 400)
                 </div>
                 <div class="col-md-8 md-margin-bottom-50">
-                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", user.units().elevationLabel, 100, "/api/athletes/statistics/yearly/elevation")
+                    @widget.ajaxsplinechart("yearlyElevation", "Yearly Elevation", user.units().elevationLabel, 100, "/api/athletes/statistics/yearly/elevation", 400)
                 </div>
             </div>
             <div class="row">
@@ -51,13 +51,33 @@
         </div>
     }
 
+    <!-- if not logged in show the sample statistics -->
     @if(context.account.isEmpty) {
         <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-            <a href="@controllers.auth.routes.StravaController.login(request.host)">
-                <img src="@assets.path("images/connect-with-strava.png")" alt="darkblurbg" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
-            </a>
-            &nbsp;Login with your Strava account, you will be able to see your yearly progress and various statistics.
-            <img src="@assets.path("images/yearly-heatmap200.png")" alt="Heatmap">
+            <div class="row">
+                <div class="col-md-4 md-margin-bottom-50">
+                    <div class="funny-boxes funny-boxes-top-red shadow-effect-1" style="height: 100%;">
+                    <a href="@controllers.auth.routes.StravaController.login(request.host)">
+                        <img src="@assets.path("images/connect-with-strava.png")" alt="darkblurbg" data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+                    </a>
+                    <p style="padding-top: 15px;">
+                        Login with your Strava account, it will able you to see various statistics of your activities
+                        such as year to date progress, yearly achievements, daily heatmap based on distance and elevation
+                        and much more!
+                    </p>
+                    <br/>
+                    <p>
+                        See a few sample statistics.
+                    </p>
+                    </div>
+                </div>
+                <div class="col-md-4 md-margin-bottom-50">
+                    @widget.ajaxbarchart("ytdDemoDistance", "Year To Date Distance", "km", "/api/demo/statistics/ytd/distance", 250)
+                </div>
+                <div class="col-md-4 md-margin-bottom-50">
+                    @widget.ajaxsplinechart("yearlyDemoElevation", "Yearly Elevation", "m", 100, "/api/demo/statistics/yearly/elevation", 250)
+                </div>
+            </div>
         </div>
     }
 
