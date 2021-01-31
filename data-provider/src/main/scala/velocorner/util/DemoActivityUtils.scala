@@ -28,7 +28,11 @@ object DemoActivityUtils {
   def generate(until: LocalDate = LocalDate.now(DateTimeZone.UTC), yearsBack: Int = 4): Iterable[Activity] = {
     val from = until.minusYears(yearsBack).withDayOfMonth(1).withMonthOfYear(1)
     val activityStream = LazyList.iterate(from)(_.plusDays(rnd.between(1, 5))).takeWhile(_.compareTo(until) < 0).map { day =>
+      // add less noise to each year that, then the stat will look like continuous yearly improvement
+      val yearlyNoise = rnd.nextInt(yearsBack + 1 - until.getYear + day.getYear)
       val movingTime = rnd.between(60000, 6000000)
+      val distanceInMeter = rnd.between(3000f, 120000f)
+      val elevationInMeter = rnd.between(50f, 1100f) + (yearlyNoise * 500)
       Activity(
         id = day.toDate.getTime,
         resource_state = 0,
@@ -36,10 +40,10 @@ object DemoActivityUtils {
         upload_id = None,
         athlete = demoAthlete,
         name = rnd.alphanumeric.take(10).toString,
-        distance = rnd.between(3000f, 120000f), // meters
+        distance = distanceInMeter,
         moving_time = movingTime,
         elapsed_time = movingTime,
-        total_elevation_gain = rnd.between(50f, 1800f),
+        total_elevation_gain = elevationInMeter,
         `type` = "Ride",
         start_date = day.toDateTimeAtCurrentTime,
         start_date_local = None,
