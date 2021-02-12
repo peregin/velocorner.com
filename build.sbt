@@ -172,7 +172,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
-lazy val testService = (project in file("test-service") withId "test-service")
+lazy val testService = (project in file("test/test-service") withId "test-service")
   .settings(
     buildSettings,
     name := "test-service",
