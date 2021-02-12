@@ -2,7 +2,7 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.4"
 
-  val catsVersion = "2.3.1"
+  val catsVersion = "2.4.1"
   val mouseVersion = "0.26.2"
   val zioVersion = "1.0.4"
   val zioLoggingVersion = "0.5.6"
@@ -13,7 +13,7 @@ object Dependencies {
   val mongoDbVersion = "4.1.1"
   val rethinkDbVersion = "2.4.4"
   val flywayVersion = "7.5.3"
-  val elasticVersion = "7.10.2"
+  val elasticVersion = "7.10.3"
   val finatraVersion = "21.1.0"
   val playWsVersion = "2.1.2" // standalone version
   val playJsonVersion = "2.9.2"
