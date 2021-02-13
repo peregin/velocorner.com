@@ -118,6 +118,10 @@ object dataProvider extends CommonModule {
 
 object webApp extends CommonModule with PlayModule with DockerModule {
   def millSourcePath = velocorner.millSourcePath / "web-app"
+  def ivyDeps = T{Agg(
+    ivy"com.pauldijou::jwt-play-json::5.0.0",
+    ivy"org.scala-lang.modules::scala-xml::1.2.0"
+  )}
   override def playVersion= T{"2.8.7"}
   override def twirlVersion= T{"1.5.0"}
   def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
