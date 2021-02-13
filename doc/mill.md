@@ -11,6 +11,7 @@ Mill
 ci/publish-local.sh && cp ~/mill-release ./mill
 
 ../mill/out/assembly/dest/mill -i mill.scalalib.GenIdea/idea
+../mill/out/assembly/dest/mill -i mill.bsp.BSP/install
 ```
 Note that mill is published locally next to this project.
 
