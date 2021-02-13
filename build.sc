@@ -7,23 +7,24 @@ import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
 import contrib.docker.DockerModule
 
 // import from shared location
-val projectScalaVersion = "2.13.2"
+val projectScalaVersion = "2.13.4"
 
-val catsVersion = "2.2.0"
-val zioVersion = "1.0.1"
+val catsVersion = "2.4.1"
+val zioVersion = "1.0.4"
 val shapelessVersion = "2.3.3"
 val logbackVersion = "1.2.3"
-val doobieVersion = "0.9.2"
-val orientDbVersion = "3.1.2"
+val doobieVersion = "0.10.0"
+val orientDbVersion = "3.1.8"
 val mongoDbVersion = "4.1.0"
-val rethinkDbVersion = "2.4.0"
-val flywayVersion = "6.5.6"
-val elasticVersion = "7.9.0"
+val rethinkDbVersion = "2.4.4"
+val flywayVersion = "7.5.3"
+val elasticVersion = "7.10.3"
 val finatraVersion = "20.8.1"
 val playWsVersion = "2.1.2" // standalone version
-val playJsonVersion = "2.9.1"
+val squantsVersion = "1.7.0"
+val playJsonVersion = "2.9.2"
 val specsVersion = "4.10.3"
-val mockitoVersion = "3.5.11"
+val mockitoVersion = "3.7.7"
 
 val logging = Agg(
   ivy"ch.qos.logback:logback-classic::$logbackVersion",
@@ -41,16 +42,17 @@ val cats = Agg(
 )
 val zio = Agg(
   ivy"dev.zio::zio::$zioVersion",
-  ivy"dev.zio::zio-logging::0.5.1"
+  ivy"dev.zio::zio-logging::0.5.6"
 )
 val storage = Agg(
   ivy"com.rethinkdb:rethinkdb-driver::$rethinkDbVersion",
+  ivy"com.googlecode.json-simple:json-simple::1.1.1",
   ivy"org.mongodb.scala::mongo-scala-driver::$mongoDbVersion",
   ivy"com.orientechnologies:orientdb-client::$orientDbVersion",
   ivy"org.tpolecat::doobie-core::$doobieVersion",
   ivy"org.tpolecat::doobie-postgres::$doobieVersion",
   ivy"org.tpolecat::doobie-hikari::$doobieVersion",
-  ivy"org.flywaydb:flyway-core::6.3.3"
+  ivy"org.flywaydb:flyway-core::$flywayVersion"
 )
 val elastic4s = Agg(
   ivy"com.sksamuel.elastic4s::elastic4s-core::$elasticVersion",
@@ -100,7 +102,8 @@ object dataProvider extends CommonModule {
     ivy"com.typesafe.play::play-json-joda::$playJsonVersion",
     ivy"com.typesafe.play::play-ahc-ws-standalone::$playWsVersion",
     ivy"com.typesafe.play::play-ws-standalone-json::$playWsVersion",
-    ivy"ai.x::play-json-extensions::0.40.2"
+    ivy"org.typelevel::squants::$squantsVersion",
+    ivy"ai.x::play-json-extensions::0.42.0"
   ) ++ logging ++ storage ++ apacheCommons ++ cats ++ zio}
   override def repositories() = super.repositories ++ Seq(
     MavenRepository("https://repo.typesafe.com/typesafe/releases/")
@@ -113,12 +116,13 @@ object dataProvider extends CommonModule {
   }
 }
 
-object webApp extends CommonModule with PlayModule {
+object webApp extends CommonModule with PlayModule with DockerModule {
   def millSourcePath = velocorner.millSourcePath / "web-app"
-  override def playVersion= T{"2.8.0"}
-  override def twirlVersion= T{"1.4.0"}
+  override def playVersion= T{"2.8.7"}
+  override def twirlVersion= T{"1.5.0"}
   def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
   object test extends PlayTests
+  object docker extends DockerConfig
 }
 
 object velocorner extends CommonModule {
