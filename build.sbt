@@ -195,8 +195,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true,
-    includeFilter in scalafmt := "*/BuildInfo.scala"
+    swaggerV3 := true
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
@@ -224,7 +223,7 @@ def welcomeMessage = Def.setting {
       |
       |Useful sbt tasks:
       |${item("\"project web-app\" run")} - run web application
-      |${item("scalafmtManagedSrc")} - formats generated scala sources
+      |${item("scalafmtGenerated")} - formats generated scala sources
       """.stripMargin
 }
 

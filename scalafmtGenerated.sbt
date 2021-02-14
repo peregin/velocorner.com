@@ -7,8 +7,8 @@ import org.scalafmt.sbt.ScalafmtSbtReporter
 import sbt.librarymanagement.MavenRepository
 import sbt.util.Logger
 
-val scalafmtManagedSrcTask = taskKey[Unit](
-  "Format **/src_managed/*.scala files ."
+val scalafmtGenerated = taskKey[Unit](
+  "Format generated scala files, e.g. **/src_managed/*.scala files"
 )
 
 def formatSources(
@@ -86,10 +86,12 @@ def withFormattedSources[T](
     }
 }
 
-scalafmtManagedSrcTask := Def.task {
-  streams.value.log.warn("Start formatting managed sources...")
+scalafmtGenerated := {
+  val log = streams.value.log
+  val files = (((Keys.managedSourceDirectories in Global).value) ** "*.scala").get
+  log.info(s"Start formatting managed sources ${files.mkString("\n")}")
   formatSources(
-    (Keys.managedSourceDirectories.value ** "*.scala").get,
+    files,
     scalafmtConfig.map { f =>
       if (f.exists()) {
         f.toPath
