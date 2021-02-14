@@ -8,7 +8,8 @@ import play.api.mvc._
 import velocorner.ServiceProvider
 import velocorner.model.Account
 
-class WithingsController @Inject()(val connectivity: ConnectivitySettings, components: ControllerComponents) extends AbstractController(components) {
+class WithingsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
+    extends AbstractController(components) {
 
   val clientToken: String = connectivity.secretConfig.getToken(ServiceProvider.Withings)
   val clientSecret: String = connectivity.secretConfig.getSecret(ServiceProvider.Withings)
@@ -17,11 +18,15 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
 
   val OAuthStateKey = "velocorner.oauth.state"
 
-  val oauth = OAuth(ServiceInfo(
-    "https://developer.health.nokia.com/account/request_token",
-    "https://developer.health.nokia.com/account/access_token",
-    "https://developer.health.nokia.com/account/authorize", KEY),
-    true)
+  val oauth = OAuth(
+    ServiceInfo(
+      "https://developer.health.nokia.com/account/request_token",
+      "https://developer.health.nokia.com/account/access_token",
+      "https://developer.health.nokia.com/account/authorize",
+      KEY
+    ),
+    true
+  )
 
   private val logger = Logger.of(this.getClass)
 
@@ -52,33 +57,37 @@ class WithingsController @Inject()(val connectivity: ConnectivitySettings, compo
   }
 
   private def process(request: Request[AnyContent]): Result = {
-    val res = request.getQueryString("oauth_verifier").map { verifier => // means was from callback
-      val tokenPair = sessionTokenPair(request).get
-      // We got the verifier; now get the access token, store it and back to index
-      oauth.retrieveAccessToken(tokenPair, verifier) match {
-        case Right(t) => {
-          // We received the authorized tokens in the OAuth object - store it before we proceed
-          val maybeUserId = request.getQueryString("userid")
-          logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
-          maybeUserId match {
-            case Some(userId) =>
-              Redirect(controllers.routes.WebController.index())
-                .withSession("token" -> t.token, "secret" -> t.secret, "withingsId" -> userId)
-            case _ =>
-              BadRequest
+    val res = request
+      .getQueryString("oauth_verifier")
+      .map { verifier => // means was from callback
+        val tokenPair = sessionTokenPair(request).get
+        // We got the verifier; now get the access token, store it and back to index
+        oauth.retrieveAccessToken(tokenPair, verifier) match {
+          case Right(t) => {
+            // We received the authorized tokens in the OAuth object - store it before we proceed
+            val maybeUserId = request.getQueryString("userid")
+            logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
+            maybeUserId match {
+              case Some(userId) =>
+                Redirect(controllers.routes.WebController.index())
+                  .withSession("token" -> t.token, "secret" -> t.secret, "withingsId" -> userId)
+              case _ =>
+                BadRequest
+            }
           }
+          case Left(e) => throw e
         }
-        case Left(e) => throw e
       }
-    }.getOrElse(  // means it is triggered from the user
-      oauth.retrieveRequestToken(callbackUrl) match {
-        case Right(t) => {
-          // We received the unauthorized tokens in the OAuth object - store it before we proceed
-          logger.info(s"received request token $t")
-          Redirect(oauth.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
+      .getOrElse( // means it is triggered from the user
+        oauth.retrieveRequestToken(callbackUrl) match {
+          case Right(t) => {
+            // We received the unauthorized tokens in the OAuth object - store it before we proceed
+            logger.info(s"received request token $t")
+            Redirect(oauth.redirectUrl(t.token)).withSession("token" -> t.token, "secret" -> t.secret)
+          }
+          case Left(e) => throw e
         }
-        case Left(e) => throw e
-      })
+      )
     res
   }
 }

@@ -32,9 +32,7 @@ object Converter {
   }
 }
 
-
 object Setup extends App {
-
 
   implicit def deriveString: Converter[String] = Converter.apply("string", _.valid[String])
 
@@ -45,24 +43,24 @@ object Setup extends App {
   implicit def deriveHNil: Converter[HNil] = new NamedConverter[HNil]("") {
     def decode(str: List[String]): SValidated[HNil] = str match {
       case Cons("", _) => HNil.valid[String]
-      case s => s"Cannot convert '$s' to HNil".invalid[HNil]
+      case s           => s"Cannot convert '$s' to HNil".invalid[HNil]
     }
   }
 
-  implicit def deriveHCons[V, T <: HList](
-                                           implicit scv: Lazy[Converter[V]],
-                                           sct: Lazy[Converter[T]]
-                                         ): Converter[V :: T] =
+  implicit def deriveHCons[V, T <: HList](implicit
+      scv: Lazy[Converter[V]],
+      sct: Lazy[Converter[T]]
+  ): Converter[V :: T] =
     new NamedConverter[V :: T](s"${scv.value.name} ${sct.value.name}") {
       def decode(str: List[String]): SValidated[V :: T] = str match {
         case Cons(before, after) =>
           val front = scv.value.decode(List(before))
           val back = sct.value.decode(after)
           (front, back) match {
-            case (Validated.Valid(a), Validated.Valid(b)) => (a :: b).valid[String]
-            case (Validated.Valid(a), i@Validated.Invalid(b)) => b.invalid[V :: T]
-            case (Validated.Invalid(a), Validated.Valid(b)) => a.invalid[V :: T]
-            case (Validated.Invalid(a), Validated.Invalid(b)) => Semigroup.combine(a, b).invalid[V :: T]
+            case (Validated.Valid(a), Validated.Valid(b))       => (a :: b).valid[String]
+            case (Validated.Valid(a), i @ Validated.Invalid(b)) => b.invalid[V :: T]
+            case (Validated.Invalid(a), Validated.Valid(b))     => a.invalid[V :: T]
+            case (Validated.Invalid(a), Validated.Invalid(b))   => Semigroup.combine(a, b).invalid[V :: T]
           }
         case s => s"Cannot convert '$s' to HNil".invalid[V :: T]
       }

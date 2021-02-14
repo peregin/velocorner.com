@@ -12,9 +12,9 @@ import velocorner.api.AdminInfo
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-class AdminController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker {
+class AdminController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
+    extends AbstractController(components)
+    with AuthChecker {
 
   // def mapped to /api/admin/status
   def status = AuthAsyncAction { implicit request =>

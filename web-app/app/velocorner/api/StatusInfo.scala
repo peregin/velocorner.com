@@ -4,15 +4,16 @@ import controllers.StartupService
 import play.api.Mode
 import play.api.libs.json._
 
-
 object StatusInfo {
 
-  implicit val modeFormat: Format[Mode] = Format[play.api.Mode]((json: JsValue) => {
-    val modeString = json.asInstanceOf[JsString].value
-    val mode = play.api.Mode.values.find(_.toString == modeString).getOrElse(play.api.Mode.Dev)
-    JsSuccess(mode)
-  }, (mode: play.api.Mode) => JsString(mode.toString))
-
+  implicit val modeFormat: Format[Mode] = Format[play.api.Mode](
+    (json: JsValue) => {
+      val modeString = json.asInstanceOf[JsString].value
+      val mode = play.api.Mode.values.find(_.toString == modeString).getOrElse(play.api.Mode.Dev)
+      JsSuccess(mode)
+    },
+    (mode: play.api.Mode) => JsString(mode.toString)
+  )
 
   private val writes = new Writes[StatusInfo] {
     override def writes(o: StatusInfo): JsValue = {
@@ -48,18 +49,18 @@ object StatusInfo {
 }
 
 case class StatusInfo(
-                       applicationMode: String,
-                       buildTime: String,
-                       appVersion: String,
-                       javaVersion: String, // runtime
-                       scalaVersion: String,
-                       sbtVersion: String,
-                       catsVersion: String,
-                       elasticVersion: String,
-                       playVersion: String,
-                       gitHash: String,
-                       memoryTotal: Long,
-                       memoryUsedPercentile: Int,
-                       upTime: String,
-                       pings: Long
-                     )
+    applicationMode: String,
+    buildTime: String,
+    appVersion: String,
+    javaVersion: String, // runtime
+    scalaVersion: String,
+    sbtVersion: String,
+    catsVersion: String,
+    elasticVersion: String,
+    playVersion: String,
+    gitHash: String,
+    memoryTotal: Long,
+    memoryUsedPercentile: Int,
+    upTime: String,
+    pings: Long
+)

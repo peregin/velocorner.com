@@ -2,8 +2,7 @@ package velocorner.model.strava
 
 import play.api.libs.json.{Format, Json, _}
 
-/**
-  * Represents an athlete from the Strava feed and storage layer.
+/** Represents an athlete from the Strava feed and storage layer.
   *
   * The feed provides the following superset of data:
   *
@@ -36,7 +35,6 @@ import play.api.libs.json.{Format, Json, _}
   *   "resource_state" : 2,
   *   "distance" : 4904
   * } ]
-  *
   */
 object Athlete {
   val writes: Writes[Athlete] = (o: Athlete) => {
@@ -49,13 +47,13 @@ object Athlete {
 }
 
 case class Athlete(
-  id:	Long,
-  resource_state:	Int,
-  firstname: Option[String],
-  lastname: Option[String],
-  profile_medium: Option[String], // URL to a 62x62 pixel profile picture
-  city: Option[String],
-  country: Option[String],
-  bikes: Option[List[Gear]],
-  shoes: Option[List[Gear]]
+    id: Long,
+    resource_state: Int,
+    firstname: Option[String],
+    lastname: Option[String],
+    profile_medium: Option[String], // URL to a 62x62 pixel profile picture
+    city: Option[String],
+    country: Option[String],
+    bikes: Option[List[Gear]],
+    shoes: Option[List[Gear]]
 )

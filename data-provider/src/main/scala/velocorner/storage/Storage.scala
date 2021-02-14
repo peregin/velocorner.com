@@ -14,7 +14,6 @@ import velocorner.api.strava.Activity
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 trait Storage[M[_]] {
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -101,7 +100,6 @@ object Storage extends LazyLogging {
 
   def create(dbType: String): Storage[Future] = create(dbType, SecretConfig.load())
 
-
   def create(dbType: String, config: SecretConfig): Storage[Future] = {
     logger.info(s"initializing storage $dbType ...")
     val storage = dbType.toLowerCase match {
@@ -109,7 +107,7 @@ object Storage extends LazyLogging {
       case any if any.startsWith("mo") => new MongoDbStorage
       case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
       case any if any.startsWith("ps") => new PsqlDbStorage(config.getPsqlUrl, config.getPsqlUser, config.getPsqlPassword)
-      case unknown => sys.error(s"unknown storage type $unknown")
+      case unknown                     => sys.error(s"unknown storage type $unknown")
     }
 
     logger.info(s"connecting to ${storage.getClass.getSimpleName} storage...")

@@ -3,15 +3,13 @@ package velocorner
 import com.typesafe.config.{Config, ConfigFactory}
 import velocorner.SecretConfig.PimpMyConfig
 
-/**
-  * Created by levi on 29/03/15.
+/** Created by levi on 29/03/15.
   */
 object SecretConfig {
 
   def load(config: Config): SecretConfig = new SecretConfig(config)
 
   def load(): SecretConfig = load(ConfigFactory.load())
-
 
   implicit class PimpMyConfig(config: Config) {
 

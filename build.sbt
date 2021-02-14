@@ -148,6 +148,22 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
     libraryDependencies ++= spark ++ logging
   )//.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
+lazy val testService = (project in file("test/test-service") withId "test-service")
+  .settings(
+    buildSettings,
+    name := "test-service",
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
+      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
+      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
+      "io.argonaut" %% "argonaut" % "6.3.3",
+      "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
+      "javax.servlet" % "javax.servlet-api" % "4.0.1",
+      scalaTest
+    ) ++ cats,
+    resolvers += "MavenRepository" at "https://mvnrepository.com/"
+  )
+
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
@@ -179,26 +195,11 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true
+    swaggerV3 := true,
+    includeFilter in scalafmt := "*/BuildInfo.scala"
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
-
-lazy val testService = (project in file("test/test-service") withId "test-service")
-  .settings(
-    buildSettings,
-    name := "test-service",
-    libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
-      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
-      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % "6.3.3",
-      "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
-      "javax.servlet" % "javax.servlet-api" % "4.0.1",
-      scalaTest
-    ) ++ cats,
-    resolvers += "MavenRepository" at "https://mvnrepository.com/"
-  )
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")

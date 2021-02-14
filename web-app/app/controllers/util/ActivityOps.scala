@@ -13,9 +13,9 @@ trait ActivityOps {
     val yearlyProgress = YearlyProgress.from(dailyProgress)
     val ytdSum = YearlyProgress.sumYtd(yearlyProgress, now)
     action.toLowerCase match {
-      case "distance" => highcharts.toDistanceSeries(ytdSum, unit)
+      case "distance"  => highcharts.toDistanceSeries(ytdSum, unit)
       case "elevation" => highcharts.toElevationSeries(ytdSum, unit)
-      case other => sys.error(s"not supported action: $other")
+      case other       => sys.error(s"not supported action: $other")
     }
   }
 
@@ -23,10 +23,10 @@ trait ActivityOps {
     val dailyProgress = DailyProgress.from(activities)
     val yearlyProgress = YearlyProgress.from(dailyProgress)
     action.toLowerCase match {
-      case "heatmap" => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress), unit)
-      case "distance" => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress), unit)
+      case "heatmap"   => highcharts.toDistanceSeries(YearlyProgress.zeroOnMissingDate(yearlyProgress), unit)
+      case "distance"  => highcharts.toDistanceSeries(YearlyProgress.aggregate(yearlyProgress), unit)
       case "elevation" => highcharts.toElevationSeries(YearlyProgress.aggregate(yearlyProgress), unit)
-      case other => sys.error(s"not supported action: $other")
+      case other       => sys.error(s"not supported action: $other")
     }
   }
 }

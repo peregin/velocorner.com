@@ -12,10 +12,11 @@ trait WebMetrics extends Metrics {
 
   def timedRequest(text: String)(fun: RequestResponseFun): RequestResponseFun = {
     val mark = System.currentTimeMillis()
-    fun.andThen{ g =>
-      g.onComplete{ _ =>
+    fun.andThen { g =>
+      g.onComplete { _ =>
         val elapsed = System.currentTimeMillis() - mark
-        logger.info(s"$text took $elapsed millis")}
+        logger.info(s"$text took $elapsed millis")
+      }
       g
     }
   }

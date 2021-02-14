@@ -26,7 +26,11 @@ class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends L
 
       _ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeSunriseSunset).void)
 
-      _ <- migrateTable[KeyValue](OrientDbStorage.ATTRIBUTE_CLASS, "attribute", e => e.traverse(a => psql.getAttributeStorage.storeAttribute(a.key, a.`type`, a.value)).void)
+      _ <- migrateTable[KeyValue](
+        OrientDbStorage.ATTRIBUTE_CLASS,
+        "attribute",
+        e => e.traverse(a => psql.getAttributeStorage.storeAttribute(a.key, a.`type`, a.value)).void
+      )
 
       _ <- migrateTable[Activity](OrientDbStorage.ACTIVITY_CLASS, "activity", e => psql.storeActivity(e))
     } yield ()
@@ -37,8 +41,9 @@ class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends L
     _ = logger.info(s"found ${entries.size} $orientTable in orient")
     psqlEntriesSize <- psql.toFuture((fr"select count(*) from " ++ Fragment.const(psqlTable)).query[Int].unique)
     _ = logger.info(s"found $psqlEntriesSize $psqlTable in psql")
-    _ <- if (psqlEntriesSize > 0) Future.unit <| (_ => logger.info(s"no migration for $psqlTable"))
-    else timedFuture(s"store $psqlTable")(psqlStore(entries.toList)) <| (_ => logger.info(s"migrated $orientTable!"))
+    _ <-
+      if (psqlEntriesSize > 0) Future.unit <| (_ => logger.info(s"no migration for $psqlTable"))
+      else timedFuture(s"store $psqlTable")(psqlStore(entries.toList)) <| (_ => logger.info(s"migrated $orientTable!"))
     _ = logger.info("-----------------------------------------------")
   } yield ()
 

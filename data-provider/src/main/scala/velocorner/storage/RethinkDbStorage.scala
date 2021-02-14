@@ -20,8 +20,7 @@ import scala.language.implicitConversions
 // for kestrel combinator and unsafeTap
 import mouse.all._
 
-/**
-  * Created by levi on 14/09/16.
+/** Created by levi on 14/09/16.
   *
   * From Data Explorer:
   * <code>
@@ -34,14 +33,17 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   @volatile var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]): M[Unit] = Monad[M].pure(activities.map { a =>
-    val json = JsonIo.write(a)
-    client.json(json)
-  }.foreach { json =>
-    val result: Result[Object] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
-    logger.debug(s"result $result")
-  })
-
+  override def storeActivity(activities: Iterable[Activity]): M[Unit] = Monad[M].pure(
+    activities
+      .map { a =>
+        val json = JsonIo.write(a)
+        client.json(json)
+      }
+      .foreach { json =>
+        val result: Result[Object] = client.table(ACTIVITY_TABLE).insert(json).optArg("conflict", "update").run(maybeConn)
+        logger.debug(s"result $result")
+      }
+  )
 
   override def listActivityTypes(athleteId: Long): M[Iterable[String]] = Monad[M].pure(Iterable.empty[String])
 
@@ -49,11 +51,15 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   //Cursor[java.util.HashMap[String, String]]
   override def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]] = Monad[M].pure {
-    val result: Result[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
-      val field1 = arg1.getField("athlete").getField("id")
-      val field2 = arg1.getField("type")
-      field1.eq(athleteId, Nil).and(field2.eq(activityType, Nil))
-    }).run(maybeConn).asInstanceOf[Result[java.util.HashMap[String, String]]]
+    val result: Result[java.util.HashMap[String, String]] = client
+      .table(ACTIVITY_TABLE)
+      .filter(reqlFunction1 { arg1 =>
+        val field1 = arg1.getField("athlete").getField("id")
+        val field2 = arg1.getField("type")
+        field1.eq(athleteId, Nil).and(field2.eq(activityType, Nil))
+      })
+      .run(maybeConn)
+      .asInstanceOf[Result[java.util.HashMap[String, String]]]
     result2Activity(result.toList.asScala.toList)
   }
 
@@ -61,16 +67,22 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]] = Monad[M].pure {
-    val result: Result[java.util.HashMap[String, String]] = client.table(ACTIVITY_TABLE).filter(reqlFunction1{ arg1 =>
-      val field1 = arg1.getField("athlete").getField("id")
-      val field2 = arg1.getField("type")
-      field1.eq(athleteId, Nil).and(field2.eq("Ride", Nil))
-    }).orderBy(client.desc("start_date")).limit(limit).run(maybeConn).asInstanceOf[Result[java.util.HashMap[String, String]]]
+    val result: Result[java.util.HashMap[String, String]] = client
+      .table(ACTIVITY_TABLE)
+      .filter(reqlFunction1 { arg1 =>
+        val field1 = arg1.getField("athlete").getField("id")
+        val field2 = arg1.getField("type")
+        field1.eq(athleteId, Nil).and(field2.eq("Ride", Nil))
+      })
+      .orderBy(client.desc("start_date"))
+      .limit(limit)
+      .run(maybeConn)
+      .asInstanceOf[Result[java.util.HashMap[String, String]]]
     result2Activity(result.toList.asScala.toList) <| (a => logger.debug(s"found recent activities ${a.size} for $athleteId"))
   }
 
-  override def getActivity(id: Long): M[Option[Activity]] = Monad[M].map(getJsonById(id.toString, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
-
+  override def getActivity(id: Long): M[Option[Activity]] =
+    Monad[M].map(getJsonById(id.toString, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]] = Monad[M].pure(Iterable.empty)
 
@@ -85,10 +97,14 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   }
 
   private def getJsonById(id: String, table: String): M[Option[String]] = Monad[M].pure {
-    val result: Result[java.util.HashMap[String, String]] = client.table(table).filter(reqlFunction1{ arg1 =>
-      val field1 = arg1.getField("id")
-      field1.eq(id)
-    }).run(maybeConn).asInstanceOf[Result[java.util.HashMap[String, String]]]
+    val result: Result[java.util.HashMap[String, String]] = client
+      .table(table)
+      .filter(reqlFunction1 { arg1 =>
+        val field1 = arg1.getField("id")
+        field1.eq(id)
+      })
+      .run(maybeConn)
+      .asInstanceOf[Result[java.util.HashMap[String, String]]]
     result.toList.asScala.toList.map(JSONObject.toJSONString).headOption
   }
 
@@ -96,7 +112,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   override def getAccountStorage: AccountStorage = accountStorage
   private lazy val accountStorage = new AccountStorage {
     override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
-    override def getAccount(id: Long): M[Option[Account]] = Monad[M].map(getJsonById(id.toString, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
+    override def getAccount(id: Long): M[Option[Account]] =
+      Monad[M].map(getJsonById(id.toString, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
   }
 
   // gears
@@ -132,7 +149,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
     // create tables if not present
     def createIfNotExists(tables: String*): Unit = {
       val tableNames: Result[java.util.ArrayList[String]] = client.tableList().run(conn).asInstanceOf[Result[java.util.ArrayList[String]]]
-      tables.foreach{ t =>
+      tables.foreach { t =>
         if (!tableNames.toList.contains(t)) client.tableCreate(t).run(conn)
       }
     }

@@ -11,7 +11,12 @@ object OAuth2 {
   type ProviderUser = Athlete
   type ConsumerUser = Account
 
-  case class OAuth2TokenResponse(accessToken: AccessToken, expiresAt: DateTime, refreshToken: RefreshToken, providerUser: Option[ProviderUser]) {
+  case class OAuth2TokenResponse(
+      accessToken: AccessToken,
+      expiresAt: DateTime,
+      refreshToken: RefreshToken,
+      providerUser: Option[ProviderUser]
+  ) {
 
     def toStravaAccess = OAuth2Access(
       accessToken = accessToken,

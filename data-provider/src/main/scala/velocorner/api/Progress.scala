@@ -9,7 +9,6 @@ import velocorner.model.Units
 
 import scala.Numeric.Implicits._
 
-
 object Progress {
   type FromDouble[T] = Double => T
   implicit object IntFromDouble extends FromDouble[Int] {
@@ -25,19 +24,23 @@ object Progress {
   implicit val totalFormat = Format[Progress](Json.reads[Progress], Json.writes[Progress])
 }
 
-/**
- * @param rides amount of rides in this aggregate
- * @param distance distance expressed in km.
- * @param longestDistance longest distance out of the given rides, expressed in km.
- * @param elevation elevation expressed in meters.
- * @param movingTime moving time expressed in seconds
- * @param averageSpeed expressed in kph.
- */
-case class Progress(days: Int, rides: Int,
-                    distance: Double, longestDistance: Double,
-                    movingTime: Long,
-                    averageSpeed: Double,
-                    elevation: Double, longestElevation: Double) {
+/** @param rides amount of rides in this aggregate
+  * @param distance distance expressed in km.
+  * @param longestDistance longest distance out of the given rides, expressed in km.
+  * @param elevation elevation expressed in meters.
+  * @param movingTime moving time expressed in seconds
+  * @param averageSpeed expressed in kph.
+  */
+case class Progress(
+    days: Int,
+    rides: Int,
+    distance: Double,
+    longestDistance: Double,
+    movingTime: Long,
+    averageSpeed: Double,
+    elevation: Double,
+    longestElevation: Double
+) {
 
   // append
   def +(that: Progress) = Progress(
@@ -63,12 +66,12 @@ case class Progress(days: Int, rides: Int,
     longestElevation = this.longestElevation
   )
 
-  def factor[T : Numeric : FromDouble](v: T, f: Double): T = v.toDouble * f
+  def factor[T: Numeric: FromDouble](v: T, f: Double): T = v.toDouble * f
 
   def to(unit: Units.Entry): Progress = unit match {
     case Units.Imperial => this.toImperial()
-    case Units.Metric => this
-    case other => throw new IllegalArgumentException(s"unknown unit $other")
+    case Units.Metric   => this
+    case other          => throw new IllegalArgumentException(s"unknown unit $other")
   }
 
   private def toImperial(): Progress = Progress(

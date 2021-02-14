@@ -1,7 +1,6 @@
 package velocorner.model.withings
 
-/**
-  *  Measurement type is one of the following:
+/**  Measurement type is one of the following:
   *
   *  1 : Weight (kg)
   *  4 : Height (meter)
@@ -22,8 +21,24 @@ package velocorner.model.withings
   */
 object MeasurementType {
 
-  val all = Seq(Weight, Height, FatFreeMass, FatRatio, FatMassWeight, DiastolicBloodPressure, SystolicBloodPressure,
-    HeartPulse, Temperature, SP02, BodyTemperature, SkinTemperature, MuscleMass, Hydration, BoneMass, PulseWaveVelocity)
+  val all = Seq(
+    Weight,
+    Height,
+    FatFreeMass,
+    FatRatio,
+    FatMassWeight,
+    DiastolicBloodPressure,
+    SystolicBloodPressure,
+    HeartPulse,
+    Temperature,
+    SP02,
+    BodyTemperature,
+    SkinTemperature,
+    MuscleMass,
+    Hydration,
+    BoneMass,
+    PulseWaveVelocity
+  )
 
   val value2Type = all.map(o => (o.value, o)).toMap
 

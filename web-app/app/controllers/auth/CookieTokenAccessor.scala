@@ -4,13 +4,13 @@ import StravaController.AuthenticityToken
 import play.api.mvc.{Cookie, DiscardingCookie, RequestHeader, Result}
 
 class CookieTokenAccessor(
-                              protected val cookieName: String,
-                              protected val cookieSecureOption: Boolean = false,
-                              protected val cookieHttpOnlyOption: Boolean = true,
-                              protected val cookieDomainOption: Option[String] = None,
-                              protected val cookiePathOption: String = "/",
-                              protected val cookieMaxAge: Option[Int] = None
-                            ) {
+    protected val cookieName: String,
+    protected val cookieSecureOption: Boolean = false,
+    protected val cookieHttpOnlyOption: Boolean = true,
+    protected val cookieDomainOption: Option[String] = None,
+    protected val cookiePathOption: String = "/",
+    protected val cookieMaxAge: Option[Int] = None
+) {
 
   def put(token: AuthenticityToken)(result: Result)(implicit request: RequestHeader): Result = {
     val c = Cookie(cookieName, token, cookieMaxAge, cookiePathOption, cookieDomainOption, cookieSecureOption, cookieHttpOnlyOption)

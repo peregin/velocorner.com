@@ -23,7 +23,7 @@ object FileUtils extends CloseableResource with LazyLogging {
   }
 
   private def addDirToArchive(zos: ZipOutputStream, file: File): Unit = {
-    file.listFiles().foreach{entry =>
+    file.listFiles().foreach { entry =>
       if (entry.isDirectory) {
         logger.debug(s"adding directory ${entry.getName} to archive")
         addDirToArchive(zos, entry)

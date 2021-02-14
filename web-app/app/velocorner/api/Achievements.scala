@@ -23,8 +23,8 @@ case class Achievements(
 
   def to(unit: Units.Entry): Achievements = unit match {
     case Units.Imperial => this.toImperial()
-    case Units.Metric => this
-    case other => throw new IllegalArgumentException(s"unknown unit $other")
+    case Units.Metric   => this
+    case other          => throw new IllegalArgumentException(s"unknown unit $other")
   }
 
   private def toImperial() = Achievements(

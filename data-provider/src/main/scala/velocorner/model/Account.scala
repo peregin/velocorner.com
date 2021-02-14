@@ -10,26 +10,36 @@ import scala.util.{Failure, Success, Try}
 object Account {
 
   def convert(s: String): Units.Entry = s.toLowerCase match {
-    case "metric" => Units.Metric
+    case "metric"   => Units.Metric
     case "imperial" => Units.Imperial
-    case other => throw new IllegalArgumentException(s"not a valid unit $other")
+    case other      => throw new IllegalArgumentException(s"not a valid unit $other")
   }
 
-  implicit val roleFormat = Format[Role.Entry]((json: JsValue) => json match {
-    case JsString(s) => s match {
-      case "admin" => JsSuccess(Role.Admin)
-      case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
-    }
-    case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role"))))
-  }, (o: Role.Entry) => JsString(o.toString.toLowerCase))
+  implicit val roleFormat = Format[Role.Entry](
+    (json: JsValue) =>
+      json match {
+        case JsString(s) =>
+          s match {
+            case "admin" => JsSuccess(Role.Admin)
+            case _       => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
+          }
+        case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role"))))
+      },
+    (o: Role.Entry) => JsString(o.toString.toLowerCase)
+  )
 
-  implicit val unitFormat = Format[Units.Entry]((json: JsValue) => json match {
-    case JsString(s) => Try(convert(s)) match {
-      case Success(unit) => JsSuccess(unit)
-      case Failure(ex) => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
-    }
-    case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit"))))
-  }, (o: Units.Entry) => JsString(o.toString.toLowerCase))
+  implicit val unitFormat = Format[Units.Entry](
+    (json: JsValue) =>
+      json match {
+        case JsString(s) =>
+          Try(convert(s)) match {
+            case Success(unit) => JsSuccess(unit)
+            case Failure(ex)   => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
+          }
+        case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit"))))
+      },
+    (o: Units.Entry) => JsString(o.toString.toLowerCase)
+  )
 
   implicit val dateTimeFormat = DateTimePattern.createLongFormatter
 
@@ -62,8 +72,7 @@ object Account {
   )
 }
 
-/**
-  * Represents a generic account used in the storage layer.
+/** Represents a generic account used in the storage layer.
   */
 case class Account(
     athleteId: Long,

@@ -13,8 +13,9 @@ object DailyWeather {
   def list(entries: List[WeatherForecast]): List[DailyWeather] = {
     entries
       .groupBy(wf => new DateTime(wf.timestamp).toLocalDate)
-      .map{ case (day, wfList) => from(day, wfList.map(_.forecast)) }
-      .toList.sortBy(_.day.toString)
+      .map { case (day, wfList) => from(day, wfList.map(_.forecast)) }
+      .toList
+      .sortBy(_.day.toString)
   }
 
   import Ordering.Float.IeeeOrdering
@@ -28,7 +29,4 @@ object DailyWeather {
   }
 }
 
-case class DailyWeather(day: LocalDate, points: List[Weather],
-                        temp_min: Float, temp_max: Float,
-                        wind_max: Float,
-                        bootstrapIcon: String)
+case class DailyWeather(day: LocalDate, points: List[Weather], temp_min: Float, temp_max: Float, wind_max: Float, bootstrapIcon: String)

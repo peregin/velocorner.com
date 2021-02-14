@@ -2,8 +2,7 @@ package velocorner.model.strava
 
 import play.api.libs.json._
 
-/**
-  * Represents a Club identifier from the Strava feed.
+/** Represents a Club identifier from the Strava feed.
   *
   * Club activity list:
   *
@@ -24,9 +23,7 @@ import play.api.libs.json._
   * "trainer":false,"commute":false,"manual":false,"private":false,"flagged":false,"gear_id":"b1494155",
   * "average_speed":6.831,"max_speed":13.0,"average_cadence":77.7,"average_temp":8.0,"average_watts":182.2,"kilojoules":177.3,"device_watts":false,
   * "truncated":23,"has_kudoed":false}]
-  *
-  *
- **/
+  */
 object Club {
 
   val Velocorner = 122614

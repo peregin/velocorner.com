@@ -22,8 +22,7 @@ import scala.util.control.NonFatal
 // for kestrel combinator and unsafeTap
 import mouse.all._
 
-/**
-  * Created by levi on 09/12/15.
+/** Created by levi on 09/12/15.
   */
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
@@ -51,13 +50,10 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"retrieve token for code[$code]")
     val feed = connectivity.getStravaFeed
-    val resp = feed.ws(_.url(accessTokenUrl))
+    val resp = feed
+      .ws(_.url(accessTokenUrl))
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .post(Map(
-        "client_id" -> clientId,
-        "client_secret" -> clientSecret,
-        "code" -> code)
-      )
+      .post(Map("client_id" -> clientId, "client_secret" -> clientSecret, "code" -> code))
       .map(parseAccessTokenResponse)
     resp <| (_.onComplete(_ => feed.close()))
   }
@@ -65,14 +61,17 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"refreshing token with[$refreshToken]")
     val feed = connectivity.getStravaFeed
-    val resp = feed.ws(_.url(accessTokenUrl))
+    val resp = feed
+      .ws(_.url(accessTokenUrl))
       .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
-      .post(Map(
-        "client_id" -> clientId,
-        "client_secret" -> clientSecret,
-        "grant_type" -> "refresh_token",
-        "refresh_token" -> refreshToken
-      ))
+      .post(
+        Map(
+          "client_id" -> clientId,
+          "client_secret" -> clientSecret,
+          "grant_type" -> "refresh_token",
+          "refresh_token" -> refreshToken
+        )
+      )
       .map(parseAccessTokenResponse)
     resp <| (_.onComplete(_ => feed.close()))
   }

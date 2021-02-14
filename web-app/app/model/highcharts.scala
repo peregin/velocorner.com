@@ -42,12 +42,12 @@ object highcharts {
   }
 
   def toMeteoGramXml(items: List[WeatherForecast]): Elem = {
-    val location = {items.headOption.map(_.location).getOrElse("n/a")}
+    val location = { items.headOption.map(_.location).getOrElse("n/a") }
     val (city, country) = location.lastIndexOf(',') match {
       case -1 => (location, "n/a")
-      case ix => (location.substring(0, ix).trim, location.substring(ix+1).trim)
+      case ix => (location.substring(0, ix).trim, location.substring(ix + 1).trim)
     }
-<weatherdata>
+    <weatherdata>
   <location>
     <name>{city}</name>
     <country>{country}</country>

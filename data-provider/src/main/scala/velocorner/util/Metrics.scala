@@ -29,7 +29,6 @@ object Metrics {
   def elapsedTimeText(durationInMillis: Long): String = formatter.print(new Period(durationInMillis).normalizedStandard())
 }
 
-
 trait Metrics extends LazyLogging {
 
   def timed[T](text: => String)(body: => T): T = {
@@ -42,7 +41,7 @@ trait Metrics extends LazyLogging {
   }
 
   def timedFuture[T](text: => String)(body: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
-    val mark =  System.currentTimeMillis()
+    val mark = System.currentTimeMillis()
     body <| (_.onComplete(_ => log(text, mark)))
   }
 

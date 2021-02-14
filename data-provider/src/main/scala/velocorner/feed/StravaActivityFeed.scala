@@ -11,9 +11,8 @@ import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/**
- * Implementation to connect with Strava REST API
- */
+/** Implementation to connect with Strava REST API
+  */
 object StravaActivityFeed extends LazyLogging {
 
   val baseUrl = "https://www.strava.com/api/v3"
@@ -22,7 +21,8 @@ object StravaActivityFeed extends LazyLogging {
 
   val maxItemsPerPage = 200 // limitation from Strava
 
-  def listRecentAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] = feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
+  def listRecentAthleteActivities(implicit feed: StravaActivityFeed): Future[List[Activity]] =
+    feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
 
   def listAllAthleteActivities(implicit feed: ActivityFeed): Future[List[Activity]] = {
 
@@ -39,7 +39,8 @@ object StravaActivityFeed extends LazyLogging {
 
 class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with ActivityFeed with LazyLogging {
 
-  private val token = maybeToken.getOrElse(config.getToken(ServiceProvider.Strava)) // dedicated token after authentication or application generic
+  private val token =
+    maybeToken.getOrElse(config.getToken(ServiceProvider.Strava)) // dedicated token after authentication or application generic
   private val clientId = config.getId(ServiceProvider.Strava)
   private val authHeader = s"Bearer $token"
 

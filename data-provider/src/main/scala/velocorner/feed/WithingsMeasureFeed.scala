@@ -9,9 +9,8 @@ import scala.concurrent.Await
 import scala.language.postfixOps
 import scala.jdk.CollectionConverters._
 
-/**
-* Implementation to connect with Withings REST API
-*/
+/** Implementation to connect with Withings REST API
+  */
 object WithingsMeasureFeed {
 
   // for getting body measures
@@ -28,11 +27,11 @@ class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretC
     override def calculateAndAddSignature(request: Request, requestBuilder: RequestBuilderBase[_]): Unit = {
       super.calculateAndAddSignature(request, requestBuilder)
       val maybeAuthHeader = request.getHeaders.asScala.toSeq.find(m => m.getKey.compareToIgnoreCase("Authorization") == 0)
-      maybeAuthHeader.foreach{h =>
+      maybeAuthHeader.foreach { h =>
         val auth = h.getValue
         logger.info(s"auth header: $auth")
         val pairs = auth.stripPrefix("OAuth").split(',').map(_.trim)
-        pairs.foreach{p =>
+        pairs.foreach { p =>
           val keyValue = p.split('=')
           if (keyValue.length > 1) {
             val paramName = keyValue(0).trim
@@ -46,13 +45,14 @@ class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretC
   }
 
   override def listMeasures: String = {
-    val response = ws{_.url(s"${WithingsMeasureFeed.baseUrl}/measure")
-      .withQueryStringParameters(
-        ("action", "getmeas"),
-        ("userid", userId.toString)
-      )
-      .sign(signer)
-      .get()
+    val response = ws {
+      _.url(s"${WithingsMeasureFeed.baseUrl}/measure")
+        .withQueryStringParameters(
+          ("action", "getmeas"),
+          ("userid", userId.toString)
+        )
+        .sign(signer)
+        .get()
     }
     Await.result(response, timeout).body
   }

@@ -36,8 +36,8 @@ trait ElasticSupport extends IndexApi {
       } yield GeoPoint(lat, lon)
       implicit val gpShow: Show[GeoPoint] = Show.show[GeoPoint](gp => s"${gp.lat},${gp.long}")
       val json = (Json.toJson(convertedActivity), maybeGeoPoint) match {
-        case (jsObj: JsObject, Some(geoPoint)) => jsObj +("location", JsString(geoPoint.show))
-        case (jsAny, _) => jsAny
+        case (jsObj: JsObject, Some(geoPoint)) => jsObj + ("location", JsString(geoPoint.show))
+        case (jsAny, _)                        => jsAny
       }
       ix.doc(json.toString())
     }

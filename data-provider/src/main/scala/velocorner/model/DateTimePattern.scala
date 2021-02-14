@@ -2,10 +2,22 @@ package velocorner.model
 
 import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
-import play.api.libs.json.{Format, JodaReads, JodaWrites, JsError, JsNumber, JsPath, JsResult, JsString, JsSuccess, JsValue, JsonValidationError, Reads}
+import play.api.libs.json.{
+  Format,
+  JodaReads,
+  JodaWrites,
+  JsError,
+  JsNumber,
+  JsPath,
+  JsResult,
+  JsString,
+  JsSuccess,
+  JsValue,
+  JsonValidationError,
+  Reads
+}
 
-/**
-  * Created by levi on 24/12/15.
+/** Created by levi on 24/12/15.
   */
 object DateTimePattern {
 
@@ -14,12 +26,17 @@ object DateTimePattern {
 
   val shortFormat = "yyyy-MM-dd"
 
-  def createLongFormatter = Format[DateTime](jodaDateReadsUTC(DateTimePattern.longFormat), JodaWrites.jodaDateWrites(DateTimePattern.longFormat))
+  def createLongFormatter =
+    Format[DateTime](jodaDateReadsUTC(DateTimePattern.longFormat), JodaWrites.jodaDateWrites(DateTimePattern.longFormat))
 
-  def createShortFormatter = Format[LocalDate](JodaReads.jodaLocalDateReads(DateTimePattern.shortFormat), JodaWrites.jodaLocalDateWrites(DateTimePattern.shortFormat))
+  def createShortFormatter = Format[LocalDate](
+    JodaReads.jodaLocalDateReads(DateTimePattern.shortFormat),
+    JodaWrites.jodaLocalDateWrites(DateTimePattern.shortFormat)
+  )
 
   def jodaDateReadsUTC(pattern: String, corrector: String => String = identity): Reads[DateTime] = new Reads[DateTime] {
-    val df = (if (pattern == "") ISODateTimeFormat.dateOptionalTimeParser else DateTimeFormat.forPattern(pattern)).withZone(DateTimeZone.UTC)
+    val df =
+      (if (pattern == "") ISODateTimeFormat.dateOptionalTimeParser else DateTimeFormat.forPattern(pattern)).withZone(DateTimeZone.UTC)
 
     def reads(json: JsValue): JsResult[DateTime] = json match {
       case JsNumber(d) => JsSuccess(new DateTime(d.toLong))

@@ -29,8 +29,7 @@ object HttpFeed extends LazyLogging {
   }
 }
 
-/**
-  * Created by levi on 25.10.16.
+/** Created by levi on 25.10.16.
   */
 trait HttpFeed extends Closeable {
 
@@ -42,7 +41,6 @@ trait HttpFeed extends Closeable {
 
   lazy val timeout = 10 seconds
   lazy implicit val executors = HttpFeed.executors
-
 
   // setup secure proxy if it is configured w/o authentication
   for (proxyHost <- config.getProxyHost; proxyPort <- config.getProxyPort) {

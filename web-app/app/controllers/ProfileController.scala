@@ -11,9 +11,9 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-class ProfileController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-  extends AbstractController(components) with AuthChecker {
+class ProfileController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
+    extends AbstractController(components)
+    with AuthChecker {
 
   // def mapped to /api/athletes/units
   def unit(unit: String) = AuthAsyncAction { implicit request =>

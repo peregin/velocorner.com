@@ -9,7 +9,7 @@ object OAuth2Access {
 }
 
 case class OAuth2Access(
-                         accessToken: String,
-                         accessExpiresAt: DateTime,
-                         refreshToken: String
-                       )
+    accessToken: String,
+    accessExpiresAt: DateTime,
+    refreshToken: String
+)

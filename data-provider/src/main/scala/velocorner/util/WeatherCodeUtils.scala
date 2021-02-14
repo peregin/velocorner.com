@@ -7,14 +7,12 @@ import velocorner.model.weather.WeatherCode
 import scala.io.Source
 import scala.util.{Failure, Try}
 
-/**
-  * Utility to convert the weather code mappings into the model.
+/** Utility to convert the weather code mappings into the model.
   *
   * # Group 5xx: Rain
   * # ID	Meaning	                    Icon BootstrapIcon
   * 500	light rain	                  10d icon-weather-008
   * 501	moderate rain	                10d icon-weather-007
-  *
   */
 object WeatherCodeUtils extends LazyLogging {
 
@@ -22,8 +20,7 @@ object WeatherCodeUtils extends LazyLogging {
 
   val clearSkyCode = 800
 
-  /**
-    * Based on the measures for a given day return a weather code which can be napped to an icon.
+  /** Based on the measures for a given day return a weather code which can be napped to an icon.
     * @param pointsForThisDay measures for a given day
     */
   def dailyWeatherCode(pointsForThisDay: Iterable[Weather]): Int = {
@@ -45,18 +42,21 @@ object WeatherCodeUtils extends LazyLogging {
       .toSeq
 
     // log errors
-    entries.foreach{_ match {
-      case Failure(e) => logger.error("failed to parse line", e)
-      case _ =>
-    }}
-    
+    entries.foreach {
+      _ match {
+        case Failure(e) => logger.error("failed to parse line", e)
+        case _          =>
+      }
+    }
+
     entries
       .flatMap(_.toOption)
       .map(e => (e.code, e))
       .toMap
   }
 
-  def bootstrapIcon(code: Long): String = code2Model.get(code.toInt).map(_.bootstrapIcon).getOrElse(sys.error(s"invalid weather code $code"))
+  def bootstrapIcon(code: Long): String =
+    code2Model.get(code.toInt).map(_.bootstrapIcon).getOrElse(sys.error(s"invalid weather code $code"))
 
   def parse(line: String): WeatherCode = {
     val sepFun = (c: Char) => c == ' ' || c == '\t'

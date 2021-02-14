@@ -18,14 +18,15 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
   // for 5 days
   def forecast(location: String): Future[ForecastResponse] = {
     logger.debug(s"retrieving forecast for $location")
-    val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/forecast")
-      .withQueryStringParameters(
-        ("q", location),
-        ("appid", config.getId(ServiceProvider.Weather)),
-        ("units", "metric"),
-        ("lang", "en")
-      )
-      .get()
+    val response = ws {
+      _.url(s"${OpenWeatherFeed.baseUrl}/forecast")
+        .withQueryStringParameters(
+          ("q", location),
+          ("appid", config.getId(ServiceProvider.Weather)),
+          ("units", "metric"),
+          ("lang", "en")
+        )
+        .get()
     }
     response
       .map(_.body)
@@ -34,19 +35,22 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
 
   def current(location: String): Future[Option[WeatherResponse]] = {
     logger.debug(s"retrieving current weather for $location")
-    val response = ws{_.url(s"${OpenWeatherFeed.baseUrl}/weather")
-      .withQueryStringParameters(
-        ("q", location),
-        ("appid", config.getId(ServiceProvider.Weather)),
-        ("units", "metric"),
-        ("lang", "en")
-      )
-      .get()
+    val response = ws {
+      _.url(s"${OpenWeatherFeed.baseUrl}/weather")
+        .withQueryStringParameters(
+          ("q", location),
+          ("appid", config.getId(ServiceProvider.Weather)),
+          ("units", "metric"),
+          ("lang", "en")
+        )
+        .get()
     }
-    response.map { res => res.status match {
-      case 200 => JsonIo.read[WeatherResponse](res.body).some
-      case _ => None
-    }}
+    response.map { res =>
+      res.status match {
+        case 200 => JsonIo.read[WeatherResponse](res.body).some
+        case _   => None
+      }
+    }
 
   }
 }

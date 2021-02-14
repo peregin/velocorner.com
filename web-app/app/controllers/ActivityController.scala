@@ -20,15 +20,16 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-class ActivityController @Inject()(val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-  extends AbstractController(components) with ActivityOps with AuthChecker with Metrics {
+class ActivityController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
+    extends AbstractController(components)
+    with ActivityOps
+    with AuthChecker
+    with Metrics {
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
   def profile(activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for profile in $activity") { implicit request =>
-
       val storage = connectivity.getStorage
       val now = LocalDate.now()
       val currentYear = now.getYear
@@ -64,13 +65,14 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/athletes/statistics/yearly/:action/:activity
   def yearlyStatistics(action: String, activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for yearly statistics in $action/$activity") { implicit request =>
-
       val storage = connectivity.getStorage
 
       val result = for {
         account <- OptionT(Future(loggedIn))
         _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
-        activities <- OptionT.liftF(timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity)))
+        activities <- OptionT.liftF(
+          timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity))
+        )
         series = toYearlySeries(activities, action, account.units())
       } yield series
 
@@ -101,7 +103,6 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/athletes/statistics/daily/:action/:activity
   def dailyStatistics(action: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for all daily activities in $action") { implicit request =>
-
       val now = DateTime.now(DateTimeZone.UTC)
       val last12Month = now.minusMonths(12)
       val storage = connectivity.getStorage
@@ -112,9 +113,9 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         activities <- OptionT.liftF(storage.listActivities(account.athleteId, last12Month, now.plusDays(1)))
         dailyProgress = DailyProgress.from(activities)
         series = action.toLowerCase match {
-          case "distance" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(account.units()).distance))
+          case "distance"  => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(account.units()).distance))
           case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(account.units()).elevation))
-          case other => sys.error(s"not supported action: $other")
+          case other       => sys.error(s"not supported action: $other")
         }
       } yield series
 
@@ -127,15 +128,14 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/athletes/statistics/histogram/:action/:activity
   def yearlyHistogram(action: String, activity: String): Action[AnyContent] = {
     TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity") { implicit request =>
-
       val storage = connectivity.getStorage
       val result = for {
         account <- OptionT(Future(loggedIn))
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
-          case "distance" => apexcharts.toDistanceHeatmap(activities, activity, account.units())
+          case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, account.units())
           case "elevation" => apexcharts.toElevationHeatmap(activities, account.units())
-          case other => sys.error(s"not supported action: $other")
+          case other       => sys.error(s"not supported action: $other")
         }
       } yield series
 
@@ -147,46 +147,46 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/statistics/achievements/:activity
   def achievements(activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for achievements in $activity") { implicit request =>
-
       val storage = connectivity.getStorage.getAchievementStorage
-      loggedIn.map { account =>
-        // parallelization
-        val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
-        val maxDistanceF = storage.maxDistance(account.athleteId, activity)
-        val maxElevationF = storage.maxElevation(account.athleteId, activity)
-        val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
-        val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
-        val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
-        val minAverageTemperatureF = storage.minAverageTemperature(account.athleteId, activity)
-        val maxAverageTemperatureF = storage.maxAverageTemperature(account.athleteId, activity)
-        val achievements = for {
-          maxAverageSpeed <- maxAverageSpeedF
-          maxDistance <- maxDistanceF
-          maxElevation <- maxElevationF
-          maxAveragePower <- maxAveragePowerF
-          maxHeartRate <- maxHeartRateF
-          maxAverageHeartRate <- maxAverageHeartRateF
-          minTemperature <- minAverageTemperatureF
-          maxTemperature <- maxAverageTemperatureF
-        } yield Achievements(
-          maxAverageSpeed = maxAverageSpeed,
-          maxDistance = maxDistance,
-          maxElevation = maxElevation,
-          maxAveragePower = maxAveragePower,
-          maxHeartRate = maxHeartRate,
-          maxAverageHeartRate = maxAverageHeartRate,
-          minAverageTemperature = minTemperature,
-          maxAverageTemperature = maxTemperature
-        ).to(account.units())
-        achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
-      }.getOrElse(Future(Unauthorized))
+      loggedIn
+        .map { account =>
+          // parallelization
+          val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
+          val maxDistanceF = storage.maxDistance(account.athleteId, activity)
+          val maxElevationF = storage.maxElevation(account.athleteId, activity)
+          val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
+          val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
+          val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
+          val minAverageTemperatureF = storage.minAverageTemperature(account.athleteId, activity)
+          val maxAverageTemperatureF = storage.maxAverageTemperature(account.athleteId, activity)
+          val achievements = for {
+            maxAverageSpeed <- maxAverageSpeedF
+            maxDistance <- maxDistanceF
+            maxElevation <- maxElevationF
+            maxAveragePower <- maxAveragePowerF
+            maxHeartRate <- maxHeartRateF
+            maxAverageHeartRate <- maxAverageHeartRateF
+            minTemperature <- minAverageTemperatureF
+            maxTemperature <- maxAverageTemperatureF
+          } yield Achievements(
+            maxAverageSpeed = maxAverageSpeed,
+            maxDistance = maxDistance,
+            maxElevation = maxElevation,
+            maxAveragePower = maxAveragePower,
+            maxHeartRate = maxHeartRate,
+            maxAverageHeartRate = maxAverageHeartRate,
+            minAverageTemperature = minTemperature,
+            maxAverageTemperature = maxTemperature
+          ).to(account.units())
+          achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
+        }
+        .getOrElse(Future(Unauthorized))
     }
 
   // suggestions when searching, workaround until elastic access, use the storage directly
   // route mapped to /api/activities/suggest
   def suggest(query: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"suggest for $query") { implicit request =>
-
       logger.debug(s"suggesting for $query")
       val storage = connectivity.getStorage
       val suggestionsTF = for {
@@ -194,7 +194,7 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
         suggestions <- OptionT.liftF(
           storage match {
             case orientDb: OrientDbStorage => orientDb.suggestActivities(query, account.athleteId, 10)
-            case psqlDb: PsqlDbStorage => psqlDb.suggestActivities(query, account.athleteId, 10)
+            case psqlDb: PsqlDbStorage     => psqlDb.suggestActivities(query, account.athleteId, 10)
             case other =>
               logger.warn(s"$other is not supporting suggestions")
               Future(Iterable.empty)
@@ -215,7 +215,6 @@ class ActivityController @Inject()(val connectivity: ConnectivitySettings, val c
   // route mapped to /api/activities/:id
   def activity(id: Long): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for activity $id") { implicit request =>
-
       val resultET = for {
         _ <- EitherT(Future(loggedIn.toRight(Forbidden)))
         activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRight(NotFound)))

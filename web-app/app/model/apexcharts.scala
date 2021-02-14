@@ -56,10 +56,10 @@ object apexcharts {
 
   def toDistanceHeatmap(items: Iterable[Activity], activityType: String, unit: Units.Entry): List[HeatmapSeries] = {
     val (ranges, converter) = (activityType, unit) match {
-      case ("Ride", Units.Metric) => (metricRideDistanceRange, identity[Long](_))
-      case (_, Units.Metric) => (metricDistanceRange, identity[Long](_))
+      case ("Ride", Units.Metric)   => (metricRideDistanceRange, identity[Long](_))
+      case (_, Units.Metric)        => (metricDistanceRange, identity[Long](_))
       case ("Ride", Units.Imperial) => (imperialRideDistanceRange, (d: Long) => Kilometers(d).toInternationalMiles.toLong)
-      case (_, Units.Imperial) => (imperialDistanceRange, (d: Long) => Kilometers(d).toInternationalMiles.toLong)
+      case (_, Units.Imperial)      => (imperialDistanceRange, (d: Long) => Kilometers(d).toInternationalMiles.toLong)
     }
     toYearlyHeatmap(items, (a: Activity) => converter(a.distance.toLong / 1000), ranges)
   }
@@ -67,7 +67,7 @@ object apexcharts {
   def toElevationHeatmap(items: Iterable[Activity], unit: Units.Entry): List[HeatmapSeries] = {
     val (ranges, converter) = unit match {
       case Units.Metric => (metricElevationRange, identity[Long](_))
-      case _ => (imperialElevationRange, (d: Long) => Meters(d).toFeet.toLong)
+      case _            => (imperialElevationRange, (d: Long) => Meters(d).toFeet.toLong)
     }
     toYearlyHeatmap(items, (a: Activity) => converter(a.total_elevation_gain.toLong), ranges)
   }
@@ -80,22 +80,26 @@ object apexcharts {
 
   // returns with a sorted series, sorted by year and ranges
   private[model] def toYearlyHeatmap(year2Values: Map[Int, Iterable[Long]], ranges: List[HeatmapPoint]): List[HeatmapSeries] =
-    year2Values.map{ case (year, sample) =>
-      val biggest = ranges.last
-      val name2Count = sample
-        .map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
-        .groupBy(_.x)
-        .view.mapValues(_.size)
-      // collect in the order given in the ranges and fill missing buckets with zero
-      val heatmapPoints = ranges
-        .foldRight(List.empty[HeatmapPoint])(
-          (ref: HeatmapPoint, accu: List[HeatmapPoint]) =>
+    year2Values
+      .map { case (year, sample) =>
+        val biggest = ranges.last
+        val name2Count = sample
+          .map(point => ranges.find(_.y > point).getOrElse(biggest).copy(y = point))
+          .groupBy(_.x)
+          .view
+          .mapValues(_.size)
+        // collect in the order given in the ranges and fill missing buckets with zero
+        val heatmapPoints = ranges
+          .foldRight(List.empty[HeatmapPoint])((ref: HeatmapPoint, accu: List[HeatmapPoint]) =>
             accu :+ name2Count
               .get(ref.x)
               .map(HeatmapPoint(ref.x, _))
               .getOrElse(HeatmapPoint(ref.x, 0))
-        )
-        .reverse
-      HeatmapSeries(year.toString, heatmapPoints)
-    }.toList.sortBy(_.name).reverse
+          )
+          .reverse
+        HeatmapSeries(year.toString, heatmapPoints)
+      }
+      .toList
+      .sortBy(_.name)
+      .reverse
 }

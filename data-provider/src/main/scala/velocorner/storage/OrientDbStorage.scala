@@ -29,22 +29,23 @@ import cats.data.OptionT
 import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
-
 object Counter {
   implicit val entryFormat = Format[Counter](Json.reads[Counter], Json.writes[Counter])
 }
 
 case class Counter(name: String, counter: Long)
 
-/**
-  * Created by levi on 14.11.16.
+/** Created by levi on 14.11.16.
   * Improvements to do:
   * - use new query API from OrientDB 3.0 ?
   * - use compound index for athlete.id and activity type
   * - use monad stack M[_] : Monad
   */
 class OrientDbStorage(url: Option[String], dbPassword: String)
-  extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
+    extends Storage[Future]
+    with CloseableResource
+    with Metrics
+    with LazyLogging {
 
   @volatile var server: Option[OrientDB] = None
   @volatile var pool: Option[ODatabasePool] = None
@@ -65,25 +66,26 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   }
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = {
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max")
+    queryFor[Activity](
+      s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max"
+    )
   }
 
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
-    activities
-      .toList
-      .traverse(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id",
-        Map("id" -> a.id))
-      )
+    activities.toList
+      .traverse(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id", Map("id" -> a.id)))
       .void
   }
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future {
     transact { db =>
-      val results = db.query(s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = :id GROUP BY name ORDER BY counter DESC",
+      val results = db.query(
+        s"SELECT type AS name, COUNT(*) AS counter FROM $ACTIVITY_CLASS WHERE athlete.id = :id GROUP BY name ORDER BY counter DESC",
         Map(
           "id" -> athleteId
-        ).asJava)
+        ).asJava
+      )
       results.asScala.map(d => JsonIo.read[Counter](d.toJSON)).map(_.name).to(Iterable)
     }
   }
@@ -91,7 +93,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def listActivityYears(athleteId: Long): Future[Iterable[Int]] = ???
 
   override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND type = :type",
+    queryFor[Activity](
+      s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND type = :type",
       Map(
         "id" -> athleteId,
         "type" -> activityType
@@ -99,17 +102,19 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
 
   override def listActivities(athleteId: Long, from: DateTime, to: DateTime): Future[Iterable[Activity]] =
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND date_from > :dateFrom AND date_from < :dateTo",
-    Map(
-      "id" -> athleteId,
-      "dateFrom" -> from,
-      "dateTo" -> to
+    queryFor[Activity](
+      s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id AND date_from > :dateFrom AND date_from < :dateTo",
+      Map(
+        "id" -> athleteId,
+        "dateFrom" -> from,
+        "dateTo" -> to
+      )
     )
-  )
 
   // to check how much needs to be imported from the feed
   override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id ORDER BY start_date DESC LIMIT :limit",
+    queryFor[Activity](
+      s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id ORDER BY start_date DESC LIMIT :limit",
       Map(
         "id" -> athleteId,
         "limit" -> limit
@@ -131,7 +136,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   // gears
   override def getGearStorage: GearStorage = gearStorage
   private lazy val gearStorage = new GearStorage {
-    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] = upsert(gear, GEAR_CLASS, s"SELECT FROM $GEAR_CLASS WHERE id = :id", Map("id" -> gear.id))
+    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] =
+      upsert(gear, GEAR_CLASS, s"SELECT FROM $GEAR_CLASS WHERE id = :id", Map("id" -> gear.id))
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
@@ -141,19 +147,26 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     }
 
     override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
-      forecast
-        .toList
-        .traverse(a => upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}"))
+      forecast.toList
+        .traverse(a =>
+          upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
+        )
         .void
     }
 
     override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-      queryForOption[SunriseSunset](s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> location, "date" -> localDate))
+      queryForOption[SunriseSunset](
+        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
+        Map("location" -> location, "date" -> localDate)
+      )
 
     override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
-      upsert(sunriseSunset, SUN_CLASS, s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date))
+      upsert(
+        sunriseSunset,
+        SUN_CLASS,
+        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
+        Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date)
+      )
     }
 
     override def suggestLocations(snippet: String): Future[Iterable[String]] = ???
@@ -165,13 +178,11 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   lazy val attributeStorage = new AttributeStorage {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
       val attr = KeyValue(key, `type`, value)
-      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key",
-        Map("type" -> `type`, "key" -> key))
+      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
     }
 
     override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
-      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type AND key = :key",
-        Map("type" -> `type`, "key" -> key))
+      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type AND key = :key", Map("type" -> `type`, "key" -> key))
         .map(_.map(_.value))
     }
   }
@@ -192,13 +203,31 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
 
     case class ResLongRow(res_value: Long)
 
-    private def minOf(athleteId: Long, activityType: String, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
+    private def minOf(
+        athleteId: Long,
+        activityType: String,
+        fieldName: String,
+        mapperFunc: Activity => Option[Double],
+        tolerance: Double = .1d
+    ): Future[Option[Achievement]] = {
       val result = for {
-        _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName IS NOT NULL"))
+        _ <- OptionT(
+          queryForOption[ResLongRow](
+            s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName IS NOT NULL"
+          )
+        )
           .filter(_.res_value > 0L)
-        minResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'"))
+        minResult <- OptionT(
+          queryForOption[ResDoubleRow](
+            s"SELECT MIN($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'"
+          )
+        )
         _ = logger.debug(s"min[$fieldName]=${minResult.res_value}")
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName <= ${minResult.res_value + tolerance} ORDER BY $fieldName ASC LIMIT 1"))
+        activity <- OptionT(
+          queryForOption[Activity](
+            s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName <= ${minResult.res_value + tolerance} ORDER BY $fieldName ASC LIMIT 1"
+          )
+        )
         minValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = minValue,
@@ -209,13 +238,31 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       result.value
     }
 
-    private def maxOf(athleteId: Long, activityType: String, fieldName: String, mapperFunc: Activity => Option[Double], tolerance: Double = .1d): Future[Option[Achievement]] = {
+    private def maxOf(
+        athleteId: Long,
+        activityType: String,
+        fieldName: String,
+        mapperFunc: Activity => Option[Double],
+        tolerance: Double = .1d
+    ): Future[Option[Achievement]] = {
       val result = for {
-        _ <- OptionT(queryForOption[ResLongRow](s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName IS NOT NULL"))
+        _ <- OptionT(
+          queryForOption[ResLongRow](
+            s"SELECT COUNT($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName IS NOT NULL"
+          )
+        )
           .filter(_.res_value > 0L)
-        maxResult <- OptionT(queryForOption[ResDoubleRow](s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'"))
+        maxResult <- OptionT(
+          queryForOption[ResDoubleRow](
+            s"SELECT MAX($fieldName) AS res_value FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType'"
+          )
+        )
         _ = logger.debug(s"max[$fieldName]=${maxResult.res_value}")
-        activity <- OptionT(queryForOption[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName >= ${maxResult.res_value - tolerance} ORDER BY $fieldName DESC LIMIT 1"))
+        activity <- OptionT(
+          queryForOption[Activity](
+            s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = $athleteId AND type = '$activityType' AND $fieldName >= ${maxResult.res_value - tolerance} ORDER BY $fieldName DESC LIMIT 1"
+          )
+        )
         maxValue <- OptionT(Future(mapperFunc(activity)))
       } yield Achievement(
         value = maxValue,
@@ -226,21 +273,29 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       result.value
     }
 
-    override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_speed", _.average_speed.map(_.toDouble))
+    override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "average_speed", _.average_speed.map(_.toDouble))
 
-    override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "distance", _.distance.toDouble.some)
+    override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "distance", _.distance.toDouble.some)
 
-    override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "total_elevation_gain", _.total_elevation_gain.toDouble.some)
+    override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "total_elevation_gain", _.total_elevation_gain.toDouble.some)
 
-    override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "max_heartrate", _.max_heartrate.map(_.toDouble))
+    override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "max_heartrate", _.max_heartrate.map(_.toDouble))
 
-    override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_heartrate", _.average_heartrate.map(_.toDouble))
+    override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "average_heartrate", _.average_heartrate.map(_.toDouble))
 
-    override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_watts", _.average_watts.map(_.toDouble))
+    override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "average_watts", _.average_watts.map(_.toDouble))
 
-    override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = minOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
+    override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      minOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
 
-    override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] = maxOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
+    override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
   }
 
   override def getAchievementStorage: AchievementStorage = achievementStorage
@@ -270,9 +325,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         if (!schema.existsClass(className)) schema.createClass(className)
         val clazz = schema.getClass(className)
 
-        index.foreach(ix =>
-          if (!clazz.existsProperty(ix.indexField)) clazz.createProperty(ix.indexField, ix.indexType)
-        )
+        index.foreach(ix => if (!clazz.existsProperty(ix.indexField)) clazz.createProperty(ix.indexField, ix.indexType))
 
         val ixFields = index.map(_.indexField).sorted
         val ixName = ixFields.mkString("-").replace(".", "_")
@@ -319,66 +372,83 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   }
 
   def transact[T](body: ODatabaseDocument => T): T = {
-    pool.map { dbPool =>
-      val session = dbPool.acquire()
-      session.activateOnCurrentThread()
-      ultimately {
-        session.close()
-      }.apply {
-        body(session)
+    pool
+      .map { dbPool =>
+        val session = dbPool.acquire()
+        session.activateOnCurrentThread()
+        ultimately {
+          session.close()
+        }.apply {
+          body(session)
+        }
       }
-    }.getOrElse(throw new IllegalStateException("database is closed"))
+      .getOrElse(throw new IllegalStateException("database is closed"))
   }
 
   // asynch
   def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = transact { db =>
     Try {
       val promise = Promise[Seq[T]]()
-      db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
-        val accuResults = new ListBuffer[T]
+      db.query(
+        new OSQLNonBlockingQuery[ODocument](
+          sql,
+          new OCommandResultListener() {
+            val accuResults = new ListBuffer[T]
 
-        override def result(iRecord: Any): Boolean = {
-          val doc = iRecord.asInstanceOf[ODocument]
-          accuResults += JsonIo.read[T](doc.toJSON)
-          true
-        }
+            override def result(iRecord: Any): Boolean = {
+              val doc = iRecord.asInstanceOf[ODocument]
+              accuResults += JsonIo.read[T](doc.toJSON)
+              true
+            }
 
-        override def end(): Unit = {
-          // might be called twice in case of failure
-          if (!promise.isCompleted) {
-            promise.success(accuResults.toSeq)
+            override def end(): Unit = {
+              // might be called twice in case of failure
+              if (!promise.isCompleted) {
+                promise.success(accuResults.toSeq)
+              }
+            }
+
+            override def getResult: AnyRef = accuResults
           }
-        }
-
-        override def getResult: AnyRef = accuResults
-      }), args.asJava)
+        ),
+        args.asJava
+      )
       promise.future
     }.fold(err => Future.failed(err), res => res)
   }
 
-  private def queryForOption[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Option[T]] = queryFor(sql, args).map(_.headOption)
+  private def queryForOption[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Option[T]] =
+    queryFor(sql, args).map(_.headOption)
 
-  private def upsert[T](payload: T, className: String, sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Writes[T]): Future[Unit] = transact { db =>
+  private def upsert[T](payload: T, className: String, sql: String, args: Map[String, Any] = Map.empty)(implicit
+      fjs: Writes[T]
+  ): Future[Unit] = transact { db =>
     Try {
       val promise = Promise[Unit]()
-      db.query(new OSQLNonBlockingQuery[ODocument](sql, new OCommandResultListener() {
-        val accuResults = new ListBuffer[ODocument]
+      db.query(
+        new OSQLNonBlockingQuery[ODocument](
+          sql,
+          new OCommandResultListener() {
+            val accuResults = new ListBuffer[ODocument]
 
-        override def result(iRecord: Any): Boolean = {
-          val doc = iRecord.asInstanceOf[ODocument]
-          accuResults += doc
-          false
-        }
+            override def result(iRecord: Any): Boolean = {
+              val doc = iRecord.asInstanceOf[ODocument]
+              accuResults += doc
+              false
+            }
 
-        override def end(): Unit = {
-          val doc = accuResults.headOption.getOrElse(new ODocument(className))
-          doc.fromJSON(JsonIo.write(payload))
-          doc.save()
-          promise.success(())
-        }
+            override def end(): Unit = {
+              val doc = accuResults.headOption.getOrElse(new ODocument(className))
+              doc.fromJSON(JsonIo.write(payload))
+              doc.save()
+              promise.success(())
+            }
 
-        override def getResult: AnyRef = null
-      }), args.asJava)
+            override def getResult: AnyRef = null
+          }
+        ),
+        args.asJava
+      )
       promise.future
     }.fold(err => Future.failed(err), res => res)
   }

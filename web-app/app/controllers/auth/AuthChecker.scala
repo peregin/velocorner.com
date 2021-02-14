@@ -12,7 +12,6 @@ import scala.language.postfixOps
 import StravaController.OAuth2CookieKey
 import controllers.util.WebMetrics
 
-
 trait AuthChecker extends WebMetrics {
   // because of the body parser
   this: AbstractController =>
@@ -58,7 +57,9 @@ trait AuthChecker extends WebMetrics {
   }
 
   def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
-  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction(timedRequest(text)(f))
+  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction(
+    timedRequest(text)(f)
+  )
 
   def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
 
@@ -66,11 +67,11 @@ trait AuthChecker extends WebMetrics {
 
   private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
     (for {
-      token  <- tokenAccessor.extract(request)
+      token <- tokenAccessor.extract(request)
     } yield for {
       Some(userId) <- idContainer.get(token)
-      Some(user)   <- resolveUser(userId)
-      _            <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
+      Some(user) <- resolveUser(userId)
+      _ <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
     } yield {
       Option(user) -> tokenAccessor.put(token) _
     }) getOrElse {

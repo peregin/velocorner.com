@@ -5,7 +5,6 @@ import velocorner.model.strava.Athlete
 
 import scala.concurrent.Future
 
-
 trait ActivityFeed {
 
   // club

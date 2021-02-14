@@ -19,8 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
-/**
-  * Created by levi on 28/09/16.
+/** Created by levi on 28/09/16.
   * Access layer to the MongoDb.
   */
 class MongoDbStorage extends Storage[Future] with LazyLogging {
@@ -28,15 +27,18 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   lazy private val client = MongoClient()
   @volatile var db: Option[MongoDatabase] = None
 
-
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
     activities.toList.traverse { a =>
       val json = JsonIo.write(a)
       coll
-        .updateOne(equal("id", a.id), json, new UpdateOptions()
-        .upsert(true))
+        .updateOne(
+          equal("id", a.id),
+          json,
+          new UpdateOptions()
+            .upsert(true)
+        )
         .toFuture()
     }.void
   }
@@ -72,14 +74,19 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id.toString, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
-
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = Future(Iterable.empty)
 
   private def upsert(json: String, id: String, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)
     coll
-      .updateOne(equal(idName, id), json, new UpdateOptions()
-        .upsert(true)).toFuture().void
+      .updateOne(
+        equal(idName, id),
+        json,
+        new UpdateOptions()
+          .upsert(true)
+      )
+      .toFuture()
+      .void
   }
 
   private def getJsonById(id: String, collName: String, idName: String = "id"): Future[Option[String]] = {
@@ -92,8 +99,10 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   // accounts
   override def getAccountStorage: AccountStorage = accountStorage
   private lazy val accountStorage = new AccountStorage {
-    override def store(account: Account): Future[Unit] = upsert(JsonIo.write(account), account.athleteId.toString, ACCOUNT_TABLE, "athleteId")
-    override def getAccount(id: Long): Future[Option[Account]] = getJsonById(id.toString, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
+    override def store(account: Account): Future[Unit] =
+      upsert(JsonIo.write(account), account.athleteId.toString, ACCOUNT_TABLE, "athleteId")
+    override def getAccount(id: Long): Future[Option[Account]] =
+      getJsonById(id.toString, ACCOUNT_TABLE, "athleteId").map(_.map(JsonIo.read[Account]))
   }
 
   // gears
