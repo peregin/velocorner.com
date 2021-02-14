@@ -136,6 +136,13 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
+lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
+  .settings(
+    buildSettings,
+    name := "data-analytics",
+    libraryDependencies ++= logging
+  ).dependsOn(dataProvider % "compile->compile; test->test")
+
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
