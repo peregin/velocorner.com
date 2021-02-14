@@ -145,7 +145,10 @@ object webApp extends CommonModule with BuildInfo with PlayModule with DockerMod
     )
   }
   object test extends PlayTests
-  object docker extends DockerConfig
+  object docker extends DockerConfig {
+    def baseImage = T{"openjdk:8-jre-alpine"}
+    def tags = T{List("peregin/web-app")}
+  }
 }
 
 object velocorner extends CommonModule {

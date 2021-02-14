@@ -23,7 +23,7 @@ object ManagedCodeFormatterPlugin extends AutoPlugin {
       val log = streams.value.log
       val dirs = (Compile / managedSourceDirectories).value
       val configPath = scalafmtConfig.value.toPath
-      log.info(s"Generated sources [$configPath] from ${dirs.mkString("\n\t", "\n\t", "\n")}")
+      log.info(s"Formatting generated sources [$configPath] from ${dirs.mkString("\n\t", "\n\t", "\n")}")
       val filesGlob = dirs.map(d => d.toGlob / ** / "*.scala")
       val files = FileTreeView.default.list(filesGlob).map(_._1.toFile)
       log.info(s"Found ${files.size} generated files")
