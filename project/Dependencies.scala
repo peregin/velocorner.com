@@ -1,6 +1,7 @@
 object Dependencies {
 
   val projectScalaVersion = "2.13.4"
+  val scala12Version = "2.12.12" // for some modules using Spark
 
   val catsVersion = "2.4.1"
   val mouseVersion = "0.26.2"
@@ -18,6 +19,7 @@ object Dependencies {
   val playWsVersion = "2.1.2" // standalone version
   val playJsonVersion = "2.9.2"
   val squantsVersion = "1.7.0"
+  val sparkVersion = "3.0.1"
   val scalaSpecVersion = "4.10.6"
   val scalaTestVersion = "3.2.3"
   val mockitoVersion = "3.7.7"

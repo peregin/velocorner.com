@@ -72,6 +72,10 @@ def squants = Seq(
   "org.typelevel" %% "squants"  % Dependencies.squantsVersion
 )
 
+def spark = Seq(
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion
+)
+
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -140,8 +144,9 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
   .settings(
     buildSettings,
     name := "data-analytics",
-    libraryDependencies ++= logging
-  ).dependsOn(dataProvider % "compile->compile; test->test")
+    scalaVersion := Dependencies.scala12Version, // spark is supported on 2.12 only
+    libraryDependencies ++= spark ++ logging
+  )//.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
@@ -183,7 +188,6 @@ lazy val testService = (project in file("test/test-service") withId "test-servic
   .settings(
     buildSettings,
     name := "test-service",
-    //scalaVersion := "2.12.12", // because finagle is not fully supported in 2.13 - it is now
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
@@ -198,7 +202,7 @@ lazy val testService = (project in file("test/test-service") withId "test-servic
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(testService, dataProvider, dataSearch, webApp)
+  .aggregate(testService, dataProvider, dataSearch, dataAnalytics, webApp)
   .settings(
     name := "velocorner",
     buildSettings,
