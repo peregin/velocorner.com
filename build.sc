@@ -22,9 +22,10 @@ val rethinkDbVersion = "2.4.4"
 val flywayVersion = "7.5.3"
 val elasticVersion = "7.10.3"
 val finatraVersion = "20.8.1"
+val playFwVersion = "2.8.7"
 val playWsVersion = "2.1.2" // standalone version
-val squantsVersion = "1.7.0"
 val playJsonVersion = "2.9.2"
+val squantsVersion = "1.7.0"
 val specsVersion = "4.10.3"
 val mockitoVersion = "3.7.7"
 
@@ -127,13 +128,20 @@ object webApp extends CommonModule with BuildInfo with PlayModule with DockerMod
       ivy"org.scala-lang.modules::scala-xml::1.2.0"
     )
   }
-  override def playVersion= T{"2.8.7"}
+  override def playVersion: T[String] = T{playFwVersion}
   override def twirlVersion= T{"1.5.0"}
   override def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
   override def buildInfoPackageName = Some("velocorner.build")
   override def buildInfoMembers = T{
     Map(
-      "buildTime" -> java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+      "buildTime" -> java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now()),
+      "version" -> "n/a",
+      "scalaVersion" -> projectScalaVersion,
+      "sbtVersion" -> "n/a",
+      "catsVersion" -> catsVersion,
+      "elasticVersion" -> elasticVersion,
+      "playVersion" -> playFwVersion,
+      "gitHash" -> "n/a"
     )
   }
   object test extends PlayTests
