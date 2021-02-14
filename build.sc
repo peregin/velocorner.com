@@ -4,7 +4,9 @@ import mill.scalalib.publish._
 import coursier.maven.MavenRepository
 import $ivy.`com.lihaoyi::mill-contrib-playlib:$MILL_VERSION`, mill.playlib._
 import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
+import $ivy.`com.lihaoyi::mill-contrib-buildinfo:$MILL_VERSION`
 import contrib.docker.DockerModule
+import mill.contrib.buildinfo.BuildInfo
 
 // import from shared location
 val projectScalaVersion = "2.13.4"
@@ -116,9 +118,9 @@ object dataProvider extends CommonModule {
   }
 }
 
-object webApp extends CommonModule with PlayModule with DockerModule {
+object webApp extends CommonModule with BuildInfo with PlayModule with DockerModule {
   def millSourcePath = velocorner.millSourcePath / "web-app"
-  def ivyDeps = T{
+  override def ivyDeps = T{
     super.ivyDeps() ++ Agg(filters()) ++ Agg(
       ivy"com.typesafe.play::play-ehcache::${playVersion()}",
       ivy"com.pauldijou::jwt-play-json::5.0.0",
@@ -127,7 +129,13 @@ object webApp extends CommonModule with PlayModule with DockerModule {
   }
   override def playVersion= T{"2.8.7"}
   override def twirlVersion= T{"1.5.0"}
-  def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
+  override def moduleDeps = super.moduleDeps ++ Seq(dataProvider)
+  override def buildInfoPackageName = Some("velocorner.build")
+  override def buildInfoMembers = T{
+    Map(
+      "buildTime" -> java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+    )
+  }
   object test extends PlayTests
   object docker extends DockerConfig
 }
