@@ -1,3 +1,4 @@
+import ManagedCodeFormatterPlugin.autoImport.scalafmtGenerated
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.BuildInfoKeys
 import sbtrelease._
@@ -69,7 +70,7 @@ def zio = Seq(
 )
 
 def squants = Seq(
-  "org.typelevel" %% "squants"  % Dependencies.squantsVersion
+  "org.typelevel" %% "squants" % Dependencies.squantsVersion
 )
 
 def spark = Seq(
@@ -122,8 +123,12 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
     buildSettings,
     name := "data-provider",
     libraryDependencies ++= Seq(
-      playJson, playJsonExtensions, playJsonJoda, playWsAhcStandalone,
-      scalaSpec, scalaSpecJunit
+      playJson,
+      playJsonExtensions,
+      playJsonJoda,
+      playWsAhcStandalone,
+      scalaSpec,
+      scalaSpecJunit
     ) ++ logging
       ++ storage
       ++ apacheCommons
@@ -146,7 +151,7 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
     name := "data-analytics",
     scalaVersion := Dependencies.scala12Version, // spark is supported on 2.12 only
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
-  )//.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
+  ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
 lazy val testService = (project in file("test/test-service") withId "test-service")
   .settings(
@@ -169,14 +174,21 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     buildSettings,
     name := "web-app",
     libraryDependencies ++= Seq(
-      guice, ehcache,
+      guice,
+      ehcache,
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
-      playTest, playTestPlus, mockito, scalaSpec
+      playTest,
+      playTestPlus,
+      mockito,
+      scalaSpec
     ),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
-      name, version, scalaVersion, sbtVersion,
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
       BuildInfoKey.action("buildTime") {
         java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
       },
@@ -195,7 +207,13 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true
+    swaggerV3 := true,
+    // whenever we generate build information, run the formatter on the generated files
+    Compile / buildInfo := {
+      val files = (Compile / buildInfo).value
+      scalafmtGenerated.value
+      files
+    }
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ManagedCodeFormatterPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
@@ -219,11 +237,10 @@ def welcomeMessage = Def.setting {
       |${red(""" __ _____| |___  __ ___ _ _ _ _  ___ _ _ """)}
       |${red(""" \ V / -_) / _ \/ _/ _ \ '_| ' \/ -_) '_|""")}
       |${red("""  \_/\___|_\___/\__\___/_| |_||_\___|_|  """)}
-      |${red("""                                         """+ version.value)}
+      |${red("""                                         """ + version.value)}
       |
       |Useful sbt tasks:
       |${item("\"project web-app\" run")} - run web application
       |${item("scalafmtGenerated")} - formats generated scala sources
       """.stripMargin
 }
-
