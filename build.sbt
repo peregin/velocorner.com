@@ -197,7 +197,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     swaggerPrettyJson := true,
     swaggerV3 := true
   )
-  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin)
+  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ManagedCodeFormatterPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate
