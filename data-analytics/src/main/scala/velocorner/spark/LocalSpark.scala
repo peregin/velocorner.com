@@ -3,7 +3,6 @@ package velocorner.spark
 import org.apache.spark.internal.Logging
 import org.apache.spark.{SparkConf, SparkContext}
 
-
 trait LocalSpark[T] extends Logging {
 
   val scConf = new SparkConf()
@@ -19,17 +18,18 @@ trait LocalSpark[T] extends Logging {
 
   def resulted(result: T): T = {
     log.info("--------------------------------------------------------------")
-    log.info(s"$sparkAppName computed $result")
+    log.info(s"[$sparkAppName] computed $result")
     log.info("--------------------------------------------------------------")
     result
   }
 
   def runSpark(): T = {
-    val result = try {
-      spark(sc)
-    } finally {
-      sc.stop()
-    }
+    val result =
+      try {
+        spark(sc)
+      } finally {
+        sc.stop()
+      }
     resulted(result)
   }
 }
