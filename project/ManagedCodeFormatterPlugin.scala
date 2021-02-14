@@ -23,10 +23,10 @@ object ManagedCodeFormatterPlugin extends AutoPlugin {
       val log = streams.value.log
       val dirs = (Compile / managedSourceDirectories).value
       val configPath = scalafmtConfig.value.toPath
-      log.info(s"Formatting generated sources [$configPath] from ${dirs.mkString("\n\t", "\n\t", "\n")}")
+      log.info(s"Generated sources [$configPath] from ${dirs.mkString("\n\t", "\n\t", "\n")}")
       val filesGlob = dirs.map(d => d.toGlob / ** / "*.scala")
       val files = FileTreeView.default.list(filesGlob).map(_._1.toFile)
-      log.info(s"Formatting ${files.size} managed files")
+      log.info(s"Found ${files.size} generated files")
       invokeObjectPrivateMethod[Unit](
         log,
         "org.scalafmt.sbt",
@@ -34,7 +34,6 @@ object ManagedCodeFormatterPlugin extends AutoPlugin {
         "formatSources",
         streams.value.cacheStoreFactory,
         files,
-        //Seq(new java.io.File("/Users/levi/data/project/velocorner.com/web-app/target/scala-2.13/src_managed/main/sbt-buildinfo/BuildInfo.scala")),
         configPath,
         streams.value.log,
         new OutputStreamWriter(streams.value.binary()),

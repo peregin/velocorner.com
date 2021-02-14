@@ -209,11 +209,13 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     swaggerPrettyJson := true,
     swaggerV3 := true,
     // whenever we generate build information, run the formatter on the generated files
-    Compile / buildInfo := {
+    Compile / buildInfo := Def.taskDyn {
       val files = (Compile / buildInfo).value
-      scalafmtGenerated.value
-      files
-    }
+      Def.task {
+        (Compile / scalafmtGenerated).value
+        files
+      }
+    }.value
   )
   .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ManagedCodeFormatterPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
