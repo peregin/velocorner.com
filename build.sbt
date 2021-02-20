@@ -1,4 +1,4 @@
-import ManagedCodeFormatterPlugin.autoImport.scalafmtGenerated
+import ScalafmtExtensionPlugin.autoImport.scalafmtGenerated
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.BuildInfoKeys
 import sbtrelease._
@@ -217,7 +217,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       }
     }.value
   )
-  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ManagedCodeFormatterPlugin)
+  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ScalafmtExtensionPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate

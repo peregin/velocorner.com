@@ -8,7 +8,7 @@ import sbt.nio.file.FileTreeView
 import java.io.OutputStreamWriter
 import java.lang.invoke.MethodHandles
 
-object ManagedCodeFormatterPlugin extends AutoPlugin {
+object ScalafmtExtensionPlugin extends AutoPlugin {
 
   override def requires: Plugins = ScalafmtPlugin
 
