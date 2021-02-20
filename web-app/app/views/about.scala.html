@@ -50,6 +50,10 @@
                                 <div class="VC_padding8">Build Time</div>
                             </li>
                             <li class="list-group-item">
+                                <span id="status-host-os-version" class="badge badge-purple rounded-2x">X</span>
+                                <div class="VC_padding8">Host OS Version</div>
+                            </li>
+                            <li class="list-group-item">
                                 <span id="status-os-version" class="badge badge-aqua rounded-2x">X</span>
                                 <div class="VC_padding8">OS Version</div>
                             </li>
@@ -122,6 +126,7 @@
                 $('#status-build-time').html(data.buildTime)
                 $('#status-build-time-main').html(data.buildTime)
                 $('#status-up-time-main').html(data.upTime)
+                $('#status-host-os-version').html(data.hostOsVersion)
                 $('#status-os-version').html(data.osVersion)
                 $('#status-java-version').html(data.javaVersion)
                 $('#status-scala-version').html(data.scalaVersion)

@@ -96,8 +96,8 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   scalaVersion := Dependencies.projectScalaVersion,
   organization := "com.github.peregin",
   description := "The Cycling Platform",
-  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
-  scalacOptions := Seq("-target:jvm-1.8", "-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+  javacOptions ++= Seq("-source", "11", "-target", "11"),
+  scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
   scalacOptions in Test ++= Seq("-Yrangepos"),
   resolvers in ThisBuild ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
@@ -201,7 +201,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     maintainer := "velocorner.com@gmail.com",
     packageName in Docker := "velocorner.com",
     dockerExposedPorts in Docker := Seq(9000),
-    dockerBaseImage in Docker := "openjdk:8-jre-alpine",
+    dockerBaseImage in Docker := "adoptopenjdk/jdk-11.0.10_9-alpine",
     dockerUsername := Some("peregin"),
     version in Docker := "latest",
     javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
