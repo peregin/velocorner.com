@@ -29,11 +29,14 @@ object StatusInfo {
     val memoryTotal = sys.runtime.maxMemory()
     val memoryUsed = memoryTotal - sys.runtime.freeMemory()
     val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
+    val javaVersion = s"${sys.props.get("java.runtime.name").getOrElse("n/a")} ${sys.props.get("java.runtime.version").getOrElse("n/a")}"
+    val osVersion = s"${sys.props.get("os.name").getOrElse("n/a")} ${sys.props.get("os.version").getOrElse("n/a")}"
     new StatusInfo(
       applicationMode = applicationMode.toString,
       buildTime = velocorner.build.BuildInfo.buildTime,
       appVersion = velocorner.build.BuildInfo.version,
-      javaVersion = s"${sys.props.get("java.runtime.name").getOrElse("n/a")} ${sys.props.get("java.runtime.version").getOrElse("n/a")}",
+      osVersion = osVersion,
+      javaVersion = javaVersion,
       scalaVersion = velocorner.build.BuildInfo.scalaVersion,
       sbtVersion = velocorner.build.BuildInfo.sbtVersion,
       catsVersion = velocorner.build.BuildInfo.catsVersion,
@@ -49,18 +52,19 @@ object StatusInfo {
 }
 
 case class StatusInfo(
-    applicationMode: String,
-    buildTime: String,
-    appVersion: String,
-    javaVersion: String, // runtime
-    scalaVersion: String,
-    sbtVersion: String,
-    catsVersion: String,
-    elasticVersion: String,
-    playVersion: String,
-    gitHash: String,
-    memoryTotal: Long,
-    memoryUsedPercentile: Int,
-    upTime: String,
-    pings: Long
-)
+                       applicationMode: String,
+                       buildTime: String,
+                       appVersion: String,
+                       osVersion: String, // runtime query
+                       javaVersion: String, // runtime query
+                       scalaVersion: String,
+                       sbtVersion: String,
+                       catsVersion: String,
+                       elasticVersion: String,
+                       playVersion: String,
+                       gitHash: String,
+                       memoryTotal: Long,
+                       memoryUsedPercentile: Int,
+                       upTime: String,
+                       pings: Long
+                     )

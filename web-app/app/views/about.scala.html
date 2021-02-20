@@ -33,7 +33,7 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion-1" href="#collapse-One" aria-expanded="false">
-                        <span class="fa fa-bars"></span> Version Information: <span id="status-title">X</span> <small> click for more...</small>
+                        <span class="fa fa-plus-square-o"></span> Version Information: <span id="status-title">X</span> <small> click for more...</small>
                     </a>
                 </h4>
             </div>
@@ -48,6 +48,10 @@
                             <li class="list-group-item">
                                 <span id="status-build-time" class="badge badge-red rounded-2x">X</span>
                                 <div class="VC_padding8">Build Time</div>
+                            </li>
+                            <li class="list-group-item">
+                                <span id="status-os-version" class="badge badge-aqua rounded-2x">X</span>
+                                <div class="VC_padding8">OS Version</div>
                             </li>
                             <li class="list-group-item">
                                 <span id="status-java-version" class="badge badge-sea rounded-2x">X</span>
@@ -118,6 +122,7 @@
                 $('#status-build-time').html(data.buildTime)
                 $('#status-build-time-main').html(data.buildTime)
                 $('#status-up-time-main').html(data.upTime)
+                $('#status-os-version').html(data.osVersion)
                 $('#status-java-version').html(data.javaVersion)
                 $('#status-scala-version').html(data.scalaVersion)
                 $('#status-cats-version').html(data.catsVersion)
