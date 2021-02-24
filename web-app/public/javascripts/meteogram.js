@@ -48,7 +48,7 @@ Meteogram.prototype.drawWeatherSymbols = function (chart) {
         if (meteogram.resolution > 36e5 || i % 2 === 0) {
 
             chart.renderer
-                .image('http://openweathermap.org/img/w/'+ meteogram.symbols[i] + '.png',
+                .image('https://openweathermap.org/img/w/'+ meteogram.symbols[i] + '.png',
                     point.plotX + chart.plotLeft - 8,
                     point.plotY + chart.plotTop - 30,
                     30,
