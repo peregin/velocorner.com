@@ -217,7 +217,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       }
     }.value
   )
-  .enablePlugins(play.sbt.PlayScala, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ScalafmtExtensionPlugin)
+  .enablePlugins(play.sbt.PlayScala, play.sbt.PlayAkkaHttp2Support, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ScalafmtExtensionPlugin)
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate
