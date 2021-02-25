@@ -80,7 +80,18 @@ https://pixabay.com/illustrations/christmas-tree-twigs-christmas-pine-1853582/
 https://pixabay.com/illustrations/new-year-s-eve-christmas-ornament-1911483/
 
 # Troubleshooting
+
+## Postgres
 if embedded psql fails to start
 ```shell script
 brew install postgresql
+```
+## HTTP 2
+```shell
+curl -sI https://velocorner.com -o/dev/null -w '%{http_version}\n'
+```
+
+## SBT
+```shell
+sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
 ```

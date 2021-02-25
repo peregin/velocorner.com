@@ -74,7 +74,7 @@ def squants = Seq(
 )
 
 def spark = Seq(
-  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude("com.google.inject", "guice")
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
@@ -178,6 +178,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       ehcache,
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
+      "com.google.inject" % "guice" % "5.0.0-BETA-1", // for Java 11 support
       playTest,
       playTestPlus,
       mockito,
