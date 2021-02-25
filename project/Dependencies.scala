@@ -2,7 +2,7 @@ object Dependencies {
 
   // update travis setup as well with the same scala version
   val projectScalaVersion = "2.13.4"
-  val scala12Version = "2.12.13" // for some modules using Spark
+  val scala12Version = "2.12.12" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.4.2"
   val mouseVersion = "0.26.2"
