@@ -386,6 +386,8 @@ GET     /docs                                              controllers.Assets.at
 
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###
+GET     /robots.txt                                        controllers.Assets.at(path="/public", file="html/robots.txt")
+### NoDocs ###
 GET     /counter                                           controllers.Assets.at(path="/public", file="html/counter.html")
 ### NoDocs ###
 GET     /googlea6d3ef59293b5121.html                       controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
