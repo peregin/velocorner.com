@@ -187,7 +187,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       ehcache,
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
-      "com.google.inject" % "guice" % "5.0.0-BETA-1", // for Java 11 support
+      "com.google.inject" % "guice" % "5.0.1", // for Java 11 support
       playTest,
       playTestPlus,
       mockito,
