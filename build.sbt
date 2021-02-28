@@ -145,10 +145,19 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
+// module for various analytics supporting the generic stack
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
   .settings(
     buildSettings,
     name := "data-analytics",
+    libraryDependencies ++= logging
+  ).dependsOn(dataProvider % "compile->compile; test->test")
+
+// module dedicated for analytics with Spark, with a special Scala version
+lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "data-analytics-spark")
+  .settings(
+    buildSettings,
+    name := "data-analytics-spark",
     scalaVersion := Dependencies.scala12Version, // spark is supported on 2.12 only
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
   ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
@@ -223,7 +232,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(testService, dataProvider, dataSearch, dataAnalytics, webApp)
+  .aggregate(testService, dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp)
   .settings(
     name := "velocorner",
     buildSettings,
