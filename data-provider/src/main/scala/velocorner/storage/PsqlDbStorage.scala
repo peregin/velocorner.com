@@ -41,7 +41,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   config.setMinimumIdle(2)
   config.setPoolName("hikari-db-pool")
   config.setAutoCommit(true)
-  config.validate() // for printout
+  //config.validate() // for printout
 
   private lazy val connectEC = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(
