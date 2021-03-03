@@ -77,6 +77,10 @@ def spark = Seq(
   "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude("com.google.inject", "guice")
 )
 
+def smile = Seq(
+  "com.github.haifengl" % "smile-core" % "2.6.0"
+)
+
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -150,7 +154,7 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
   .settings(
     buildSettings,
     name := "data-analytics",
-    libraryDependencies ++= logging
+    libraryDependencies ++= smile ++ logging
   ).dependsOn(dataProvider % "compile->compile; test->test")
 
 // module dedicated for analytics with Spark, with a special Scala version
