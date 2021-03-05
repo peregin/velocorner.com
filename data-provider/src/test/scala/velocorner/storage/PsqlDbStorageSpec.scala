@@ -34,8 +34,16 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       activities must haveSize(2)
     }
 
+    "list ytd activities" in {
+      awaitOn(psqlStorage.listYtdActivities(432909, "Ride", 2015)) should haveSize(12)
+      awaitOn(psqlStorage.listYtdActivities(432909, "Walk", 2015)) should haveSize(0)
+      awaitOn(psqlStorage.listYtdActivities(432909, "Ride", 2014)) should haveSize(12)
+    }
+
     "list activity years" in {
-      awaitOn(psqlStorage.listActivityYears(432909)) should containTheSameElementsAs(Seq(2015, 2014))
+      awaitOn(psqlStorage.listActivityYears(432909, "Ride")) should containTheSameElementsAs(Seq(2015, 2014))
+      awaitOn(psqlStorage.listActivityYears(432909, "Hike")) should containTheSameElementsAs(Seq(2015))
+      awaitOn(psqlStorage.listActivityYears(432909, "Walk")) should beEmpty
     }
 
     addFragmentsBlock(accountFragments(psqlStorage))

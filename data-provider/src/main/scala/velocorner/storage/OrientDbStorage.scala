@@ -90,7 +90,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     }
   }
 
-  override def listActivityYears(athleteId: Long): Future[Iterable[Int]] = ???
+  override def listActivityYears(athleteId: Long, activityType: String): Future[Iterable[Int]] = ???
 
   override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] =
     queryFor[Activity](
@@ -100,6 +100,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         "type" -> activityType
       )
     )
+
+  override def listYtdActivities(athleteId: Long, activityType: String, year: Int): Future[Iterable[Activity]] = ???
 
   override def listActivities(athleteId: Long, from: DateTime, to: DateTime): Future[Iterable[Activity]] =
     queryFor[Activity](

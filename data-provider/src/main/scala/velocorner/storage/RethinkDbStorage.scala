@@ -47,7 +47,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def listActivityTypes(athleteId: Long): M[Iterable[String]] = Monad[M].pure(Iterable.empty[String])
 
-  override def listActivityYears(athleteId: Long): M[Iterable[Int]] = ???
+  override def listActivityYears(athleteId: Long, activityType: String): M[Iterable[Int]] = Monad[M].pure(Iterable.empty[Int])
 
   //Cursor[java.util.HashMap[String, String]]
   override def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]] = Monad[M].pure {
@@ -62,6 +62,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
       .asInstanceOf[Result[java.util.HashMap[String, String]]]
     result2Activity(result.toList.asScala.toList)
   }
+
+  override def listYtdActivities(athleteId: Long, activityType: String, year: Int): M[Iterable[Activity]] = ???
 
   override def listActivities(athleteId: Long, from: DateTime, to: DateTime): M[Iterable[Activity]] = ???
 

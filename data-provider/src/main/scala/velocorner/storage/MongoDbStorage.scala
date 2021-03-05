@@ -45,7 +45,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = ???
 
-  override def listActivityYears(athleteId: Long): Future[Iterable[Int]] = ???
+  override def listActivityYears(athleteId: Long, activityType: String): Future[Iterable[Int]] = ???
 
   override def listAllActivities(athleteId: Long, activityType: String): Future[Iterable[Activity]] = {
     val coll = db.getCollection(ACTIVITY_TABLE)
@@ -56,6 +56,8 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
       docs <- results
     } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
+
+  override def listYtdActivities(athleteId: Long, activityType: String, year: Int): Future[Iterable[Activity]] = ???
 
   override def listActivities(athleteId: Long, from: DateTime, to: DateTime): Future[Iterable[Activity]] = ???
 

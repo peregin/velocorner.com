@@ -81,7 +81,7 @@ POST    /api/ping/                                         controllers.ApiContro
 PUT      /api/athletes/units/:unit                         controllers.ProfileController.unit(unit: String)
 
 ###
-#  summary: Retrieves current year's statistics for the logged in athlete
+#  summary: Retrieves selected year's statistics for the logged in athlete
 #  tags:
 #    - activity
 #  responses:
@@ -92,7 +92,7 @@ PUT      /api/athletes/units/:unit                         controllers.ProfileCo
 #          schema:
 #            $ref: '#/components/schemas/velocorner.api.ProfileStatistics'
 ###
-GET     /api/athletes/statistics/profile/:activity         controllers.ActivityController.profile(activity: String)
+GET     /api/athletes/statistics/profile/:activity/:year   controllers.ActivityController.profile(activity: String, year: String)
 
 ###
 #  summary: Lists yearly series for the logged in athlete
@@ -235,10 +235,27 @@ GET     /api/activities/suggest                            controllers.ActivityC
 #          schema:
 #            type: array
 #            items: string
-#    404:
-#      description: Not found
+#    403:
+#      description: Forbidden
 ###
-GET     /api/activities/type                               controllers.ActivityController.activityTypes
+GET     /api/activities/types                              controllers.ActivityController.activityTypes
+
+###
+#  summary: List all the years when activities were uploaded for a specific type (Ride, Run, etc.)
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Returns a list of activity years for a given type, ordered by year,
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items: string
+#    403:
+#      description: Forbidden
+###
+GET     /api/activities/:activity/years                    controllers.ActivityController.activityYears(activity: String)
 
 ###
 #  summary: Retrieves an activity

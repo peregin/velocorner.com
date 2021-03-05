@@ -20,7 +20,7 @@
                 </ul>
             </div>
 
-            @widget.profile(user, "/api/athletes/statistics/profile", "/api/athletes/statistics/achievements")
+            @widget.profile(user)
 
             <div class="headline"><h2>Yearly Activities</h2></div>
             @widget.ajaxsplinechart("yearlyChart", "Yearly Heatmap", user.units().distanceLabel, 2, "/api/athletes/statistics/yearly/heatmap", 400)
@@ -112,7 +112,7 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/api/activities/type",
+            url: "/api/activities/types",
             timeout: 20000,
             success: function(data) {
                 console.log("activity types: " + data);

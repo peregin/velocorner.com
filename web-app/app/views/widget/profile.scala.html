@@ -1,4 +1,4 @@
-@(account: velocorner.model.Account, urlProgress: String, urlAchievements: String)(implicit assets: AssetsFinder)
+@(account: velocorner.model.Account)(implicit assets: AssetsFinder)
 
 <!-- Profile calendar and counters -->
 <div class="main-counters margin-bottom-20">
@@ -47,8 +47,8 @@
                     <div class="col-md-6">
                     <section>
                         <label class="select">
-                            <select>
-                                <option value="0">@(org.joda.time.LocalDate.now().getYear())</option>
+                            <select id="activity-years">
+                                <option value="@(org.joda.time.LocalDate.now().getYear())">@(org.joda.time.LocalDate.now().getYear())</option>
                             </select>
                             <i></i>
                         </label>
@@ -236,12 +236,12 @@
         }
     }
 
-    function loadProfile(activityType) {
+    function loadProfile(activityType, year) {
         // ytd progress
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@urlProgress/" + activityType,
+            url: `/api/athletes/statistics/profile/${activityType}/${year}`,
             timeout: 20000,
             success: function(data) {
                 $('#activity-name').html(activityType + 's');
@@ -274,7 +274,7 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "@urlAchievements/" + activityType,
+            url: "/api/athletes/statistics/achievements/" + activityType,
             timeout: 20000,
             success: function(data) {
                 //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h');
@@ -295,7 +295,7 @@
         // store units setup when dropdown value is changed
         let unitsSelection = $("#units-selection");
         unitsSelection.on('change', function() {
-            var selectedUnit = unitsSelection.val();
+            let selectedUnit = unitsSelection.val();
             console.log("selected="+selectedUnit);
             $.ajax({
                 type: "PUT",
@@ -311,14 +311,46 @@
         });
     }
 
+    function setupYears(activityType, currentYear) {
+        console.log("years for " + activityType);
+        let yearsSelection = $("#activity-years");
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/activities/" + activityType + "/years",
+            timeout: 20000,
+            success: function(data) {
+                console.log("years " + data);
+                for (ix in data) {
+                    let year = data[ix];
+                    if (year === currentYear) {
+                        continue;
+                    }
+                    let entry = document.createElement("option");
+                    entry.text = year;
+                    entry.value = year;
+                    yearsSelection.append(entry);
+                }
+           }
+        });
+        yearsSelection.on('change', function() {
+            let activityYear = yearsSelection.val();
+            let tabs = $(".nav-tabs .active"); // #activity-tabs
+            let activityType = tabs.text();
+            console.log(`selected[${activityType}]=${activityYear}`);
+            loadProfile(activityType, activityYear);
+        });
+    }
+
     $(document).ready(function() {
         setupUnits();
+        // load default activity profile and years
+        let currentYear = new Date().getFullYear();
+        setupYears('Ride', currentYear);
+        loadProfile('Ride', currentYear);
 
-        // load default activity profile
-        loadProfile('Ride');
         // load calendar heatmap based on the current window size
         responsiveCal(calOptions);
-
         // smooth resize binding
         $(window).resize(function() {
             if (this.resizeTO) clearTimeout(this.resizeTO);
@@ -326,7 +358,6 @@
                 $(this).trigger('resizeEnd');
             }, 500);
         });
-
         // resize on resizeEnd function, make responsive calendar
         $(window).bind('resizeEnd', function() {
             responsiveCal(calOptions);
@@ -336,8 +367,9 @@
         let activityTabs = $("#activity-tabs")
         activityTabs.context.addEventListener('activityType', function(e) {
             let activityType = e.detail.activityType;
-            console.log("profile event: " + activityType);
-            loadProfile(activityType);
+            let activityYear = $("#activity-years").val();
+            console.log(`profile event[${activityType}]=${activityYear}`);
+            loadProfile(activityType, activityYear);
         }, false);
     });
 //]]>

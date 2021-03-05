@@ -28,11 +28,11 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
-  def profile(activity: String): Action[AnyContent] =
+  def profile(activity: String, year: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for profile in $activity") { implicit request =>
       val storage = connectivity.getStorage
-      val now = LocalDate.now()
-      val currentYear = now.getYear
+      val ytd = LocalDate.now().withYear(year.toInt)
+      logger.info(s"profile from $ytd for $activity")
 
       def yearlyProgress(activities: Iterable[Activity], unit: Units.Entry): Progress = {
         val dailyProgress = DailyProgress.from(activities)
@@ -45,13 +45,12 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val statisticsOT = for {
         account <- OptionT(Future(loggedIn))
         _ = logger.info(s"athletes' $activity profile for ${account.displayName}")
-        // TODO: do it for the current or given year only
-        activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
-        _ = logger.debug(s"found ${activities.size} activities for ${account.athleteId}")
-        ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.getYear == currentYear)
+        activities <- OptionT.liftF(storage.listYtdActivities(account.athleteId, activity, year.toInt))
+        ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.compareTo(ytd) <= 0)
+        _ = logger.debug(s"found ${ytdActivities.size} activities in $year for ${account.athleteId}")
         ytdCommutes = ytdActivities.filter(_.commute.getOrElse(false))
       } yield ProfileStatistics.from(
-        now,
+        ytd,
         yearlyProgress(ytdActivities, account.units()),
         yearlyProgress(ytdCommutes, account.units())
       )
@@ -226,7 +225,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
         .merge
     }
 
-  // route mapped to /api/activities/type
+  // route mapped to /api/activities/types
   def activityTypes: Action[AnyContent] = AuthAsyncAction { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
@@ -237,6 +236,20 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
 
     resultTF
       .map(ts => Ok(JsonIo.write(ts)))
-      .getOrElse(NotFound)
+      .getOrElse(Forbidden)
+  }
+
+  // route mapped to /api/activities/:activity/years
+  def activityYears(activity: String): Action[AnyContent] = AuthAsyncAction { implicit request =>
+    val storage = connectivity.getStorage
+    val resultTF = for {
+      account <- OptionT(Future(loggedIn))
+      years <- OptionT.liftF(storage.listActivityYears(account.athleteId, activity))
+      _ = logger.debug(s"account ${account.displayName} for $activity has activities in ${years.mkString(",")}")
+    } yield years
+
+    resultTF
+      .map(ts => Ok(JsonIo.write(ts)))
+      .getOrElse(Forbidden)
   }
 }

@@ -107,9 +107,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |order by counter desc
          |""".stripMargin.query[String].to[List].transactToFuture
 
-  override def listActivityYears(athleteId: Long): Future[Iterable[Int]] =
+  override def listActivityYears(athleteId: Long, activityType: String): Future[Iterable[Int]] =
     sql"""select distinct extract(year from (data->>'start_date')::timestamp) as years from activity
-         |where athlete_id = $athleteId
+         |where athlete_id = $athleteId and type = $activityType
          |order by years desc
          |""".stripMargin.query[Int].to[List].transactToFuture
 
@@ -119,6 +119,13 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   ): Future[Iterable[Activity]] =
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
+         |""".stripMargin.query[Activity].to[List].transactToFuture
+
+
+  override def listYtdActivities(athleteId: Long, activityType: String, year: Int): Future[Iterable[Activity]] =
+    sql"""select data from activity
+         |where athlete_id = $athleteId and type = $activityType
+         |and extract(year from (data->>'start_date')::timestamp) = $year
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
   override def listActivities(
