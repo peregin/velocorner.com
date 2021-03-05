@@ -28,7 +28,7 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
       when(settingsMock.getStorage).thenReturn(storageMock)
 
       val controller = new ActivityController(settingsMock, cacheApiMock, stubControllerComponents())
-      val result = controller.profile("Ride").apply(FakeRequest())
+      val result = controller.profile("Ride", "2021").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
     }
 
