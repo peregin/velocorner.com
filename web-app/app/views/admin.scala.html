@@ -28,6 +28,7 @@
 <!-- end of common main section -->
 
 <script type="text/javascript">//<![CDATA[
+    analytics.page('Admin');
     // self executing function
     (function() {
        $.ajax({
@@ -41,8 +42,7 @@
                 $('#admin-active-accounts').html(data.activeAccounts)
                 $('#admin-activities').html(data.activities)
            }
-        });
-
+       });
     })();
 //]]>
 </script>

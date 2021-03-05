@@ -1,31 +1,31 @@
     $(document).ready(function() {
         setupWeather();
-        triggerForecast();
+        triggerForecast(false);
     });
 
     function setupWeather() {
         $('#weather_button').click(function() {
-            triggerForecast();
+            triggerForecast(true);
         });
         var weatherField = $('#weather')
         weatherField.keypress(function(e) {
             if (e.which == 13) {
-                triggerForecast()
+                triggerForecast(true)
             }
         });
         weatherField.autocomplete({
             serviceUrl: '/api/weather/suggest',
             onSelect: function (suggestion) {
                 console.log('selected location: ' + suggestion.value);
-                triggerForecast();
+                triggerForecast(true);
             }
         });
     }
 
-    function triggerForecast() {
+    function triggerForecast(clicked) {
         var place = $('#weather').val();
         if (place) {
-            forecast(place);
+            forecast(place, clicked);
         } else {
             // detect capital
             $.ajax({
@@ -35,17 +35,21 @@
                     let location = data.city+', '+data.country;
                     console.log('detected location is ' + location);
                     $('#weather').val(location);
-                    forecast(location);
+                    forecast(location, clicked);
                 }
             });
             console.log("won't request weather forecast, place is not set");
         }
     }
 
-    function forecast(place) {
+    function forecast(place, clicked) {
         console.log('forecast for ' + place);
         weatherForecast(place);
         windyForecast(place);
+        analytics.track('Weather', {
+            location: place,
+            clicked: clicked
+        });
     }
 
     function weatherForecast(place) {
