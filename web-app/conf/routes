@@ -175,6 +175,20 @@ GET     /api/demo/statistics/ytd/:action/:activity         controllers.DemoContr
 GET     /api/athletes/statistics/daily/:action             controllers.ActivityController.dailyStatistics(action: String)
 
 ###
+#  summary: Lists demo daily activities for the last 12 months
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Returns demo daily activities for distance and elevation from the last 12 months
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.chart.DailyPoint'
+###
+GET     /api/demo/statistics/daily/:action                 controllers.DemoController.dailyStatistics(action: String)
+
+###
 #  summary: Lists yearly histogram for distance and elevation for the logged in athlete
 #  tags:
 #    - activity

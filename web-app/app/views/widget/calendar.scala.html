@@ -1,0 +1,94 @@
+@(unitName: String, restUrl: String)(implicit assets: AssetsFinder)
+
+<div id="cal-heatmap"></div>
+
+<script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
+<script type="text/javascript">//<![CDATA[
+	var parseDailySeries = function(data) {
+	    var stats = {};
+        for (var d in data) {
+            var date = moment(data[d].day) / 1000;
+            stats[date] = Number.parseFloat(data[d].value.toFixed(2));
+        }
+        return stats;
+	};
+
+	function responsiveCal(options) {
+        var now = new Date();
+        if ($(window).width() < 420) {
+            console.log("resizing 420");
+            options.start = now;
+            options.range = 1;
+            options.cellSize = 25;
+        } else if ($(window).width() < 730) {
+            console.log("resizing 730");
+            options.start = now.setMonth(now.getMonth() - 2);
+            options.range = 3;
+            options.cellSize = 18;
+        } else if ($(window).width() < 1400) {
+            console.log("resizing 1400");
+            options.start = now.setMonth(now.getMonth() - 4);
+            options.range = 5;
+            options.cellSize = 22;
+        } else {
+            console.log("resizing default");
+            options.start = now.setMonth(now.getMonth() - 11);
+            options.range = 12;
+            options.cellSize = 14;
+        }
+
+        if (typeof cal === "object") {
+            $('#cal-heatmap').html('');
+            cal = cal.destroy();
+        }
+        cal = new CalHeatMap();
+        cal.init(options);
+    };
+
+    var now = new Date();
+    var last12Month = now.setMonth(now.getMonth() - 11);
+    console.log("last12Month is " + last12Month);
+    var calOptions = {
+	    domain: "month",
+	    start: last12Month,
+	    subDomain: "day",
+	    range: 12,
+	    cellSize: 14,
+	    itemName: ["@unitName", "@unitName"],
+	    subDomainTextFormat: "%d",
+	    tooltip: true,
+	    displayLegend: false,
+	    data: "@restUrl",
+	    afterLoadData: parseDailySeries
+	};
+
+    function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
+        let field = $(entryName)
+        if (entry) {
+            field.html((entry.value*multiplier).toFixed(decimalPlaces)+' '+unitName)
+            field.prop('title', entry.activityName+' at '+moment(entry.activityTime).format('DD MMM, YYYY, ddd HH:mm A'));
+            field.prop('href', 'http://www.strava.com/activities/'+entry.activityId);
+        } else {
+            field.html('-');
+            field.prop('href', '#');
+        }
+    }
+
+    $(document).ready(function() {
+        // load calendar heatmap based on the current window size
+        responsiveCal(calOptions);
+
+        // smooth resize binding
+        $(window).resize(function() {
+            if (this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 250);
+        });
+        // resize on resizeEnd function, make responsive calendar
+        $(window).bind('resizeEnd', function() {
+            responsiveCal(calOptions);
+        });
+    });
+//]]>
+</script>

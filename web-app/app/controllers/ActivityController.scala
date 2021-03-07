@@ -99,7 +99,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
     }
 
   // all daily activity list for the last 12 months, shown in the calendar heatmap
-  // route mapped to /api/athletes/statistics/daily/:action/:activity
+  // route mapped to /api/athletes/statistics/daily/:action
   def dailyStatistics(action: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for all daily activities in $action") { implicit request =>
       val now = DateTime.now(DateTimeZone.UTC)

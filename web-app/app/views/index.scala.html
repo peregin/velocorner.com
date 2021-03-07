@@ -78,6 +78,14 @@
                     @widget.ajaxsplinechart("yearlyDemoElevation", "Yearly Elevation (Sample)", "m", 100, "/api/demo/statistics/yearly/elevation", 250)
                 </div>
             </div>
+            <div class="row">
+                <div class="funny-boxes funny-boxes-top-sea" style="margin-top: 20px;">
+                    <div class="row" style="padding-left: 20px;"><h4><i class="fa fa-calendar rounded"></i> Latest Activities (Sample)</h4></div>
+                    <div align="center">
+                        @widget.calendar("km", "/api/demo/statistics/daily/distance")
+                    </div>
+                </div>
+            </div>
         </div>
     }
 
