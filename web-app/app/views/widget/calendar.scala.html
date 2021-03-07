@@ -2,7 +2,6 @@
 
 <div id="cal-heatmap"></div>
 
-<script type="text/javascript" src="@assets.path("unify/assets/plugins/jquery/jquery.min.js")"></script>
 <script type="text/javascript">//<![CDATA[
 	var parseDailySeries = function(data) {
 	    var stats = {};
@@ -61,18 +60,6 @@
 	    data: "@restUrl",
 	    afterLoadData: parseDailySeries
 	};
-
-    function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
-        let field = $(entryName)
-        if (entry) {
-            field.html((entry.value*multiplier).toFixed(decimalPlaces)+' '+unitName)
-            field.prop('title', entry.activityName+' at '+moment(entry.activityTime).format('DD MMM, YYYY, ddd HH:mm A'));
-            field.prop('href', 'http://www.strava.com/activities/'+entry.activityId);
-        } else {
-            field.html('-');
-            field.prop('href', '#');
-        }
-    }
 
     $(document).ready(function() {
         // load calendar heatmap based on the current window size
