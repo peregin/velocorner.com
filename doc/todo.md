@@ -1,4 +1,6 @@
 # ToDo
+- word clouds (for activity titles, descriptions)
+- sitemap to help seo  
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
