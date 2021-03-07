@@ -1,23 +1,22 @@
 # ToDo
-- improve landing page when not logged in: demonstrate what the site could do for you
-  * detect rough location and show the weather and wind information for logged out users (when is not in the cookie)
-  * show stats with sample data (heatmap, ytd) 
-    
 - show consecutive sport days
 - add last activity details in the profile
-- add 3D profile of the last activity gpx 
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
 - implement JWT between Frontend and Backend
 - return JWT after login 
-- distribution heatmap, show the range instead of a single value
 
 # InProgress
-- add years tab to the profile ytd
+- add 3D profile of the last activity gpx 
 
 # Done
+- distribution heatmap, show the range instead of a single value
+- improve landing page when not logged in: demonstrate what the site could do for you
+  * detect rough location and show the weather and wind information for logged out users (when is not in the cookie)
+  * show stats with sample data (heatmap, ytd)
+- add years tab to the profile ytd
 - units of measurement (attached to the user account)
 - show active days in the last 12 months (in the current year)
 - make calendar heatmap responsive

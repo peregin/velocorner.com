@@ -8,50 +8,50 @@ import velocorner.model.Units
 object apexcharts {
 
   val metricElevationRange = List(
-    HeatmapPoint("300m", 300),
-    HeatmapPoint("600m", 600),
-    HeatmapPoint("1000m", 1000),
-    HeatmapPoint("1500m", 1500),
-    HeatmapPoint("2000m", 2000),
-    HeatmapPoint("3000m", 3000)
+    HeatmapPoint("0-300m", 300),
+    HeatmapPoint("300-600m", 600),
+    HeatmapPoint("600-1000m", 1000),
+    HeatmapPoint("1000-1500m", 1500),
+    HeatmapPoint("1500-2000m", 2000),
+    HeatmapPoint("2000+ m", 3000)
   )
   val imperialElevationRange = List(
-    HeatmapPoint("1000ft", 1000),
-    HeatmapPoint("1500ft", 1500),
-    HeatmapPoint("3000ft", 3000),
-    HeatmapPoint("4500ft", 4500),
-    HeatmapPoint("6000ft", 6000),
-    HeatmapPoint("9000ft", 9000)
+    HeatmapPoint("0-1000ft", 1000),
+    HeatmapPoint("1000-1500ft", 1500),
+    HeatmapPoint("1500-3000ft", 3000),
+    HeatmapPoint("3000-4500ft", 4500),
+    HeatmapPoint("4500-6000ft", 6000),
+    HeatmapPoint("6000+ ft", 9000)
   )
   val metricRideDistanceRange = List(
-    HeatmapPoint("10km", 10),
-    HeatmapPoint("50km", 50),
-    HeatmapPoint("100km", 100),
-    HeatmapPoint("150km", 150),
-    HeatmapPoint("200km", 200),
-    HeatmapPoint("250km", 250)
+    HeatmapPoint("0-10km", 10),
+    HeatmapPoint("10-50km", 50),
+    HeatmapPoint("50-100km", 100),
+    HeatmapPoint("100-150km", 150),
+    HeatmapPoint("150-200km", 200),
+    HeatmapPoint("200+ km", 250)
   )
   val imperialRideDistanceRange = List(
-    HeatmapPoint("5mi", 5),
-    HeatmapPoint("20mi", 20),
-    HeatmapPoint("50mi", 50),
-    HeatmapPoint("80mi", 80),
-    HeatmapPoint("100mi", 100),
-    HeatmapPoint("150mi", 150)
+    HeatmapPoint("0-5mi", 5),
+    HeatmapPoint("5-20mi", 20),
+    HeatmapPoint("20-50mi", 50),
+    HeatmapPoint("50-80mi", 80),
+    HeatmapPoint("80-100mi", 100),
+    HeatmapPoint("100+ mi", 150)
   )
   val metricDistanceRange = List(
-    HeatmapPoint("3km", 3),
-    HeatmapPoint("5km", 5),
-    HeatmapPoint("10km", 10),
-    HeatmapPoint("15km", 15),
-    HeatmapPoint("20km", 20)
+    HeatmapPoint("0-3km", 3),
+    HeatmapPoint("3-5km", 5),
+    HeatmapPoint("5-10km", 10),
+    HeatmapPoint("10-15km", 15),
+    HeatmapPoint("15+ km", 20)
   )
   val imperialDistanceRange = List(
-    HeatmapPoint("2mi", 2),
-    HeatmapPoint("5mi", 5),
-    HeatmapPoint("8mi", 8),
-    HeatmapPoint("10mi", 10),
-    HeatmapPoint("20mi", 20)
+    HeatmapPoint("0-2mi", 2),
+    HeatmapPoint("2-5mi", 5),
+    HeatmapPoint("5-8mi", 8),
+    HeatmapPoint("8-10mi", 10),
+    HeatmapPoint("10+ mi", 20)
   )
 
   def toDistanceHeatmap(items: Iterable[Activity], activityType: String, unit: Units.Entry): List[HeatmapSeries] = {
