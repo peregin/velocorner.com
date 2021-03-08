@@ -1,5 +1,4 @@
 # ToDo
-- word clouds (for activity titles, descriptions)
 - sitemap to help seo  
 - show consecutive sport days
 - add last activity details in the profile
@@ -11,6 +10,7 @@
 - return JWT after login 
 
 # InProgress
+- word clouds (for activity titles, descriptions)
 - add 3D profile of the last activity gpx 
 
 # Done
