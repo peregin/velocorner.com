@@ -4,13 +4,14 @@ import cats.data.{EitherT, OptionT}
 import cats.implicits._
 import controllers.auth.AuthChecker
 import controllers.util.ActivityOps
-import model.{apexcharts, highcharts}
+import model.apexcharts
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.api.chart.DailyPoint
 import velocorner.api.strava.Activity
+import velocorner.api.wordcloud.WordCloud
 import velocorner.api.{Achievements, ProfileStatistics, Progress}
 import velocorner.model._
 import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
@@ -260,9 +261,18 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val storage = connectivity.getStorage
       val wordsTF = for {
         account <- OptionT(Future(loggedIn))
-        words <- OptionT.liftF(storage.activitiesTitles(account.athleteId, 100))
-      } yield words
-      // TODO: calculate weight and convert it to WordCloud series
+        words <- OptionT.liftF(storage.activitiesTitles(account.athleteId, 400))
+        series = words
+          .map(_.replace("#commutemarker.com", ""))
+          .map(_.trim.toLowerCase)
+          .groupBy(identity)
+          .view.mapValues(_.size)
+          .map { case (k, v) => WordCloud(k, v) }
+          .toList
+          .filter(_.weight > 1)
+          .sortBy(_.weight)
+          .reverse
+      } yield series
       wordsTF
         .getOrElse(Iterable.empty)
         .map(series => Ok(JsonIo.write(series)))
