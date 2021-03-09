@@ -71,6 +71,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
   }
 
+  override def activitiesTitles(athleteId: Long, max: Int): Future[Iterable[String]] = ???
+
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
     activities.toList

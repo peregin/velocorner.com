@@ -84,7 +84,7 @@ object Activity {
   implicit val listActivities: Reads[List[Activity]] = Reads.list(activityFormat)
 }
 
-// max 22 fields are supported by the json marshaller
+// max 22 fields are supported by the regular json marshaller, using ai.x.play extension
 case class Activity(
     id: Long,
     resource_state: Int,

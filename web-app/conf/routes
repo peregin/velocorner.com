@@ -177,7 +177,7 @@ GET     /api/athletes/statistics/daily/:action             controllers.ActivityC
 ###
 #  summary: Lists demo daily activities for the last 12 months
 #  tags:
-#    - activity
+#    - demo
 #  responses:
 #    200:
 #      description: Returns demo daily activities for distance and elevation from the last 12 months
@@ -224,7 +224,7 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityC
 ###
 #  summary: Suggests a list of activities based on the query parameter
 #  tags:
-#    - activity
+#    - search
 #  responses:
 #    200:
 #      description: Returns a list of activities
@@ -236,6 +236,22 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityC
 #              $ref: '#/components/schemas/velocorner.api.strava.Activity'
 ###
 GET     /api/activities/suggest                            controllers.ActivityController.suggest(query: String)
+
+###
+#  summary: List of activity title with occurrences
+#  tags:
+#    - search
+#  responses:
+#    200:
+#      description: Returns a word cloud
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/velocorner.api.wordcloud.WordCloud'
+###
+GET     /api/activities/wordcloud                          controllers.ActivityController.wordcloud()
 
 ###
 #  summary: List all the distinct activity types for the logged in user. (Ride, Run, etc.)

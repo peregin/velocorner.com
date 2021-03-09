@@ -29,7 +29,10 @@ trait Storage[M[_]] {
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
   def getActivity(id: Long): M[Option[Activity]]
+
+  // search and analytics
   def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]]
+  def activitiesTitles(athleteId: Long, max: Int): M[Iterable[String]]
 
   // accounts
   def getAccountStorage: AccountStorage

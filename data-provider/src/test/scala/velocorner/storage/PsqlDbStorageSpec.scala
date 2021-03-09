@@ -46,6 +46,12 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       awaitOn(psqlStorage.listActivityYears(432909, "Walk")) should beEmpty
     }
 
+    "list activity titles" in {
+      awaitOn(psqlStorage.activitiesTitles(432909, 3)) should containTheSameElementsAs(Seq(
+        "Stallikon Ride", "Morning Ride", "Stallikon Ride"
+      ))
+    }
+
     addFragmentsBlock(accountFragments(psqlStorage))
 
     addFragmentsBlock(weatherFragments(psqlStorage))

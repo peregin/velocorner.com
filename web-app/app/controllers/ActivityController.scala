@@ -182,34 +182,6 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
         .getOrElse(Future(Unauthorized))
     }
 
-  // suggestions when searching, workaround until elastic access, use the storage directly
-  // route mapped to /api/activities/suggest
-  def suggest(query: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"suggest for $query") { implicit request =>
-      logger.debug(s"suggesting for $query")
-      val storage = connectivity.getStorage
-      val suggestionsTF = for {
-        account <- OptionT(Future(loggedIn))
-        suggestions <- OptionT.liftF(
-          storage match {
-            case orientDb: OrientDbStorage => orientDb.suggestActivities(query, account.athleteId, 10)
-            case psqlDb: PsqlDbStorage     => psqlDb.suggestActivities(query, account.athleteId, 10)
-            case other =>
-              logger.warn(s"$other is not supporting suggestions")
-              Future(Iterable.empty)
-          }
-        )
-      } yield suggestions
-
-      suggestionsTF
-        .getOrElse(Iterable.empty)
-        .map { activities =>
-          logger.debug(s"found ${activities.size} suggested activities ...")
-          activities.map(a => Json.obj("value" -> a.name, "data" -> JsonIo.write(a)))
-        }
-        .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
-    }
-
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
   def activity(id: Long): Action[AnyContent] =
@@ -252,4 +224,47 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       .map(ts => Ok(JsonIo.write(ts)))
       .getOrElse(Forbidden)
   }
+
+  // suggestions when searching, workaround until elastic access, use the storage directly
+  // route mapped to /api/activities/suggest
+  def suggest(query: String): Action[AnyContent] =
+    TimedAuthAsyncAction(s"suggest for $query") { implicit request =>
+      logger.debug(s"suggesting for $query")
+      val storage = connectivity.getStorage
+      val suggestionsTF = for {
+        account <- OptionT(Future(loggedIn))
+        suggestions <- OptionT.liftF(
+          storage match {
+            case orientDb: OrientDbStorage => orientDb.suggestActivities(query, account.athleteId, 10)
+            case psqlDb: PsqlDbStorage     => psqlDb.suggestActivities(query, account.athleteId, 10)
+            case other =>
+              logger.warn(s"$other is not supporting suggestions")
+              Future(Iterable.empty)
+          }
+        )
+      } yield suggestions
+
+      suggestionsTF
+        .getOrElse(Iterable.empty)
+        .map { activities =>
+          logger.debug(s"found ${activities.size} suggested activities ...")
+          activities.map(a => Json.obj("value" -> a.name, "data" -> JsonIo.write(a)))
+        }
+        .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
+    }
+
+  // word cloud titles and descriptions with occurrences
+  // route mapped to /api/activities/wordcloud
+  def wordcloud(): Action[AnyContent] =
+    TimedAuthAsyncAction("wordcloud") { implicit request =>
+      val storage = connectivity.getStorage
+      val wordsTF = for {
+        account <- OptionT(Future(loggedIn))
+        words <- OptionT.liftF(storage.activitiesTitles(account.athleteId, 100))
+      } yield words
+      // TODO: calculate weight and convert it to WordCloud series
+      wordsTF
+        .getOrElse(Iterable.empty)
+        .map(series => Ok(JsonIo.write(series)))
+    }
 }
