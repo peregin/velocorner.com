@@ -1,5 +1,5 @@
 # ToDo
-- sitemap to help seo  
+- demo profile heatmap when logged out
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
@@ -10,10 +10,12 @@
 - return JWT after login 
 
 # InProgress
-- word clouds (for activity titles, descriptions)
+- demo profile word clouds when logged out
 - add 3D profile of the last activity gpx 
 
 # Done
+- sitemap to help seo
+- word clouds (for activity titles, descriptions)
 - distribution heatmap, show the range instead of a single value
 - improve landing page when not logged in: demonstrate what the site could do for you
   * detect rough location and show the weather and wind information for logged out users (when is not in the cookie)

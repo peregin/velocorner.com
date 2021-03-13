@@ -204,7 +204,8 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       scalaVersion,
       sbtVersion,
       BuildInfoKey.action("buildTime") {
-        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+        // keep it ISO 8601 format, is used in the sitemap as well
+        java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(java.time.ZonedDateTime.now())
       },
       "elasticVersion" -> Dependencies.elasticVersion,
       "playVersion" -> play.core.PlayVersion.current,

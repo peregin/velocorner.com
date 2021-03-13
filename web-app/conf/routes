@@ -430,6 +430,8 @@ GET     /api/location/ip                                   controllers.LocationC
 GET     /swagger.json                                      controllers.Assets.at(path="/public", file="swagger.json")
 ### NoDocs ###
 GET     /docs                                              controllers.Assets.at(path="/public", file="swagger-ui/index.html")
+### NoDocs ###
+GET     /sitemap.xml                                       controllers.ApiController.sitemap()
 
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###
