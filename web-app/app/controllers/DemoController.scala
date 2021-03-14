@@ -1,12 +1,14 @@
 package controllers
 
+import cats.data.OptionT
 import controllers.util.{ActivityOps, WebMetrics}
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.api.chart.DailyPoint
+import velocorner.api.wordcloud.WordCloud
 import velocorner.model.{DailyProgress, Units}
-import velocorner.util.DemoActivityUtils
+import velocorner.util.{DemoActivityUtils, JsonIo}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,10 +44,28 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
     val activities = DemoActivityUtils.generate()
     val dailyProgress = DailyProgress.from(activities)
     val series = action.toLowerCase match {
-      case "distance" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(Units.Metric).distance))
+      case "distance"  => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(Units.Metric).distance))
       case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(Units.Metric).elevation))
-      case other => sys.error(s"not supported action: $other")
+      case other       => sys.error(s"not supported action: $other")
     }
     Future(Ok(Json.toJson(series)))
+  }
+
+  // word cloud titles and descriptions with occurrences
+  // route mapped to /api/demo/wordcloud
+  def wordcloud(): Action[AnyContent] = Action { implicit request =>
+    val wcs = DemoActivityUtils
+      .generateTitles(200)
+      .map(_.trim.toLowerCase)
+      .groupBy(identity)
+      .view
+      .mapValues(_.size)
+      .map { case (k, v) => WordCloud(k, v) }
+      .toList
+      .filter(_.weight > 1)
+      .sortBy(_.weight)
+      .reverse
+
+    Ok(JsonIo.write(wcs))
   }
 }

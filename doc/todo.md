@@ -11,10 +11,10 @@
 - replace scala specs with scala test
 
 # InProgress
-- demo profile word clouds when logged out
 - add 3D profile of the last activity gpx 
 
 # Done
+- demo profile word clouds when logged out
 - sitemap to help seo
 - word clouds (for activity titles, descriptions)
 - distribution heatmap, show the range instead of a single value

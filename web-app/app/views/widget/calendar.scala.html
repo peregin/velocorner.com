@@ -1,4 +1,4 @@
-@(unitName: String, restUrl: String)(implicit assets: AssetsFinder)
+@(unitName: String, restUrl: String, maxMonths: Int)(implicit assets: AssetsFinder)
 
 <div id="cal-heatmap"></div>
 
@@ -31,8 +31,8 @@
             options.cellSize = 22;
         } else {
             console.log("resizing default");
-            options.start = now.setMonth(now.getMonth() - 11);
-            options.range = 12;
+            options.start = now.setMonth(now.getMonth() - @maxMonths - 1);
+            options.range = @maxMonths;
             options.cellSize = 14;
         }
 
@@ -45,13 +45,13 @@
     };
 
     var now = new Date();
-    var last12Month = now.setMonth(now.getMonth() - 11);
+    var last12Month = now.setMonth(now.getMonth() - @maxMonths - 1);
     console.log("last12Month is " + last12Month);
     var calOptions = {
 	    domain: "month",
 	    start: last12Month,
 	    subDomain: "day",
-	    range: 12,
+	    range: @maxMonths,
 	    cellSize: 14,
 	    itemName: ["@unitName", "@unitName"],
 	    subDomainTextFormat: "%d",

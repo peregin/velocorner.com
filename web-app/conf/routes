@@ -238,7 +238,7 @@ GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityC
 GET     /api/activities/suggest                            controllers.ActivityController.suggest(query: String)
 
 ###
-#  summary: List of activity title with occurrences
+#  summary: List of activity titles with occurrences
 #  tags:
 #    - search
 #  responses:
@@ -252,6 +252,22 @@ GET     /api/activities/suggest                            controllers.ActivityC
 #              $ref: '#/components/schemas/velocorner.api.wordcloud.WordCloud'
 ###
 GET     /api/activities/wordcloud                          controllers.ActivityController.wordcloud()
+
+###
+#  summary: List of sample activity titles with occurrences
+#  tags:
+#    - search
+#  responses:
+#    200:
+#      description: Returns a word cloud
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/velocorner.api.wordcloud.WordCloud'
+###
+GET     /api/demo/wordcloud                                controllers.DemoController.wordcloud()
 
 ###
 #  summary: List all the distinct activity types for the logged in user. (Ride, Run, etc.)

@@ -13,6 +13,22 @@ object DemoActivityUtils {
 
   val rnd = new Random()
 
+  val titles = List(
+    "Morning Ride",
+    "Evening Ride",
+    "ZZP Ride",
+    "In the Alps",
+    "Gotthard Pass",
+    "Chamonix Round",
+    "Passo dello Stelvio",
+    "Utah MTB",
+    "Alpe d'Huez",
+    "Col du Tourmalet",
+    "Passo Pordoi",
+    "Mont Ventoux",
+    "Finale Ligure Enduro"
+  )
+
   val demoAthlete = Athlete(
     id = 1L,
     resource_state = 0,
@@ -65,5 +81,10 @@ object DemoActivityUtils {
       )
     }
     activityStream
+  }
+
+  def generateTitles(max: Int): List[String] = {
+    val n = titles.size
+    LazyList.continually(titles(rnd.nextInt(n))).take(max).toList
   }
 }
