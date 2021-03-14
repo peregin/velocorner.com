@@ -43,7 +43,8 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   }
 
   def sitemap() = Action { implicit request =>
-    val lastmod = BuildInfo.buildTime
+    val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
+    val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
     val xml =
 <urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
