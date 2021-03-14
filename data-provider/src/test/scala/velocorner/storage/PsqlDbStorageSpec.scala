@@ -32,6 +32,8 @@ class PsqlDbStorageSpec extends Specification with BeforeAfterAll
       val date = DateTime.parse("2015-01-23T16:18:17Z").withZone(DateTimeZone.UTC)
       val activities = awaitOn(psqlStorage.listActivities(432909, date.minusDays(1), date))
       activities must haveSize(2)
+      val activities2 = awaitOn(psqlStorage.listActivities(111, date.minusDays(1), date))
+      activities2 must haveSize(0)
     }
 
     "list ytd activities" in {
