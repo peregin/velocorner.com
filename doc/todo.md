@@ -7,7 +7,8 @@
 - add gps overlay over video section
 - add garmin data field section
 - implement JWT between Frontend and Backend
-- return JWT after login 
+- return JWT after login
+- replace scala specs with scala test
 
 # InProgress
 - demo profile word clouds when logged out
