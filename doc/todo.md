@@ -9,6 +9,7 @@
 - implement JWT between Frontend and Backend
 - return JWT after login
 - replace scala specs with scala test
+- PubSub (pusher or alternative) for updates
 
 # InProgress
 - add 3D profile of the last activity gpx 
