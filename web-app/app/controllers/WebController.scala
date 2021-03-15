@@ -1,6 +1,7 @@
 package controllers
 
 import controllers.auth.{AuthChecker, StravaAuthenticator}
+
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
@@ -11,6 +12,7 @@ import cats.implicits._
 import cats.data.OptionT
 import org.joda.time.DateTime
 import velocorner.ServiceProvider
+import velocorner.build.BuildInfo
 
 /** Serves the web pages, rendered from server side.
   * Being replaced with web-front module running on node, with react components.
@@ -70,12 +72,49 @@ class WebController @Inject() (
     Ok(views.html.map(getPageContext("Explore")))
   }
 
+  def marketing = AuthAction { implicit request =>
+    Redirect("https://leventes-initial-project-936798.webflow.io/")
+  }
+
   def about = AuthAction { implicit request =>
     Ok(views.html.about(getPageContext("About")))
   }
 
   def admin = AuthAction { implicit request =>
     Ok(views.html.admin(getPageContext("Admin")))
+  }
+
+  def sitemap() = Action { implicit request =>
+    val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
+    val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
+    val xml =
+<urlset
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <url>
+    <loc>https://velocorner.com/</loc>
+    <lastmod>{lastmod}</lastmod>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://velocorner.com/map</loc>
+    <lastmod>{lastmod}</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://velocorner.com/about</loc>
+    <lastmod>{lastmod}</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://velocorner.com/docs</loc>
+    <lastmod>{lastmod}</lastmod>
+    <priority>0.5</priority>
+  </url>
+</urlset>
+    Ok(xml.toString())
   }
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {

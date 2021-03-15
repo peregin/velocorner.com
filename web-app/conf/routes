@@ -12,9 +12,13 @@ GET     /search                                            controllers.WebContro
 ### NoDocs ###
 GET     /map                                               controllers.WebController.map
 ### NoDocs ###
+GET     /marketing                                         controllers.WebController.marketing
+### NoDocs ###
 GET     /about                                             controllers.WebController.about
 ### NoDocs ###
 GET     /admin                                             controllers.WebController.admin
+### NoDocs ###
+GET     /sitemap.xml                                       controllers.WebController.sitemap()
 
 # STRAVA AUTH
 ### NoDocs ###
@@ -446,8 +450,6 @@ GET     /api/location/ip                                   controllers.LocationC
 GET     /swagger.json                                      controllers.Assets.at(path="/public", file="swagger.json")
 ### NoDocs ###
 GET     /docs                                              controllers.Assets.at(path="/public", file="swagger-ui/index.html")
-### NoDocs ###
-GET     /sitemap.xml                                       controllers.ApiController.sitemap()
 
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###

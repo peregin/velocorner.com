@@ -9,7 +9,6 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
-import velocorner.build.BuildInfo
 
 import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,40 +39,6 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
     val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
     logger.info(s"PING[$counter]=[$payload], remote=$remoteAddress")
     Ok
-  }
-
-  def sitemap() = Action { implicit request =>
-    val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
-    val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
-    val xml =
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <url>
-    <loc>https://velocorner.com/</loc>
-    <lastmod>{lastmod}</lastmod>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://velocorner.com/map</loc>
-    <lastmod>{lastmod}</lastmod>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://velocorner.com/about</loc>
-    <lastmod>{lastmod}</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://velocorner.com/docs</loc>
-    <lastmod>{lastmod}</lastmod>
-    <priority>0.5</priority>
-  </url>
-</urlset>
-
-    Ok(xml.toString())
   }
 
   // WebSocket to update the client
