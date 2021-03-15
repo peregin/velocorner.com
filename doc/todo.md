@@ -12,7 +12,8 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- add 3D profile of the last activity gpx 
+- add status page
+- add 3D profile of the last activity gpx
 
 # Done
 - demo profile word clouds when logged out
