@@ -1,6 +1,6 @@
 {
   "name": "web-front",
-  "version": "1.0.196",
+  "version": "1.0.197",
   "private": true,
   "dependencies": {
     "kleur": "^3.0.3",
