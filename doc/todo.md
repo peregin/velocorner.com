@@ -12,7 +12,7 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- add status page
+- add status page (https://velocorner.statuspage.io/)
 - add 3D profile of the last activity gpx
 
 # Done
