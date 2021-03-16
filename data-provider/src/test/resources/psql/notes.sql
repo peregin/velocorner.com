@@ -50,3 +50,11 @@ select * from ip2nation where ip < (('188.156.14.255'::inet - '0.0.0.0'::inet)::
 
 select * from ip2nation where country = 'HU';
 
+
+select athlete_id::text, (data->>'start_date')::timestamp, 
+  ((data->>'distance')::numeric/1000)::numeric(10, 2), 
+  jsonb_pretty(data) from activity 
+where athlete_id = 432909 order by data->>'start_date' desc;
+
+
+
