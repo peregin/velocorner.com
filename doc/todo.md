@@ -12,10 +12,10 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- add status page (https://velocorner.statuspage.io/)
 - add 3D profile of the last activity gpx
 
 # Done
+- add status page (https://velocorner.statuspage.io/)
 - demo profile word clouds when logged out
 - sitemap to help seo
 - word clouds (for activity titles, descriptions)
