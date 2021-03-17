@@ -1,4 +1,4 @@
-@(chartId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+@(chartId: String, chartTitle: String, restUrl: String, height: Int)(implicit assets: AssetsFinder)
 
 <div id="@chartId" style="min-width: 260px; margin: 0 auto"></div>
 
@@ -7,7 +7,7 @@ $(function () {
     var heatmapOption = {
         series: [],
         chart: {
-            height: 250,
+            height: @height,
             type: 'heatmap',
             toolbar: {
                 show: false

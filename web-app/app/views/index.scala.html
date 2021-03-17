@@ -42,10 +42,10 @@
             </div>
             <div class="row">
                 <div class="col-md-6 md-margin-bottom-50">
-                    @widget.heatmap("distanceHistogram", "Activity Distribution for Distance", "/api/athletes/statistics/histogram/distance")
+                    @widget.heatmap("distanceHistogram", "Activity Distribution for Distance", "/api/athletes/statistics/histogram/distance", 250)
                 </div>
                 <div class="col-md-6 md-margin-bottom-50">
-                    @widget.heatmap("elevationHistogram", "Activity Distribution for Elevation", "/api/athletes/statistics/histogram/elevation")
+                    @widget.heatmap("elevationHistogram", "Activity Distribution for Elevation", "/api/athletes/statistics/histogram/elevation", 250)
                 </div>
             </div>
         </div>
@@ -79,14 +79,22 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 funny-boxes funny-boxes-top-sea" style="margin-top: 20px;">
+                <div class="col-md-4 funny-boxes" style="margin-top: 20px;">
                     @widget.wordcloud("/api/demo/wordcloud", 175)
                 </div>
-                <div class="col-md-8 funny-boxes funny-boxes-top-sea" style="margin-top: 20px;">
+                <div class="col-md-8 funny-boxes" style="margin-top: 20px;">
                     <div class="row" style="padding-left: 20px; font-size:18px; margin-bottom: 5px;"><i class="fa fa-calendar rounded"></i> Latest Activities (Sample)</div>
                     <div align="center">
                         @widget.calendar("km", "/api/demo/statistics/daily/distance", 8)
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 md-margin-bottom-50">
+                    @widget.heatmap("distanceHistogram", "Distance Distribution (Sample)", "/api/demo/statistics/histogram/distance", 180)
+                </div>
+                <div class="col-md-6 md-margin-bottom-50">
+                    @widget.heatmap("elevationHistogram", "Elevation Distribution (Sample)", "/api/demo/statistics/histogram/elevation", 180)
                 </div>
             </div>
         </div>

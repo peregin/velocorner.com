@@ -208,6 +208,22 @@ GET     /api/demo/statistics/daily/:action                 controllers.DemoContr
 ###
 GET     /api/athletes/statistics/histogram/:action/:activity     controllers.ActivityController.yearlyHistogram(action: String, activity: String)
 
+###
+#  summary: Lists demo yearly histogram for distance and elevation
+#  tags:
+#    - demo
+#  responses:
+#    200:
+#      description: Returns a demo yearly histogram for distance and elevation
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.heatmap.HeatmapSeries'
+#    404:
+#      description: Not found
+###
+GET     /api/demo/statistics/histogram/:action/:activity         controllers.DemoController.yearlyHistogram(action: String, activity: String)
+
 
 ###
 #  summary: List of achievements for the logged in athlete
@@ -260,7 +276,7 @@ GET     /api/activities/wordcloud                          controllers.ActivityC
 ###
 #  summary: List of sample activity titles with occurrences
 #  tags:
-#    - search
+#    - demo
 #  responses:
 #    200:
 #      description: Returns a word cloud

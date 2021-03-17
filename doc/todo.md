@@ -1,5 +1,4 @@
 # ToDo
-- demo profile heatmap when logged out
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
@@ -15,6 +14,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- demo profile heatmap when logged out
 - add status page (https://velocorner.statuspage.io/)
 - demo profile word clouds when logged out
 - sitemap to help seo

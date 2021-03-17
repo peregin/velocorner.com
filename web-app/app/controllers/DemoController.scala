@@ -2,6 +2,7 @@ package controllers
 
 import cats.data.OptionT
 import controllers.util.{ActivityOps, WebMetrics}
+import model.apexcharts
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
@@ -67,5 +68,16 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
       .reverse
 
     Ok(JsonIo.write(wcs))
+  }
+
+  // route mapped to /api/demo/statistics/histogram/:action/:activity
+  def yearlyHistogram(action: String, activity: String) = Action { implicit request =>
+    val activities = DemoActivityUtils.generate()
+    val series = action.toLowerCase match {
+      case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, Units.Metric)
+      case "elevation" => apexcharts.toElevationHeatmap(activities, Units.Metric)
+      case other       => sys.error(s"not supported action: $other")
+    }
+    Ok(Json.toJson(series))
   }
 }
