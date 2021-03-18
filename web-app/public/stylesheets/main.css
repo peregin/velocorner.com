@@ -28,6 +28,11 @@
     padding-right: 5px;
 }
 
+/** adjusted below for smaller devices **/
+.VC_map {
+    height: 750px;
+}
+
 .counters span {
     font-size: 18px;
     text-align: center;
@@ -84,6 +89,9 @@
     .col-sm-1 {
         padding-left: 2px;
         padding-right: 2px;
+    }
+    .VC_map {
+        height: 400px;
     }
 }
 

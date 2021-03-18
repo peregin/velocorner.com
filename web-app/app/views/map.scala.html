@@ -2,7 +2,7 @@
 @common.main(context) {
 
     <h1 xmlns="http://www.w3.org/1999/html">Explore</h1>
-    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1" style="height: 600px;">
+    <div class="VC_map tag-box tag-box-v2 box-shadow shadow-effect-1">
         <div id="map-div">
         </div>
     </div>
@@ -26,7 +26,7 @@
         // https://github.com/Melown/vts-browser-js/wiki/VTS-Browser-Map-API#position
         browser = vts.browser('map-div', {
             map: 'https://cdn.melown.com/mario/store/melown2015/map-config/melown/VTS-Tutorial-map/mapConfig.json',
-            position: ['obj', 84.93164, 28.351981, 'fix', 2728.74, -109.06, -27.28, 0.00, 38255.68, 55.00]
+            position: ['obj', 15.096869389048662, 49.38435909591623, 'float', 0.00, 0.00, -90.00, 0.00, 1587848.47, 55.00]
         });
 
         //check whether browser is supported
@@ -35,20 +35,80 @@
             return;
         }
 
+            // create ui control with info pointers
+        var infoPointers = browser.ui.addControl('info-pointers',
+            '<div id="distance-div" class="distance-div">' +
+            '</div>' +
+            '<div id="height-div" class="distance-div">' +
+            '</div>' +
+            '<div id="height-div2" class="pointer-div2">' +
+            '</div>');
+
+        distancePointer = infoPointers.getElement('distance-div');
+        heightPointer = infoPointers.getElement('height-div');
+        heightPointer2 = infoPointers.getElement('height-div2');
+
         var profilePanel = browser.ui.addControl('profile-panel',
             '<div id="profile-div" class="profile-div">' +
                 '<div id="profile-canvas-holder" class="profile-canvas-holder">' +
                     '<canvas id="profile-canvas" class="profile-canvas">' +
                     '</canvas>' +
+                    '<div id="profile-link" class="profile-link">' +
+                        'or you can try this <a id="profile-link-a" href="#">example track</a>' +
+                    '</div>' +
                 '</div>' +
             '</div>');
 
-        canvas = profilePanel.getElement('profile-canvas');
 
-        // Load GPX file
+        renderer = browser.renderer;
+
+        //add mouse events to map element
+        var mapElement = browser.ui.getMapElement();
+        mapElement.on('mousemove', onMouseMove);
+        mapElement.on('mouseleave', onMouseLeave);
+        mapElement.on('dragover', onDragover);
+        mapElement.on('drop', onDrop);
+        mapElement.on('resize', onResize, window);
+
+        canvas = profilePanel.getElement('profile-canvas');
+        canvas.on('mousemove', onCanvasHover);
         canvas.on('dragover', onDragover);
         canvas.on('drop', onDrop);
+        canvasCtx = canvas.getElement().getContext("2d");
+        drawCanvasMessage('Drop a GPX file here')
+
+        profileLink = profilePanel.getElement('profile-link');
+        profileLink.on('dragover', onDragover);
+        profileLink.on('drop', onDrop);
+
+        //add click event to the link
+        profilePanel.getElement('profile-link-a').on('click', loadExampleTrack);
+
+        //callback once is map config loaded
+        browser.on('map-loaded', onMapLoaded);
+
+        //callback when path hovered
+        browser.on('geo-feature-hover', onFeatureHover);
+
+        loadTexture();
     })();
+
+    function onMouseMove(event) {
+        if (map) {
+            var coords = event.getMouseCoords();
+            usedMouseCoords = coords;
+            //set map to hover cusor over provided coordinates permanently
+            map.hover(coords[0], coords[1], true);
+        }
+    }
+
+    function onMouseLeave(event) {
+        if (map) {
+            var coords = event.getMouseCoords();
+            //stop cursor hovering
+            map.hover(coords[0], coords[1], false);
+        }
+    };
 
     function onDragover(event) {
         var e = event.event;
@@ -75,6 +135,22 @@
 
             reader.readAsText(files[i], 'text/plain');
         }
+    }
+
+    function loadTexture() {
+        //load icon used for displaying path point
+        var demoImage = vts.utils.loadImage(
+            'http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png',
+            (function(){
+                demoTexture = renderer.createTexture({ source: demoImage });
+            }));
+    }
+
+    //add render slot for dynamic rendering
+    function onMapLoaded() {
+        map = browser.map;
+        map.addRenderSlot('custom-render', onCustomRender, true);
+        map.moveRenderSlotAfter('after-map-render', 'custom-render');
     }
 
 //]]>
