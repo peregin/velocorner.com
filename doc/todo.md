@@ -1,12 +1,12 @@
 # ToDo
+- return JWT after login
+- implement JWT between Frontend and Backend
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
-- implement JWT between Frontend and Backend
-- return JWT after login
 - replace scala specs with scala test
 - PubSub (pusher or alternative) for updates
 
@@ -14,6 +14,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- use sharestack - added to About page
 - demo profile heatmap when logged out
 - add status page (https://velocorner.statuspage.io/)
 - demo profile word clouds when logged out
