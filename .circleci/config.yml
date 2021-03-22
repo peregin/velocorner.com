@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/openjdk:11.0.10-node
+      - image: moia/scala-on-circleci:java11-2.13.1-1.3.8
       # - image: circleci/postgres:9.4
 
     working_directory: ~/project
@@ -13,17 +13,6 @@ jobs:
       SBT_VERSION: 1.4.7
 
     steps:
-      - run:
-          name: Get sbt binary
-          command: |
-            sudo apt update && sudo apt install -y curl
-            curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
-            sudo dpkg -i sbt-$SBT_VERSION.deb
-            rm sbt-$SBT_VERSION.deb
-            sudo apt-get update
-            sudo apt-get install -y sbt git
-            sudo apt-get clean && apt-get autoclean
-
       - checkout
 
       # Download and cache dependencies
