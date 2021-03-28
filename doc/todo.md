@@ -1,6 +1,7 @@
 # ToDo
 - return JWT after login
 - implement JWT between Frontend and Backend
+- show current temperature
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
