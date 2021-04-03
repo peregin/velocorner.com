@@ -148,7 +148,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       limit: Int
   ): Future[Iterable[Activity]] =
     sql"""select data from activity
-         |where athlete_id = $athleteId limit $limit
+         |where athlete_id = $athleteId
+         |order by data->>'start_date' desc
+         |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
   override def suggestActivities(
