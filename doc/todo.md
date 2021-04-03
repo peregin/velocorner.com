@@ -1,4 +1,5 @@
 # ToDo
+- increase session timeout for login token
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show current temperature
