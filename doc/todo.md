@@ -1,5 +1,5 @@
 # ToDo
-- increase session timeout for login token
+- intercom (or alternative) for features
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show current temperature
@@ -16,9 +16,11 @@
 - add 3D profile of the last activity gpx
 
 # Done
-- use sharestack - added to About page
+- increase session timeout for login token
+- use https://uptimerobot.com/ for monitoring and notifying about downtime
+- use https://stackshare.io/companies/velocorner - added to About page
 - demo profile heatmap when logged out
-- add status page (https://velocorner.statuspage.io/)
+- use status page (https://velocorner.statuspage.io/)
 - demo profile word clouds when logged out
 - sitemap to help seo
 - word clouds (for activity titles, descriptions)

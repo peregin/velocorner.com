@@ -20,7 +20,7 @@ trait AuthChecker extends WebMetrics {
 
   val connectivity: ConnectivitySettings
 
-  val sessionTimeoutInSeconds: Int = (2 days).toSeconds.toInt
+  val sessionTimeoutInSeconds: Int = (7 days).toSeconds.toInt
 
   // auth conf
   lazy val idContainer: AsyncIdContainer[Id] = AsyncIdContainer(new CacheIdContainer[Id](cache))
