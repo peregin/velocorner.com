@@ -42,6 +42,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
       val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
       logger.info(s"PING[$counter]=[$maybePayload], remote=$remoteAddress")
     }
+    // being monitored as keyword "ok" in https://uptimerobot.com/
     Ok(JsObject(Seq(
       "status" -> JsString("ok"),
       "count" -> JsNumber(counter)
