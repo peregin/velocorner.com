@@ -5,7 +5,7 @@ import akka.stream.scaladsl.{Flow, Sink, Source}
 
 import javax.inject.{Inject, Singleton}
 import org.reactivestreams.Subscriber
-import play.api.libs.json.{JsNumber, Json}
+import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
@@ -42,7 +42,10 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
       val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
       logger.info(s"PING[$counter]=[$maybePayload], remote=$remoteAddress")
     }
-    Ok(JsNumber(counter))
+    Ok(JsObject(Seq(
+      "status" -> JsString("ok"),
+      "count" -> JsNumber(counter)
+    )))
   }
 
   // WebSocket to update the client
