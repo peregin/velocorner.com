@@ -60,18 +60,25 @@ GET     /api/status                                        controllers.ApiContro
 #  summary: Collects ping notification
 #  tags:
 #    - status
-#  post:
-#    requestBody:
-#      required: true
-#      content:
-#        application/json:
-#          schema:
-#             $ref: '#/components/schemas/velocorner.api.Ping'
+#  parameters:
+#    - name: body
+#      schema:
+#        $ref: '#/components/schemas/velocorner.api.Ping'
 #  responses:
 #    200:
 #      description: information has been collected
 ###
-POST    /api/ping/                                         controllers.ApiController.ping
+POST    /api/ping                                          controllers.ApiController.ping
+
+###
+#  summary: Collects ping notification
+#  tags:
+#    - status
+#  responses:
+#    200:
+#      description: information has been collected
+###
+GET     /api/ping                                          controllers.ApiController.ping
 
 ###
 #  summary: Stores preferences for units of measurement
