@@ -166,7 +166,7 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
   ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
-lazy val testService = (project in file("test/test-service") withId "test-service")
+lazy val testService = (project in file("test/test-service-java") withId "test-service-java")
   .settings(
     buildSettings,
     name := "test-service",

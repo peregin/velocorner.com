@@ -1,4 +1,5 @@
 # ToDo
+- health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
 - return JWT after login
 - implement JWT between Frontend and Backend
