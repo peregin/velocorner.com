@@ -1,8 +1,9 @@
 package velocorner.util
 
-import java.net.URI
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-import org.specs2.mutable.Specification
+import java.net.URI
 
 /**
   * Created by levi on 25/01/16.
@@ -10,7 +11,7 @@ import org.specs2.mutable.Specification
   * http://localhost:9000/authorize/strava
   * http://velocorner.com/authorize/strava
   */
-class DomainSpec extends Specification {
+class DomainSpec extends AnyWordSpec with Matchers {
 
   "uri parser" should {
     "extract host name for localhost with port number" in {

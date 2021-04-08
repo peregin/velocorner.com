@@ -21,7 +21,6 @@ object Dependencies {
   val playJsonVersion = "2.9.2"
   val squantsVersion = "1.7.4"
   val sparkVersion = "3.1.1"
-  val scalaSpecVersion = "4.10.6"
   val scalaTestVersion = "3.2.7"
   val mockitoVersion = "3.8.0"
 

@@ -2,16 +2,16 @@ package velocorner.storage
 
 import cats.implicits._
 import org.joda.time.{DateTime, DateTimeZone}
-import org.specs2.mutable.Specification
-import org.specs2.specification.core.Fragment
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.must.Matchers
 import velocorner.manual.AwaitSupport
 import velocorner.model.{Account, OAuth2Access}
 
 import scala.concurrent.Future
 
-trait AccountStorageFragments extends Specification with AwaitSupport {
+trait AccountStorageBehaviour extends Matchers with AwaitSupport { this: AnyFlatSpec =>
 
-  def accountFragments(storage: => Storage[Future]): Fragment = {
+  def accountFragments(storage: => Storage[Future]) = {
 
     lazy val accountStorage = storage.getAccountStorage
     // use now as last updated field, as the admin page shows active accounts (had logins in the last 90 days)
@@ -21,11 +21,11 @@ trait AccountStorageFragments extends Specification with AwaitSupport {
       role = None, unit = None,
       OAuth2Access("accessToken", expiresAt.plusHours(6), "refreshToken").some)
 
-    "read empty for non existent account" in {
-      awaitOn(accountStorage.getAccount(-1)) must beEmpty
+    it should "read empty for non existent account" in {
+      awaitOn(accountStorage.getAccount(-1)) mustBe empty
     }
 
-    "add account twice as upsert" in {
+    it should "add account twice as upsert" in {
       awaitOn(accountStorage.store(account))
       awaitOn(accountStorage.store(account))
       val maybeAccount = awaitOn(accountStorage.getAccount(1))

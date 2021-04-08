@@ -3,41 +3,34 @@ package velocorner.search
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
-import org.specs2.mutable.Specification
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
+// LocalNode is not supported anymore - SKIP TESTS HERE
+class ElasticSupportSpec extends AnyFlatSpec with Matchers with ElasticSupport with LazyLogging {
 
-class ElasticSupportSpec extends Specification with ElasticSupport with LazyLogging {
+  val client = localCluster()
 
-  sequential
+  ignore should "create indices" in {
+    val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
+    activities must have size 30
+    val indices = toIndices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
+    val res = indices.map(ix => client.execute(ix).await)
+    val statuses = res.map(_.status)
+    statuses must have size (30) // it has 6 skiing events
+    statuses must contain(201)
+  }
 
-  // LocalNode is not supported anymore - SKIP TESTS HERE
-  args(skipAll = true)
+  ignore should "search" in {
+    val res = client.execute(search("activity") matchQuery ("name", "Uetli") limit 5).await
+    logger.info(s"found $res")
 
-  "local cluster" should {
+    res.status === 200
+    val hits = res.result.hits.hits
 
-    val client = localCluster()
-
-    "create indices" in {
-      val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
-      activities must haveSize(30)
-      val indices = toIndices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
-      val res = indices.map(ix => client.execute(ix).await)
-      val statuses = res.map(_.status)
-      statuses must haveSize(30) // it has 6 skiing events
-      statuses must contain(201)
-    }
-
-    "search" in {
-      val res = client.execute(search("activity") matchQuery("name", "Uetli") limit 5).await
-      logger.info(s"found $res")
-
-      res.status === 200
-      val hits = res.result.hits.hits
-
-      logger.info(s"search results ${hits.mkString(",")}")
-      hits.length === 5
-    }
+    logger.info(s"search results ${hits.mkString(",")}")
+    hits.length === 5
   }
 }

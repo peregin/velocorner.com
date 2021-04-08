@@ -1,16 +1,17 @@
 package velocorner.api
 
 import org.joda.time.LocalDate
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.util.JsonIo
 
-class ProfileStatisticsSpec extends Specification {
+class ProfileStatisticsSpec extends AnyWordSpec with Matchers {
 
   private val progress = Progress(2, 10, 1200, 1500, 1000, 27.2, 512, 602)
 
   "model" should {
 
-    "estimate progress" in {
+    "estimate progress 50%" in {
       val statistics = ProfileStatistics.from(50, 100, progress, progress)
       statistics.yearlyPercentile === 50
       statistics.estimate.rides === 20
@@ -22,12 +23,12 @@ class ProfileStatisticsSpec extends Specification {
       statistics.estimate.longestElevation === 602d
     }
 
-    "estimate progress" in {
+    "estimate progress from given date" in {
       val now = LocalDate.parse("2019-09-26")
       val statistics = ProfileStatistics.from(now, progress, progress)
       statistics.yearlyPercentile === 73
       statistics.estimate.rides === 13
-      statistics.estimate.distance must beCloseTo(1628.25, .01)
+      statistics.estimate.distance mustBe 1628.25 +- .01
     }
 
     "read and write from json" in {

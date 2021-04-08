@@ -1,14 +1,15 @@
 package velocorner.model
 
-import org.specs2.mutable.Specification
 import velocorner.util.JsonIo
 import cats.implicits._
 import org.joda.time.{DateTime, DateTimeZone}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Created by levi on 01/12/15.
   */
-class AccountSpec extends Specification {
+class AccountSpec extends AnyWordSpec with Matchers {
 
   "model" should {
 

@@ -1,9 +1,10 @@
 package velocorner.model.strava
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.util.JsonIo
 
-class AthleteSpec extends Specification {
+class AthleteSpec extends AnyWordSpec with Matchers {
 
   "model" should {
     "add type to the json" in {

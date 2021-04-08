@@ -1,8 +1,9 @@
 package velocorner.util
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CountryUtilsSpec extends Specification {
+class CountryUtilsSpec extends AnyWordSpec with Matchers {
 
   "weather location" should {
 
@@ -30,7 +31,7 @@ class CountryUtilsSpec extends Specification {
         "Adliswil",
         "Budapest"
       )
-      CountryUtils.normalize(locations) should containTheSameElementsAs(List("Adliswil,CH", "Budapest"))
+      CountryUtils.normalize(locations) must contain theSameElementsAs(List("Adliswil,CH", "Budapest"))
     }
   }
 

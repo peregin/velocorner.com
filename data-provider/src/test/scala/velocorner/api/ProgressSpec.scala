@@ -1,10 +1,11 @@
 package velocorner.api
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.model.Units
 import velocorner.util.JsonIo
 
-class ProgressSpec extends Specification {
+class ProgressSpec extends AnyWordSpec with Matchers {
 
   private val progress = Progress(
     days = 1,

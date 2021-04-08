@@ -1,22 +1,22 @@
 # ToDo
+- show current temperature
 - health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
 - return JWT after login
 - implement JWT between Frontend and Backend
-- show current temperature
 - show consecutive sport days
 - add last activity details in the profile
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
-- replace scala specs with scala test
 - PubSub (pusher or alternative) for updates
 
 # InProgress
 - add 3D profile of the last activity gpx
 
 # Done
+- replace scala specs with scala test
 - increase session timeout for login token
 - use https://uptimerobot.com/ for monitoring and notifying about downtime
 - use https://stackshare.io/companies/velocorner - added to About page

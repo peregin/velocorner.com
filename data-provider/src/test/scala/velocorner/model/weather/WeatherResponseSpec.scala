@@ -1,10 +1,11 @@
 package velocorner.model.weather
 
 import org.joda.time.{DateTime, DateTimeZone}
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.util.JsonIo
 
-class WeatherResponseSpec extends Specification {
+class WeatherResponseSpec extends AnyWordSpec with Matchers {
 
   "weather response" should {
 
@@ -56,13 +57,13 @@ class WeatherResponseSpec extends Specification {
     "be parsed into model" in {
       val model = JsonIo.read[WeatherResponse](response)
       model.cod === 200
-      model.sys.map(_.sunrise.dayOfYear().get()) should beSome(DateTime
+      model.sys.map(_.sunrise.dayOfYear().get()) mustBe Some(DateTime
         .parse("2020-10-14T07:43:05.000+02:00")
         .withZone(DateTimeZone.forID("Europe/Zurich"))
         .dayOfYear().get()
       )
-      model.coord.map(_.lon) should beSome(8.52d)
-      model.coord.map(_.lat) should beSome(47.31d)
+      model.coord.map(_.lon) mustBe Some(8.52d)
+      model.coord.map(_.lat) mustBe Some(47.31d)
     }
   }
 }

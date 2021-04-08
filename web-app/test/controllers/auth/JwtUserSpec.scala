@@ -1,8 +1,9 @@
 package controllers.auth;
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class JwtUserSpec extends Specification {
+class JwtUserSpec extends AnyWordSpec with Matchers {
 
   "JWT user" should {
     "encode" in {
