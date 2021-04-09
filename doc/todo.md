@@ -1,5 +1,6 @@
 # ToDo
 - show current temperature
+- speedup node docker image creation
 - health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
 - return JWT after login
