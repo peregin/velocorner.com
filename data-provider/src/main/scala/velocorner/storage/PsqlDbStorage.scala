@@ -9,7 +9,7 @@ import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
 // needed for sql interpolator when filtering on start date
-import doobie.implicits.javatime._
+import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
@@ -74,7 +74,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
   private implicit val activityMeta: Meta[Activity] = playJsonMeta[Activity]
   private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
-  private implicit val weatherMeta: Meta[WeatherForecast] =
+  private implicit val forecastMeta: Meta[WeatherForecast] =
     playJsonMeta[WeatherForecast]
   private implicit val sunMeta: Meta[SunriseSunset] =
     playJsonMeta[SunriseSunset]
@@ -211,7 +211,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
         location: String,
         limit: Int
     ): Future[Iterable[WeatherForecast]] =
-      sql"""select data from weather
+      sql"""select data from forecast
            |where location = $location
            |order by update_time desc
            |limit $limit
@@ -222,7 +222,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
     ): Future[Unit] =
       forecast
         .map { a =>
-          sql"""insert into weather (location, update_time, data)
+          sql"""insert into forecast (location, update_time, data)
              |values(${a.location}, ${a.timestamp}, $a) on conflict(location, update_time)
              |do update set data = $a
              |""".stripMargin.update.run.void
@@ -249,7 +249,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
     override def suggestLocations(snippet: String): Future[Iterable[String]] = {
       val searchPattern = "%" + snippet.toLowerCase + "%"
-      sql"""select distinct location from weather
+      sql"""select distinct location from forecast
            |where lower(location) like $searchPattern
            |""".stripMargin.query[String].to[List].transactToFuture
     }
