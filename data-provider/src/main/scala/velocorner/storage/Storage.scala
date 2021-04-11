@@ -53,7 +53,7 @@ trait Storage[M[_]] {
     // weather - location is <city[,countryISO2letter]>
     // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
     def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
-    def storeWeather(forecast: Iterable[WeatherForecast]): M[Unit]
+    def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
     def getSunriseSunset(location: String, localDate: String): M[Option[SunriseSunset]]
     def storeSunriseSunset(sunriseSunset: SunriseSunset): M[Unit]
     def suggestLocations(snippet: String): M[Iterable[String]]
@@ -62,6 +62,10 @@ trait Storage[M[_]] {
   // key value pairs - generic attribute storage
   def getAttributeStorage: AttributeStorage
   trait AttributeStorage {
+
+    // mapped to updated time
+    val locationUpdatedType = "location"
+
     def storeAttribute(key: String, `type`: String, value: String): M[Unit]
     def getAttribute(key: String, `type`: String): M[Option[String]]
   }

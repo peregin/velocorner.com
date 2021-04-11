@@ -22,7 +22,7 @@ class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends L
     for {
       _ <- migrateTable[Account](OrientDbStorage.ACCOUNT_CLASS, "account", e => e.traverse(psql.getAccountStorage.store).void)
 
-      _ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeWeather(e))
+      _ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeRecentForecast(e))
 
       _ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeSunriseSunset).void)
 

@@ -45,8 +45,8 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
       def retrieveAndStore(place: String): Future[List[WeatherForecast]] = for {
         entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
         _ = logger.info(s"querying latest weather forecast for $place")
-        _ <- weatherStorage.storeWeather(entries)
-        _ <- attributeStorage.storeAttribute(place, "location", now.toString(DateTimePattern.longFormat))
+        _ <- weatherStorage.storeRecentForecast(entries)
+        _ <- attributeStorage.storeAttribute(place, attributeStorage.locationUpdatedType, now.toString(DateTimePattern.longFormat))
       } yield entries
 
       val resultET = for {
@@ -108,7 +108,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
           )
         )
         // it is in the storage or retrieve it and store it
-        sunrise <- OptionT(timedFuture("storage query sunrise sunset")(weatherStorage.getSunriseSunset(place, now)))
+        sunrise <- OptionT(weatherStorage.getSunriseSunset(place, now))
           .orElse(retrieveAndStore)
           .toRight(NotFound)
       } yield sunrise

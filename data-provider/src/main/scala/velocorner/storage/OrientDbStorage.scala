@@ -150,7 +150,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
     }
 
-    override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
+    override def storeRecentForecast(forecast: Iterable[WeatherForecast]): Future[Unit] = {
       forecast.toList
         .traverse(a =>
           upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")

@@ -93,8 +93,8 @@ class PsqlDbStorageTest
   it should "suggest weather locations" in {
     lazy val weatherStorage = psqlStorage.getWeatherStorage
     lazy val fixtures = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
-    awaitOn(weatherStorage.storeWeather(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt.getMillis, e))))
-    awaitOn(weatherStorage.storeWeather(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt.getMillis, e))))
+    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt.getMillis, e))))
+    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt.getMillis, e))))
     awaitOn(weatherStorage.suggestLocations("zur")) must contain theSameElementsAs (List("Zurich,CH"))
     awaitOn(weatherStorage.suggestLocations("bud")) must contain theSameElementsAs (List("Budapest,HU"))
     awaitOn(weatherStorage.suggestLocations("wien")) mustBe empty

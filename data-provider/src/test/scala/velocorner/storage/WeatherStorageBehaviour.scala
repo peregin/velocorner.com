@@ -25,17 +25,17 @@ trait WeatherStorageBehaviour extends Matchers with AwaitSupport { this: AnyFlat
 
     it should "store weather forecast items as idempotent operation" in {
       fixtures must have size 40
-      awaitOn(weatherStorage.storeWeather(fixtures.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e))))
+      awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast(zhLocation, e.dt.getMillis, e))))
       awaitOn(weatherStorage.listRecentForecast(zhLocation)) must have size 40
       awaitOn(weatherStorage.listRecentForecast("Budapest,HU")) mustBe empty
 
       // storing entries are idempotent (upsert the same entries, we should have still 40 items in the storage)
       val first = fixtures.head
-      awaitOn(weatherStorage.storeWeather(Seq(WeatherForecast(zhLocation, first.dt.getMillis, first))))
+      awaitOn(weatherStorage.storeRecentForecast(Seq(WeatherForecast(zhLocation, first.dt.getMillis, first))))
       awaitOn(weatherStorage.listRecentForecast(zhLocation, limit = 50)) must have size 40
 
       // different location, same timestamp
-      awaitOn(weatherStorage.storeWeather(Seq(WeatherForecast("Budapest,HU", first.dt.getMillis, first))))
+      awaitOn(weatherStorage.storeRecentForecast(Seq(WeatherForecast("Budapest,HU", first.dt.getMillis, first))))
       awaitOn(weatherStorage.listRecentForecast(zhLocation, limit = 50)) must have size 40
       awaitOn(weatherStorage.listRecentForecast("Budapest,HU", limit = 50)) must have size 1
     }

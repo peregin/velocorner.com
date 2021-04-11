@@ -121,7 +121,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |where athlete_id = $athleteId and type = $activityType
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
-
   override def listYtdActivities(athleteId: Long, activityType: String, year: Int): Future[Iterable[Activity]] =
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
@@ -218,7 +217,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |limit $limit
            |""".stripMargin.query[WeatherForecast].to[List].transactToFuture
 
-    override def storeWeather(
+    override def storeRecentForecast(
         forecast: Iterable[WeatherForecast]
     ): Future[Unit] =
       forecast
