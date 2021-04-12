@@ -21,7 +21,7 @@ import scala.util.control.Exception._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Achievement
-import velocorner.api.weather.{SunriseSunset, WeatherForecast}
+import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 
 import scala.jdk.CollectionConverters._
 import cats.implicits._
@@ -145,38 +145,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
-  private lazy val weatherStorage = new WeatherStorage {
-    override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
-      queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
-    }
-
-    override def storeRecentForecast(forecast: Iterable[WeatherForecast]): Future[Unit] = {
-      forecast.toList
-        .traverse(a =>
-          upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
-        )
-        .void
-    }
-
-    override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-      queryForOption[SunriseSunset](
-        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> location, "date" -> localDate)
-      )
-
-    override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
-      upsert(
-        sunriseSunset,
-        SUN_CLASS,
-        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date)
-      )
-    }
-
-    override def suggestLocations(snippet: String): Future[Iterable[String]] = ???
-  }
-
-  override def getWeatherStorage: WeatherStorage = weatherStorage
+  override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
   lazy val attributeStorage = new AttributeStorage {

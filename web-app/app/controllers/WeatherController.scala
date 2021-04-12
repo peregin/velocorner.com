@@ -94,7 +94,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
       def retrieveAndStore: OptionT[Future, SunriseSunset] = for {
         response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
         newSunriseSunset <- OptionT(Future(response.sys.map(s => SunriseSunset(isoLocation, now, s.sunrise, s.sunset))))
-        _ <- OptionT.liftF(weatherStorage.storeSunriseSunset(newSunriseSunset))
+        _ <- OptionT.liftF(weatherStorage.storeRecentWeather(newSunriseSunset))
         newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
         _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(isoLocation, newGeoLocation))
       } yield newSunriseSunset
@@ -108,7 +108,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
           )
         )
         // it is in the storage or retrieve it and store it
-        sunrise <- OptionT(weatherStorage.getSunriseSunset(place, now))
+        sunrise <- OptionT(weatherStorage.getRecentWeather(place))
           .orElse(retrieveAndStore)
           .toRight(NotFound)
       } yield sunrise

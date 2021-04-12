@@ -3,9 +3,9 @@ package velocorner.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
-import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.model.strava.Gear
 import velocorner.api.{Achievement, GeoPosition}
-import velocorner.api.weather.{SunriseSunset, WeatherForecast}
+import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 
 import scala.concurrent.Future
 import cats.instances.future._
@@ -54,9 +54,9 @@ trait Storage[M[_]] {
     // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
     def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
     def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
-    def getSunriseSunset(location: String, localDate: String): M[Option[SunriseSunset]]
-    def storeSunriseSunset(sunriseSunset: SunriseSunset): M[Unit]
     def suggestLocations(snippet: String): M[Iterable[String]]
+    def getRecentWeather(location: String): M[Option[CurrentWeather]]
+    def storeRecentWeather(sunriseSunset: CurrentWeather): M[Unit]
   }
 
   // key value pairs - generic attribute storage

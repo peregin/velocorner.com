@@ -5,6 +5,7 @@ import play.api.libs.json.{Format, Json}
 import velocorner.model.DateTimePattern
 import velocorner.util.WeatherCodeUtils
 
+// needed for meteogram
 object DailyWeather {
 
   implicit val dateFormat = DateTimePattern.createShortFormatter
