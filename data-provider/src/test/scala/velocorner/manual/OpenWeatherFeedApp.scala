@@ -3,7 +3,6 @@ package velocorner.manual
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
-import velocorner.manual.ActivitiesFromStravaAndAggregateApp.logger
 import zio.logging._
 import zio.{ExitCode, URIO, ZIO}
 

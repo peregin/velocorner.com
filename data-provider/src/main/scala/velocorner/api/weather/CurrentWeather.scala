@@ -16,6 +16,7 @@ object CurrentWeather {
 case class CurrentWeather(
     location: String, // city[, country iso 2 letters]
     timestamp: DateTime,
+    bootstrapIcon: String, // bootstrap icon derived from the current weather code
     current: WeatherDescription,
     info: WeatherInfo,
     sunriseSunset: SunriseSunsetInfo

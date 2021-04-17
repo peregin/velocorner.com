@@ -1,33 +1,31 @@
 package velocorner.storage
 
+import cats.data.OptionT
+import cats.implicits._
 import com.orientechnologies.orient.core.command.OCommandResultListener
 import com.orientechnologies.orient.core.config.OGlobalConfiguration
-import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig}
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument
+import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
+import com.typesafe.scalalogging.LazyLogging
+import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json, Reads, Writes}
+import velocorner.api.Achievement
+import velocorner.api.strava.Activity
 import velocorner.model._
-import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.model.strava.Gear
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 import scala.util.Try
 import scala.util.control.Exception._
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.Achievement
-import velocorner.api.weather.{CurrentWeather, WeatherForecast}
-
-import scala.jdk.CollectionConverters._
-import cats.implicits._
-import cats.data.OptionT
-import org.joda.time.DateTime
-import velocorner.api.strava.Activity
 
 object Counter {
   implicit val entryFormat = Format[Counter](Json.reads[Counter], Json.writes[Counter])

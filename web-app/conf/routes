@@ -403,7 +403,7 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 #      content:
 #        application/json:
 #          schema:
-#            $ref: '#/components/schemas/velocorner.api.weather.SunriseSunset'
+#            $ref: '#/components/schemas/velocorner.api.weather.CurrentWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -411,7 +411,7 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 #    500:
 #      description: Internal error
 ###
-GET     /api/weather/sunrise/:location                     controllers.WeatherController.sunrise(location: String)
+GET     /api/weather/current/:location                     controllers.WeatherController.current(location: String)
 
 ###
 #  summary: Suggests a list of locations based on the query parameter

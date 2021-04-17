@@ -56,7 +56,7 @@ trait Storage[M[_]] {
     def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
     def suggestLocations(snippet: String): M[Iterable[String]]
     def getRecentWeather(location: String): M[Option[CurrentWeather]]
-    def storeRecentWeather(sunriseSunset: CurrentWeather): M[Unit]
+    def storeRecentWeather(weather: CurrentWeather): M[Unit]
   }
 
   // key value pairs - generic attribute storage
@@ -64,7 +64,8 @@ trait Storage[M[_]] {
   trait AttributeStorage {
 
     // mapped to updated time
-    val locationUpdatedType = "location"
+    val forecastTsKey = "forecast"
+    val weatherTsKey = "weather"
 
     def storeAttribute(key: String, `type`: String, value: String): M[Unit]
     def getAttribute(key: String, `type`: String): M[Option[String]]

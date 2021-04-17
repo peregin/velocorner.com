@@ -73,11 +73,17 @@
         // sunrise and sunset
         $.ajax({
             dataType: 'json',
-            url: "/api/weather/sunrise/" + place,
+            url: "/api/weather/current/" + place,
             success: function (data) {
                 $('#sunrise-sunset').css("visibility","visible");
-                $('#weather-sunrise').html(moment.unix(data.sunrise).format('H:mm'));
-                $('#weather-sunset').html(moment.unix(data.sunset).format('H:mm'));
+                $('#temperature').css("visibility","visible");
+                $('#weather-sunrise').html(moment.unix(data.sunriseSunset.sunrise).format('H:mm'));
+                $('#weather-sunset').html(moment.unix(data.sunriseSunset.sunset).format('H:mm'));
+                $('#weather-temperature').html(data.info.temp.toFixed(1));
+                $('#weather-icon').attr('class', data.bootstrapIcon);
+                $('#weather-icon').attr('title', data.current.description);
+                $('#weather-temperature').attr('title', data.current.description);
+                $('[data-toggle="weather-tooltip"]').tooltip();
             }
         });
     }

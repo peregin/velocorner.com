@@ -1,12 +1,11 @@
 package velocorner.storage
 
-import org.joda.time.DateTime
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 import velocorner.manual.AwaitSupport
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
-import velocorner.util.JsonIo
+import velocorner.util.{JsonIo, WeatherCodeUtils}
 
 import scala.concurrent.Future
 
@@ -44,11 +43,10 @@ trait WeatherStorageBehaviour extends Matchers with AwaitSupport { this: AnyFlat
     }
 
     it should "store/lookup sunrise/sunset" in {
-      val now = DateTime.now
-      val tomorrow = now.plusDays(1)
       val weather = CurrentWeather(
         location = zhLocation,
         timestamp = weatherFixture.dt.get,
+        bootstrapIcon = WeatherCodeUtils.bootstrapIcon(weatherFixture.weather.get.head.id),
         current = weatherFixture.weather.get.head,
         info = weatherFixture.main.get,
         sunriseSunset = weatherFixture.sys.get

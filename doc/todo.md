@@ -1,5 +1,5 @@
 # ToDo
-- show current temperature
+- variation of the greeting, instead of Hello 
 - speedup node docker image creation
 - health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
@@ -17,6 +17,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- show current temperature
 - replace scala specs with scala test
 - increase session timeout for login token
 - use https://uptimerobot.com/ for monitoring and notifying about downtime
