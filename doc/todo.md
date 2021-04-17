@@ -1,7 +1,6 @@
 # ToDo
 - show current min/max temperature
 - variation of the greeting, instead of Hello 
-- speedup node docker image creation
 - health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
 - return JWT after login
@@ -18,6 +17,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- speedup node docker image creation
 - show current temperature
 - replace scala specs with scala test
 - increase session timeout for login token
