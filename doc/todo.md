@@ -1,4 +1,5 @@
 # ToDo
+- show current min/max temperature
 - variation of the greeting, instead of Hello 
 - speedup node docker image creation
 - health check, tiny go service connect uptimerobot with statuspage

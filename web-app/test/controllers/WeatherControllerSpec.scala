@@ -44,7 +44,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     val wf = forecastFixture.points.map(w => WeatherForecast("Zurich", now.getMillis, w))
     when(weatherStorage.listRecentForecast("Zurich")).thenReturn(Future(wf))
     val cw = CurrentWeather(
-      location = "Zurich", timestamp = now,
+      location = "Zurich", timestamp = now, bootstrapIcon = "icon",
       current = weatherFixture.weather.get.head,
       info = weatherFixture.main.get,
       sunriseSunset = weatherFixture.sys.get
