@@ -1,8 +1,8 @@
 package controllers
 
-import cats.Monad
-import cats.data.{EitherT, OptionT}
+import cats._
 import cats.implicits._
+import cats.data.{EitherT, OptionT}
 import cats.instances.future.catsStdInstancesForFuture
 import controllers.util.WebMetrics
 import model.highcharts
@@ -20,6 +20,7 @@ import velocorner.util.{CountryUtils, JsonIo, WeatherCodeUtils}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.language.implicitConversions
 
 class WeatherController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
@@ -39,18 +40,26 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
       retrieveFromCache: String => M[T]
   ): M[T] = {
     val now = clock()
+    // convert city[,country] to city[,isoCountry]
+    val isoLocation = CountryUtils.iso(location)
+    logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
 
     // if not in storage use a one year old ts to trigger the query
-    def lastUpdateM: M[DateTime] = attributeStorage.getAttribute(location, cacheTsKey).map {
+    def lastUpdateM: M[DateTime] = attributeStorage.getAttribute(isoLocation, cacheTsKey).map {
       case Some(timeText) => DateTime.parse(timeText, DateTimeFormat.forPattern(DateTimePattern.longFormat))
       case _              => now.minusYears(1)
     }
 
     for {
       lastUpdate <- lastUpdateM
-      elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable minutes to execute the query
-      _ = logger.info(s"last weather $cacheTsKey update on $location was at $lastUpdate, $elapsedInMinutes minutes ago")
-      entry <- if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStoreFromService(location) else retrieveFromCache(location)
+      elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes
+      _ = logger.info(s"last [$cacheTsKey] update on $isoLocation was at $lastUpdate, $elapsedInMinutes minutes ago")
+      entry <-
+        if (elapsedInMinutes > refreshTimeoutInMinutes) for {
+          an <- retrieveAndStoreFromService(isoLocation)
+          _ <- attributeStorage.storeAttribute(isoLocation, cacheTsKey, now.toString(DateTimePattern.longFormat))
+        } yield an
+        else retrieveFromCache(isoLocation)
     } yield entry
   }
 
@@ -58,47 +67,35 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // route mapped to /api/weather/forecast/:location
   def forecast(location: String) = Action.async {
     timedRequest(s"query weather forecast for $location") { implicit request =>
-      // convert city[,country] to city[,isoCountry]
-      val isoLocation = CountryUtils.iso(location)
-      //if (isoLocation.trim.size == 0) throw new IllegalArgumentException("invalid location")
-
-      val now = clock()
       val weatherStorage = connectivity.getStorage.getWeatherStorage
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
-      logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation] at $now")
-
-      // if not in storage use a one year old ts to trigger the query
-      def lastUpdateTime: Future[DateTime] = attributeStorage.getAttribute(isoLocation, attributeStorage.forecastTsKey).map {
-        case Some(timeText) => DateTime.parse(timeText, DateTimeFormat.forPattern(DateTimePattern.longFormat))
-        case _              => now.minusYears(1)
-      }
-
-      def retrieveAndStore(place: String): Future[List[WeatherForecast]] = for {
-        entries <- connectivity.getWeatherFeed.forecast(place).map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
-        _ = logger.info(s"querying latest weather forecast for $place")
-        _ <- weatherStorage.storeRecentForecast(entries)
-        _ <- attributeStorage.storeAttribute(place, attributeStorage.forecastTsKey, now.toString(DateTimePattern.longFormat))
-      } yield entries
-
       val resultET = for {
-        place <- EitherT(Future(Option(isoLocation).filter(_.nonEmpty).toRight(BadRequest)))
-        lastUpdate <- EitherT.right[Status](lastUpdateTime)
-        elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable minutes to execute the query
-        _ = logger.info(s"last weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
-        entries <- EitherT.right[Status](
-          if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore(place) else weatherStorage.listRecentForecast(place)
-        )
-      } yield entries
+        loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
+        wf <- EitherT.right[Status](retrieveCacheOrService[List[WeatherForecast], Future](
+          loc,
+          attributeStorage.forecastTsKey,
+          attributeStorage,
+          place =>
+            for {
+              entries <- connectivity.getWeatherFeed
+                .forecast(place)
+                .map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
+              _ = logger.info(s"querying latest weather forecast for $place")
+              _ <- weatherStorage.storeRecentForecast(entries)
+            } yield entries,
+          place => weatherStorage.listRecentForecast(place).map(_.toList)
+        ))
+      } yield wf
 
       // generate json or xml content
       type transform2Content = List[WeatherForecast] => String
       val contentGenerator: transform2Content = request.getQueryString("mode") match {
         case Some("xml") => wt => highcharts.toMeteoGramXml(wt).toString()
-        case _           => wt => JsonIo.write(DailyWeather.list(wt))
+        case _ => wt => JsonIo.write(DailyWeather.list(wt))
       }
 
       resultET
-        .map(_.toList.sortBy(_.timestamp))
+        .map(_.sortBy(_.timestamp))
         .map(contentGenerator)
         .map(Ok(_).withCookies(WeatherCookie.create(location)))
         .merge
@@ -108,59 +105,41 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/weather/current/:location
   def current(location: String) = Action.async {
-    timedRequest(s"query sunrise sunset for $location") { implicit request =>
+    timedRequest(s"query current weather for $location") { implicit request =>
       // convert city[,country] to city[,isoCountry]
-      val isoLocation = CountryUtils.iso(location)
-      val now = clock()
       val weatherStorage = connectivity.getStorage.getWeatherStorage
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
-      logger.debug(s"collecting current weather for [$location] -> [$isoLocation] at [$now]")
-
-      // if not in storage use a one year old ts to trigger the query
-      def lastUpdateTime: Future[DateTime] = attributeStorage.getAttribute(isoLocation, attributeStorage.weatherTsKey).map {
-        case Some(timeText) => DateTime.parse(timeText, DateTimeFormat.forPattern(DateTimePattern.longFormat))
-        case _              => now.minusYears(1)
-      }
-
-      // store sunrise/sunset and location geo position
-      def retrieveAndStore: Future[Option[CurrentWeather]] = {
-        val res = for {
-          response <- OptionT(connectivity.getWeatherFeed.current(isoLocation))
-          // weather forecast
-          currentWeather <- OptionT(
-            Future(
-              for {
-                current <- response.weather.getOrElse(Nil).headOption
-                info <- response.main
-                sunset <- response.sys
-              } yield CurrentWeather(
-                location = isoLocation, // city[, country iso 2 letters]
-                timestamp = now,
-                bootstrapIcon = WeatherCodeUtils.bootstrapIcon(current.id),
-                current = current,
-                info = info,
-                sunriseSunset = sunset
+      val resultET = for {
+        loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
+        wf <- EitherT.right[Status](retrieveCacheOrService[CurrentWeather, Future](
+          loc, attributeStorage.weatherTsKey, attributeStorage,
+          place => (for {
+            response <- OptionT(connectivity.getWeatherFeed.current(place))
+            // weather forecast
+            currentWeather <- OptionT(
+              Future(
+                for {
+                  current <- response.weather.getOrElse(Nil).headOption
+                  info <- response.main
+                  sunset <- response.sys
+                } yield CurrentWeather(
+                  location = place, // city[, country iso 2 letters]
+                  timestamp = clock(),
+                  bootstrapIcon = WeatherCodeUtils.bootstrapIcon(current.id),
+                  current = current,
+                  info = info,
+                  sunriseSunset = sunset
+                )
               )
             )
-          )
-          _ <- OptionT.liftF(weatherStorage.storeRecentWeather(currentWeather))
-          // geo location based on place definition used for wind status
-          newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
-          _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(isoLocation, newGeoLocation))
-        } yield currentWeather
-        res.value
-      }
-
-      val resultET = for {
-        place <- EitherT(Future(Option(isoLocation).filter(_.nonEmpty).toRight(BadRequest)))
-        lastUpdate <- EitherT.right[Status](lastUpdateTime)
-        elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable minutes to execute the query
-        _ = logger.info(s"last current weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
-        // it is in the storage or retrieve it and store it
-        currentWeather <- EitherT(
-          (if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore else weatherStorage.getRecentWeather(place)).map(_.toRight(NotFound))
-        )
-      } yield currentWeather
+            _ <- OptionT.liftF(weatherStorage.storeRecentWeather(currentWeather))
+            // geo location based on place definition used for wind status
+            newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
+            _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(place, newGeoLocation))
+          } yield currentWeather).value.map(_.getOrElse(throw new IllegalArgumentException("not found"))),
+          place => weatherStorage.getRecentWeather(place).map(_.getOrElse(throw new IllegalArgumentException("not found")))
+        ))
+      } yield wf
 
       resultET
         .map(JsonIo.write(_))
