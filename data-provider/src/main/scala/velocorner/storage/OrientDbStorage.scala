@@ -146,7 +146,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
-  lazy val attributeStorage = new AttributeStorage {
+  lazy val attributeStorage = new AttributeStorage[Future] {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
       val attr = KeyValue(key, `type`, value)
       upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
@@ -158,7 +158,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     }
   }
 
-  override def getAttributeStorage: AttributeStorage = attributeStorage
+  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
 
   // various achievements
   lazy val achievementStorage = new AchievementStorage {

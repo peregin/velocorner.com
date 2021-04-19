@@ -23,8 +23,8 @@ object OpenWeatherFeedApp extends zio.App with LazyLogging with MyLocalConfig {
             forecast <- ZIO.fromFuture(_ => feed.forecast("Zurich,CH"))
             _ <- log.info(s"current forecast is $forecast")
             _ <- log.info(s"${forecast.points.size} items")
-            sunset <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
-            _ <- log.info(s"current weather is $sunset")
+            weather <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
+            _ <- log.info(s"current weather is $weather")
           } yield ()
         }
     } yield ()

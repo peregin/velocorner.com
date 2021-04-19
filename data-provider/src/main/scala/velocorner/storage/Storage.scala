@@ -14,6 +14,16 @@ import velocorner.api.strava.Activity
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+trait AttributeStorage[M[_]] {
+
+  // mapped to updated time
+  val forecastTsKey = "forecast"
+  val weatherTsKey = "weather"
+
+  def storeAttribute(key: String, `type`: String, value: String): M[Unit]
+  def getAttribute(key: String, `type`: String): M[Option[String]]
+}
+
 trait Storage[M[_]] {
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -60,16 +70,7 @@ trait Storage[M[_]] {
   }
 
   // key value pairs - generic attribute storage
-  def getAttributeStorage: AttributeStorage
-  trait AttributeStorage {
-
-    // mapped to updated time
-    val forecastTsKey = "forecast"
-    val weatherTsKey = "weather"
-
-    def storeAttribute(key: String, `type`: String, value: String): M[Unit]
-    def getAttribute(key: String, `type`: String): M[Option[String]]
-  }
+  def getAttributeStorage: AttributeStorage[M]
 
   // various achievements
   def getAchievementStorage: AchievementStorage

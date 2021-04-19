@@ -12,7 +12,7 @@ import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
 import velocorner.api.weather.{CurrentWeather, DailyWeather, WeatherForecast}
 import velocorner.model.DateTimePattern
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
-import velocorner.storage.Storage
+import velocorner.storage.{AttributeStorage, Storage}
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,7 +34,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
 
     val settingsMock = mock[ConnectivitySettings]
     val storageMock = mock[Storage[Future]]
-    val attributeStorage = mock[storageMock.AttributeStorage]
+    val attributeStorage = mock[AttributeStorage[Future]]
     val weatherStorage = mock[storageMock.WeatherStorage]
 
     when(settingsMock.getStorage).thenReturn(storageMock)
@@ -63,11 +63,21 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
       dailyForecast.head.points mustBe forecastFixture.points
     }
 
+    "fail for empty place in weather forecast" in {
+      val result = controller.forecast("" ).apply(FakeRequest())
+      Helpers.status(result) mustBe Status.BAD_REQUEST
+    }
+
     "retrieve current weather" in {
       val result = controller.current("Zurich" ).apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val currentWeather = Helpers.contentAsJson(result).as[CurrentWeather]
       currentWeather mustBe cw
+    }
+
+    "fail for empty place in current weather" in {
+      val result = controller.current("" ).apply(FakeRequest())
+      Helpers.status(result) mustBe Status.BAD_REQUEST
     }
   }
 }

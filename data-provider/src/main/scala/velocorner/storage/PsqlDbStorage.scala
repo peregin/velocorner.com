@@ -251,9 +251,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
            |""".stripMargin.update.run.void.transactToFuture
   }
 
-  override def getAttributeStorage: AttributeStorage = attributeStorage
+  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
 
-  private lazy val attributeStorage = new AttributeStorage {
+  private lazy val attributeStorage = new AttributeStorage[Future] {
     override def storeAttribute(
         key: String,
         `type`: String,
