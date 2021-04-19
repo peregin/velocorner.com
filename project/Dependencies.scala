@@ -6,15 +6,15 @@ object Dependencies {
 
   val catsVersion = "2.5.0"
   val mouseVersion = "1.0.2"
-  val zioVersion = "1.0.5"
+  val zioVersion = "1.0.6"
   val zioLoggingVersion = "0.5.8"
   val shapelessVersion = "2.3.4"
   val logbackVersion = "1.2.3"
   val doobieVersion = "0.12.1"
   val orientDbVersion = "3.1.10"
-  val mongoDbVersion = "4.2.2"
+  val mongoDbVersion = "4.2.3"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "7.7.2"
+  val flywayVersion = "7.8.1"
   val elasticVersion = "7.12.0"
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.3" // standalone version
