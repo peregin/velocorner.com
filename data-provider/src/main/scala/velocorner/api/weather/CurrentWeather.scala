@@ -9,6 +9,7 @@ import velocorner.model.weather.SunriseSunsetInfo
   * The structure from the storage layer, also exposed to the REST API.
   */
 object CurrentWeather {
+
   implicit val dateTimeFormat = EpochFormatter.create
   implicit val storageFormat = Format[CurrentWeather](Json.reads[CurrentWeather], Json.writes[CurrentWeather])
 }

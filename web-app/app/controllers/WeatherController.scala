@@ -157,7 +157,9 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
         elapsedInMinutes = new Duration(lastUpdate, now).getStandardMinutes // should be more than configurable minutes to execute the query
         _ = logger.info(s"last current weather update on $place was at $lastUpdate, $elapsedInMinutes minutes ago")
         // it is in the storage or retrieve it and store it
-        currentWeather <- EitherT(weatherStorage.getRecentWeather(place).orElse(retrieveAndStore).map(_.toRight(NotFound)))
+        currentWeather <- EitherT(
+          (if (elapsedInMinutes > refreshTimeoutInMinutes) retrieveAndStore else weatherStorage.getRecentWeather(place)).map(_.toRight(NotFound))
+        )
       } yield currentWeather
 
       resultET
