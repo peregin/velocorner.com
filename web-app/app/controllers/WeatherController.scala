@@ -71,27 +71,29 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
       val resultET = for {
         loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
-        wf <- EitherT.right[Status](retrieveCacheOrService[List[WeatherForecast], Future](
-          loc,
-          attributeStorage.forecastTsKey,
-          attributeStorage,
-          place =>
-            for {
-              entries <- connectivity.getWeatherFeed
-                .forecast(place)
-                .map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
-              _ = logger.info(s"querying latest weather forecast for $place")
-              _ <- weatherStorage.storeRecentForecast(entries)
-            } yield entries,
-          place => weatherStorage.listRecentForecast(place).map(_.toList)
-        ))
+        wf <- EitherT.right[Status](
+          retrieveCacheOrService[List[WeatherForecast], Future](
+            loc,
+            attributeStorage.forecastTsKey,
+            attributeStorage,
+            place =>
+              for {
+                entries <- connectivity.getWeatherFeed
+                  .forecast(place)
+                  .map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
+                _ = logger.info(s"querying latest weather forecast for $place")
+                _ <- weatherStorage.storeRecentForecast(entries)
+              } yield entries,
+            place => weatherStorage.listRecentForecast(place).map(_.toList)
+          )
+        )
       } yield wf
 
       // generate json or xml content
       type transform2Content = List[WeatherForecast] => String
       val contentGenerator: transform2Content = request.getQueryString("mode") match {
         case Some("xml") => wt => highcharts.toMeteoGramXml(wt).toString()
-        case _ => wt => JsonIo.write(DailyWeather.list(wt))
+        case _           => wt => JsonIo.write(DailyWeather.list(wt))
       }
 
       resultET
@@ -111,34 +113,39 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
       val resultET = for {
         loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
-        wf <- EitherT.right[Status](retrieveCacheOrService[CurrentWeather, Future](
-          loc, attributeStorage.weatherTsKey, attributeStorage,
-          place => (for {
-            response <- OptionT(connectivity.getWeatherFeed.current(place))
-            // weather forecast
-            currentWeather <- OptionT(
-              Future(
-                for {
-                  current <- response.weather.getOrElse(Nil).headOption
-                  info <- response.main
-                  sunset <- response.sys
-                } yield CurrentWeather(
-                  location = place, // city[, country iso 2 letters]
-                  timestamp = clock(),
-                  bootstrapIcon = WeatherCodeUtils.bootstrapIcon(current.id),
-                  current = current,
-                  info = info,
-                  sunriseSunset = sunset
+        wf <- EitherT {
+          retrieveCacheOrService[Option[CurrentWeather], Future](
+            loc,
+            attributeStorage.weatherTsKey,
+            attributeStorage,
+            place =>
+              (for {
+                response <- OptionT(connectivity.getWeatherFeed.current(place))
+                // weather forecast
+                currentWeather <- OptionT(
+                  Future(
+                    for {
+                      current <- response.weather.getOrElse(Nil).headOption
+                      info <- response.main
+                      sunset <- response.sys
+                    } yield CurrentWeather(
+                      location = place, // city[, country iso 2 letters]
+                      timestamp = clock(),
+                      bootstrapIcon = WeatherCodeUtils.bootstrapIcon(current.id),
+                      current = current,
+                      info = info,
+                      sunriseSunset = sunset
+                    )
+                  )
                 )
-              )
-            )
-            _ <- OptionT.liftF(weatherStorage.storeRecentWeather(currentWeather))
-            // geo location based on place definition used for wind status
-            newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
-            _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(place, newGeoLocation))
-          } yield currentWeather).value.map(_.getOrElse(throw new IllegalArgumentException("not found"))),
-          place => weatherStorage.getRecentWeather(place).map(_.getOrElse(throw new IllegalArgumentException("not found")))
-        ))
+                _ <- OptionT.liftF(weatherStorage.storeRecentWeather(currentWeather))
+                // geo location based on place definition used for wind status
+                newGeoLocation <- OptionT(Future(response.coord.map(s => GeoPosition(latitude = s.lat, longitude = s.lon))))
+                _ <- OptionT.liftF(connectivity.getStorage.getLocationStorage.store(place, newGeoLocation))
+              } yield currentWeather).value,
+            place => weatherStorage.getRecentWeather(place)
+          ).map(_.toRight(NotFound))
+        }
       } yield wf
 
       resultET

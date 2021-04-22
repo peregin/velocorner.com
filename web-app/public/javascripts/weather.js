@@ -70,7 +70,7 @@
             }
         });
 
-        // sunrise and sunset
+        // current weather, sunrise and sunset
         $.ajax({
             dataType: 'json',
             url: "/api/weather/current/" + place,
@@ -84,6 +84,11 @@
                 $('#weather-icon').attr('title', data.current.description);
                 $('#weather-temperature').attr('title', data.current.description);
                 $('[data-toggle="weather-tooltip"]').tooltip();
+            },
+            error: function(e) {
+                $('#sunrise-sunset').css("visibility","hidden");
+                $('#temperature').css("visibility","hidden");
+                console.error(`current weather location [${place}] not found`);
             }
         });
     }
