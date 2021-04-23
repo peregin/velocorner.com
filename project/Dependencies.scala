@@ -6,7 +6,7 @@ object Dependencies {
 
   val catsVersion = "2.6.0"
   val mouseVersion = "1.0.2"
-  val zioVersion = "1.0.6"
+  val zioVersion = "1.0.7"
   val zioLoggingVersion = "0.5.8"
   val shapelessVersion = "2.3.4"
   val logbackVersion = "1.2.3"
