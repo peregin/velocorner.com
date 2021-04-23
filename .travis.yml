@@ -50,9 +50,8 @@ install:
     sudo ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport
+  - sbt ++$TRAVIS_SCALA_VERSION test
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
   - echo "releasing on master branch only ..."
   - if [[ "$TRAVIS_BRANCH" = "master" ]] && [[ "$TRAVIS_COMMIT_MESSAGE" != *"Setting version"* ]]; then bash ./script/release_travis.sh; fi
