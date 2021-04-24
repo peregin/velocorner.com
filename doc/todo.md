@@ -1,5 +1,6 @@
 # ToDo
 - show current min/max temperature
+- marketing campaign FB
 - variation of the greeting, instead of Hello 
 - health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
