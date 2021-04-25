@@ -82,8 +82,10 @@
                 $('#weather-temperature').html(data.info.temp.toFixed(1));
                 $('#weather-icon').attr('class', data.bootstrapIcon);
                 $('#weather-icon').attr('title', data.current.description);
-                $('#weather-temperature').attr('title', data.current.description);
-                $('[data-toggle="weather-tooltip"]').tooltip();
+                $('#weather-temperature').attr('title', data.current.description); // tooltip text
+                $('[data-toggle="weather-tooltip"]').tooltip(); // enable tooltip
+                $('#weather-temperature-min').html(data.info.temp_min.toFixed(0));
+                $('#weather-temperature-max').html(data.info.temp_max.toFixed(0));
             },
             error: function(e) {
                 $('#sunrise-sunset').css("visibility","hidden");

@@ -1,5 +1,4 @@
 # ToDo
-- show current min/max temperature
 - marketing campaign FB
 - variation of the greeting, instead of Hello 
 - health check, tiny go service connect uptimerobot with statuspage
@@ -18,6 +17,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- show current min/max temperature
 - speedup node docker image creation
 - show current temperature
 - replace scala specs with scala test
