@@ -28,4 +28,6 @@ docker run --rm -e API_HOST=http://velocorner.com -p 3000:3000 peregin/web-front
 
 # run from local dev environment
 API_HOST=http://velocorner.com npm run start
+# or
+API_HOST=http://localhost:9001 npm run start
 ```

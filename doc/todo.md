@@ -1,8 +1,8 @@
 # ToDo
 - marketing campaign FB
 - variation of the greeting, instead of Hello 
-- health check, tiny go service connect uptimerobot with statuspage
 - intercom (or alternative) for features
+- expose oauth authorization URL from BE 
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show consecutive sport days
@@ -12,6 +12,7 @@
 - add gps overlay over video section
 - add garmin data field section
 - PubSub (pusher or alternative) for updates
+- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 
 # InProgress
 - add 3D profile of the last activity gpx
