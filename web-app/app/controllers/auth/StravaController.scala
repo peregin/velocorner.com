@@ -49,7 +49,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
         case Some(_) =>
-          Redirect(controllers.routes.WebController.index()) // already logged in
+          Redirect(controllers.routes.WebController.index) // already logged in
         case None =>
           redirectToAuthorization(scope, request) // authorize
       }
@@ -108,7 +108,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   def logout = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
-    val result = Redirect(controllers.routes.WebController.index())
+    val result = Redirect(controllers.routes.WebController.index)
     tokenAccessor.delete(result)
   }
 
@@ -138,7 +138,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
     for {
       _ <- login(resp, consumerUser.some)
-    } yield Redirect(controllers.routes.WebController.index())
+    } yield Redirect(controllers.routes.WebController.index)
   }
 
   // matches the provider and consumer users
@@ -147,7 +147,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     for {
       athlete <- login(resp, none)
       token <- idContainer.startNewSession(athlete.id, sessionTimeoutInSeconds)
-      result <- Future.successful(Redirect(controllers.routes.WebController.index()))
+      result <- Future.successful(Redirect(controllers.routes.WebController.index))
     } yield tokenAccessor.put(token)(result)
   }
 

@@ -55,12 +55,12 @@ class WebController @Inject() (
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
     result.value
-      .map(_ => Redirect(routes.WebController.index()))
+      .map(_ => Redirect(routes.WebController.index))
       .recover {
         case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
           // if the feed fails with expired token, then logout
           logger.info("feed token has been expired, logging out")
-          Redirect(auth.routes.StravaController.logout())
+          Redirect(auth.routes.StravaController.logout)
       }
   }
 
