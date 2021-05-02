@@ -30,10 +30,6 @@ object ActivitiesFromStravaAndAggregateApp extends zio.App with AggregateActivit
         _ <- Task.effectTotal(storage.destroy())
       } yield ()
     }
-    res.fold(err => {
-      logger.error("failed", err)
-      ExitCode.failure
-    }, _ => ExitCode.success).provideLayer(zEnv)
-
+    res.provideLayer(zEnv).exitCode
   }
 }

@@ -28,14 +28,6 @@ object OpenWeatherFeedApp extends zio.App with LazyLogging with MyLocalConfig {
           } yield ()
         }
     } yield ()
-    res
-      .fold(
-        err => {
-          logger.error("failed", err)
-          ExitCode.failure
-        },
-        _ => ExitCode.success
-      )
-      .provideLayer(zEnv)
+    res.provideLayer(zEnv).exitCode
   }
 }
