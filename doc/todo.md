@@ -1,4 +1,5 @@
 # ToDo
+- compass rose - wind direction
 - marketing campaign FB
 - variation of the greeting, instead of Hello 
 - intercom (or alternative) for features
