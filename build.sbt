@@ -163,10 +163,10 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
   ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
-lazy val testService = (project in file("test/test-service-java") withId "test-service-java")
+lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
   .settings(
     buildSettings,
-    name := "test-service",
+    name := "test-service-java",
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
@@ -177,6 +177,19 @@ lazy val testService = (project in file("test/test-service-java") withId "test-s
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
+  )
+
+lazy val testServiceScala = (project in file("test/test-service-scala") withId "test-service-scala")
+  .settings(
+    buildSettings,
+    name := "test-service-java",
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
+      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
+      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
+      "io.argonaut" %% "argonaut" % "6.3.3",
+      scalaTest
+    ) ++ cats
   )
 
 lazy val webApp = (project in file("web-app") withId "web-app")
@@ -234,7 +247,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(testService, dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp)
+  .aggregate(dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp, testServiceJava, testServiceScala)
   .settings(
     name := "velocorner",
     buildSettings,
