@@ -4,7 +4,6 @@ import com.typesafe.scalalogging.LazyLogging
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-
 class JwtUserSpec extends AnyWordSpec with Matchers with LazyLogging {
 
   implicit val secret = "secret"

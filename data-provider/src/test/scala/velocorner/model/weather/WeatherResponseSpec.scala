@@ -57,10 +57,12 @@ class WeatherResponseSpec extends AnyWordSpec with Matchers {
     "be parsed into model" in {
       val model = JsonIo.read[WeatherResponse](response)
       model.cod === 200
-      model.sys.map(_.sunrise.dayOfYear().get()) mustBe Some(DateTime
-        .parse("2020-10-14T07:43:05.000+02:00")
-        .withZone(DateTimeZone.forID("Europe/Zurich"))
-        .dayOfYear().get()
+      model.sys.map(_.sunrise.dayOfYear().get()) mustBe Some(
+        DateTime
+          .parse("2020-10-14T07:43:05.000+02:00")
+          .withZone(DateTimeZone.forID("Europe/Zurich"))
+          .dayOfYear()
+          .get()
       )
       model.coord.map(_.lon) mustBe Some(8.52d)
       model.coord.map(_.lat) mustBe Some(47.31d)

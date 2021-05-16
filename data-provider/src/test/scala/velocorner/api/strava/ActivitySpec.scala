@@ -31,8 +31,10 @@ class ActivitySpec extends AnyWordSpec with Matchers {
     // 2014-03-30T02:51:36Z - bad - Illegal instant due to time zone offset transition, reading in Europe/Zurich - DST
     // 2015-01-23T16:18:17Z - good
     "read activity where start_date_local is missing and start_date is wrong" in {
-      val startDate = DateTime.parse("2014-03-30T02:51:36Z",
-        DateTimeFormat.forPattern(DateTimePattern.longFormat)
+      val startDate = DateTime.parse(
+        "2014-03-30T02:51:36Z",
+        DateTimeFormat
+          .forPattern(DateTimePattern.longFormat)
           .withZone(DateTimeZone.UTC) // otherwise takes current zone
       )
       startDate.getYear === 2014

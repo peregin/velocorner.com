@@ -72,7 +72,7 @@ def squants = Seq(
 )
 
 def spark = Seq(
-  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude("com.google.inject", "guice")
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude ("com.google.inject", "guice")
 )
 
 def smile = Seq(
@@ -82,26 +82,26 @@ def smile = Seq(
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
-    extracted.runAggregated(com.typesafe.sbt.packager.Keys.dist in Global in webApp, st)
+    extracted.runAggregated(webApp / dist, st)
   }
 )
 
 lazy val runWebAppDockerPush: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
-    extracted.runAggregated(publish in Docker in webApp, st)
+    extracted.runAggregated(webApp / Docker / publish, st)
   }
 )
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
-  version := (version in ThisBuild).value,
+  version := (ThisBuild / version).value,
   scalaVersion := Dependencies.projectScalaVersion,
   organization := "com.github.peregin",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "11", "-target", "11"),
   scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
-  scalacOptions in Test ++= Seq("-Yrangepos"),
-  resolvers in ThisBuild ++= Seq(
+  Test / scalacOptions ++= Seq("-Yrangepos"),
+  ThisBuild / resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
   ),
   releaseProcess := Seq[ReleaseStep](
@@ -152,7 +152,8 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
     buildSettings,
     name := "data-analytics",
     libraryDependencies ++= smile ++ logging
-  ).dependsOn(dataProvider % "compile->compile; test->test")
+  )
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 // module dedicated for analytics with Spark, with a special Scala version
 lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "data-analytics-spark")
@@ -224,16 +225,17 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     ),
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
-    packageName in Docker := "velocorner.com",
-    dockerExposedPorts in Docker := Seq(9000),
+    Docker / packageName := "velocorner.com",
+    Docker / dockerExposedPorts := Seq(9000),
     dockerBaseImage := "openjdk:11-jre-slim",
     dockerUsername := Some("peregin"),
-    version in Docker := "latest",
-    javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
+    Docker / version := "latest",
+    Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true,
+    swaggerV3 := true
     // whenever we generate build information, run the formatter on the generated files
+    /*
     Compile / buildInfo := Def.taskDyn {
       val files = (Compile / buildInfo).value
       Def.task {
@@ -241,8 +243,15 @@ lazy val webApp = (project in file("web-app") withId "web-app")
         files
       }
     }.value
+     */
   )
-  .enablePlugins(play.sbt.PlayScala, play.sbt.PlayAkkaHttp2Support, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ScalafmtExtensionPlugin)
+  .enablePlugins(
+    play.sbt.PlayScala,
+    play.sbt.PlayAkkaHttp2Support,
+    BuildInfoPlugin,
+    com.iheart.sbtPlaySwagger.SwaggerPlugin,
+    ScalafmtExtensionPlugin
+  )
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate
@@ -269,5 +278,8 @@ def welcomeMessage = Def.setting {
       |Useful sbt tasks:
       |${item("\"project web-app\" run")} - run web application
       |${item("scalafmtGenerated")} - formats generated scala sources
+      |${item("fmt")} - command alias to format all files
       """.stripMargin
 }
+
+addCommandAlias("fmt", "; scalafmtAll ; scalafmtSbt ; scalafmtGenerated")

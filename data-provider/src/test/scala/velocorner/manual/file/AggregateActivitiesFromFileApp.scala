@@ -4,7 +4,6 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.strava.Activity
 import velocorner.util.{JsonIo, Metrics}
 
-
 object AggregateActivitiesFromFileApp extends App with Metrics with LazyLogging {
 
   logger.info("reading files...")

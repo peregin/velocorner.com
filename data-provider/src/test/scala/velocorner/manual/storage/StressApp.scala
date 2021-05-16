@@ -13,16 +13,14 @@ import scala.util.control.Exception._
 import mouse.all._
 import velocorner.api.strava.Activity
 
-/**
-  * Created by levi on 19.11.16.
+/** Created by levi on 19.11.16.
   */
 object StressApp extends App with CloseableResource with LazyLogging with AggregateActivities with MyLocalConfig {
 
   val par = 10
   val latch = new CountDownLatch(par)
-  implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, (r: Runnable) =>
-    new Thread(r, "worker") <| (_.setDaemon(true))
-  ))
+  implicit val ec =
+    ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, (r: Runnable) => new Thread(r, "worker") <| (_.setDaemon(true))))
 
   val json = withCloseable(Source.fromURL(getClass.getResource("/data/strava/last30activities.json")))(_.mkString)
   val activities = JsonIo.read[List[Activity]](json)

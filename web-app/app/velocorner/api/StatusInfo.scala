@@ -54,20 +54,20 @@ object StatusInfo {
 }
 
 case class StatusInfo(
-                       applicationMode: String,
-                       buildTime: String,
-                       appVersion: String,
-                       hostOsVersion: String, // runtime query
-                       osVersion: String, // runtime query
-                       javaVersion: String, // runtime query
-                       scalaVersion: String,
-                       sbtVersion: String,
-                       catsVersion: String,
-                       elasticVersion: String,
-                       playVersion: String,
-                       gitHash: String,
-                       memoryTotal: Long,
-                       memoryUsedPercentile: Int,
-                       upTime: String,
-                       pings: Long
-                     )
+    applicationMode: String,
+    buildTime: String,
+    appVersion: String,
+    hostOsVersion: String, // runtime query
+    osVersion: String, // runtime query
+    javaVersion: String, // runtime query
+    scalaVersion: String,
+    sbtVersion: String,
+    catsVersion: String,
+    elasticVersion: String,
+    playVersion: String,
+    gitHash: String,
+    memoryTotal: Long,
+    memoryUsedPercentile: Int,
+    upTime: String,
+    pings: Long
+)

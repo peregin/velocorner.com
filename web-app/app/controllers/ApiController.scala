@@ -43,10 +43,14 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
       logger.info(s"PING[$counter]=[$maybePayload], remote=$remoteAddress")
     }
     // being monitored as keyword "ok" in https://uptimerobot.com/
-    Ok(JsObject(Seq(
-      "status" -> JsString("ok"),
-      "count" -> JsNumber(counter)
-    )))
+    Ok(
+      JsObject(
+        Seq(
+          "status" -> JsString("ok"),
+          "count" -> JsNumber(counter)
+        )
+      )
+    )
   }
 
   // WebSocket to update the client

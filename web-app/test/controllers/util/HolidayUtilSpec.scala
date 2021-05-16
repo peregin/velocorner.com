@@ -7,7 +7,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class HolidayUtilSpec extends AnyWordSpec with Matchers {
 
   "util" should {
-    
+
     "calculate Christmas holiday" in {
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-12-15")) mustBe false
       HolidayUtil.isWinterHoliday(LocalDate.parse("2020-12-19")) mustBe true

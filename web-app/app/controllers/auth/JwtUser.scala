@@ -45,12 +45,14 @@ case class JwtUser(id: Long, name: String, location: String, avatarUrl: String) 
     val exp = now.plusDays(30)
 
     val json = Json.toJson(this)
-    val obj = JsObject(Seq(
-      "user" -> json,
-      "exp" -> JsNumber(exp.getMillis),
-      "iat" -> JsNumber(now.getMillis),
-      "iss" -> JsString(issuer)
-    ))
+    val obj = JsObject(
+      Seq(
+        "user" -> json,
+        "exp" -> JsNumber(exp.getMillis),
+        "iat" -> JsNumber(now.getMillis),
+        "iss" -> JsString(issuer)
+      )
+    )
     val header = Json.obj(("typ", "JWT"), ("alg", "HS256"))
     JwtJson.encode(header, obj, secret)
   }

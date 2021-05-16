@@ -13,13 +13,15 @@ object SearchElasticManual extends App with ElasticSupport with AwaitSupport wit
   val elastic = localCluster()
   logger.info("initialized...")
 
-  val res = elastic.execute(
-    search("activity") query "Zermatt"
-      bool must(matchQuery("type", "Ride"))
-      sortByFieldDesc "start_date"
-  ).await
+  val res = elastic
+    .execute(
+      search("activity") query "Zermatt"
+        bool must(matchQuery("type", "Ride"))
+        sortByFieldDesc "start_date"
+    )
+    .await
   val hits = res.result.hits.hits.toList
-  hits.foreach(h => logger.info(s"${SortedMap(h.sourceAsMap.toIndexedSeq:_*)}"))
+  hits.foreach(h => logger.info(s"${SortedMap(h.sourceAsMap.toIndexedSeq: _*)}"))
 
   elastic.close()
 }

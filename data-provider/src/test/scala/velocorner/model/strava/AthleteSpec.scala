@@ -9,8 +9,15 @@ class AthleteSpec extends AnyWordSpec with Matchers {
   "model" should {
     "add type to the json" in {
       val athlete = Athlete(
-        10, 1, Some("levi"), Some("rider"), Some("profile picture url"), None, Some("Switzerland"),
-        bikes = None, shoes = None
+        10,
+        1,
+        Some("levi"),
+        Some("rider"),
+        Some("profile picture url"),
+        None,
+        Some("Switzerland"),
+        bikes = None,
+        shoes = None
       )
       val json = JsonIo.write(athlete)
       json ===

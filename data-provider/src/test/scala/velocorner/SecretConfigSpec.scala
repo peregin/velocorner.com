@@ -4,7 +4,6 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-
 class SecretConfigSpec extends AnyWordSpec with Matchers {
 
   "config" should {

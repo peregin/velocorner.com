@@ -11,9 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import cats.implicits._
 
-
-/**
-  * Simple utility to read the activities from the storage and feed it to elastic.
+/** Simple utility to read the activities from the storage and feed it to elastic.
   */
 object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
@@ -32,7 +30,8 @@ object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitS
     activities <- storage.listActivities(athleteId, activityType = None)
     _ = logger.info(s"indexing ${activities.size} documents ...")
     indices = toIndices(activities).toList
-    errors <- indices.sliding(bulkSize, bulkSize)
+    errors <- indices
+      .sliding(bulkSize, bulkSize)
       .map(chunk => elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate)))
       .toList
       .sequence

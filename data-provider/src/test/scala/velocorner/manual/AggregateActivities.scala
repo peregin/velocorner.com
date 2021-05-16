@@ -4,9 +4,8 @@ import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.LocalDate
 import velocorner.model.{DailyProgress, YearlyProgress}
 
-/**
- * Created by levi on 13/04/15.
- */
+/** Created by levi on 13/04/15.
+  */
 trait AggregateActivities extends LazyLogging {
 
   def printAllProgress(cyclingActivities: Iterable[DailyProgress]): Unit = {

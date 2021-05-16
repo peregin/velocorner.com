@@ -5,8 +5,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import java.net.URI
 
-/**
-  * Created by levi on 25/01/16.
+/** Created by levi on 25/01/16.
   *  e.g.:
   * http://localhost:9000/authorize/strava
   * http://velocorner.com/authorize/strava

@@ -6,8 +6,7 @@ import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, WithingsMeasureFeed}
 import velocorner.util.CloseableResource
 
-/**
-  * Created by levi on 23.10.16.
+/** Created by levi on 23.10.16.
   */
 object WithingsMeasuresApp extends App with LazyLogging with CloseableResource with MyLocalConfig {
 

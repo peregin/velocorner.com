@@ -5,14 +5,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import velocorner.api.Progress
 
-/**
- * Created by levi on 09/07/15.
- */
+/** Created by levi on 09/07/15.
+  */
 class YearlyProgressSpec extends AnyWordSpec with Matchers {
 
   private val today = LocalDate.parse("2015-07-10")
-  private val progress = Progress(
-    1, 1, 10, 10, 1000, 3, 30, 30)
+  private val progress = Progress(1, 1, 10, 10, 1000, 3, 30, 30)
 
   "model" should {
 

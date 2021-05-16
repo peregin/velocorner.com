@@ -18,4 +18,3 @@ object AccountFromStorageApp extends zio.App with MyLocalConfig {
     res.provideLayer(zEnv).exitCode
   }
 }
-

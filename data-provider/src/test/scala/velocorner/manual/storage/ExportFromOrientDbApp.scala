@@ -12,11 +12,12 @@ import zio.{ExitCode, Task, URIO, ZIO}
 object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig {
 
   def writeJson(name: String, activities: Iterable[Activity]): Task[Unit] = {
-    ZIO.effect(new PrintWriter(name))
-      .bracket{
+    ZIO
+      .effect(new PrintWriter(name))
+      .bracket {
         logger.info(s"file $name has been created ...")
         out => ZIO.effectTotal(out.close())
-      }{ out =>
+      } { out =>
         ZIO.effectTotal(out.println(JsonIo.write(activities)))
       }
   }
@@ -31,10 +32,13 @@ object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig
       _ <- writeJson(s"/Users/levi/Downloads/$athleteId.json", activities)
       _ <- ZIO.effect(storage.destroy())
     } yield ()
-    res.fold(err => {
-      logger.error("failed to extract data", err)
-      ExitCode.failure
-    }, _ => ExitCode.success)
+    res.fold(
+      err => {
+        logger.error("failed to extract data", err)
+        ExitCode.failure
+      },
+      _ => ExitCode.success
+    )
   }
 
 }

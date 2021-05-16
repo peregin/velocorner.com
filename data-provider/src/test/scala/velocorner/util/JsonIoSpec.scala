@@ -7,9 +7,8 @@ import velocorner.model.strava.Athlete
 
 import scala.io.Source
 
-/**
- * Created by levi on 08/02/15.
- */
+/** Created by levi on 08/02/15.
+  */
 class JsonIoSpec extends AnyWordSpec with Matchers {
 
   "converter for athlete activities" should {

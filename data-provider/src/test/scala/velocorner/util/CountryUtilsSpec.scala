@@ -31,7 +31,7 @@ class CountryUtilsSpec extends AnyWordSpec with Matchers {
         "Adliswil",
         "Budapest"
       )
-      CountryUtils.normalize(locations) must contain theSameElementsAs(List("Adliswil,CH", "Budapest"))
+      CountryUtils.normalize(locations) must contain theSameElementsAs (List("Adliswil,CH", "Budapest"))
     }
   }
 

@@ -20,7 +20,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-
 class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {
@@ -44,7 +43,9 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     val wf = forecastFixture.points.map(w => WeatherForecast("Zurich", now.getMillis, w))
     when(weatherStorage.listRecentForecast("Zurich")).thenReturn(Future(wf))
     val cw = CurrentWeather(
-      location = "Zurich", timestamp = now, bootstrapIcon = "icon",
+      location = "Zurich",
+      timestamp = now,
+      bootstrapIcon = "icon",
       current = weatherFixture.weather.get.head,
       info = weatherFixture.main.get,
       sunriseSunset = weatherFixture.sys.get
@@ -56,7 +57,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     }
 
     "retrieve forecast" in {
-      val result = controller.forecast("Zurich" ).apply(FakeRequest())
+      val result = controller.forecast("Zurich").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val dailyForecast = Helpers.contentAsJson(result).as[List[DailyWeather]]
       dailyForecast must have size 1
@@ -64,19 +65,19 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     }
 
     "fail for empty place in weather forecast" in {
-      val result = controller.forecast("" ).apply(FakeRequest())
+      val result = controller.forecast("").apply(FakeRequest())
       Helpers.status(result) mustBe Status.BAD_REQUEST
     }
 
     "retrieve current weather" in {
-      val result = controller.current("Zurich" ).apply(FakeRequest())
+      val result = controller.current("Zurich").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val currentWeather = Helpers.contentAsJson(result).as[CurrentWeather]
       currentWeather mustBe cw
     }
 
     "fail for empty place in current weather" in {
-      val result = controller.current("" ).apply(FakeRequest())
+      val result = controller.current("").apply(FakeRequest())
       Helpers.status(result) mustBe Status.BAD_REQUEST
     }
   }
