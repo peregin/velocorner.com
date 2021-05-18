@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: adoptopenjdk/openjdk11:jdk-11.0.11_9-centos-slim
+      - image: peregin/circleci:latest
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
@@ -16,21 +16,6 @@ jobs:
       SBT_VERSION: 1.5.2
 
     steps:
-      - run:
-          name: get sbt binary
-          command: |
-            export SBT_OPTS="-Dfile.encoding=UTF-8"
-            curl -L --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $HOME/sbt.tgz
-            tar zxf $HOME/sbt.tgz -C $HOME
-            rm /usr/local/bin/sbt || true
-            ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
-
-      - run:
-          name: circleci user
-          command: |
-            id -u circleci &>/dev/null || adduser --uid 1500 -c GECOS circleci
-            chown -R circleci ~/project
-
       - checkout
 
       - restore_cache:
