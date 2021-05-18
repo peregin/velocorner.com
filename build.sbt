@@ -263,6 +263,7 @@ lazy val root = (project in file(".") withId "velocorner")
     onLoadMessage := welcomeMessage.value
   )
 
+
 def welcomeMessage = Def.setting {
   import scala.Console._
   def red(text: String): String = s"$RED$text$RESET"
