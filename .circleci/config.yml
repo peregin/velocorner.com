@@ -3,7 +3,8 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: openjdk11
+      - image: adoptopenjdk/openjdk11
+
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
