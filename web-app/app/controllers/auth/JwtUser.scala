@@ -1,28 +1,33 @@
 package controllers.auth
 
-import pdi.jwt.{JwtAlgorithm, JwtJson}
+import controllers.auth.JwtUser.issuer
+import org.joda.time.{DateTime, DateTimeZone}
+import pdi.jwt.{JwtAlgorithm, JwtJson, JwtOptions}
 import play.api.libs.json._
 import velocorner.model.Account
-import velocorner.util.JsonIo
 
+import java.time.Clock
 import scala.util.{Failure, Success}
 
 object JwtUser {
 
   implicit val format = Format[JwtUser](Json.reads[JwtUser], Json.writes[JwtUser])
 
-  val secret = "key"
+  val issuer = "velocorner"
 
   def toJwtUser(account: Account) =
     JwtUser(
+      id = account.athleteId,
       name = account.displayName,
       location = account.displayLocation,
       avatarUrl = account.avatarUrl
     )
 
-  def fromToken(token: String): JwtUser = {
-    JwtJson.decode(token, secret, Seq(JwtAlgorithm.HS256)) match {
+  def fromToken(token: String)(implicit secret: String): JwtUser = {
+    JwtJson.decode(token, secret, Seq(JwtAlgorithm.HS256), JwtOptions(expiration = true)) match {
       case Success(claim) =>
+        if (!claim.isValid(issuer)(Clock.systemUTC())) throw new SecurityException("token expired")
+
         val json = Json.parse(claim.content)
         (json \ "user").get.validate[JwtUser] match {
           case JsSuccess(that, _) => that
@@ -33,12 +38,22 @@ object JwtUser {
   }
 }
 
-case class JwtUser(name: String, location: String, avatarUrl: String) {
+case class JwtUser(id: Long, name: String, location: String, avatarUrl: String) {
 
-  def toToken() = {
+  def toToken(implicit secret: String) = {
+    val now = DateTime.now(DateTimeZone.UTC)
+    val exp = now.plusDays(30)
+
     val json = Json.toJson(this)
-    val obj = JsObject(Seq("user" -> json))
+    val obj = JsObject(
+      Seq(
+        "user" -> json,
+        "exp" -> JsNumber(exp.getMillis),
+        "iat" -> JsNumber(now.getMillis),
+        "iss" -> JsString(issuer)
+      )
+    )
     val header = Json.obj(("typ", "JWT"), ("alg", "HS256"))
-    JwtJson.encode(header, obj, JwtUser.secret)
+    JwtJson.encode(header, obj, secret)
   }
 }

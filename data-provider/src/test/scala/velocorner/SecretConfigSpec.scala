@@ -1,10 +1,10 @@
 package velocorner
 
 import com.typesafe.config.ConfigFactory
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-
-class SecretConfigSpec extends Specification {
+class SecretConfigSpec extends AnyWordSpec with Matchers {
 
   "config" should {
 
@@ -16,8 +16,8 @@ class SecretConfigSpec extends Specification {
           |proxy.port=9999
         """.stripMargin
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
-      conf.getProxyHost must beSome("localhost")
-      conf.getProxyPort must beSome(9999)
+      conf.getProxyHost mustBe Some("localhost")
+      conf.getProxyPort mustBe Some(9999)
     }
 
     "ignore proxy settings" in {
@@ -26,13 +26,13 @@ class SecretConfigSpec extends Specification {
           |key=value
         """.stripMargin
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
-      conf.getProxyHost must beNone
-      conf.getProxyPort must beNone
+      conf.getProxyHost mustBe empty
+      conf.getProxyPort mustBe empty
     }
 
     "mark disabled missing withings enabling" in {
       val conf = new SecretConfig(ConfigFactory.parseString(""))
-      conf.isServiceEnabled(ServiceProvider.Withings) must beFalse
+      conf.isServiceEnabled(ServiceProvider.Withings) mustBe false
     }
 
     "mark enabled explicit withings setup" in {
@@ -41,7 +41,7 @@ class SecretConfigSpec extends Specification {
           |withings.enabled=true
         """.stripMargin
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
-      conf.isServiceEnabled(ServiceProvider.Withings) must beTrue
+      conf.isServiceEnabled(ServiceProvider.Withings) mustBe true
     }
   }
 }

@@ -1,4 +1,4 @@
-FROM node:13.7.0-alpine
+FROM node:14.16.1-alpine
 
 # create a work directory and copy over our dependency manifest files.
 RUN mkdir /app
@@ -10,7 +10,6 @@ COPY ["package.json", "package-lock.json*", "./"]
 # build
 # RUN npm install --production
 RUN npm install
-RUN npm install react-scripts@3.3.1 -g
 
 # expose PORT 3000 on our virtual machine so we can run our server
 EXPOSE 3000

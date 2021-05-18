@@ -266,7 +266,8 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
           .map(_.replace("#commutemarker.com", ""))
           .map(_.trim.toLowerCase)
           .groupBy(identity)
-          .view.mapValues(_.size)
+          .view
+          .mapValues(_.size)
           .map { case (k, v) => WordCloud(k, v) }
           .toList
           .filter(_.weight > 1)

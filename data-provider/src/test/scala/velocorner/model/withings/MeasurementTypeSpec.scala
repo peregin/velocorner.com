@@ -1,9 +1,10 @@
 package velocorner.model.withings
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.model.withings.MeasurementType._
 
-class MeasurementTypeSpec extends Specification {
+class MeasurementTypeSpec extends AnyWordSpec with Matchers {
 
   "type" should {
     "have proper mapping" in {

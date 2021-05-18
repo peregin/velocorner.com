@@ -1,15 +1,23 @@
 package velocorner.model.strava
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.util.JsonIo
 
-class AthleteSpec extends Specification {
+class AthleteSpec extends AnyWordSpec with Matchers {
 
   "model" should {
     "add type to the json" in {
       val athlete = Athlete(
-        10, 1, Some("levi"), Some("rider"), Some("profile picture url"), None, Some("Switzerland"),
-        bikes = None, shoes = None
+        10,
+        1,
+        Some("levi"),
+        Some("rider"),
+        Some("profile picture url"),
+        None,
+        Some("Switzerland"),
+        bikes = None,
+        shoes = None
       )
       val json = JsonIo.write(athlete)
       json ===

@@ -2,6 +2,7 @@ package velocorner.model.weather
 
 import org.joda.time.DateTime
 import play.api.libs.json._
+import velocorner.api.weather.{WeatherDescription, WeatherInfo}
 import velocorner.model.EpochFormatter
 
 object SunriseSunsetInfo {
@@ -24,6 +25,7 @@ case class Coord(lon: Double, lat: Double)
   * https://openweathermap.org/current
   */
 object WeatherResponse {
+  implicit val dateTimeFormat = EpochFormatter.create
   implicit val responseFormat = Format[WeatherResponse](Json.reads[WeatherResponse], Json.writes[WeatherResponse])
 }
 
@@ -76,6 +78,9 @@ object WeatherResponse {
   */
 case class WeatherResponse(
     cod: Int,
+    weather: Option[List[WeatherDescription]],
+    main: Option[WeatherInfo],
     sys: Option[SunriseSunsetInfo],
-    coord: Option[Coord]
+    coord: Option[Coord],
+    dt: Option[DateTime]
 )

@@ -36,15 +36,13 @@ val apacheCommons = Seq(
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
 val playTestPlus = "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % "test"
-val scalaSpec = "org.specs2" %% "specs2-core" % Dependencies.scalaSpecVersion % "test"
-val scalaSpecJunit = "org.specs2" %% "specs2-junit" % Dependencies.scalaSpecVersion % "test"
 val mockito = "org.mockito" % "mockito-core" % Dependencies.mockitoVersion % "test"
 val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion % "test"
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-  "org.codehaus.janino" % "janino" % "3.1.3", // conditional logback processing
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
+  "org.codehaus.janino" % "janino" % "3.1.4", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
@@ -74,7 +72,7 @@ def squants = Seq(
 )
 
 def spark = Seq(
-  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude("com.google.inject", "guice")
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude ("com.google.inject", "guice")
 )
 
 def smile = Seq(
@@ -84,26 +82,26 @@ def smile = Seq(
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
-    extracted.runAggregated(com.typesafe.sbt.packager.Keys.dist in Global in webApp, st)
+    extracted.runAggregated(webApp / dist, st)
   }
 )
 
 lazy val runWebAppDockerPush: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
-    extracted.runAggregated(publish in Docker in webApp, st)
+    extracted.runAggregated(webApp / Docker / publish, st)
   }
 )
 
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
-  version := (version in ThisBuild).value,
+  version := (ThisBuild / version).value,
   scalaVersion := Dependencies.projectScalaVersion,
-  organization := "com.github.peregin",
+  organization := "velocorner",
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "11", "-target", "11"),
   scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
-  scalacOptions in Test ++= Seq("-Yrangepos"),
-  resolvers in ThisBuild ++= Seq(
+  Test / scalacOptions ++= Seq("-Yrangepos"),
+  ThisBuild / resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
   ),
   releaseProcess := Seq[ReleaseStep](
@@ -131,8 +129,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playJsonExtensions,
       playJsonJoda,
       playWsAhcStandalone,
-      scalaSpec,
-      scalaSpecJunit
+      scalaTest
     ) ++ logging
       ++ storage
       ++ apacheCommons
@@ -155,7 +152,8 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
     buildSettings,
     name := "data-analytics",
     libraryDependencies ++= smile ++ logging
-  ).dependsOn(dataProvider % "compile->compile; test->test")
+  )
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 // module dedicated for analytics with Spark, with a special Scala version
 lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "data-analytics-spark")
@@ -166,10 +164,10 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
   ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
-lazy val testService = (project in file("test/test-service") withId "test-service")
+lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
   .settings(
     buildSettings,
-    name := "test-service",
+    name := "test-service-java",
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
@@ -180,6 +178,19 @@ lazy val testService = (project in file("test/test-service") withId "test-servic
       scalaTest
     ) ++ cats,
     resolvers += "MavenRepository" at "https://mvnrepository.com/"
+  )
+
+lazy val testServiceScala = (project in file("test/test-service-scala") withId "test-service-scala")
+  .settings(
+    buildSettings,
+    name := "test-service-java",
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
+      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
+      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
+      "io.argonaut" %% "argonaut" % "6.3.3",
+      scalaTest
+    ) ++ cats
   )
 
 lazy val webApp = (project in file("web-app") withId "web-app")
@@ -195,7 +206,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playTest,
       playTestPlus,
       mockito,
-      scalaSpec
+      scalaTest
     ),
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
@@ -214,16 +225,17 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     ),
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
-    packageName in Docker := "velocorner.com",
-    dockerExposedPorts in Docker := Seq(9000),
+    Docker / packageName := "velocorner.com",
+    Docker / dockerExposedPorts := Seq(9000),
     dockerBaseImage := "openjdk:11-jre-slim",
     dockerUsername := Some("peregin"),
-    version in Docker := "latest",
-    javaOptions in Universal ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
+    Docker / version := "latest",
+    Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true,
+    swaggerV3 := true
     // whenever we generate build information, run the formatter on the generated files
+    /*
     Compile / buildInfo := Def.taskDyn {
       val files = (Compile / buildInfo).value
       Def.task {
@@ -231,13 +243,20 @@ lazy val webApp = (project in file("web-app") withId "web-app")
         files
       }
     }.value
+     */
   )
-  .enablePlugins(play.sbt.PlayScala, play.sbt.PlayAkkaHttp2Support, BuildInfoPlugin, com.iheart.sbtPlaySwagger.SwaggerPlugin, ScalafmtExtensionPlugin)
+  .enablePlugins(
+    play.sbt.PlayScala,
+    play.sbt.PlayAkkaHttp2Support,
+    BuildInfoPlugin,
+    com.iheart.sbtPlaySwagger.SwaggerPlugin,
+    ScalafmtExtensionPlugin
+  )
   .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(testService, dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp)
+  .aggregate(dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp, testServiceJava, testServiceScala)
   .settings(
     name := "velocorner",
     buildSettings,
@@ -259,5 +278,8 @@ def welcomeMessage = Def.setting {
       |Useful sbt tasks:
       |${item("\"project web-app\" run")} - run web application
       |${item("scalafmtGenerated")} - formats generated scala sources
+      |${item("fmt")} - command alias to format all files
       """.stripMargin
 }
+
+addCommandAlias("fmt", "; scalafmtAll ; scalafmtSbt ; scalafmtGenerated")

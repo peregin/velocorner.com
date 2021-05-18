@@ -1,17 +1,15 @@
 package velocorner.util
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.api.strava.Activity
 import velocorner.model.strava.Athlete
 
 import scala.io.Source
 
-/**
- * Created by levi on 08/02/15.
- */
-class JsonIoSpec extends Specification {
-
-  stopOnFail
+/** Created by levi on 08/02/15.
+  */
+class JsonIoSpec extends AnyWordSpec with Matchers {
 
   "converter for athlete activities" should {
 
@@ -19,7 +17,7 @@ class JsonIoSpec extends Specification {
 
     "read Strava activity" in {
       val list = JsonIo.read[List[Activity]](json)
-      list must haveSize(30)
+      list must have size 30
 
       val first = list.head
       first.name === "Stallikon Ride"
@@ -38,9 +36,9 @@ class JsonIoSpec extends Specification {
     "read all the activity details" in {
       val jsonSingle = Source.fromURL(getClass.getResource("/data/strava/single_activity.json")).mkString
       val activity = JsonIo.read[Activity](jsonSingle)
-      activity.max_speed must beSome(13.6f)
-      activity.average_speed must beSome(4.732f)
-      activity.average_cadence must beSome(64.9f)
+      activity.max_speed mustBe Some(13.6f)
+      activity.average_speed mustBe Some(4.732f)
+      activity.average_cadence mustBe Some(64.9f)
     }
   }
 
@@ -49,7 +47,7 @@ class JsonIoSpec extends Specification {
 
     "read the json file" in {
       val list = JsonIo.read[List[Activity]](json)
-      list must haveSize(1)
+      list must have size 1
     }
   }
 
@@ -57,14 +55,14 @@ class JsonIoSpec extends Specification {
     "generate type field" in {
       val a = Athlete(1, 2, Some("Levi"), None, None, Some("city"), Some("country"), None, None)
       val json = JsonIo.write(a)
-      json must contain("type\" : \"Athlete")
+      json must include("type\" : \"Athlete")
     }
   }
 
   "gzip file" should {
     "be parsed" in {
       val list = JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
-      list must haveSize(200)
+      list must have size 200
     }
   }
 

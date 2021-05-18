@@ -8,7 +8,6 @@ import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.util.JsonIo
 
-
 object ActivitiesFromStravaToFileApp extends App with AwaitSupport with LazyLogging with MyLocalConfig {
 
   implicit val feed = new StravaActivityFeed(None, SecretConfig.load())

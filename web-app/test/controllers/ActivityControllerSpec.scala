@@ -13,7 +13,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-
 class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {

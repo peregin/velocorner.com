@@ -1,8 +1,9 @@
 package velocorner.util
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class MetricsSpec extends Specification {
+class MetricsSpec extends AnyWordSpec with Matchers {
 
   "startup service" should {
 

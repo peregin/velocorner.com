@@ -57,4 +57,8 @@ select athlete_id::text, (data->>'start_date')::timestamp,
 where athlete_id = 432909 order by data->>'start_date' desc;
 
 
+select * from weather;
+delete from weather;
+
+
 

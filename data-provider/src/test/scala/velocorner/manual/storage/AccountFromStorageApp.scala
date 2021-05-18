@@ -15,7 +15,6 @@ object AccountFromStorageApp extends zio.App with MyLocalConfig {
       _ <- log.info(s"ACCOUNT ${account.toString}")
       _ <- ZIO.effect(storage.destroy())
     } yield ()
-    res.fold(_ => ExitCode.failure, _ => ExitCode.success).provideLayer(zEnv)
+    res.provideLayer(zEnv).exitCode
   }
 }
-

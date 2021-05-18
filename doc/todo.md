@@ -1,4 +1,9 @@
 # ToDo
+- compass rose - wind direction
+- marketing campaign FB
+- variation of the greeting, instead of Hello 
+- intercom (or alternative) for features
+- expose oauth authorization URL from BE 
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show consecutive sport days
@@ -7,16 +12,22 @@
 - add where to ride section
 - add gps overlay over video section
 - add garmin data field section
-- replace scala specs with scala test
 - PubSub (pusher or alternative) for updates
+- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 
 # InProgress
 - add 3D profile of the last activity gpx
 
 # Done
-- use sharestack - added to About page
+- show current min/max temperature
+- speedup node docker image creation
+- show current temperature
+- replace scala specs with scala test
+- increase session timeout for login token
+- use https://uptimerobot.com/ for monitoring and notifying about downtime
+- use https://stackshare.io/companies/velocorner - added to About page
 - demo profile heatmap when logged out
-- add status page (https://velocorner.statuspage.io/)
+- use status page (https://velocorner.statuspage.io/)
 - demo profile word clouds when logged out
 - sitemap to help seo
 - word clouds (for activity titles, descriptions)

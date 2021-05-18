@@ -55,12 +55,12 @@ class WebController @Inject() (
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()
     result.value
-      .map(_ => Redirect(routes.WebController.index()))
+      .map(_ => Redirect(routes.WebController.index))
       .recover {
         case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
           // if the feed fails with expired token, then logout
           logger.info("feed token has been expired, logging out")
-          Redirect(auth.routes.StravaController.logout())
+          Redirect(auth.routes.StravaController.logout)
       }
   }
 
@@ -88,7 +88,7 @@ class WebController @Inject() (
     val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
     val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
     val xml =
-<urlset
+      <urlset
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9

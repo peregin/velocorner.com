@@ -3,9 +3,9 @@ package velocorner.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
-import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.model.strava.Gear
 import velocorner.api.{Achievement, GeoPosition}
-import velocorner.api.weather.{SunriseSunset, WeatherForecast}
+import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 
 import scala.concurrent.Future
 import cats.instances.future._
@@ -13,6 +13,16 @@ import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
 import scala.concurrent.ExecutionContext.Implicits.global
+
+trait AttributeStorage[M[_]] {
+
+  // mapped to updated time
+  val forecastTsKey = "forecast"
+  val weatherTsKey = "weather"
+
+  def storeAttribute(key: String, `type`: String, value: String): M[Unit]
+  def getAttribute(key: String, `type`: String): M[Option[String]]
+}
 
 trait Storage[M[_]] {
 
@@ -53,18 +63,14 @@ trait Storage[M[_]] {
     // weather - location is <city[,countryISO2letter]>
     // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
     def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
-    def storeWeather(forecast: Iterable[WeatherForecast]): M[Unit]
-    def getSunriseSunset(location: String, localDate: String): M[Option[SunriseSunset]]
-    def storeSunriseSunset(sunriseSunset: SunriseSunset): M[Unit]
+    def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
     def suggestLocations(snippet: String): M[Iterable[String]]
+    def getRecentWeather(location: String): M[Option[CurrentWeather]]
+    def storeRecentWeather(weather: CurrentWeather): M[Unit]
   }
 
   // key value pairs - generic attribute storage
-  def getAttributeStorage: AttributeStorage
-  trait AttributeStorage {
-    def storeAttribute(key: String, `type`: String, value: String): M[Unit]
-    def getAttribute(key: String, `type`: String): M[Option[String]]
-  }
+  def getAttributeStorage: AttributeStorage[M]
 
   // various achievements
   def getAchievementStorage: AchievementStorage

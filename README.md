@@ -1,6 +1,5 @@
 [<img src="https://img.shields.io/travis/peregin/velocorner.com.svg"/>](https://travis-ci.org/peregin/velocorner.com)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fb859d66691e27cb4295/maintainability)](https://codeclimate.com/github/peregin/velocorner.com/maintainability)
-[![codecov.io](https://codecov.io/github/peregin/velocorner.com/coverage.svg?branch=master)](https://codecov.io/github/peregin/velocorner.com?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/peregin/velocorner.com.svg)](https://github.com/peregin/velocorner.com/issues)
 [![Swagger Validator](https://img.shields.io/swagger/valid/2.0/https/raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json.svg)](http://velocorner.com/docs)
@@ -30,14 +29,17 @@ Follows the infrastructure as code approach, see more details in this [repo](htt
 ![Infrastructure](https://raw.github.com/peregin/my-little-infra/master/doc/infra.png "Infrastructure")
 
 ## Local Setup
+
 ### Mirror Infrastructure
 Start local infrastructure and deploy the stack
+
 ### Individual Services
 Start database
 ```shell script
 # start and import database
 ./script/start_psql.sh
 ./script/import_psql.sh ~/Downloads/velo/velocorner/backup/psql-202008031826.sql.gz
+
 # start web application
 sbt -Xms512M \
     -Xmx2048M \

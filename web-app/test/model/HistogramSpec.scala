@@ -1,9 +1,10 @@
 package model
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.api.heatmap.HeatmapPoint
 
-class HistogramSpec extends Specification {
+class HistogramSpec extends AnyWordSpec with Matchers {
 
   "histogram" should {
 
@@ -24,22 +25,22 @@ class HistogramSpec extends Specification {
       histogram must have size 2
       val first = histogram(0)
       first.name === "2020"
-      first.data should containTheSameElementsAs(List(
+      first.data must contain theSameElementsAs List(
         HeatmapPoint("10km", 0),
         HeatmapPoint("50km", 2),
         HeatmapPoint("100km", 0),
         HeatmapPoint("150km", 0),
         HeatmapPoint("200km", 2)
-      ))
+      )
       val second = histogram(1)
       second.name === "2018"
-      second.data should containTheSameElementsAs(List(
+      second.data must contain theSameElementsAs List(
         HeatmapPoint("10km", 2),
         HeatmapPoint("50km", 0),
         HeatmapPoint("100km", 1),
         HeatmapPoint("150km", 0),
         HeatmapPoint("200km", 0)
-      ))
+      )
     }
   }
 }

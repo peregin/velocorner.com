@@ -8,15 +8,16 @@ import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
+import velocorner.api.weather.CurrentWeather
 // needed for sql interpolator when filtering on start date
-import doobie.implicits.javatime._
+import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
 import velocorner.api.{Achievement, GeoPosition}
 import velocorner.api.strava.Activity
-import velocorner.api.weather.{SunriseSunset, WeatherForecast}
+import velocorner.api.weather.WeatherForecast
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
@@ -74,10 +75,8 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
   private implicit val activityMeta: Meta[Activity] = playJsonMeta[Activity]
   private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
-  private implicit val weatherMeta: Meta[WeatherForecast] =
-    playJsonMeta[WeatherForecast]
-  private implicit val sunMeta: Meta[SunriseSunset] =
-    playJsonMeta[SunriseSunset]
+  private implicit val forecastMeta: Meta[WeatherForecast] = playJsonMeta[WeatherForecast]
+  private implicit val weatherMeta: Meta[CurrentWeather] = playJsonMeta[CurrentWeather]
   private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
@@ -121,7 +120,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |where athlete_id = $athleteId and type = $activityType
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
-
   override def listYtdActivities(athleteId: Long, activityType: String, year: Int): Future[Iterable[Activity]] =
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
@@ -148,7 +146,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
       limit: Int
   ): Future[Iterable[Activity]] =
     sql"""select data from activity
-         |where athlete_id = $athleteId limit $limit
+         |where athlete_id = $athleteId
+         |order by data->>'start_date' desc
+         |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
   override def suggestActivities(
@@ -210,18 +210,18 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
         location: String,
         limit: Int
     ): Future[Iterable[WeatherForecast]] =
-      sql"""select data from weather
+      sql"""select data from forecast
            |where location = $location
            |order by update_time desc
            |limit $limit
            |""".stripMargin.query[WeatherForecast].to[List].transactToFuture
 
-    override def storeWeather(
+    override def storeRecentForecast(
         forecast: Iterable[WeatherForecast]
     ): Future[Unit] =
       forecast
         .map { a =>
-          sql"""insert into weather (location, update_time, data)
+          sql"""insert into forecast (location, update_time, data)
              |values(${a.location}, ${a.timestamp}, $a) on conflict(location, update_time)
              |do update set data = $a
              |""".stripMargin.update.run.void
@@ -231,32 +231,29 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
         .void
         .transactToFuture
 
-    override def getSunriseSunset(
-        location: String,
-        localDate: String
-    ): Future[Option[SunriseSunset]] =
-      sql"""select data from sun where location = $location and update_date = $localDate
-           |""".stripMargin.query[SunriseSunset].option.transactToFuture
-
-    override def storeSunriseSunset(
-        sunriseSunset: SunriseSunset
-    ): Future[Unit] =
-      sql"""insert into sun (location, update_date, data)
-           |values(${sunriseSunset.location}, ${sunriseSunset.date}, $sunriseSunset) on conflict(location, update_date)
-           |do update set data = $sunriseSunset
-           |""".stripMargin.update.run.void.transactToFuture
-
     override def suggestLocations(snippet: String): Future[Iterable[String]] = {
       val searchPattern = "%" + snippet.toLowerCase + "%"
-      sql"""select distinct location from weather
+      sql"""select distinct location from forecast
            |where lower(location) like $searchPattern
            |""".stripMargin.query[String].to[List].transactToFuture
     }
+
+    override def getRecentWeather(location: String): Future[Option[CurrentWeather]] =
+      sql"""select data from weather where location = $location
+           |""".stripMargin.query[CurrentWeather].option.transactToFuture
+
+    override def storeRecentWeather(
+        weather: CurrentWeather
+    ): Future[Unit] =
+      sql"""insert into weather (location, data)
+           |values(${weather.location}, $weather) on conflict(location)
+           |do update set data = $weather
+           |""".stripMargin.update.run.void.transactToFuture
   }
 
-  override def getAttributeStorage: AttributeStorage = attributeStorage
+  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
 
-  private lazy val attributeStorage = new AttributeStorage {
+  private lazy val attributeStorage = new AttributeStorage[Future] {
     override def storeAttribute(
         key: String,
         `type`: String,

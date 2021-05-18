@@ -49,31 +49,17 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
         case Some(_) =>
-          Redirect(controllers.routes.WebController.index()) // already logged in
+          // already logged in
+          Redirect(controllers.routes.WebController.index)
         case None =>
-          redirectToAuthorization(scope, request) // authorize
+          // authorize
+          // - state is use to validate redirect from the OAuth provider with a unique identifier
+          // - scope is the host from FE
+          val state = UUID.randomUUID().toString
+          Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
+            request.session + (OAuth2StateKey -> state)
+          )
       }
-    }
-  }
-
-  // from FE api
-  def apiLogin = Action { implicit request =>
-    logger.info(s"API LOGIN")
-    loggedIn(request) match {
-      case Some(account) =>
-        logger.info("already logged in")
-        val token = JwtUser.toJwtUser(account).toToken()
-        logger.info(s"token = $token")
-        Ok(token)
-      case None =>
-        // state is use to validate redirect from the OAuth provider with a unique identifier
-        val state = UUID.randomUUID().toString
-        val scope = "localhost"
-        // ws.url(...).get
-        Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
-          request.session + (OAuth2StateKey -> state)
-        )
-      //Forbidden
     }
   }
 
@@ -108,19 +94,11 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   def logout = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
-    val result = Redirect(controllers.routes.WebController.index())
+    val result = Redirect(controllers.routes.WebController.index)
     tokenAccessor.delete(result)
   }
 
   // - utility methods below -
-
-  private def redirectToAuthorization(scope: String, request: Request[AnyContent]) = {
-    // state is use to validate redirect from the OAuth provider with a unique identifier
-    val state = UUID.randomUUID().toString
-    Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
-      request.session + (OAuth2StateKey -> state)
-    )
-  }
 
   // API distinguishes between provider and consumer users
   // the provider user is the Strava Athlete here
@@ -138,7 +116,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
     for {
       _ <- login(resp, consumerUser.some)
-    } yield Redirect(controllers.routes.WebController.index())
+    } yield Redirect(controllers.routes.WebController.index)
   }
 
   // matches the provider and consumer users
@@ -147,7 +125,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     for {
       athlete <- login(resp, none)
       token <- idContainer.startNewSession(athlete.id, sessionTimeoutInSeconds)
-      result <- Future.successful(Redirect(controllers.routes.WebController.index()))
+      result <- Future.successful(Redirect(controllers.routes.WebController.index))
     } yield tokenAccessor.put(token)(result)
   }
 

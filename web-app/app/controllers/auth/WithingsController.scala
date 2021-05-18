@@ -33,7 +33,7 @@ class WithingsController @Inject() (val connectivity: ConnectivitySettings, comp
   def login(scope: String) = Action { implicit request =>
     loggedIn(request) match {
       case Some(a) =>
-        Redirect(controllers.routes.WebController.index())
+        Redirect(controllers.routes.WebController.index)
       case None =>
         process(request)
     }
@@ -69,7 +69,7 @@ class WithingsController @Inject() (val connectivity: ConnectivitySettings, comp
             logger.info(s"received authorization token $t and user identifier ${maybeUserId.mkString}")
             maybeUserId match {
               case Some(userId) =>
-                Redirect(controllers.routes.WebController.index())
+                Redirect(controllers.routes.WebController.index)
                   .withSession("token" -> t.token, "secret" -> t.secret, "withingsId" -> userId)
               case _ =>
                 BadRequest

@@ -3,9 +3,9 @@ package controllers
 import akka.NotUsed
 import akka.stream.scaladsl.{Flow, Sink, Source}
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import org.reactivestreams.Subscriber
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class ApiController @Inject() (environment: Environment, val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
     with OriginChecker {
@@ -32,13 +33,24 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   // def mapped to /api/ping/
   def ping = Action { implicit request =>
     val counter = pings.incrementAndGet()
-    val payload = request.contentType match {
-      case Some("application/json") => request.body.asJson.toString
-      case _                        => request.body.asText.getOrElse("")
+    val maybePayload = request.contentType match {
+      case Some("application/json") => request.body.asJson.map(_.toString)
+      case _                        => request.body.asText
     }
-    val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
-    logger.info(s"PING[$counter]=[$payload], remote=$remoteAddress")
-    Ok
+    // log only if payload was sent with a POST
+    if (maybePayload.nonEmpty) {
+      val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress)
+      logger.info(s"PING[$counter]=[$maybePayload], remote=$remoteAddress")
+    }
+    // being monitored as keyword "ok" in https://uptimerobot.com/
+    Ok(
+      JsObject(
+        Seq(
+          "status" -> JsString("ok"),
+          "count" -> JsNumber(counter)
+        )
+      )
+    )
   }
 
   // WebSocket to update the client

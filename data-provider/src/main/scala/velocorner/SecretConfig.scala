@@ -52,4 +52,6 @@ case class SecretConfig(config: Config) {
   def getProxyUser: Option[String] = config.getOptAs[String]("proxy.user")
 
   def getProxyPassword: Option[String] = config.getOptAs[String]("proxy.password")
+
+  def getJwtSecret: String = config.getString("jwt.secret")
 }

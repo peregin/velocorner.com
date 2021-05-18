@@ -33,7 +33,10 @@ class WebControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
     "render landing page" in {
       val controller = new WebController(
-        stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
+        stubControllerComponents(),
+        cacheApiMock,
+        settingsMock,
+        refreshStrategyMock
       )(assetsFinder)
       val result = controller.index.apply(FakeRequest())
       val content = Helpers.contentAsString(result)
@@ -42,7 +45,10 @@ class WebControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
     "render about page" in {
       val controller = new WebController(
-        stubControllerComponents(), cacheApiMock, settingsMock, refreshStrategyMock
+        stubControllerComponents(),
+        cacheApiMock,
+        settingsMock,
+        refreshStrategyMock
       )(assetsFinder)
       val result = controller.about.apply(FakeRequest())
       val content = Helpers.contentAsString(result)

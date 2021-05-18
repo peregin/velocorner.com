@@ -24,8 +24,6 @@ GET     /sitemap.xml                                       controllers.WebContro
 ### NoDocs ###
 GET     /login/strava                                      controllers.auth.StravaController.login(scope: String)
 ### NoDocs ###
-GET     /api/login/strava                                  controllers.auth.StravaController.apiLogin
-### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout
@@ -60,18 +58,25 @@ GET     /api/status                                        controllers.ApiContro
 #  summary: Collects ping notification
 #  tags:
 #    - status
-#  post:
-#    requestBody:
-#      required: true
-#      content:
-#        application/json:
-#          schema:
-#             $ref: '#/components/schemas/velocorner.api.Ping'
+#  parameters:
+#    - name: body
+#      schema:
+#        $ref: '#/components/schemas/velocorner.api.Ping'
 #  responses:
 #    200:
 #      description: information has been collected
 ###
-POST    /api/ping/                                         controllers.ApiController.ping
+POST    /api/ping                                          controllers.ApiController.ping
+
+###
+#  summary: Collects ping notification
+#  tags:
+#    - status
+#  responses:
+#    200:
+#      description: information has been collected
+###
+GET     /api/ping                                          controllers.ApiController.ping
 
 ###
 #  summary: Stores preferences for units of measurement
@@ -396,7 +401,7 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 #      content:
 #        application/json:
 #          schema:
-#            $ref: '#/components/schemas/velocorner.api.weather.SunriseSunset'
+#            $ref: '#/components/schemas/velocorner.api.weather.CurrentWeather'
 #    400:
 #      description: Bad request
 #    404:
@@ -404,7 +409,7 @@ GET     /api/weather/forecast/:location                    controllers.WeatherCo
 #    500:
 #      description: Internal error
 ###
-GET     /api/weather/sunrise/:location                     controllers.WeatherController.sunrise(location: String)
+GET     /api/weather/current/:location                     controllers.WeatherController.current(location: String)
 
 ###
 #  summary: Suggests a list of locations based on the query parameter

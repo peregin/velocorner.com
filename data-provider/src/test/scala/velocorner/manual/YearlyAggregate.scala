@@ -4,9 +4,8 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Progress
 import velocorner.model.YearlyProgress
 
-/**
- * Created by levi on 17/08/15.
- */
+/** Created by levi on 17/08/15.
+  */
 object YearlyAggregate {
 
   def from(yp: YearlyProgress): YearlyAggregate = {

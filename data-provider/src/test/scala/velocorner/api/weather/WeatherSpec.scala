@@ -1,31 +1,32 @@
 package velocorner.api.weather
 
 import org.joda.time.DateTime
-import org.specs2.mutable.Specification
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
-
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import cats.implicits._
 
-class WeatherSpec extends Specification {
+class WeatherSpec extends AnyWordSpec with Matchers {
 
   val forecast = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json")
 
   "openweathermap.org response" should {
+
     "be loaded from reference file" in {
-      forecast.cod === "200"
-      forecast.points must haveSize(40)
-      forecast.city.map(_.name) === "Zurich".some
-      forecast.city.map(_.country) === "CH".some
+      forecast.cod mustBe "200"
+      forecast.points must have size 40
+      forecast.city.map(_.name) mustBe "Zurich".some
+      forecast.city.map(_.country) mustBe "CH".some
 
       val first = forecast.points.head
-      first.dt.compareTo(DateTime.parse("2019-01-19T01:00:00.000+01:00")) === 0
-      first.main.temp === -3.71f
-      first.main.humidity === 89
-      first.weather must haveSize(1)
+      first.dt.compareTo(DateTime.parse("2019-01-19T01:00:00.000+01:00")) mustBe 0
+      first.main.temp mustBe -3.71f
+      first.main.humidity mustBe 89
+      first.weather must have size 1
 
       val info = first.weather.head
-      info.main === "Clear"
+      info.main mustBe "Clear"
     }
   }
 
@@ -45,7 +46,7 @@ class WeatherSpec extends Specification {
     "be grouped by day" in {
       val entries = forecast.points.map(w => WeatherForecast("Zurich,CH", w.dt.getMillis, w))
       val dailyForecast = DailyWeather.list(entries)
-      dailyForecast must haveSize(5)
+      dailyForecast must have size 5
     }
   }
 }

@@ -9,10 +9,11 @@ object EmbeddedPsqlStorage {
     val locale = sys.props.get("os.name") match {
       case Some(mac) if mac.toLowerCase.contains("mac") => "en_US"
       case Some(win) if win.toLowerCase.contains("win") => "en_us"
-      case _ => "en_US.utf8"
+      case _                                            => "en_US.utf8"
     }
     // postgres can't be executed as root
-    EmbeddedPostgres.builder()
+    EmbeddedPostgres
+      .builder()
       .setLocaleConfig("locale", locale)
       .setLocaleConfig("lc-messages", locale)
       .start()

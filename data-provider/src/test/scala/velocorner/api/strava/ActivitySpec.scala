@@ -2,18 +2,19 @@ package velocorner.api.strava
 
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import velocorner.model.DateTimePattern
 import velocorner.util.JsonIo
 
-class ActivitySpec extends Specification {
+class ActivitySpec extends AnyWordSpec with Matchers {
 
   "model" should {
     "use heart rate data" in {
       val hr = JsonIo.readReadFromResource[Activity]("/data/strava/activity-hr.json")
-      hr.average_heartrate must beSome(159.6f)
-      hr.max_heartrate must beSome(182.0f)
-      hr.gear_id must beSome("b1494155")
+      hr.average_heartrate mustBe Some(159.6f)
+      hr.max_heartrate mustBe Some(182.0f)
+      hr.gear_id mustBe Some("b1494155")
     }
 
     "read ice skating activities" in {
@@ -30,8 +31,10 @@ class ActivitySpec extends Specification {
     // 2014-03-30T02:51:36Z - bad - Illegal instant due to time zone offset transition, reading in Europe/Zurich - DST
     // 2015-01-23T16:18:17Z - good
     "read activity where start_date_local is missing and start_date is wrong" in {
-      val startDate = DateTime.parse("2014-03-30T02:51:36Z",
-        DateTimeFormat.forPattern(DateTimePattern.longFormat)
+      val startDate = DateTime.parse(
+        "2014-03-30T02:51:36Z",
+        DateTimeFormat
+          .forPattern(DateTimePattern.longFormat)
           .withZone(DateTimeZone.UTC) // otherwise takes current zone
       )
       startDate.getYear === 2014

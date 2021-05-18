@@ -1,8 +1,9 @@
 package velocorner.util
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DemoActivityUtilsSpec extends Specification {
+class DemoActivityUtilsSpec extends AnyWordSpec with Matchers {
 
   "utility" should {
 

@@ -1,10 +1,11 @@
 package velocorner.api
 
-import org.specs2.mutable.Specification
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.Environment
 import velocorner.util.JsonIo
 
-class StatusInfoSpec extends Specification {
+class StatusInfoSpec extends AnyWordSpec with Matchers {
 
   "model" should {
 
@@ -18,8 +19,8 @@ class StatusInfoSpec extends Specification {
 
     "marshal status" in {
       val json = JsonIo.write(status)
-      json must contain(""""type" : "Status"""".stripMargin)
-      json must contain(""""buildTime" :""".stripMargin)
+      json must include(""""type" : "Status"""".stripMargin)
+      json must include(""""buildTime" :""".stripMargin)
     }
   }
 }

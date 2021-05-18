@@ -13,6 +13,11 @@ function getStatus(cb) {
     .then(cb)
 }
 
+function test() {
+  let url = 'https://www.strava.com/api/v3/oauth/authorize?client_id=4486&redirect_uri=http%3A%2F%2Flocalhost%3A9001%2Fauthorize%2Fstrava&state=5127c1d8-ff50-43cc-bad8-4a8375e444c1&response_type=code&approval_prompt=auto&scope=read%2Cactivity%3Aread'
+  window.location = url
+}
+
 function login() {
   const requestOptions = {
     method: 'GET',
@@ -50,6 +55,7 @@ function checkStatus(response) {
 
 const ApiClient = {
   getStatus: getStatus,
-  login: login
+  login: login,
+  test: test,
 }
 export default ApiClient;

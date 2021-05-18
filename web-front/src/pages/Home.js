@@ -5,7 +5,7 @@ const Home = () => {
 
     const handleClick = () => {
         console.log("LOGGING IN")
-        ApiClient.login()
+        ApiClient.test()
     }
 
     return (

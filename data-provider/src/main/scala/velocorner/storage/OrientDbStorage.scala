@@ -1,33 +1,31 @@
 package velocorner.storage
 
+import cats.data.OptionT
+import cats.implicits._
 import com.orientechnologies.orient.core.command.OCommandResultListener
 import com.orientechnologies.orient.core.config.OGlobalConfiguration
-import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig}
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument
+import com.orientechnologies.orient.core.db.{ODatabasePool, ODatabaseType, OrientDB, OrientDBConfig}
 import com.orientechnologies.orient.core.metadata.schema.{OClass, OType}
 import com.orientechnologies.orient.core.record.impl.ODocument
 import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
+import com.typesafe.scalalogging.LazyLogging
+import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json, Reads, Writes}
+import velocorner.api.Achievement
+import velocorner.api.strava.Activity
 import velocorner.model._
-import velocorner.model.strava.{Athlete, Club, Gear}
+import velocorner.model.strava.Gear
 import velocorner.storage.OrientDbStorage._
 import velocorner.util.{CloseableResource, JsonIo, Metrics}
 
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 import scala.util.Try
 import scala.util.control.Exception._
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.Achievement
-import velocorner.api.weather.{SunriseSunset, WeatherForecast}
-
-import scala.jdk.CollectionConverters._
-import cats.implicits._
-import cats.data.OptionT
-import org.joda.time.DateTime
-import velocorner.api.strava.Activity
 
 object Counter {
   implicit val entryFormat = Format[Counter](Json.reads[Counter], Json.writes[Counter])
@@ -145,41 +143,10 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
-  private lazy val weatherStorage = new WeatherStorage {
-    override def listRecentForecast(location: String, limit: Int): Future[Iterable[WeatherForecast]] = {
-      queryFor[WeatherForecast](s"SELECT FROM $WEATHER_CLASS WHERE location like '$location' ORDER BY timestamp DESC LIMIT $limit")
-    }
-
-    override def storeWeather(forecast: Iterable[WeatherForecast]): Future[Unit] = {
-      forecast.toList
-        .traverse(a =>
-          upsert(a, WEATHER_CLASS, s"SELECT FROM $WEATHER_CLASS WHERE location like '${a.location}' AND timestamp = ${a.timestamp}")
-        )
-        .void
-    }
-
-    override def getSunriseSunset(location: String, localDate: String): Future[Option[SunriseSunset]] =
-      queryForOption[SunriseSunset](
-        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> location, "date" -> localDate)
-      )
-
-    override def storeSunriseSunset(sunriseSunset: SunriseSunset): Future[Unit] = {
-      upsert(
-        sunriseSunset,
-        SUN_CLASS,
-        s"SELECT FROM $SUN_CLASS WHERE location like :location AND date = :date",
-        Map("location" -> sunriseSunset.location, "date" -> sunriseSunset.date)
-      )
-    }
-
-    override def suggestLocations(snippet: String): Future[Iterable[String]] = ???
-  }
-
-  override def getWeatherStorage: WeatherStorage = weatherStorage
+  override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
-  lazy val attributeStorage = new AttributeStorage {
+  lazy val attributeStorage = new AttributeStorage[Future] {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
       val attr = KeyValue(key, `type`, value)
       upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
@@ -191,7 +158,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     }
   }
 
-  override def getAttributeStorage: AttributeStorage = attributeStorage
+  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
 
   // various achievements
   lazy val achievementStorage = new AchievementStorage {
