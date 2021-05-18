@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: moia/scala-on-circleci:java11-2.13.1-1.3.8
+      - image: openjdk11
 
     working_directory: ~/project
 
@@ -12,15 +12,27 @@ jobs:
       SBT_VERSION: 1.5.2
 
     steps:
+      - run:
+          name: Get sbt binary
+          command: |
+            apt update && apt install -y curl
+            curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
+            dpkg -i sbt-$SBT_VERSION.deb
+            rm sbt-$SBT_VERSION.deb
+            apt-get update
+            #apt-get install -y python-pip git
+            #pip install awscli
+            #apt-get clean && apt-get autoclean
+
       - checkout
 
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.sbt" }}
+          keys: v1-dependencies-{{ checksum "build.sbt" }}
 
       - run: cat /dev/null | sbt test:compile
 
       - save_cache:
+          key: v1-dependencies--{{ checksum "build.sbt" }}
           paths:
             - ~/.m2
             - ~/.ivy2
@@ -28,6 +40,5 @@ jobs:
             - ~/.sbt/launchers
             - ~/.cache/coursier
             - ~/.npm
-          key: v1-dependencies--{{ checksum "build.sbt" }}
 
       - run: cat /dev/null | sbt test:test
