@@ -20,7 +20,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-{{ checksum "build.sbt" }}
-      - run: sbt compile/test > /dev/null
+      - run: sbt test:compile > /dev/null
       - save_cache:
           key: v1-{{ checksum "build.sbt" }}
           paths:
@@ -30,7 +30,7 @@ jobs:
             - ~/.sbt/launchers
             - ~/.cache/coursier
             - ~/.npm
-      - run: sbt test/test > /dev/null
+      - run: sbt test:test > /dev/null
 
 workflows:
   build_and_test:
