@@ -4,6 +4,9 @@ jobs:
   build:
     docker:
       - image: openjdk11
+        auth:
+          username: peregin
+          password: $DOCKERHUB_PASSWORD
 
     working_directory: ~/project
 
