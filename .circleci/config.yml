@@ -16,14 +16,12 @@ jobs:
       SBT_VERSION: 1.5.2
 
     steps:
+      - run: whoami
       - checkout
-
       - restore_cache:
           keys:
             - v1-{{ checksum "build.sbt" }}
-
-      - run: cat /dev/null | sbt test:compile
-
+      - run: sbt compile/test > /dev/null
       - save_cache:
           key: v1-{{ checksum "build.sbt" }}
           paths:
@@ -33,8 +31,7 @@ jobs:
             - ~/.sbt/launchers
             - ~/.cache/coursier
             - ~/.npm
-
-      - run: cat /dev/null | sbt test:test
+      - run: sbt test/test > /dev/null
 
 workflows:
   build_and_test:

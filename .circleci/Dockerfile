@@ -10,6 +10,8 @@ RUN \
   tar zxf $SBT_HOME/sbt.tgz -C $SBT_HOME && \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
 
+RUN yum install -y git
+
 RUN adduser --uid 1500 -c GECOS circleci
 USER circleci
 WORKDIR /home/circleci/test
