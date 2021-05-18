@@ -24,6 +24,13 @@ jobs:
             rm /usr/local/bin/sbt || true
             ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 
+      - run:
+          name: circleci user
+          command: |
+            id -u circleci &>/dev/null || adduser --uid 1500 -c GECOS circleci
+            chown -R circleci ~/project
+            su - circleci
+
       - checkout
 
       - restore_cache:
