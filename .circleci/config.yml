@@ -13,7 +13,6 @@ jobs:
 
     environment:
       JVM_OPTS: -Xmx3072m
-      SBT_VERSION: 1.5.2
 
     steps:
       - run: whoami
