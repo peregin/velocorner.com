@@ -12,6 +12,6 @@ RUN \
 
 RUN adduser --uid 1500 -c GECOS circleci
 USER circleci
-WORKDIR /home/circleci
+WORKDIR /home/circleci/test
 RUN sbt sbtVersion
 
