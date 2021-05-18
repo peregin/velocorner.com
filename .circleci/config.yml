@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: adoptopenjdk/openjdk11
+      - image: adoptopenjdk/x86_64-centos-jdk-11.0.11_9
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - run:
-          name: Get sbt binary
+          name: get sbt binary
           command: |
             export SBT_OPTS="-Dfile.encoding=UTF-8"
             curl -L --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $HOME/sbt.tgz
