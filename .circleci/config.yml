@@ -27,12 +27,13 @@ jobs:
       - checkout
 
       - restore_cache:
-          keys: v1-dependencies-{{ checksum "build.sbt" }}
+          keys:
+            - v1-{{ checksum "build.sbt" }}
 
       - run: cat /dev/null | sbt test:compile
 
       - save_cache:
-          key: v1-dependencies--{{ checksum "build.sbt" }}
+          key: v1-{{ checksum "build.sbt" }}
           paths:
             - ~/.m2
             - ~/.ivy2
@@ -42,3 +43,11 @@ jobs:
             - ~/.npm
 
       - run: cat /dev/null | sbt test:test
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+          filters:
+            branches:
+              only: /circleci*
