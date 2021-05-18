@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: adoptopenjdk/x86_64-centos-jdk-11.0.11_9
+      - image: adoptopenjdk/openjdk11:jdk-11.0.11_9-centos-slim
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
