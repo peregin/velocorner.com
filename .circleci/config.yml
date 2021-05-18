@@ -4,7 +4,6 @@ jobs:
   build:
     docker:
       - image: adoptopenjdk/openjdk11
-
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
@@ -19,14 +18,11 @@ jobs:
       - run:
           name: Get sbt binary
           command: |
-            apt update && apt install -y curl
-            curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
-            dpkg -i sbt-$SBT_VERSION.deb
-            rm sbt-$SBT_VERSION.deb
-            apt-get update
-            #apt-get install -y python-pip git
-            #pip install awscli
-            #apt-get clean && apt-get autoclean
+            export SBT_OPTS="-Dfile.encoding=UTF-8"
+            curl -L --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $HOME/sbt.tgz
+            tar zxf $HOME/sbt.tgz -C $HOME
+            sudo rm /usr/local/bin/sbt
+            sudo ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 
       - checkout
 
