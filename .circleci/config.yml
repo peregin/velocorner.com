@@ -21,7 +21,7 @@ jobs:
             export SBT_OPTS="-Dfile.encoding=UTF-8"
             curl -L --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $HOME/sbt.tgz
             tar zxf $HOME/sbt.tgz -C $HOME
-            rm /usr/local/bin/sbt
+            rm /usr/local/bin/sbt || true
             ln -s $HOME/sbt/bin/sbt /usr/local/bin/sbt
 
       - checkout
