@@ -34,12 +34,20 @@ jobs:
             - ~/.sbt/launchers
             - ~/.cache/coursier
             - ~/.npm
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
       - run: sbt test:test
 
   deploy_web-app:
     executor: ci-executor
     steps:
-      - run: echo "Hello"
+      - attach_workspace:
+          at: .
+      - run:
+          name: deploy web-app
+          command: sbt web-app/publish/docker
 
 workflows:
   version: 2
