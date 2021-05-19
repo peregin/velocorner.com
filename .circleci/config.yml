@@ -4,18 +4,21 @@ defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
 
-jobs:
-  build:
+executors:
+  ci-executor:
     docker:
       - image: peregin/circleci:latest
         auth:
           username: peregin
           password: $DOCKERHUB_PASSWORD
         user: circleci
-
     environment:
       JVM_OPTS: -Xmx3072m
 
+
+jobs:
+  build:
+    executor: ci-executor
     steps:
       - checkout
       - run: .circleci/cachekey.sh checksums.txt
@@ -33,10 +36,19 @@ jobs:
             - ~/.npm
       - run: sbt test:test
 
+  deploy_web-app:
+    executor: ci-executor
+      steps:
+        run: echo "Hello"
+
 workflows:
-  build_and_test:
+  version: 2
+  ci_cd:
     jobs:
       - build:
           filters:
             branches:
               only: /circleci-.*/
+      - deploy_web-app:
+          requires:
+            - build
