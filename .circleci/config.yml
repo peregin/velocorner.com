@@ -17,6 +17,7 @@ executors:
 
 
 jobs:
+
   build:
     executor: ci-executor
     steps:
@@ -38,8 +39,8 @@ jobs:
 
   deploy_web-app:
     executor: ci-executor
-      steps:
-        run: echo "Hello"
+    steps:
+      run: echo "Hello"
 
 workflows:
   version: 2
