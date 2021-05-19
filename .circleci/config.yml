@@ -1,5 +1,9 @@
 version: 2.1
 
+defaults:
+  working_directory: ~/project
+  cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
+
 jobs:
   build:
     docker:
@@ -9,19 +13,17 @@ jobs:
           password: $DOCKERHUB_PASSWORD
         user: circleci
 
-    working_directory: ~/project
-
     environment:
       JVM_OPTS: -Xmx3072m
 
     steps:
       - checkout
+      - run: .circleci/cachekey.sh checksums.txt
       - restore_cache:
-          keys:
-            - v1-{{ checksum "build.sbt" }}
+          key: *cache_key
       - run: sbt test:compile
       - save_cache:
-          key: v1-{{ checksum "build.sbt" }}
+          key: *cache_key
           paths:
             - ~/.m2
             - ~/.ivy2
