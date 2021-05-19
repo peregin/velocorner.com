@@ -1,5 +1,9 @@
 version: 2.1
 
+defaults: &defaults
+  working_directory: ~/project
+  cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
+
 executors:
   ci-executor:
     docker:
@@ -10,12 +14,11 @@ executors:
         user: circleci
     environment:
       JVM_OPTS: -Xmx3072m
-    working_directory: ~/project
-    cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
 
 jobs:
 
   build:
+    <<: *defaults
     executor: ci-executor
     steps:
       - checkout
