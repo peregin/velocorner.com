@@ -47,7 +47,7 @@ jobs:
           at: .
       - run:
           name: deploy web-app
-          command: sbt web-app/publish/docker
+          command: sbt web-app/docker:publish
 
 workflows:
   version: 2
