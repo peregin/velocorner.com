@@ -1,6 +1,6 @@
 version: 2.1
 
-defaults: &defaults
+defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
 
@@ -18,7 +18,6 @@ executors:
 jobs:
 
   build:
-    <<: *defaults
     executor: ci-executor
     steps:
       - checkout
