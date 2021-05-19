@@ -40,7 +40,7 @@ jobs:
   deploy_web-app:
     executor: ci-executor
     steps:
-      run: echo "Hello"
+      - run: echo "Hello"
 
 workflows:
   version: 2
