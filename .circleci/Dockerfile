@@ -19,8 +19,7 @@ RUN \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
 
 RUN adduser --uid 1500 -D -g GECOS circleci
-#RUN usermod -aG docker circleci
-#RUN addgroup circleci docker
+# RUN addgroup circleci docker
 
 USER circleci
 WORKDIR /home/circleci/test

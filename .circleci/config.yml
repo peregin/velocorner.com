@@ -45,6 +45,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - setup_remote_docker:
+          docker_layer_caching: false
       - run:
           name: deploy web-app
           command: sbt web-app/docker:publish
