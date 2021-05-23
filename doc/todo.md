@@ -1,4 +1,5 @@
 # ToDo
+- top 10 longest rides, top 10 most elevations 
 - compass rose - wind direction
 - marketing campaign FB
 - variation of the greeting, instead of Hello 
