@@ -1,8 +1,9 @@
 # ToDo
+- map with origins and destinations flagged
 - top 10 longest rides, top 10 most elevations 
 - compass rose - wind direction
 - marketing campaign FB
-- variation of the greeting, instead of Hello 
+- variation of the greeting, instead of Hello
 - intercom (or alternative) for features
 - expose oauth authorization URL from BE 
 - return JWT after login
