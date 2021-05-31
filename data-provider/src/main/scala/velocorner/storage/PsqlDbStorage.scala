@@ -9,6 +9,7 @@ import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
 import velocorner.api.weather.CurrentWeather
+import velocorner.model.ActionType
 // needed for sql interpolator when filtering on start date
 import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
@@ -150,6 +151,10 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |order by data->>'start_date' desc
          |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
+
+
+  // TODO[top10]: continue from here
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
 
   override def suggestActivities(
       snippet: String,

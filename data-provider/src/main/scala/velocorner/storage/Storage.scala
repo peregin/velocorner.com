@@ -38,6 +38,7 @@ trait Storage[M[_]] {
   def listActivities(athleteId: Long, from: DateTime, to: DateTime): M[Iterable[Activity]]
   // to check how much needs to be imported from the feed
   def listRecentActivities(athleteId: Long, limit: Int): M[Iterable[Activity]]
+  def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): M[Iterable[Activity]]
   def getActivity(id: Long): M[Option[Activity]]
 
   // search and analytics
@@ -112,6 +113,7 @@ object Storage extends LazyLogging {
 
   def create(dbType: String, config: SecretConfig): Storage[Future] = {
     logger.info(s"initializing storage $dbType ...")
+
     val storage = dbType.toLowerCase match {
       case any if any.startsWith("re") => new RethinkDbStorage[Future]
       case any if any.startsWith("mo") => new MongoDbStorage

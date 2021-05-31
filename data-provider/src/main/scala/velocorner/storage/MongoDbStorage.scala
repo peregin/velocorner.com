@@ -74,6 +74,9 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
     } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
 
+
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
+
   override def getActivity(id: Long): Future[Option[Activity]] = getJsonById(id.toString, ACTIVITY_TABLE).map(_.map(JsonIo.read[Activity]))
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = Future(Iterable.empty)

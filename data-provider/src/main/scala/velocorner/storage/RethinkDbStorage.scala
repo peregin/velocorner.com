@@ -8,7 +8,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import org.json.simple.JSONObject
 import velocorner.api.strava.Activity
-import velocorner.model.Account
+import velocorner.model.{Account, ActionType}
 import velocorner.model.strava.Gear
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
@@ -82,6 +82,9 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
       .asInstanceOf[Result[java.util.HashMap[String, String]]]
     result2Activity(result.toList.asScala.toList) <| (a => logger.debug(s"found recent activities ${a.size} for $athleteId"))
   }
+
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): M[Iterable[Activity]] =
+    Monad[M].pure(Iterable.empty)
 
   override def getActivity(id: Long): M[Option[Activity]] =
     Monad[M].map(getJsonById(id.toString, ACTIVITY_TABLE))(_.map(JsonIo.read[Activity]))

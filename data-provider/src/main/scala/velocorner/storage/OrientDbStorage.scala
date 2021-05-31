@@ -124,6 +124,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
   }
 
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
+
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id.toString)
 
   // accounts

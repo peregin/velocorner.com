@@ -10,7 +10,7 @@ object Dependencies {
   val zioLoggingVersion = "0.5.10"
   val shapelessVersion = "2.3.7"
   val logbackVersion = "1.2.3"
-  val doobieVersion = "0.13.3"
+  val doobieVersion = "0.13.4"
   val orientDbVersion = "3.1.11"
   val mongoDbVersion = "4.2.3"
   val rethinkDbVersion = "2.4.4"
