@@ -154,7 +154,14 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
 
   // TODO[top10]: continue from here
-  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = {
+    val orderClause = "data->>'start_date'"
+    sql"""select data from activity
+         |where athlete_id = $athleteId and type = $activityType
+         |order by $orderClause desc
+         |limit $limit
+         |""".stripMargin.query[Activity].to[List].transactToFuture
+  }
 
   override def suggestActivities(
       snippet: String,
