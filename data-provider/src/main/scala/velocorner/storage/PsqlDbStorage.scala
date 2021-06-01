@@ -152,10 +152,12 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
-
-  // TODO[top10]: continue from here
   override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = {
-    val orderClause = "data->>'start_date'"
+    val orderClause = actionType match {
+      case ActionType.Distance => "data->>'distance'"
+      case ActionType.Elevation => "data->>'total_elevation_gain'"
+      case unknown => throw new IllegalArgumentException(s"unknown order clause $unknown")
+    }
     sql"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
          |order by $orderClause desc

@@ -229,6 +229,22 @@ GET     /api/athletes/statistics/histogram/:action/:activity     controllers.Act
 ###
 GET     /api/demo/statistics/histogram/:action/:activity         controllers.DemoController.yearlyHistogram(action: String, activity: String)
 
+###
+#  summary: Lists top 10 activities for distance and elevation for the logged in athlete
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Returns a list of top 10 activities
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#              $ref: '#/components/schemas/velocorner.api.strava.Activity'
+###
+GET     /api/athletes/statistics/top/:action/:activity           controllers.ActivityController.top(action: String, activity: String)
+
 
 ###
 #  summary: List of achievements for the logged in athlete
