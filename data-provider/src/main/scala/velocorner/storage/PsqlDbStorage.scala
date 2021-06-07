@@ -154,15 +154,14 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
 
   override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = {
     val orderClause = actionType match {
-      case ActionType.Distance => "data->>'distance'"
-      case ActionType.Elevation => "data->>'total_elevation_gain'"
+      case ActionType.Distance => "(data->>'distance')::numeric desc"
+      case ActionType.Elevation => "(data->>'total_elevation_gain')::numeric desc"
       case unknown => throw new IllegalArgumentException(s"unknown order clause $unknown")
     }
-    sql"""select data from activity
+    val sql = fr"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
-         |order by $orderClause desc
-         |limit $limit
-         |""".stripMargin.query[Activity].to[List].transactToFuture
+         |order by """.stripMargin ++ Fragment.const(orderClause) ++ fr"limit $limit"
+    sql.query[Activity].to[List].transactToFuture
   }
 
   override def suggestActivities(

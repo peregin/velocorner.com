@@ -1,0 +1,62 @@
+@(listId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
+
+<div style="min-width: 260px; margin: 0 auto">
+    <div class="table-responsive">
+        <table id="@listId" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Distance</th>
+                    <th>Elevation</th>
+                    <th>Elapsed</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">//<![CDATA[
+$(function () {
+    var table = $('#@listId').DataTable(
+
+    );
+
+    function loadActivities(activityType) {
+        var fetchActivities = $.ajax({
+            type: "GET",
+            url: "@restUrl/" + activityType,
+            timeout: 20000
+        });
+        fetchActivities.done(function(activities) {
+            console.log("got the activities for @listId");
+            $.each(activities, function(ix, entry) {
+                table.row.add([
+                    '<a href="http://www.strava.com/activities/'+entry.id+'">'+moment(entry.start_date_local).format('DD MMM, YYYY, ddd HH:mm A')+'</a>',
+                    '<a href="http://www.strava.com/activities/'+entry.id+'">'+entry.name+'</a>',
+                    (entry.distance/1000).toFixed(1)+' km',
+                    wholeValueAndUnit(entry.total_elevation_gain, 'm'),
+                    elapsedInSeconds(entry.moving_time)+' / '+elapsedInSeconds(entry.elapsed_time)
+                ]).draw();
+            });
+        });
+    }
+
+    loadActivities("Ride");
+
+    // reload when activity type is changing
+    let activityTabs = $("#activity-tabs")
+    activityTabs.context.addEventListener('activityType', function(e) {
+        let activityType = e.detail.activityType;
+        console.log("activities list[@listId] event: " + activityType);
+        loadActivities(activityType);
+    }, false);
+
+});
+//]]>
+</script>
+
+
+

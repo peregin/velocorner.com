@@ -147,8 +147,12 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // route mapped to /api/athletes/statistics/top/:action/:activity
   def top(action: String, activity: String): Action[AnyContent] = {
     TimedAuthAsyncAction(s"top 10 statistics in $action/$activity") { implicit request =>
-      // TODO[top10] continue from here
-      Future(Ok)
+      val result = for {
+        account <- OptionT(Future(loggedIn))
+        storage = connectivity.getStorage
+        activities <- OptionT.liftF(storage.listTopActivities(account.athleteId, ActionType(action), activity, 10))
+      } yield activities
+      result.getOrElse(List.empty).map(Json.toJson(_)).map(Ok(_))
     }
   }
 

@@ -35,10 +35,10 @@ class PsqlDbStorageTest
   it should "list top 10 activities" in {
     val longestActivities = awaitOn(psqlStorage.listTopActivities(432909, ActionType.Distance, "Ride", 10))
     longestActivities must have size 10
-    longestActivities.head.id mustBe 244993130L
-    longestActivities.head.distance mustBe 23216.8f
-    longestActivities.last.id mustBe 240646688L
-    longestActivities.last.distance mustBe 7819.9f
+    longestActivities.head.id mustBe 239172388L
+    longestActivities.head.distance mustBe 90514.4f
+    longestActivities.last.id mustBe 228694981L
+    longestActivities.last.distance mustBe 21723.7f
 
     val mostClimbs = awaitOn(psqlStorage.listTopActivities(432909, ActionType.Elevation, "Ride", 10))
     mostClimbs must have size 10
