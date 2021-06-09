@@ -1,21 +1,19 @@
 @(listId: String, chartTitle: String, restUrl: String)(implicit assets: AssetsFinder)
 
-<div style="min-width: 260px; margin: 0 auto">
-    <div class="table-responsive">
-        <table id="@listId" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Distance</th>
-                    <th>Elevation</th>
-                    <th>Elapsed</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+<div>
+    <table id="@listId" class="display compact">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Distance</th>
+                <th>Elevation</th>
+                <th>Elapsed</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 
 <script type="text/javascript">//<![CDATA[
