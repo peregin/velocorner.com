@@ -20,9 +20,10 @@
 
 <script type="text/javascript">//<![CDATA[
 $(function () {
-    var table = $('#@listId').DataTable(
-
-    );
+    var sortedColumn = "@restUrl".includes("elevation") ? 3 : 2;
+    var table = $('#@listId').DataTable({
+        "order": [[ sortedColumn, "desc" ]]
+    });
 
     function loadActivities(activityType) {
         var fetchActivities = $.ajax({
