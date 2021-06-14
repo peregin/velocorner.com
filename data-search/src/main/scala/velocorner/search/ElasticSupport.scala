@@ -1,8 +1,9 @@
 package velocorner.search
 
+import com.sksamuel.elastic4s.api.IndexApi
 import com.sksamuel.elastic4s.ElasticDsl.{createIndex, geopointField, properties}
 import com.sksamuel.elastic4s.http.JavaClient
-import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexApi, IndexRequest}
+import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexRequest}
 import com.sksamuel.elastic4s.requests.searches.GeoPoint
 import com.sksamuel.elastic4s.{ElasticClient, ElasticNodeEndpoint, ElasticProperties}
 import play.api.libs.json.{JsObject, JsString, Json}
