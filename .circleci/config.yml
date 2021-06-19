@@ -51,14 +51,47 @@ jobs:
           name: deploy web-app
           command: sbt web-app/docker:publish
 
+
+  build1:
+    executor: ci-executor
+    steps:
+      - run: echo "build1"
+
+  build2:
+    executor: ci-executor
+    steps:
+      - run: echo "build2"
+
+  deploy1:
+    executor: ci-executor
+    steps:
+      - run: echo "deploy1"
+
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
+
 workflows:
   version: 2
+  service1:
+    when: << service1-changed >>
+    jobs:
+      - build1
+  service2:
+    when: << service2-changed >>
+    jobs:
+      - build2
   ci_cd:
     jobs:
-      - build:
+      - build1:
           filters:
             branches:
               only: /circleci-.*/
-      - deploy_web-app:
+      - deploy1:
           requires:
-            - build
+            - build1
+            - build2
