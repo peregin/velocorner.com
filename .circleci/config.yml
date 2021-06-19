@@ -91,15 +91,14 @@ workflows:
   service2:
     when: << pipeline.parameters.service2-changed >>
     jobs:
-      - build2
+      - build2:
+          requires:
+            - deploy_prod_request
   ci_cd:
     jobs:
       - deploy_prod_request:
           type: approval
       - deploy_prod:
-          requires:
-            - build1
-           # - build2
           filters:
             branches:
               only: /circleci-.*/
