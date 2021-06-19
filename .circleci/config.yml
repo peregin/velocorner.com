@@ -68,7 +68,7 @@ jobs:
     steps:
       - run: echo "build2"
 
-  deploy1:
+  deploy_prod:
     executor: ci-executor
     steps:
       - run: echo "deploy1"
