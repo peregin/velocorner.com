@@ -1,6 +1,5 @@
 # ToDo
 - map with origins and destinations flagged
-- top 10 longest rides, top 10 most elevations 
 - compass rose - wind direction
 - marketing campaign FB
 - variation of the greeting, instead of Hello
@@ -21,6 +20,7 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- top 10 longest rides, top 10 most elevations 
 - show current min/max temperature
 - speedup node docker image creation
 - show current temperature
