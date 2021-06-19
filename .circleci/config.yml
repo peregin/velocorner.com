@@ -18,8 +18,15 @@ executors:
     environment:
       JVM_OPTS: -Xmx3072m
 
-jobs:
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
 
+jobs:
   build:
     executor: ci-executor
     steps:
@@ -70,14 +77,6 @@ jobs:
     steps:
       - run: echo "deploy1"
 
-
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: false
 
 workflows:
   version: 2
