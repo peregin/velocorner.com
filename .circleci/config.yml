@@ -7,6 +7,14 @@ defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
 
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
+
 executors:
   ci-executor:
     docker:
@@ -17,14 +25,6 @@ executors:
         user: circleci
     environment:
       JVM_OPTS: -Xmx3072m
-
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: false
 
 jobs:
   build:
