@@ -83,11 +83,11 @@ parameters:
 
 workflows:
   service1:
-    when: << pipeline.service1-changed >>
+    when: << pipeline.parameters.service1-changed >>
     jobs:
       - build1
   service2:
-    when: << pipeline.service2-changed >>
+    when: << pipeline.parameters.service2-changed >>
     jobs:
       - build2
   ci_cd:
