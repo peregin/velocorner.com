@@ -92,11 +92,10 @@ workflows:
       - build2
   ci_cd:
     jobs:
-      - build1:
+      - deploy1:
           filters:
             branches:
               only: /circleci-.*/
-      - deploy1:
           requires:
             - build1
             - build2
