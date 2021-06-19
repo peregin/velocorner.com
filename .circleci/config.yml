@@ -3,14 +3,6 @@ version: 2.1
 # this allows you to use CircleCI's dynamic configuration feature
 setup: true
 
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: false
-
 defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
@@ -77,9 +69,15 @@ jobs:
     steps:
       - run: echo "deploy1"
 
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
 
 workflows:
-  version: 2
   service1:
     when: << service1-changed >>
     jobs:
