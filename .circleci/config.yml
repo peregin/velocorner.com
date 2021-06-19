@@ -96,6 +96,6 @@ workflows:
           filters:
             branches:
               only: /circleci-.*/
-          requires:
-            - build1
-            - build2
+          #requires:
+           # - build1
+           # - build2
