@@ -86,8 +86,8 @@ workflows:
     when: << pipeline.parameters.service1-changed >>
     jobs:
       - build1
-        requires:
-          - deploy_prod_request
+          requires:
+            - deploy_prod_request
   service2:
     when: << pipeline.parameters.service2-changed >>
     jobs:
