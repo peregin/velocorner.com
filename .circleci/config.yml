@@ -79,7 +79,7 @@ parameters:
     default: false
   service2-changed:
     type: boolean
-    default: false
+    default: true
 
 workflows:
   service1:
