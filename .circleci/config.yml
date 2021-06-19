@@ -1,18 +1,11 @@
 version: 2.1
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: false
 
 # this allows you to use CircleCI's dynamic configuration feature
-setup: true
+#setup: true
 
 # the continuation orb is required in order to use dynamic configuration
-orbs:
-  continuation: circleci/continuation@0.1.2
+#orbs:
+#  continuation: circleci/continuation@0.1.2
 
 defaults:
   working_directory: ~/project
@@ -80,13 +73,21 @@ jobs:
     steps:
       - run: echo "deploy1"
 
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
+
 workflows:
   service1:
-    when: << service1-changed >>
+    when: << pipeline.service1-changed >>
     jobs:
       - build1
   service2:
-    when: << service2-changed >>
+    when: << pipeline.service2-changed >>
     jobs:
       - build2
   ci_cd:
