@@ -1,4 +1,11 @@
 version: 2.1
+parameters:
+  service1-changed:
+    type: boolean
+    default: false
+  service2-changed:
+    type: boolean
+    default: false
 
 # this allows you to use CircleCI's dynamic configuration feature
 setup: true
@@ -72,14 +79,6 @@ jobs:
     executor: ci-executor
     steps:
       - run: echo "deploy1"
-
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: false
 
 workflows:
   service1:
