@@ -1,5 +1,5 @@
 # ToDo
-- map with origins and destinations flagged
+- show last ride and similar ones (+/-15% distance, elevation)
 - compass rose - wind direction
 - marketing campaign FB
 - variation of the greeting, instead of Hello
@@ -8,7 +8,7 @@
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show consecutive sport days
-- add last activity details in the profile
+- add last activity details in the profile (and similar rides)
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
@@ -18,6 +18,9 @@
 
 # InProgress
 - add 3D profile of the last activity gpx
+
+# Not sure adds value
+- map with origins and destinations flagged
 
 # Done
 - top 10 longest rides, top 10 most elevations 
