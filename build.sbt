@@ -30,7 +30,7 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % Depe
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % Dependencies.playWsVersion
 
 val apacheCommons = Seq(
-  "commons-io" % "commons-io" % "2.9.0",
+  "commons-io" % "commons-io" % "2.10.0",
   "commons-codec" % "commons-codec" % "1.15"
 )
 
@@ -41,7 +41,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion %
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
   "org.codehaus.janino" % "janino" % "3.1.4", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
@@ -172,7 +172,7 @@ lazy val testServiceJava = (project in file("test/test-service-java") withId "te
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % "6.3.3",
+      "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
       "javax.servlet" % "javax.servlet-api" % "4.0.1",
       scalaTest
@@ -183,12 +183,12 @@ lazy val testServiceJava = (project in file("test/test-service-java") withId "te
 lazy val testServiceScala = (project in file("test/test-service-scala") withId "test-service-scala")
   .settings(
     buildSettings,
-    name := "test-service-java",
+    name := "test-service-scala",
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % "6.3.3",
+      "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       scalaTest
     ) ++ cats
   )
