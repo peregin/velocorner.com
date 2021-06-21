@@ -47,6 +47,11 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
+          name: setup git identity
+          command: |
+            git config --global user.name "Deploy CI"
+            git config --global user.email "velocorner.com@gmail.com"
+      - run:
           name: deploy web-app
           command: sbt "release skip-tests with-defaults"
 
