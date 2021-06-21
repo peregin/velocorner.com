@@ -39,7 +39,7 @@ jobs:
             - .
       - run: sbt test:test
 
-  deploy:
+  deploy_web-app:
     executor: ci-executor
     steps:
       - attach_workspace:
@@ -48,13 +48,13 @@ jobs:
           docker_layer_caching: false
       - run:
           name: deploy web-app
-          command: sbt web-app/docker:publish
+          command: sbt "release skip-tests with-defaults"
 
 workflows:
   ci_cd:
     jobs:
       - build
-      - deploy:
+      - deploy_web-app:
           requires:
             - build
           filters:
