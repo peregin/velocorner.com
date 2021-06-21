@@ -6,7 +6,7 @@ ENV SHELL "/bin/bash"
 ENV LANG="C.UTF-8"
 ENV SBT_OPTS="-Dfile.encoding=UTF-8"
 ENV SBT_HOME="/opt/sbt"
-ENV SBT_VERSION="1.5.2"
+ENV SBT_VERSION="1.5.3"
 
 RUN mkdir $SBT_HOME
 RUN \
@@ -20,7 +20,6 @@ RUN yum-config-manager --add-repo https://download.docker.com/linux/centos/docke
 RUN yum install -y docker-ce
 RUN yum clean all
 
-#RUN chmod a+rw /var/run/docker.sock
 RUN adduser --uid 1500 -c GECOS circleci
 RUN usermod -aG docker circleci
 
