@@ -9,7 +9,7 @@ executors:
     docker:
       - image: peregin/circleci:latest
         auth:
-          username: peregin
+          username: circleci
           password: $DOCKERHUB_PASSWORD
         user: circleci
     environment:
