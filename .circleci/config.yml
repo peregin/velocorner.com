@@ -1,12 +1,5 @@
 version: 2.1
 
-# this allows you to use CircleCI's dynamic configuration feature
-setup: true
-
-# the continuation orb is required in order to use dynamic configuration
-orbs:
-  continuation: circleci/continuation@0.1.2
-
 defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
@@ -57,48 +50,13 @@ jobs:
           name: deploy web-app
           command: sbt web-app/docker:publish
 
-
-  build1:
-    executor: ci-executor
-    steps:
-      - run: echo "build1"
-
-  build2:
-    executor: ci-executor
-    steps:
-      - run: echo "build2"
-
-  deploy_prod:
-    executor: ci-executor
-    steps:
-      - run: echo "deploy1"
-
-parameters:
-  service1-changed:
-    type: boolean
-    default: false
-  service2-changed:
-    type: boolean
-    default: true
-
 workflows:
-  service1:
-    when: << pipeline.parameters.service1-changed >>
-    jobs:
-      - build1:
-          requires:
-            - deploy_prod_request
-  service2:
-    when: << pipeline.parameters.service2-changed >>
-    jobs:
-      - build2:
-          requires:
-            - deploy_prod_request
   ci_cd:
     jobs:
-      - deploy_prod_request:
-          type: approval
+      - build
       - deploy_prod:
+          requires:
+            - build
           filters:
             branches:
               only: /circleci-.*/
