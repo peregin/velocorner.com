@@ -39,7 +39,7 @@ jobs:
             - .
       - run: sbt test:test
 
-  deploy_web-app:
+  deploy:
     executor: ci-executor
     steps:
       - attach_workspace:
@@ -54,7 +54,7 @@ workflows:
   ci_cd:
     jobs:
       - build
-      - deploy_prod:
+      - deploy:
           requires:
             - build
           filters:
