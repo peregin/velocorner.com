@@ -9,6 +9,7 @@ import org.scalatest.matchers.must.Matchers
 import velocorner.api.GeoPosition
 import velocorner.api.strava.Activity
 import velocorner.api.weather.WeatherForecast
+import velocorner.model.ActionType
 import velocorner.model.strava.Gear
 import velocorner.model.weather.ForecastResponse
 import velocorner.util.JsonIo
@@ -28,7 +29,20 @@ class PsqlDbStorageTest
 
   val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
+  // will generate fixtures as well
   "activity storage" should behave like activityFragments(psqlStorage, activityFixtures)
+
+  it should "list top 10 activities" in {
+    val longestActivities = awaitOn(psqlStorage.listTopActivities(432909, ActionType.Distance, "Ride", 10))
+    longestActivities must have size 10
+    longestActivities.head.id mustBe 239172388L
+    longestActivities.head.distance mustBe 90514.4f
+    longestActivities.last.id mustBe 228694981L
+    longestActivities.last.distance mustBe 21723.7f
+
+    val mostClimbs = awaitOn(psqlStorage.listTopActivities(432909, ActionType.Elevation, "Ride", 10))
+    mostClimbs must have size 10
+  }
 
   it should "list all activities between dates" in {
     val date = DateTime.parse("2015-01-23T16:18:17Z").withZone(DateTimeZone.UTC)

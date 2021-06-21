@@ -48,6 +48,14 @@
                     @widget.heatmap("elevationHistogram", "Activity Distribution for Elevation", "/api/athletes/statistics/histogram/elevation", 250)
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 md-margin-bottom-50">
+                    @widget.activities("top10Distance", "Longest Activities", "/api/athletes/statistics/top/distance")
+                </div>
+                <div class="col-md-6 md-margin-bottom-50">
+                    @widget.activities("top10Elevation", "Most Elevation", "/api/athletes/statistics/top/elevation")
+                </div>
+            </div>
         </div>
     }
 

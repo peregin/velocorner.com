@@ -1,13 +1,14 @@
 # ToDo
+- show last ride and similar ones (+/-15% distance, elevation)
 - compass rose - wind direction
 - marketing campaign FB
-- variation of the greeting, instead of Hello 
+- variation of the greeting, instead of Hello
 - intercom (or alternative) for features
 - expose oauth authorization URL from BE 
 - return JWT after login
 - implement JWT between Frontend and Backend
 - show consecutive sport days
-- add last activity details in the profile
+- add last activity details in the profile (and similar rides)
 - add monthly - current month (next to yearly) achievements
 - add where to ride section
 - add gps overlay over video section
@@ -18,7 +19,11 @@
 # InProgress
 - add 3D profile of the last activity gpx
 
+# Not sure adds value
+- map with origins and destinations flagged
+
 # Done
+- top 10 longest rides, top 10 most elevations 
 - show current min/max temperature
 - speedup node docker image creation
 - show current temperature

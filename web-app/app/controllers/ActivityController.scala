@@ -128,9 +128,9 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // route mapped to /api/athletes/statistics/histogram/:action/:activity
   def yearlyHistogram(action: String, activity: String): Action[AnyContent] = {
     TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity") { implicit request =>
-      val storage = connectivity.getStorage
       val result = for {
         account <- OptionT(Future(loggedIn))
+        storage = connectivity.getStorage
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
           case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, account.units())
@@ -140,6 +140,19 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       } yield series
 
       result.getOrElse(List.empty).map(series => Json.toJson(series)).map(Ok(_))
+    }
+  }
+
+  // top 10 activities for distance and elevation
+  // route mapped to /api/athletes/statistics/top/:action/:activity
+  def top(action: String, activity: String): Action[AnyContent] = {
+    TimedAuthAsyncAction(s"top 10 statistics in $action/$activity") { implicit request =>
+      val result = for {
+        account <- OptionT(Future(loggedIn))
+        storage = connectivity.getStorage
+        activities <- OptionT.liftF(storage.listTopActivities(account.athleteId, ActionType(action), activity, 10))
+      } yield activities
+      result.getOrElse(List.empty).map(Json.toJson(_)).map(Ok(_))
     }
   }
 

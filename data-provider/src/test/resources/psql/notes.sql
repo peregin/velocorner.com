@@ -60,5 +60,7 @@ where athlete_id = 432909 order by data->>'start_date' desc;
 select * from weather;
 delete from weather;
 
+select jsonb_pretty(data) from activity order by data->>'start_date' desc limit 10;
+
 
 

@@ -9,6 +9,7 @@ import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.implicits._
 import doobie.{ConnectionIO, _}
 import velocorner.api.weather.CurrentWeather
+import velocorner.model.ActionType
 // needed for sql interpolator when filtering on start date
 import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
@@ -150,6 +151,18 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |order by data->>'start_date' desc
          |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
+
+  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = {
+    val orderClause = actionType match {
+      case ActionType.Distance => "(data->>'distance')::numeric desc"
+      case ActionType.Elevation => "(data->>'total_elevation_gain')::numeric desc"
+      case unknown => throw new IllegalArgumentException(s"unknown order clause $unknown")
+    }
+    val sql = fr"""select data from activity
+         |where athlete_id = $athleteId and type = $activityType
+         |order by """.stripMargin ++ Fragment.const(orderClause) ++ fr"limit $limit"
+    sql.query[Activity].to[List].transactToFuture
+  }
 
   override def suggestActivities(
       snippet: String,
