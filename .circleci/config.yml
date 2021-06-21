@@ -51,6 +51,7 @@ jobs:
           command: |
             git config --global user.name "Deploy CI"
             git config --global user.email "velocorner.com@gmail.com"
+      - run: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-app
           command: sbt "release skip-tests with-defaults"
