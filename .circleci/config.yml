@@ -57,6 +57,7 @@ jobs:
           command: sbt "release skip-tests with-defaults"
 
   restart_stack:
+    executor: ci-executor
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
 
