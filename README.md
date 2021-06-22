@@ -1,5 +1,4 @@
-![CircleCI](https://img.shields.io/circleci/build/github/peregin/velocorner.com/master?token=10fafb0dd1fbf4349da8c133d0a0ec3e64d74cfe)
-[<img src="https://img.shields.io/travis/peregin/velocorner.com.svg"/>](https://travis-ci.org/peregin/velocorner.com)
+[![CircleCI](https://img.shields.io/circleci/build/github/peregin/velocorner.com/master?token=10fafb0dd1fbf4349da8c133d0a0ec3e64d74cfe)](https://app.circleci.com/pipelines/github/peregin/velocorner.com)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fb859d66691e27cb4295/maintainability)](https://codeclimate.com/github/peregin/velocorner.com/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Issues](https://img.shields.io/github/issues/peregin/velocorner.com.svg)](https://github.com/peregin/velocorner.com/issues)
