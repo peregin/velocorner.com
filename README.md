@@ -1,3 +1,4 @@
+![CircleCI](https://img.shields.io/circleci/build/github/peregin/velocorner.com/master?token=10fafb0dd1fbf4349da8c133d0a0ec3e64d74cfe)
 [<img src="https://img.shields.io/travis/peregin/velocorner.com.svg"/>](https://travis-ci.org/peregin/velocorner.com)
 [![Maintainability](https://api.codeclimate.com/v1/badges/fb859d66691e27cb4295/maintainability)](https://codeclimate.com/github/peregin/velocorner.com/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -6,14 +7,12 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/peregin/velocorner.com)](https://hub.docker.com/r/peregin/velocorner.com)
 [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/velocorner/velocorner)
 
-![Build Stats](https://buildstats.info/travisci/chart/peregin/velocorner.com?branch=master&buildCount=25)
-
 # velocorner.com
 The web application provides metrics for cycling and running (or for other kind of sports) activities.
 The statistics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to 
 date series as well.
-The yearly data is also presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
-The data feed is being collected via the [Strava API](https://developers.strava.com/docs/reference/).
+The yearly data is presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
+The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
