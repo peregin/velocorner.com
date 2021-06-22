@@ -70,7 +70,7 @@ workflows:
             - build
           filters:
             branches:
-              only: /circleci-.*/
+              only: /master.*/
       - restart_stack:
           requires:
             - deploy_web-app
