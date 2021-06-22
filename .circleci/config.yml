@@ -58,7 +58,7 @@ jobs:
 
   restart_stack:
     steps:
-      -run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DEPLOYER_USER@velocorner.com '/opt/velocorner/deploy.sh'
+      - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
 
 workflows:
   ci_cd:
