@@ -56,6 +56,10 @@ jobs:
           name: deploy web-app
           command: sbt "release skip-tests with-defaults"
 
+  restart_stack:
+    steps:
+      -run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
+
 workflows:
   ci_cd:
     jobs:
@@ -66,3 +70,6 @@ workflows:
           filters:
             branches:
               only: /circleci-.*/
+      - restart_stack:
+          requires:
+            - deploy_web-app
