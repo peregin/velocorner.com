@@ -107,16 +107,16 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    runClean,
-    runTest,
+    // runClean, // it is disabled at release time, avoid reloading sbt
+    // runTest,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    runWebAppDist,
+    // runWebAppDist, // it is a dependency of publish
     runWebAppDockerPush, // will push automatically the image to the docker hub
     setNextVersion,
     commitNextVersion
-    // pushChanges  // travis release script will push the changes
+    // pushChanges  // travis/circleci release script will push the changes
   )
 )
 
