@@ -9,7 +9,7 @@ object Dependencies {
   val zioVersion = "1.0.9"
   val zioLoggingVersion = "0.5.11"
   val shapelessVersion = "2.3.7"
-  val argonautVersion = "6.3.4"
+  val argonautVersion = "6.3.5"
   val logbackVersion = "1.2.3"
   val doobieVersion = "0.13.4"
   val orientDbVersion = "3.1.12"
@@ -25,5 +25,5 @@ object Dependencies {
   val scalaTestVersion = "3.2.9"
   val mockitoVersion = "3.11.2"
 
-  val springVersion = "2.5.1" // java world
+  val springVersion = "2.5.2" // java world
 }
