@@ -18,7 +18,7 @@
                     </div>
                     <div class="col-md-4 sky-form" style="padding-left: 10px; padding-right: 10px;">
                         <p>
-                            <button id="refresh" class="btn-u rounded btn-block btn-u-orange" type="button" onclick="window.location.href = '/refresh';"><i class="fa fa-refresh"></i> Refresh</button>
+                            <button id="refresh" class="btn-u rounded btn-block btn-u-orange" type="button" onclick="refreshProfile();"><i class="fa fa-refresh"></i> Refresh</button>
                             <button id="logout" class="btn-u rounded btn-block btn-u-orange" type="button" onclick="window.location.href = '/logout/strava';"><i class="fa fa-sign-out"></i> Logout</button>
                             <section style="padding-top: 5px;">
                                 <label class="select">
@@ -175,6 +175,11 @@
 <!-- End Counters -->
 
 <script type="text/javascript">//<![CDATA[
+    function refreshProfile() {
+        analytics.track("Strava Refresh");
+        window.location = '/refresh';
+    };
+
     function showEntry(entry, entryName, multiplier, decimalPlaces, unitName) {
         let field = $(entryName)
         if (entry) {
