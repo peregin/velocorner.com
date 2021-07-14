@@ -8,3 +8,9 @@ docker build . -t peregin/circleci:latest
 # docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -u circleci peregin/circleci:latest
 docker push peregin/circleci:latest
 ```
+
+Cleanup old docker images in a batch
+```shell
+docker image prune
+docker rmi $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep 'velo' | cut -d' ' -f2)
+```
