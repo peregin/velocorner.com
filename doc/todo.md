@@ -1,4 +1,6 @@
 # ToDo
+- setup ActivityStorage with ScalaCache
+- add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
 - show last ride and similar ones (+/-15% distance, elevation)
 - compass rose - wind direction
 - marketing campaign FB
