@@ -1,4 +1,5 @@
 # ToDo
+- recommendation for the week and month based on previous or other activities
 - setup ActivityStorage with ScalaCache
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
 - show last ride and similar ones (+/-15% distance, elevation)
@@ -21,7 +22,7 @@
 # InProgress
 - add 3D profile of the last activity gpx
 
-# Not sure adds value
+# Not sure if adds value
 - map with origins and destinations flagged
 
 # Done
