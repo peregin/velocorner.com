@@ -20,7 +20,7 @@ object Dependencies {
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.3" // standalone version
   val playJsonVersion = "2.9.2"
-  val squantsVersion = "1.8.2"
+  val squantsVersion = "1.8.3"
   val sparkVersion = "3.1.2"
   val scalaTestVersion = "3.2.9"
   val mockitoVersion = "3.11.2"
