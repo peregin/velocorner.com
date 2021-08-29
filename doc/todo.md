@@ -1,4 +1,5 @@
 # ToDo
+- add QR code to the About page 
 - recommendation for the week and month based on previous or other activities
 - setup ActivityStorage with ScalaCache
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
