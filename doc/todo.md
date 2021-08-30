@@ -9,7 +9,6 @@
 - variation of the greeting, instead of Hello
 - intercom (or alternative) for features
 - expose oauth authorization URL from BE 
-- return JWT after login
 - implement JWT between Frontend and Backend
 - show consecutive sport days
 - add last activity details in the profile (and similar rides)
@@ -22,6 +21,7 @@
 
 # InProgress
 - add 3D profile of the last activity gpx
+- return JWT after login
 
 # Not sure if adds value
 - map with origins and destinations flagged
