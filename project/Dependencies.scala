@@ -2,14 +2,14 @@ object Dependencies {
 
   // update travis setup as well with the same scala version
   val projectScalaVersion = "2.13.6"
-  val scala12Version = "2.12.14" // for some modules using Spark (explicitly 2.12.12)
+  val scala12Version = "2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.6.1"
   val mouseVersion = "1.0.4"
-  val zioVersion = "1.0.9"
-  val zioLoggingVersion = "0.5.11"
+  val zioVersion = "1.0.11"
+  val zioLoggingVersion = "0.5.12"
   val shapelessVersion = "2.3.7"
-  val argonautVersion = "6.3.6"
+  val argonautVersion = "6.3.7"
   val logbackVersion = "1.2.6"
   val doobieVersion = "0.13.4"
   val orientDbVersion = "3.1.12"
@@ -22,7 +22,7 @@ object Dependencies {
   val playJsonVersion = "2.9.2"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.1.2"
-  val scalaTestVersion = "3.2.9"
+  val scalaTestVersion = "3.2.10"
   val mockitoVersion = "3.12.4"
 
   val springVersion = "2.5.4" // java world
