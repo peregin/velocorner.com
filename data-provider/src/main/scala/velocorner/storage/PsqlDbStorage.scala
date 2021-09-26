@@ -10,6 +10,7 @@ import doobie.implicits._
 import doobie.{ConnectionIO, _}
 import velocorner.api.weather.CurrentWeather
 import velocorner.model.ActionType
+import velocorner.util.FlywayMigrationUtil
 // needed for sql interpolator when filtering on start date
 import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
@@ -30,7 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
 import mouse.all._
 
-class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends Storage[Future] with LazyLogging {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLocation: String = "psql/migration")
+    extends Storage[Future]
+    with LazyLogging {
 
   private implicit val cs = IO.contextShift(ExecutionContext.global)
 
@@ -152,11 +155,16 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
          |limit $limit
          |""".stripMargin.query[Activity].to[List].transactToFuture
 
-  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = {
+  override def listTopActivities(
+      athleteId: Long,
+      actionType: ActionType.Entry,
+      activityType: String,
+      limit: Int
+  ): Future[Iterable[Activity]] = {
     val orderClause = actionType match {
-      case ActionType.Distance => "(data->>'distance')::numeric desc"
+      case ActionType.Distance  => "(data->>'distance')::numeric desc"
       case ActionType.Elevation => "(data->>'total_elevation_gain')::numeric desc"
-      case unknown => throw new IllegalArgumentException(s"unknown order clause $unknown")
+      case unknown              => throw new IllegalArgumentException(s"unknown order clause $unknown")
     }
     val sql = fr"""select data from activity
          |where athlete_id = $athleteId and type = $activityType
@@ -448,7 +456,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String) extends S
   override def initialize(): Unit = {
     val flyway = Flyway
       .configure()
-      .locations("psql/migration")
+      .locations(flywayLocation)
       .dataSource(dbUrl, dbUser, dbPassword)
       .load()
     flyway.migrate()

@@ -12,7 +12,7 @@ import velocorner.api.weather.WeatherForecast
 import velocorner.model.ActionType
 import velocorner.model.strava.Gear
 import velocorner.model.weather.ForecastResponse
-import velocorner.util.JsonIo
+import velocorner.util.{FlywayMigrationUtil, JsonIo}
 
 class PsqlDbStorageTest
     extends AnyFlatSpec
@@ -134,8 +134,17 @@ class PsqlDbStorageTest
     try {
       psql = EmbeddedPsqlStorage()
       val port = psql.getPort
-      psqlStorage = new PsqlDbStorage(dbUrl = s"jdbc:postgresql://localhost:$port/postgres", dbUser = "postgres", dbPassword = "test")
-      psqlStorage.initialize()
+      // test resources are containing some overrides from the regular folder (V4__ip2nation.sql)
+      // want to have test classes at the end
+      FlywayMigrationUtil.copyInTemp("psql/migration") { tmpDir =>
+        psqlStorage = new PsqlDbStorage(
+          dbUrl = s"jdbc:postgresql://localhost:$port/postgres",
+          dbUser = "postgres",
+          dbPassword = "test",
+          flywayLocation = "filesystem:" + tmpDir.getAbsolutePath
+        )
+        psqlStorage.initialize()
+      }
     } catch {
       case any: Exception =>
         logger.error("failed to start embedded psql", any)
