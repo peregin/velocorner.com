@@ -252,6 +252,9 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] =
       maxOf(athleteId, activity, "distance", _.distance.toDouble.some)
 
+    override def maxTime(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      maxOf(athleteId, activity, "moving_time", _.distance.toDouble.some)
+
     override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] =
       maxOf(athleteId, activity, "total_elevation_gain", _.total_elevation_gain.toDouble.some)
 

@@ -166,6 +166,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
           // parallelization
           val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
           val maxDistanceF = storage.maxDistance(account.athleteId, activity)
+          val maxTimeF = storage.maxTime(account.athleteId, activity)
           val maxElevationF = storage.maxElevation(account.athleteId, activity)
           val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
           val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
@@ -175,6 +176,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
           val achievements = for {
             maxAverageSpeed <- maxAverageSpeedF
             maxDistance <- maxDistanceF
+            maxTime <- maxTimeF
             maxElevation <- maxElevationF
             maxAveragePower <- maxAveragePowerF
             maxHeartRate <- maxHeartRateF
@@ -184,6 +186,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
           } yield Achievements(
             maxAverageSpeed = maxAverageSpeed,
             maxDistance = maxDistance,
+            maxTimeInSec = maxTime,
             maxElevation = maxElevation,
             maxAveragePower = maxAveragePower,
             maxHeartRate = maxHeartRate,

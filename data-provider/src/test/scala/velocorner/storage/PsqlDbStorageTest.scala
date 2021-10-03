@@ -82,6 +82,7 @@ class PsqlDbStorageTest
     val achievementStorage = psqlStorage.getAchievementStorage
     awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) mustBe Some(7.932000160217285d)
     awaitOn(achievementStorage.maxDistance(432909, "Ride")).map(_.value) mustBe Some(90514.3984375d)
+    awaitOn(achievementStorage.maxTime(432909, "Ride")).map(_.value) mustBe Some(13886d)
     awaitOn(achievementStorage.maxElevation(432909, "Ride")).map(_.value) mustBe Some(1077d)
     awaitOn(achievementStorage.maxHeartRate(432909, "Ride")).map(_.value) mustBe empty
     awaitOn(achievementStorage.maxAveragePower(432909, "Ride")).map(_.value) mustBe Some(233.89999389648438d)

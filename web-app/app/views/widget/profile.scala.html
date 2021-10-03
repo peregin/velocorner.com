@@ -148,7 +148,8 @@
                 <div class="row"><h4><i class="fa fa-trophy rounded"></i> Best Achievements</h4></div>
                 <div class="row">
                     <div>Max average speed: <a id="achievement-max-avg-speed" href="#">-</a></div>
-                    <div>Longest activity: <a id="achievement-max-distance" href="#">-</a></div>
+                    <div>Longest distance: <a id="achievement-max-distance" href="#">-</a></div>
+                    <div>Longest activity: <a id="achievement-max-time" href="#">-</a></div>
                     <div>Max elevation gain: <a id="achievement-max-elevation" href="#">-</a></div>
                     <div>Max average power: <a id="achievement-max-avg-power" href="#">-</a></div>
                     <div>Max heart rate: <a id="achievement-max-hr" href="#">-</a></div>
@@ -236,6 +237,7 @@
                 //showEntry(data.maxSpeed, '#achievement-max-speed', 3.6, 1, 'km/h');
                 showEntry(data.maxAverageSpeed, '#achievement-max-avg-speed', 3.6, 1, '@account.units().speedLabel');
                 showEntry(data.maxDistance, '#achievement-max-distance', 0.001, 1, '@account.units().distanceLabel');
+                showEntry(data.maxTimeInSec, '#achievement-max-time', 0.0002777, 1, 'Hours');
                 showEntry(data.maxElevation, '#achievement-max-elevation', 1, 0, '@account.units().elevationLabel');
                 //showEntry(data.maxPower, '#achievement-max-power', 1, 0, 'W');
                 showEntry(data.maxAveragePower, '#achievement-max-avg-power', 1, 0, 'W');

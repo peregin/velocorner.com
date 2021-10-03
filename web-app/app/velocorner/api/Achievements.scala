@@ -13,6 +13,7 @@ object Achievements {
 case class Achievements(
     maxAverageSpeed: Option[Achievement],
     maxDistance: Option[Achievement],
+    maxTimeInSec: Option[Achievement],
     maxElevation: Option[Achievement],
     maxAveragePower: Option[Achievement],
     maxHeartRate: Option[Achievement],
@@ -30,6 +31,7 @@ case class Achievements(
   private def toImperial() = Achievements(
     maxAverageSpeed = maxAverageSpeed.map(_.convert(KilometersPerHour(_).toInternationalMilesPerHour)),
     maxDistance = maxDistance.map(_.convert(Kilometers(_).toInternationalMiles)),
+    maxTimeInSec = maxTimeInSec,
     maxElevation = maxElevation.map(_.convert(Meters(_).toFeet)),
     maxAveragePower = maxAveragePower,
     maxHeartRate = maxHeartRate,

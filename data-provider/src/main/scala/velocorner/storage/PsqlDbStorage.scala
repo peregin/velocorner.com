@@ -10,7 +10,6 @@ import doobie.implicits._
 import doobie.{ConnectionIO, _}
 import velocorner.api.weather.CurrentWeather
 import velocorner.model.ActionType
-import velocorner.util.FlywayMigrationUtil
 // needed for sql interpolator when filtering on start date
 import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
@@ -305,12 +304,11 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         max: Boolean = true
     ): Future[Option[Achievement]] = {
       //implicit val han = LogHandler.jdkLogHandler
+      val minMax = max.fold("desc", "asc")
       val clause =
-        s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) ${if (max) "desc"
-        else "asc"} limit 1"
+        s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) $minMax limit 1"
       val fragment =
-        fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++
-          Fragment.const(clause)
+        fr"select data from activity where athlete_id = $athleteId and type = $activityType" ++ Fragment.const(clause)
       val result = for {
         activity <- OptionT(fragment.query[Activity].option.transactToFuture)
         metric <- OptionT(Future(mapperFunc(activity)))
@@ -323,89 +321,32 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
       result.value
     }
 
-    override def maxAverageSpeed(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "average_speed",
-        athleteId,
-        activity,
-        _.average_speed.map(_.toDouble)
-      )
+    override def maxAverageSpeed(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_speed", athleteId, activity, _.average_speed.map(_.toDouble))
 
-    override def maxDistance(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
+    override def maxDistance(athleteId: Long, activity: String): Future[Option[Achievement]] =
       metricOf("distance", athleteId, activity, _.distance.toDouble.some)
 
-    override def maxElevation(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "total_elevation_gain",
-        athleteId,
-        activity,
-        _.total_elevation_gain.toDouble.some
-      )
+    override def maxTime(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("moving_time", athleteId, activity, _.moving_time.toDouble.some)
 
-    override def maxHeartRate(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "max_heartrate",
-        athleteId,
-        activity,
-        _.max_heartrate.map(_.toDouble)
-      )
+    override def maxElevation(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("total_elevation_gain", athleteId, activity, _.total_elevation_gain.toDouble.some)
 
-    override def maxAverageHeartRate(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "average_heartrate",
-        athleteId,
-        activity,
-        _.average_heartrate.map(_.toDouble)
-      )
+    override def maxHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("max_heartrate", athleteId, activity, _.max_heartrate.map(_.toDouble))
 
-    override def maxAveragePower(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "average_watts",
-        athleteId,
-        activity,
-        _.average_watts.map(_.toDouble)
-      )
+    override def maxAverageHeartRate(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_heartrate", athleteId, activity, _.average_heartrate.map(_.toDouble))
 
-    override def minAverageTemperature(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "average_temp",
-        athleteId,
-        activity,
-        _.average_temp.map(_.toDouble),
-        max = false
-      )
+    override def maxAveragePower(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_watts", athleteId, activity, _.average_watts.map(_.toDouble))
 
-    override def maxAverageTemperature(
-        athleteId: Long,
-        activity: String
-    ): Future[Option[Achievement]] =
-      metricOf(
-        "average_temp",
-        athleteId,
-        activity,
-        _.average_temp.map(_.toDouble)
-      )
+    override def minAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble), max = false)
+
+    override def maxAverageTemperature(athleteId: Long, activity: String): Future[Option[Achievement]] =
+      metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble))
   }
 
   override def getAdminStorage: AdminStorage = adminStorage

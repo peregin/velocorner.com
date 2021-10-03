@@ -78,6 +78,7 @@ trait Storage[M[_]] {
   trait AchievementStorage {
     def maxAverageSpeed(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxDistance(athleteId: Long, activity: String): M[Option[Achievement]]
+    def maxTime(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxElevation(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
     def maxAverageHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]

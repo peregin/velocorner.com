@@ -93,7 +93,7 @@ case class Activity(
     athlete: Athlete,
     name: String,
     distance: Float,
-    moving_time: Int,
+    moving_time: Int, // in seconds
     elapsed_time: Int,
     total_elevation_gain: Float,
     `type`: String,
