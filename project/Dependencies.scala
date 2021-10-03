@@ -5,7 +5,7 @@ object Dependencies {
   val scala12Version = "2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.6.1"
-  val mouseVersion = "1.0.4"
+  val mouseVersion = "1.0.5"
   val zioVersion = "1.0.12"
   val zioLoggingVersion = "0.5.12"
   val shapelessVersion = "2.3.7"
