@@ -5,17 +5,17 @@ object Dependencies {
   val scala12Version = "2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.6.1"
-  val mouseVersion = "1.0.5"
+  val mouseVersion = "1.0.6"
   val zioVersion = "1.0.12"
   val zioLoggingVersion = "0.5.12"
   val shapelessVersion = "2.3.7"
   val argonautVersion = "6.3.7"
   val logbackVersion = "1.2.6"
   val doobieVersion = "0.13.4"
-  val orientDbVersion = "3.1.12"
-  val mongoDbVersion = "4.3.2"
+  val orientDbVersion = "3.1.13"
+  val mongoDbVersion = "4.3.3"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "7.15.0"
+  val flywayVersion = "8.0.0"
   val elasticVersion = "7.12.3"
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.3" // standalone version
@@ -23,7 +23,7 @@ object Dependencies {
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.1.2"
   val scalaTestVersion = "3.2.10"
-  val mockitoVersion = "3.12.4"
+  val mockitoVersion = "4.0.0"
 
   val springVersion = "2.5.5" // java world
 }
