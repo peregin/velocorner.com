@@ -160,7 +160,7 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
   .settings(
     buildSettings,
     name := "data-analytics-spark",
-    scalaVersion := Dependencies.scala12Version, // spark is supported on 2.12 only
+    scalaVersion := Dependencies.sparkScalaVersion, // spark is supported on different versions
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
   ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
 
