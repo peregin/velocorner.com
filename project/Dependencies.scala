@@ -5,9 +5,9 @@ object Dependencies {
   val sparkScalaVersion = projectScalaVersion //"2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.6.1"
-  val mouseVersion = "1.0.6"
+  val mouseVersion = "1.0.7"
   val zioVersion = "1.0.12"
-  val zioLoggingVersion = "0.5.12"
+  val zioLoggingVersion = "0.5.13"
   val shapelessVersion = "2.3.7"
   val argonautVersion = "6.3.7"
   val logbackVersion = "1.2.6"
@@ -25,5 +25,5 @@ object Dependencies {
   val scalaTestVersion = "3.2.10"
   val mockitoVersion = "4.0.0"
 
-  val springVersion = "2.5.5" // java world
+  val springVersion = "2.5.6" // java world
 }
