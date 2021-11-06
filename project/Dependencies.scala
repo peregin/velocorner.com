@@ -1,7 +1,6 @@
 object Dependencies {
 
-  // update travis setup as well with the same scala version
-  val projectScalaVersion = "2.13.6"
+  val projectScalaVersion = "2.13.7"
   val sparkScalaVersion = projectScalaVersion //"2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
   val catsVersion = "2.6.1"
@@ -13,9 +12,9 @@ object Dependencies {
   val logbackVersion = "1.2.6"
   val doobieVersion = "0.13.4"
   val orientDbVersion = "3.1.13"
-  val mongoDbVersion = "4.3.3"
+  val mongoDbVersion = "4.3.4"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "8.0.2"
+  val flywayVersion = "8.0.3"
   val elasticVersion = "7.12.3"
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.3" // standalone version
