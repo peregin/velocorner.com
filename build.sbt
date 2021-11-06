@@ -190,8 +190,23 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
       "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       scalaTest
-    ) ++ cats
+    ) ++ cats,
+    BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      BuildInfoKey.action("buildTime") {
+        // is parsed and used in sitemap as well
+        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+      },
+      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
+    ),
+    buildInfoPackage := "test.service.scala.build",
+  ).enablePlugins(
+    BuildInfoPlugin
   )
+
 
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
