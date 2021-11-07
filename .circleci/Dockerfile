@@ -8,17 +8,23 @@ ENV SBT_OPTS="-Dfile.encoding=UTF-8"
 ENV SBT_HOME="/opt/sbt"
 ENV SBT_VERSION="1.5.5"
 
+# install sbt
 RUN mkdir $SBT_HOME
 RUN \
   curl -fsL --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $SBT_HOME/sbt.tgz && \
   tar zxf $SBT_HOME/sbt.tgz -C $SBT_HOME && \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
 
+# install utilities, git, docker, etc
 RUN yum install -y git
 RUN yum install -y yum-utils device-mapper-persistent-data lvm2
 RUN yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 RUN yum install -y docker-ce
 RUN yum clean all
+
+# install node js for web-front
+#RUN curl –sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+#RUN yum install –y nodejs
 
 RUN adduser --uid 1500 -c GECOS circleci
 RUN usermod -aG docker circleci
