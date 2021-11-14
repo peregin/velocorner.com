@@ -15,19 +15,18 @@ RUN \
   tar zxf $SBT_HOME/sbt.tgz -C $SBT_HOME && \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
 
+# setup nodejs
+RUN curl -fsSL https://rpm.nodesource.com/setup_17.x | bash -
+
 # install utilities, git, docker, etc
 RUN yum install -y git
 RUN yum install -y yum-utils device-mapper-persistent-data lvm2
 RUN yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-RUN yum install -y docker-ce
+RUN yum install -y docker-ce sudo nodejs
 RUN yum clean all
 
-# install node js for web-front
-#RUN curl –sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-#RUN yum install –y nodejs
-
 RUN adduser --uid 1500 -c GECOS circleci
-RUN usermod -aG docker circleci
+RUN usermod -aG docker,wheel circleci
 
 USER circleci
 WORKDIR /home/circleci/test

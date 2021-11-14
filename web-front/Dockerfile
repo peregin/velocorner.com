@@ -1,4 +1,4 @@
-FROM node:14.16.1-alpine
+FROM node:17-alpine
 
 # create a work directory and copy over our dependency manifest files.
 RUN mkdir /app
