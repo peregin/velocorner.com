@@ -23,7 +23,7 @@ jobs:
       - run: .circleci/cachekey.sh checksums.txt
       - restore_cache:
           key: *cache_key
-      - run: sbt compile:compile test:compile
+      - run: sbt Compile/compile Test/compile
       - save_cache:
           key: *cache_key
           paths:
