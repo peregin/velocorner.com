@@ -100,6 +100,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   description := "The Cycling Platform",
   javacOptions ++= Seq("-source", "11", "-target", "11"),
   scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+  versionScheme := Some("early-semver"),
   Test / scalacOptions ++= Seq("-Yrangepos"),
   ThisBuild / resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
@@ -217,7 +218,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       ehcache,
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
-      "com.google.inject" % "guice" % "5.0.1", // for Java 11 support
+      "com.google.inject" % "guice" % "5.0.1", // for Java 11 support,
       playTest,
       playTestPlus,
       mockito,

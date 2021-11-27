@@ -4,8 +4,6 @@ ThisBuild / resolvers += "Typesafe Simple Repository" at "https://repo.typesafe.
 // to generate dependency graph of the libraries
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 
-addSbtPlugin("com.gilt" % "sbt-dependency-graph-sugar" % "0.9.0")
-
 // check latest updates form maven
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.3")
 
