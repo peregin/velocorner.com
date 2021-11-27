@@ -142,8 +142,11 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
 lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
     name := "data-search",
-    libraryDependencies ++= elastic4s
+    libraryDependencies ++= elastic4s ++ Seq(
+      "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
+    )
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
