@@ -212,6 +212,7 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
     name := "web-app",
     libraryDependencies ++= Seq(
       guice,
@@ -219,6 +220,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
       "com.google.inject" % "guice" % "5.0.1", // for Java 11 support,
+      "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
       playTest,
       playTestPlus,
       mockito,
