@@ -59,17 +59,21 @@ class PsqlDbStorageTest
   }
 
   it should "list activity years" in {
-    awaitOn(psqlStorage.listActivityYears(432909, "Ride")) must contain theSameElementsAs (Seq(2015, 2014))
-    awaitOn(psqlStorage.listActivityYears(432909, "Hike")) must contain theSameElementsAs (Seq(2015))
+    awaitOn(psqlStorage.listActivityYears(432909, "Ride")) must contain theSameElementsAs Seq(2015, 2014)
+    awaitOn(psqlStorage.listActivityYears(432909, "Hike")) must contain theSameElementsAs Seq(2015)
     awaitOn(psqlStorage.listActivityYears(432909, "Walk")) mustBe empty
   }
 
   it should "list activity titles" in {
-    awaitOn(psqlStorage.activitiesTitles(432909, 3)) must contain theSameElementsAs (Seq(
+    awaitOn(psqlStorage.activitiesTitles(432909, 3)) must contain theSameElementsAs Seq(
       "Stallikon Ride",
       "Morning Ride",
       "Stallikon Ride"
-    ))
+    )
+  }
+
+  it should "list last activity" in {
+    awaitOn(psqlStorage.getLastActivity(432909)) mustBe Some(activityFixtures.head)
   }
 
   "account storage" should behave like accountFragments(psqlStorage)

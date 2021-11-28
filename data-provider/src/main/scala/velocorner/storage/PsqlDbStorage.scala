@@ -45,7 +45,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   config.setMinimumIdle(2)
   config.setPoolName("hikari-db-pool")
   config.setAutoCommit(true)
-  //config.validate() // for printout
+  //config.validate() // for debugging connection details
 
   private lazy val connectEC = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(
@@ -189,6 +189,12 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
          |where athlete_id = $athleteId
          |order by data->>'start_date' desc
          |limit $max""".stripMargin.query[String].to[List].transactToFuture
+
+  override def getLastActivity(athleteId: Long): Future[Option[Activity]] =
+    sql"""select data from activity
+         |where athlete_id = $athleteId
+         |order by data->>'start_date' desc
+         |limit 1""".stripMargin.query[Activity].option.transactToFuture
 
   override def getActivity(id: Long): Future[Option[Activity]] =
     sql"""select data from activity where id = $id

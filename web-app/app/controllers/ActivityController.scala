@@ -200,6 +200,21 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
     }
 
   // retrieves the activity with the given id
+  // route mapped to /api/activities/last
+  def last(): Action[AnyContent] =
+    TimedAuthAsyncAction("query for last activity") { implicit request =>
+      val resultET = for {
+        account <- EitherT(Future(loggedIn.toRight(Forbidden)))
+        activity <- EitherT(connectivity.getStorage.getLastActivity(account.athleteId).map(_.toRight(NotFound)))
+      } yield activity
+
+      resultET
+        .map(JsonIo.write(_))
+        .map(Ok(_))
+        .merge
+    }
+
+  // retrieves the activity with the given id
   // route mapped to /api/activities/:id
   def activity(id: Long): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for activity $id") { implicit request =>
