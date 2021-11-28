@@ -14,10 +14,8 @@ object JsonIo extends CloseableResource {
     read(raw)
   }
 
-  def readStringFromResource(resourceName: String): String = withCloseable(Source.fromURL(getClass.getResource(resourceName)))(_.mkString)
-
   def readReadFromResource[T](resourceName: String)(implicit fjs: Reads[T]): T = {
-    val json = readStringFromResource(resourceName)
+    val json = withCloseable(Source.fromURL(getClass.getResource(resourceName)))(_.mkString)
     read[T](json)
   }
 

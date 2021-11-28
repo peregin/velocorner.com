@@ -58,10 +58,6 @@ def cats = Seq(
   "org.typelevel" %% "mouse" % Dependencies.mouseVersion
 )
 
-def scalaz = Seq(
-  "org.scalaz" %% "scalaz-core" % "7.3.2"
-)
-
 def zio = Seq(
   "dev.zio" %% "zio" % Dependencies.zioVersion,
   "dev.zio" %% "zio-logging" % Dependencies.zioLoggingVersion
@@ -164,9 +160,8 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
   .settings(
     buildSettings,
     name := "data-analytics-spark",
-    scalaVersion := Dependencies.sparkScalaVersion, // spark is supported on different versions
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
-  ) //.dependsOn(dataProvider % "compile->compile; test->test") // data provider must be compiled on 2.12 as well
+  ).dependsOn(dataProvider % "compile->compile; test->test")
 
 lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
   .settings(

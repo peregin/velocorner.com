@@ -1,9 +1,8 @@
 object Dependencies {
 
   val projectScalaVersion = "2.13.7"
-  val sparkScalaVersion = projectScalaVersion //"2.12.15" // for some modules using Spark (explicitly 2.12.12)
 
-  val catsVersion = "2.6.1"
+  val catsVersion = "2.7.0"
   val mouseVersion = "1.0.7"
   val zioVersion = "1.0.12"
   val zioLoggingVersion = "0.5.14"

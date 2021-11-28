@@ -7,10 +7,11 @@ import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
+import velocorner.api.strava.Activity
 import velocorner.spark.LocalSpark
-import velocorner.spark.app.fixit.Activity
+import velocorner.util.{JsonIo, Metrics}
 
-object PredictActivities extends App with LocalSpark[String] with Logging {
+object PredictActivities extends App with LocalSpark[String] with Logging with Metrics {
 
   log.info("starting...")
 
@@ -21,10 +22,9 @@ object PredictActivities extends App with LocalSpark[String] with Logging {
   override def spark(sc: SparkContext): String = {
     log.info("connecting to a data source...")
 
-    val activities = List.empty[Activity]
-    //timed("read json from gzip") {
-    //JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
-    //}
+    val activities = timed("read json from gzip") {
+      JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
+    }
     log.info(s"got ${activities.size} activities")
     val data2015 = activities.filter(_.start_date.getYear == 2015)
     log.info(s"got ${data2015.size} activities from 2015")
