@@ -13,15 +13,15 @@ object Dependencies {
   val orientDbVersion = "3.2.3"
   val mongoDbVersion = "4.4.0"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "8.1.0"
+  val flywayVersion = "8.2.0"
   val elasticVersion = "7.15.3"
   val finatraVersion = "21.2.0"
-  val playWsVersion = "2.1.3" // standalone version
+  val playWsVersion = "2.1.5" // standalone version
   val playJsonVersion = "2.9.2"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.2.0"
   val scalaTestVersion = "3.2.10"
   val mockitoVersion = "4.1.0"
 
-  val springVersion = "2.6.0" // java world
+  val springVersion = "2.6.1" // java world
 }

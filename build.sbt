@@ -114,6 +114,10 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     setNextVersion,
     commitNextVersion
     // pushChanges  // travis/circleci release script will push the changes
+  ),
+  libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
+  libraryDependencies ++= elastic4s ++ Seq(
+    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   )
 )
 
@@ -138,11 +142,8 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
 lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
     name := "data-search",
-    libraryDependencies ++= elastic4s ++ Seq(
-      "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
-    )
+    libraryDependencies ++= elastic4s
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -210,7 +211,6 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
     name := "web-app",
     libraryDependencies ++= Seq(
       guice,
@@ -218,7 +218,6 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playWsJsonStandalone,
       "com.pauldijou" %% "jwt-play-json" % "5.0.0",
       "com.google.inject" % "guice" % "5.0.1", // for Java 11 support,
-      "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
       playTest,
       playTestPlus,
       mockito,
