@@ -40,6 +40,12 @@ update account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athl
 select data->>'role' from account where athlete_id = 432909;
 ```
 
+#### Troubleshooting
+if embedded psql fails to start
+```shell script
+brew install postgresql
+```
+
 # Distribution
 ```shell script
 sbt dist
@@ -79,13 +85,6 @@ No attribution required
 https://pixabay.com/illustrations/christmas-tree-twigs-christmas-pine-1853582/
 https://pixabay.com/illustrations/new-year-s-eve-christmas-ornament-1911483/
 
-# Troubleshooting
-
-## Postgres
-if embedded psql fails to start
-```shell script
-brew install postgresql
-```
 ## HTTP 2
 ```shell
 curl -sI https://velocorner.com -o/dev/null -w '%{http_version}\n'
