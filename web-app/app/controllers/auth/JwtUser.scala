@@ -40,7 +40,7 @@ object JwtUser {
 
 case class JwtUser(id: Long, name: String, location: String, avatarUrl: String) {
 
-  def toToken(implicit secret: String) = {
+  def toToken(implicit secret: String): String = {
     val now = DateTime.now(DateTimeZone.UTC)
     val exp = now.plusDays(30)
 

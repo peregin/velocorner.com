@@ -5,21 +5,18 @@ import java.util.concurrent.Executors
 import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{OAuth2StateKey, ec}
-import pdi.jwt.JwtJson
 
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
-import play.api.libs.json.Json
-import play.api.libs.typedmap.TypedKey
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.feed.OAuth2._
 
 import scala.concurrent.{ExecutionContext, Future}
-//for kestrel combinator
+// for kestrel combinator
 import mouse.all._
 
 object StravaController {
@@ -29,9 +26,8 @@ object StravaController {
   type AuthenticityToken = String
   type ResultUpdater = Result => Result
 
-  val OAuth2CookieKey = "velocorner.oauth2.id"
+  // verifies the code between the session and submitted form
   val OAuth2StateKey = "velocorner.oauth2.state"
-  val OAuth2AttrKey = TypedKey[Account]
 
   implicit val ec =
     ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true))))

@@ -2,33 +2,16 @@ package velocorner.model
 
 import velocorner.util.JsonIo
 import cats.implicits._
-import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 /** Created by levi on 01/12/15.
   */
-class AccountSpec extends AnyWordSpec with Matchers {
+class AccountSpec extends AnyWordSpec with Matchers with AccountFixtures {
 
   "model" should {
 
     "add type to the json" in {
-      val now = DateTime.parse("2020-05-02T20:33:20.000+02:00").withZone(DateTimeZone.forID("Europe/Zurich"))
-      val access = OAuth2Access(
-        "accessToken",
-        accessExpiresAt = now,
-        "refreshToken"
-      )
-      val account = Account(
-        1,
-        "display name",
-        "display location",
-        "profile url",
-        lastUpdate = None,
-        role = None,
-        unit = Units.Imperial.some,
-        stravaAccess = access.some
-      )
       val json = JsonIo.write(account)
       json mustEqual """{
           |  "athleteId" : 1,
@@ -46,17 +29,13 @@ class AccountSpec extends AnyWordSpec with Matchers {
     }
 
     "serialize with role and units" in {
-      val account = Account(
-        1,
-        "name",
-        "location",
-        "profile",
+      val accountWithRole = account.copy(
         lastUpdate = None,
         role = Role.Admin.some,
         unit = Units.Metric.some,
-        None
+        stravaAccess = None
       )
-      val json = JsonIo.write(account)
+      val json = JsonIo.write(accountWithRole)
       val ref = JsonIo.read[Account](json)
       ref.role === Role.Admin.some
       ref.unit === Units.Metric.some

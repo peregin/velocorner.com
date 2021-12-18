@@ -1,7 +1,8 @@
 package controllers.auth
 
-import StravaController.{Id, OAuth2AttrKey, ResultUpdater, User, ec}
+import StravaController.{Id, ResultUpdater, User, ec}
 import controllers.ConnectivitySettings
+import controllers.auth.AuthChecker.{OAuth2AttrKey, OAuth2CookieKey}
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
 import velocorner.model.Account
@@ -9,9 +10,18 @@ import velocorner.model.Account
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
-import StravaController.OAuth2CookieKey
 import controllers.util.WebMetrics
+import play.api.libs.typedmap.TypedKey
 
+object AuthChecker {
+
+  val OAuth2CookieKey = "velocorner.oauth2.id"
+  val OAuth2AttrKey = TypedKey[Account]
+}
+
+// supports authentication based on:
+// - session cookie
+// - JWT headers
 trait AuthChecker extends WebMetrics {
   // because of the body parser
   this: AbstractController =>
@@ -45,6 +55,7 @@ trait AuthChecker extends WebMetrics {
 
     override protected def executionContext: ExecutionContext = ec
     override def parser: BodyParser[AnyContent] = parse.default
+
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       implicit val r = request
       val maybeUserF = restoreUser.recover { case _ => None -> identity[Result] _ }
