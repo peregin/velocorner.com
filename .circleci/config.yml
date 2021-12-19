@@ -58,6 +58,25 @@ jobs:
           name: deploy web-app
           command: sbt "release skip-tests with-defaults"
 
+  deploy_web-frontend:
+    executor: ci-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: setup git identity
+          command: |
+            git config --global user.name "Deploy CI"
+            git config --global user.email "velocorner.com@gmail.com"
+      - run:
+          name: dockerhub login
+          command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
+      - run:
+          name: deploy web-app
+          command: cd web-app && deploy.sh
+
   restart_stack:
     executor: ci-executor
     steps:
@@ -73,6 +92,13 @@ workflows:
           filters:
             branches:
               only: /master.*/
+      - deploy_web-frontend:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master.*/
       - restart_stack:
           requires:
             - deploy_web-app
+            - deploy_web-frontend
