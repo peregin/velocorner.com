@@ -74,8 +74,8 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
-          name: deploy web-app
-          command: cd web-front && deploy.sh
+          name: deploy web-frontend
+          command: cd web-front && ./deploy.sh
 
   restart_stack:
     executor: ci-executor
