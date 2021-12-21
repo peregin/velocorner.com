@@ -39,7 +39,7 @@ jobs:
             - .
       - run: sbt test:test
 
-  deploy_web-app:
+  deploy_web-backend:
     executor: ci-executor
     steps:
       - attach_workspace:
@@ -55,7 +55,7 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
-          name: deploy web-app
+          name: deploy web-backend
           command: sbt "release skip-tests with-defaults"
 
   deploy_web-frontend:
@@ -86,7 +86,7 @@ workflows:
   ci_cd:
     jobs:
       - build
-      - deploy_web-app:
+      - deploy_web-backend:
           requires:
             - build
           filters:
@@ -100,5 +100,5 @@ workflows:
               only: /master.*/
       - restart_stack:
           requires:
-            - deploy_web-app
+            - deploy_web-backend
             - deploy_web-frontend
