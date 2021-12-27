@@ -3,16 +3,9 @@ import React, { Component } from 'react';
 
 const Instagram = () => {
     return <div className="col-md-8 md-margin-bottom-40">
-        <script src="http://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-        <iframe title="Instagram" src="//lightwidget.com/widgets/7e189a75033c5aaaba216b818e656c0b.html"
-            scrolling="no" allowtransparency="true" className="lightwidget-widget"
-            style={{
-                width: '100%',
-                border: '0',
-                overflow: 'hidden',
-                height: '250px'
-            }}>
-        </iframe>
+        <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
+        <iframe src="//lightwidget.com/widgets/7e189a75033c5aaaba216b818e656c0b.html" title="Instagram Photos" scrolling="no" allowtransparency="true" className="lightwidget-widget" 
+        style={{width: '100%', border:'0', overflow:'hidden'}}></iframe>
     </div>
 }
 
