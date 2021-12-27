@@ -19,6 +19,7 @@ const Social = () => {
             <li className="VC_social_icon"><a href="https://www.youtube.com/channel/UCekBQAfLHviXTvB1kVjzBZQ" data-original-title="Youtube" className="rounded-x social_youtube">Youtube</a><small>YOUTUBE</small></li>
             <li className="VC_social_icon"><a href="https://twitter.com/velocorner_com" data-original-title="Twitter" className="rounded-x social_twitter">Twitter</a><small>TWITTER</small></li>
             <li className="VC_social_icon"><a href="mailto:velocorner.com@@gmail.com" data-original-title="Email" className="rounded-x social_email">velocorner.com@@gmail.com</a><small>EMAIL</small></li>
+            <li className="VC_social_icon"><a href="https://www.facebook.com/101313662146829" data-original-title="Facebook" className="rounded-x social_facebook">Facebook</a><small>FACEBOOK</small></li>
         </ul>
     </div>
 }
@@ -26,7 +27,13 @@ const Social = () => {
 const Copyright = () => {
     return <div className="copyright">
         <div className="container">
-            <p className="text-center">2015 - {(new Date().getFullYear())} &copy; All Rights Reserved <a target="_blank" rel="noopener noreferrer" href="http://velocorner.com">Velocorner</a></p>
+            <div className="col-md-4" />
+            <div className="col-md-4">
+                <p className="text-center">2015 - {(new Date().getFullYear())} &copy; All Rights Reserved <a style={{color: '#3a5424', fontWeight: 'bold'}} target="_blank" rel="noopener noreferrer" href="https://velocorner.com">Velocorner</a></p>
+            </div>
+            <div className="col-md-4" style={{textAlign: 'right'}}>
+                <statuspage-widget src="https://velocorner.statuspage.io/"></statuspage-widget>
+            </div>
         </div>
     </div>
 }
