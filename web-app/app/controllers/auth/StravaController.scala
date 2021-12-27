@@ -109,7 +109,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       request: RequestHeader,
       ctx: ExecutionContext
   ): Future[Result] = {
-    logger.info(s"oauth LINK succeeded with token[${resp.accessToken}]")
+    logger.info(s"oauth LINK succeeded with token[${resp.accessToken}] and user[${consumerUser.athleteId}]")
     for {
       _ <- login(resp, consumerUser.some)
     } yield Redirect(controllers.routes.WebController.index)
