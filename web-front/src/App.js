@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router, Route,
+  BrowserRouter, Route, Routes,
 } from 'react-router-dom';
 
 import Home from "./pages/Home";
@@ -30,21 +30,22 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+      <BrowserRouter>
         <div className="wrapper">
 
           <Header />
-         
+
           <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
 
-
-          <Route exact path="/" component={Home} />
-          <Route path="/about" component={About} />
+          <Routes>
+            <Route exact path="/" component={Home} />
+            <Route path="/about" component={About} />
+          </Routes>
 
           <Footer />
 
-        </div>
-      </Router>
+          </div>
+      </BrowserRouter>
     )
   }
 }
