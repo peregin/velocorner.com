@@ -116,9 +116,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     // pushChanges  // travis/circleci release script will push the changes
   ),
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
-  libraryDependencies ++= elastic4s ++ Seq(
-    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
-  )
+  libraryDependencies ++= Seq("org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2")
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
