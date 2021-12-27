@@ -1,15 +1,14 @@
 # ToDo
-- add QR code to the About page 
+- show last ride and similar ones (+/-15% distance, elevation)
+- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 - recommendation for the week and month based on previous or other activities
 - setup ActivityStorage with ScalaCache
+- variation of the greeting, instead of Hello
+- add QR code to the About page 
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
-- show last ride and similar ones (+/-15% distance, elevation)
 - compass rose - wind direction
 - marketing campaign FB
-- variation of the greeting, instead of Hello
-- intercom (or alternative) for features
-- expose oauth authorization URL from BE 
-- implement JWT between Frontend and Backend
+- intercom/zendesk (or alternative) for features
 - show consecutive sport days
 - add last activity details in the profile (and similar rides)
 - add monthly - current month (next to yearly) achievements
@@ -17,11 +16,11 @@
 - add gps overlay over video section
 - add garmin data field section
 - PubSub (pusher or alternative) for updates
-- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 
 # InProgress
-- add 3D profile of the last activity gpx
 - return JWT after login
+- implement JWT between Frontend and Backend
+- add 3D profile of the last activity gpx
 
 # Not sure if adds value
 - map with origins and destinations flagged

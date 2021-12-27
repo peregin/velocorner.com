@@ -46,15 +46,6 @@ if embedded psql fails to start
 brew install postgresql
 ```
 
-# Distribution
-```shell script
-sbt dist
-```
-Run with nohup and start as a background process
-```shell script
-nohup bin/web-app -Dconfig.file=../velocorner.conf &
-```
-
 # Release (includes the distribution without manual intervention)
 ```shell script
 sbt "release with-defaults"
@@ -91,6 +82,11 @@ curl -sI https://velocorner.com -o/dev/null -w '%{http_version}\n'
 ```
 
 ## SBT
+Dependency check on demand or Scala Steward will trigger it 
 ```shell
 sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
+```
+Sbt Task (IntelliJ)
+```shell script
+sbt 'project web-app' 'run' -Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -Dhttp.port=9001 -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf
 ```
