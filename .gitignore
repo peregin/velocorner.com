@@ -10,7 +10,6 @@ checksums.txt
 .settings
 .gradle
 .cache
-.vscode
 go.sum
 .idea/*
 !.idea/runConfigurations/
