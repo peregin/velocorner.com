@@ -56,7 +56,7 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-backend
-          command: sbt "release skip-tests with-defaults"
+          command: sbt "release skip-tests with-defaults" && git push --tags
 
   deploy_web-frontend:
     executor: ci-executor
@@ -75,7 +75,7 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-frontend
-          command: cd web-front && ./deploy.sh
+          command: cd web-front && ./deploy.sh && git push --tags
 
   restart_stack:
     executor: ci-executor
