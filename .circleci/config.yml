@@ -79,9 +79,6 @@ jobs:
       - run:
           name: deploy web-frontend
           command: cd web-front && ./deploy.sh
-      - run:
-          name: upload version tags
-          command: ssh-keyscan github.com >> ~/.ssh/known_hosts && git push --tags --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$CIRCLE_BRANCH"
 
   restart_stack:
     executor: ci-executor
