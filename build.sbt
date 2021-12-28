@@ -6,6 +6,7 @@ import sbtrelease.ReleasePlugin.autoImport._
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
+import sbtrelease.ReleasePlugin.runtimeVersion
 
 val rethinkClient = Seq(
   "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion,
@@ -113,7 +114,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     commitNextVersion
     // pushChanges  // travis/circleci release script will push the changes
   ),
-  releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]"
+  releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
   libraryDependencies ++= Seq("org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2")
 )
