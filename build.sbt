@@ -114,6 +114,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     commitNextVersion
     // pushChanges  // travis/circleci release script will push the changes
   ),
+  releaseCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]", // it is invoked from ci, skip a new trigger
   releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
   libraryDependencies ++= Seq("org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2")
