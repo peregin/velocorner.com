@@ -214,7 +214,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       guice,
       ehcache,
       playWsJsonStandalone,
-      "com.pauldijou" %% "jwt-play-json" % "5.0.0",
+      "com.github.jwt-scala" %% "jwt-play-json" % Dependencies.jwtVersion,
       "com.google.inject" % "guice" % "5.0.1", // for Java 11 support,
       playTest,
       playTestPlus,
