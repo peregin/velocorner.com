@@ -1,13 +1,13 @@
 package velocorner.manual.storage
 
-import java.io.PrintWriter
-
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.strava.Activity
 import velocorner.manual.MyLocalConfig
 import velocorner.storage.{OrientDbStorage, Storage}
 import velocorner.util.JsonIo
 import zio.{ExitCode, Task, URIO, ZIO}
+
+import java.io.PrintWriter
 
 object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig {
 
@@ -27,8 +27,8 @@ object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig
     val res = for {
       storage <- ZIO.effect(Storage.create("or"))
       _ <- ZIO.effect(storage.initialize())
-      activities <- ZIO.fromFuture(_ => storage.asInstanceOf[OrientDbStorage].listActivities(athleteId, activityType = None))
-      _ = logger.info(s"found ${activities.size} activities ...")
+      activities <- ZIO.fromFuture(_ => storage.listAllActivities(athleteId, activityType = "Ride"))
+      _ = logger.info(s"found ${activities.size} rides ...")
       _ <- writeJson(s"/Users/levi/Downloads/$athleteId.json", activities)
       _ <- ZIO.effect(storage.destroy())
     } yield ()

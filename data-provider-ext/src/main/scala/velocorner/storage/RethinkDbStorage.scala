@@ -8,12 +8,11 @@ import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import org.json.simple.JSONObject
 import velocorner.api.strava.Activity
-import velocorner.model.{Account, ActionType}
 import velocorner.model.strava.Gear
+import velocorner.model.{Account, ActionType}
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 
-import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 

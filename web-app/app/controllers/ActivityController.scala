@@ -14,7 +14,7 @@ import velocorner.api.strava.Activity
 import velocorner.api.wordcloud.WordCloud
 import velocorner.api.{Achievements, ProfileStatistics, Progress}
 import velocorner.model._
-import velocorner.storage.{OrientDbStorage, PsqlDbStorage}
+import velocorner.storage.PsqlDbStorage
 import velocorner.util.{JsonIo, Metrics}
 
 import javax.inject.Inject
@@ -265,15 +265,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val storage = connectivity.getStorage
       val suggestionsTF = for {
         account <- OptionT(Future(loggedIn))
-        suggestions <- OptionT.liftF(
-          storage match {
-            case orientDb: OrientDbStorage => orientDb.suggestActivities(query, account.athleteId, 10)
-            case psqlDb: PsqlDbStorage     => psqlDb.suggestActivities(query, account.athleteId, 10)
-            case other =>
-              logger.warn(s"$other is not supporting suggestions")
-              Future(Iterable.empty)
-          }
-        )
+        suggestions <- OptionT.liftF(storage.suggestActivities(query, account.athleteId, 10))
       } yield suggestions
 
       suggestionsTF

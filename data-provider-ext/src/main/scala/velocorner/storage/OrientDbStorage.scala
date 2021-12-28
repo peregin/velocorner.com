@@ -56,13 +56,6 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     queryForOption[T](sql)
   }
 
-  // just to have an option list all rides for an athlete
-  // it is NOT used in web-app, specific to this database implementation
-  def listActivities(athleteId: Long, activityType: Option[String]): Future[Iterable[Activity]] = {
-    val typeClause = activityType.map(a => s"type = '$a' AND ").getOrElse("")
-    queryFor[Activity](s"SELECT FROM $ACTIVITY_CLASS WHERE $typeClause athlete.id = $athleteId ORDER BY start_date DESC")
-  }
-
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = {
     queryFor[Activity](
       s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max"

@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.search.ElasticSupport
-import velocorner.storage.{OrientDbStorage, Storage}
+import velocorner.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -18,7 +18,7 @@ object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitS
   val bulkSize = 20
   val athleteId = 432909
 
-  val storage = Storage.create("or").asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
+  val storage = Storage.create("ps")//.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
   storage.initialize()
   val elastic = localCluster()
   logger.info("initialized...")
@@ -27,7 +27,7 @@ object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitS
     // needs be created with proper mappings at the beginning, once is created geo point type can't be changed
     ixCreate <- elastic.execute(setup())
     _ = logger.info(s"mapping updated $ixCreate")
-    activities <- storage.listActivities(athleteId, activityType = None)
+    activities <- storage.listAllActivities(athleteId, "Ride")
     _ = logger.info(s"indexing ${activities.size} documents ...")
     indices = toIndices(activities).toList
     errors <- indices

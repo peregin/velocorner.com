@@ -1,4 +1,3 @@
-import ScalafmtExtensionPlugin.autoImport.scalafmtGenerated
 import play.sbt.routes.RoutesCompiler.autoImport._
 import sbtbuildinfo.BuildInfoKeys
 import sbtrelease._
@@ -51,7 +50,6 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % Dependencies.elasticVersion % "test"
 )
-def storage = Seq(mongoClient, orientDbClient) ++ psqlDbClient ++ rethinkClient
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % Dependencies.catsVersion,
@@ -130,12 +128,29 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playWsAhcStandalone,
       scalaTest
     ) ++ logging
-      ++ storage
+      ++ psqlDbClient
       ++ apacheCommons
       ++ cats
-      ++ zio
+      ++ zio.map(_ % "test")
       ++ squants
   )
+
+lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")
+  .settings(
+    buildSettings,
+    name := "data-provider-ext",
+    description := "Extensions for data-provider with various storage providers (OrientDb, RethinkDb, MongoDb, etc.)",
+    libraryDependencies ++= Seq(
+      playJson,
+      playJsonExtensions,
+      playJsonJoda,
+      scalaTest
+    ) ++ logging
+      ++ Seq(mongoClient, orientDbClient) ++ rethinkClient
+      ++ cats
+      ++ zio.map(_ % "test")
+  )
+  .dependsOn(dataProvider % "test->test;compile->compile")
 
 lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
@@ -269,31 +284,15 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
-  .aggregate(dataProvider, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp, testServiceJava, testServiceScala)
+  .aggregate(
+    dataProvider, dataProviderExtension, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp,
+    testServiceJava, testServiceScala
+  )
   .settings(
     name := "velocorner",
+    description := "Cycling platform with for data analytics with experiments on various technologies",
     buildSettings,
-    onLoadMessage := welcomeMessage.value
+    onLoadMessage := WelcomeBanner.text().value
   )
-
-
-def welcomeMessage = Def.setting {
-  import scala.Console._
-  def red(text: String): String = s"$RED$text$RESET"
-  def item(text: String): String = s"$GREEN▶ $CYAN$text$RESET"
-
-  s"""|${red("""                                         """)}
-      |${red("""          _                              """)}
-      |${red(""" __ _____| |___  __ ___ _ _ _ _  ___ _ _ """)}
-      |${red(""" \ V / -_) / _ \/ _/ _ \ '_| ' \/ -_) '_|""")}
-      |${red("""  \_/\___|_\___/\__\___/_| |_||_\___|_|  """)}
-      |${red("""                                         """ + version.value)}
-      |
-      |Useful sbt tasks:
-      |${item("\"project web-app\" run")} - run web application
-      |${item("scalafmtGenerated")} - formats generated scala sources
-      |${item("fmt")} - command alias to format all files
-      """.stripMargin
-}
 
 addCommandAlias("fmt", "; scalafmtAll ; scalafmtSbt ; scalafmtGenerated")

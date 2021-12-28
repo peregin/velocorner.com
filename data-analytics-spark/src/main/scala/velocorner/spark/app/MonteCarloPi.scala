@@ -19,8 +19,8 @@ object MonteCarloPi extends App with LocalSpark[Double] {
     val count = sc
       .parallelize(1 to samples)
       .map { _ =>
-        val x = math.random
-        val y = math.random
+        val x = math.random()
+        val y = math.random()
         if (x * x + y * y < 1) 1 else 0
       }
       .reduce(_ + _)

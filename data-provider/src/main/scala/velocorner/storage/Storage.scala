@@ -8,11 +8,8 @@ import velocorner.api.{Achievement, GeoPosition}
 import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 
 import scala.concurrent.Future
-import cats.instances.future._
 import org.joda.time.DateTime
 import velocorner.api.strava.Activity
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 trait AttributeStorage[M[_]] {
 
@@ -117,9 +114,9 @@ object Storage extends LazyLogging {
     logger.info(s"initializing storage $dbType ...")
 
     val storage = dbType.toLowerCase match {
-      case any if any.startsWith("re") => new RethinkDbStorage[Future]
-      case any if any.startsWith("mo") => new MongoDbStorage
-      case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
+      //case any if any.startsWith("re") => new RethinkDbStorage[Future]
+      //case any if any.startsWith("mo") => new MongoDbStorage
+      //case any if any.startsWith("or") => new OrientDbStorage(config.getOrientDbUrl, config.getOrientDbPassword)
       case any if any.startsWith("ps") => new PsqlDbStorage(config.getPsqlUrl, config.getPsqlUser, config.getPsqlPassword)
       case unknown                     => sys.error(s"unknown storage type $unknown")
     }
