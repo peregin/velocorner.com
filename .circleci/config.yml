@@ -37,7 +37,7 @@ jobs:
           root: .
           paths:
             - .
-      - run: sbt test:test
+      - run: sbt Test/test
 
   deploy_web-backend:
     executor: ci-executor
