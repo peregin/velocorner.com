@@ -1,20 +1,19 @@
 package controllers.auth
 
-import java.util.UUID
-import java.util.concurrent.Executors
 import cats.implicits._
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{OAuth2StateKey, ec}
-
-import javax.inject.Inject
+import controllers.auth.StravaController.ec
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
-import play.api.data.Forms.{nonEmptyText, tuple}
+import play.api.data.Forms.nonEmptyText
 import play.api.mvc._
+import velocorner.feed.OAuth2._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
-import velocorner.feed.OAuth2._
 
+import java.util.UUID
+import java.util.concurrent.Executors
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
 import mouse.all._
@@ -25,9 +24,6 @@ object StravaController {
   type Id = Long
   type AuthenticityToken = String
   type ResultUpdater = Result => Result
-
-  // verifies the code between the session and submitted form
-  val OAuth2StateKey = "velocorner.oauth2.state"
 
   implicit val ec =
     ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true))))
@@ -44,33 +40,20 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
-        case Some(_) =>
-          // already logged in
-          Redirect(controllers.routes.WebController.index)
-        case None =>
-          // authorize
-          // - state is use to validate redirect from the OAuth provider with a unique identifier
-          // - scope is the host from FE
-          val state = UUID.randomUUID().toString
-          Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
-            request.session + (OAuth2StateKey -> state)
-          )
+        // already logged in
+        case Some(_) => Redirect(controllers.routes.WebController.index)
+        // authorize - scope is the host from FE
+        case None => Redirect(authenticator.getAuthorizationUrl(scope, none))
       }
     }
   }
 
   // callback from OAuth2
   def authorize = Action.async { implicit request =>
-    val form = Form(
-      tuple(
-        "code" -> nonEmptyText,
-        "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
-      )
-    ).bindFromRequest()
+    val form = Form("code" -> nonEmptyText).bindFromRequest()
     logger.info(s"authorize ${form.data}")
 
-    def formSuccess(v: (String, String)): Future[Result] = {
-      val (code, state) = v
+    def formSuccess(code: String): Future[Result] = {
       for {
         accessTokenResponse <- authenticator.retrieveAccessToken(code)
         oauthResult <- loggedIn(request) match {
@@ -80,11 +63,10 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       } yield oauthResult
     }
 
-    val result = form.value match {
+    form.value match {
       case Some(v) if !form.hasErrors => formSuccess(v)
       case _                          => Future.successful(BadRequest)
     }
-    result.map(_.removingFromSession(OAuth2StateKey))
   }
 
   def logout = Action { implicit request =>
