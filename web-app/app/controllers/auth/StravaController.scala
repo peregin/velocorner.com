@@ -5,13 +5,12 @@ import controllers.ConnectivitySettings
 import controllers.auth.StravaController.ec
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
-import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.{nonEmptyText, tuple, text}
 import play.api.mvc._
 import velocorner.feed.OAuth2._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 
-import java.util.UUID
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,10 +49,16 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   // callback from OAuth2
   def authorize = Action.async { implicit request =>
-    val form = Form("code" -> nonEmptyText).bindFromRequest()
+    val form = Form(
+      tuple(
+        "code" -> nonEmptyText,
+        "state" -> text
+      )
+    ).bindFromRequest()
     logger.info(s"authorize ${form.data}")
 
-    def formSuccess(code: String): Future[Result] = {
+    def formSuccess(v: (String, String)): Future[Result] = {
+      val (code, state) = v
       for {
         accessTokenResponse <- authenticator.retrieveAccessToken(code)
         oauthResult <- loggedIn(request) match {
