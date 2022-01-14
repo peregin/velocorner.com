@@ -32,4 +32,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.11")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
 
 // checkDuplicates for resources and classes
-addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0")
+addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
