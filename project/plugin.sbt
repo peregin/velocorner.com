@@ -29,7 +29,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.2")
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.13")
 
 // format scala classes and generated file, see ScalafmtExtensionPlugin
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
 // checkDuplicates for resources and classes
 addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
