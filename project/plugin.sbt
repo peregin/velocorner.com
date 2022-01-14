@@ -11,7 +11,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.1")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
 
 // code coverage
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.3")
 
 // Gerolf's release plugin
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
