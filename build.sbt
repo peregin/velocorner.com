@@ -178,7 +178,8 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
     buildSettings,
     name := "data-analytics-spark",
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
-  ).dependsOn(dataProvider % "compile->compile; test->test")
+  )
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
   .settings(
@@ -218,11 +219,11 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
       },
       "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
     ),
-    buildInfoPackage := "test.service.scala.build",
-  ).enablePlugins(
+    buildInfoPackage := "test.service.scala.build"
+  )
+  .enablePlugins(
     BuildInfoPlugin
   )
-
 
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
@@ -288,8 +289,14 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
-    dataProvider, dataProviderExtension, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp,
-    testServiceJava, testServiceScala
+    dataProvider,
+    dataProviderExtension,
+    dataSearch,
+    dataAnalytics,
+    dataAnalyticsSpark,
+    webApp,
+    testServiceJava,
+    testServiceScala
   )
   .settings(
     name := "velocorner",

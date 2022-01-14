@@ -74,7 +74,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
     val in = Sink.foreach[String](println)
 
     // output, use a publisher
-    //val out1 = Source.single("Welcome").concat(Source.maybe)
+    // val out1 = Source.single("Welcome").concat(Source.maybe)
     val out = Source
       .fromPublisher((s: Subscriber[_ >: String]) => {
         logger.info(s"PUBLISH counter $counter")

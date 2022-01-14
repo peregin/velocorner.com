@@ -2,11 +2,8 @@ package velocorner.util
 
 import velocorner.model.CountryIso
 
-/** Utility to convert a country name (if given) into 2 letter ISO standard.
-  * <city[,country]>
-  * E.g.
-  * Zurich,Switzerland = Zurich,CH
-  * London = London
+/** Utility to convert a country name (if given) into 2 letter ISO standard. <city[,country]> E.g. Zurich,Switzerland = Zurich,CH London =
+  * London
   */
 object CountryUtils {
 

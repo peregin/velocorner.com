@@ -19,17 +19,23 @@ object Progress {
   }
 
   val zero = Progress(0, 0, 0d, 0d, 0, 0d, 0d, 0d)
-  //implicit val monoidInstance = Monoid.instance[Progress](_ + _, zero)
+  // implicit val monoidInstance = Monoid.instance[Progress](_ + _, zero)
 
   implicit val totalFormat = Format[Progress](Json.reads[Progress], Json.writes[Progress])
 }
 
-/** @param rides amount of rides in this aggregate
-  * @param distance distance expressed in km.
-  * @param longestDistance longest distance out of the given rides, expressed in km.
-  * @param elevation elevation expressed in meters.
-  * @param movingTime moving time expressed in seconds
-  * @param averageSpeed expressed in kph.
+/** @param rides
+  *   amount of rides in this aggregate
+  * @param distance
+  *   distance expressed in km.
+  * @param longestDistance
+  *   longest distance out of the given rides, expressed in km.
+  * @param elevation
+  *   elevation expressed in meters.
+  * @param movingTime
+  *   moving time expressed in seconds
+  * @param averageSpeed
+  *   expressed in kph.
   */
 case class Progress(
     days: Int,

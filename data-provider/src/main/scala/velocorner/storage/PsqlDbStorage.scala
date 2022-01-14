@@ -45,7 +45,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   config.setMinimumIdle(2)
   config.setPoolName("hikari-db-pool")
   config.setAutoCommit(true)
-  //config.validate() // for debugging connection details
+  // config.validate() // for debugging connection details
 
   private lazy val connectEC = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(
@@ -309,7 +309,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         mapperFunc: Activity => Option[Double],
         max: Boolean = true
     ): Future[Option[Achievement]] = {
-      //implicit val han = LogHandler.jdkLogHandler
+      // implicit val han = LogHandler.jdkLogHandler
       val minMax = max.fold("desc", "asc")
       val clause =
         s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) $minMax limit 1"

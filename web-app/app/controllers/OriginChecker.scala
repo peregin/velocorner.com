@@ -11,8 +11,8 @@ trait OriginChecker {
 
   def allowedHosts: Seq[String]
 
-  /** Checks that the WebSocket comes from the same origin.  This is necessary to protect
-    * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
+  /** Checks that the WebSocket comes from the same origin. This is necessary to protect against Cross-Site WebSocket Hijacking as WebSocket
+    * does not implement Same Origin Policy.
     *
     * See https://tools.ietf.org/html/rfc6455#section-1.3 and
     * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html

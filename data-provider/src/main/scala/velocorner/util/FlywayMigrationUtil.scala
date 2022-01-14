@@ -26,7 +26,7 @@ object FlywayMigrationUtil {
     val tmpDir = Files.createTempDirectory("migration").toFile
 
     // copy as side effect
-    files.foreach{ file =>
+    files.foreach { file =>
       val from = Paths.get(file.toURI)
       val to = Paths.get(new File(tmpDir, file.getName).toURI)
       Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)

@@ -18,7 +18,7 @@ object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitS
   val bulkSize = 20
   val athleteId = 432909
 
-  val storage = Storage.create("ps")//.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
+  val storage = Storage.create("ps") // .asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
   storage.initialize()
   val elastic = localCluster()
   logger.info("initialized...")

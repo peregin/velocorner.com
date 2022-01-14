@@ -23,7 +23,7 @@ class OrientDbStorageTest
 
   "account storage" should behave like accountFragments(orientDbStorage)
 
-  //"weather storage" should behave like weatherFragments(orientDbStorage)
+  // "weather storage" should behave like weatherFragments(orientDbStorage)
 
   "attribute storage" should behave like attributeFragments(orientDbStorage)
 

@@ -9,10 +9,7 @@ import scala.util.{Failure, Try}
 
 /** Utility to convert the weather code mappings into the model.
   *
-  * # Group 5xx: Rain
-  * # ID	Meaning	                    Icon BootstrapIcon
-  * 500	light rain	                  10d icon-weather-008
-  * 501	moderate rain	                10d icon-weather-007
+  * # Group 5xx: Rain # ID Meaning Icon BootstrapIcon 500 light rain 10d icon-weather-008 501 moderate rain 10d icon-weather-007
   */
 object WeatherCodeUtils extends LazyLogging {
 
@@ -21,7 +18,8 @@ object WeatherCodeUtils extends LazyLogging {
   val clearSkyCode = 800
 
   /** Based on the measures for a given day return a weather code which can be napped to an icon.
-    * @param pointsForThisDay measures for a given day
+    * @param pointsForThisDay
+    *   measures for a given day
     */
   def dailyWeatherCode(pointsForThisDay: Iterable[Weather]): Int = {
     val codes = pointsForThisDay.flatMap(_.weather).map(_.id)

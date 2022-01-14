@@ -1,23 +1,10 @@
 package velocorner.model.withings
 
-/**  Measurement type is one of the following:
+/** Measurement type is one of the following:
   *
-  *  1 : Weight (kg)
-  *  4 : Height (meter)
-  *  5 : Fat Free Mass (kg)
-  *  6 : Fat Ratio (%)
-  *  8 : Fat Mass Weight (kg)
-  *  9 : Diastolic Blood Pressure (mmHg)
-  *  10 : Systolic Blood Pressure (mmHg)
-  *  11 : Heart Pulse (bpm)
-  *  12 : Temperature
-  *  54 : SP02(%)
-  *  71 : Body Temperature
-  *  73 : Skin Temperature
-  *  76 : Muscle Mass
-  *  77 : Hydration
-  *  88 : Bone Mass
-  *  91 : Pulse Wave Velocity
+  * 1 : Weight (kg) 4 : Height (meter) 5 : Fat Free Mass (kg) 6 : Fat Ratio (%) 8 : Fat Mass Weight (kg) 9 : Diastolic Blood Pressure (mmHg)
+  * 10 : Systolic Blood Pressure (mmHg) 11 : Heart Pulse (bpm) 12 : Temperature 54 : SP02(%) 71 : Body Temperature 73 : Skin Temperature 76
+  * : Muscle Mass 77 : Hydration 88 : Bone Mass 91 : Pulse Wave Velocity
   */
 object MeasurementType {
 

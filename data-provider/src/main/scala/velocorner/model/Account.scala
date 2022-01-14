@@ -59,7 +59,7 @@ object Account {
       stravaAccess: OAuth2Access,
       lastUpdate: Option[DateTime],
       role: Option[Role.Entry],
-      unit: Option[Units.Entry],
+      unit: Option[Units.Entry]
   ) = new Account(
     athleteId = athlete.id,
     displayName = athlete.firstname.orElse(athlete.lastname).getOrElse(""),
@@ -72,8 +72,7 @@ object Account {
   )
 }
 
-/**
-  * Represents a generic account used in the storage layer and exposed via the API.
+/** Represents a generic account used in the storage layer and exposed via the API.
   */
 case class Account(
     athleteId: Long,

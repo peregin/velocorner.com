@@ -30,8 +30,8 @@ object WordCount extends App with LocalSpark[Long] {
         .reduceByKey(_ + _)
 
     // eventually save the results
-    //println(s"Writing output to: $out")
-    //wc.saveAsTextFile(out)
+    // println(s"Writing output to: $out")
+    // wc.saveAsTextFile(out)
     wc.count()
   }
 }

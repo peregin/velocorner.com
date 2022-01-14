@@ -33,11 +33,10 @@ object Counter {
 
 case class Counter(name: String, counter: Long)
 
-/** Created by levi on 14.11.16.
-  * Improvements to do:
-  * - use new query API from OrientDB 3.0 ?
-  * - use compound index for athlete.id and activity type
-  * - use monad stack M[_] : Monad
+/** Created by levi on 14.11.16. Improvements to do:
+  *   - use new query API from OrientDB 3.0 ?
+  *   - use compound index for athlete.id and activity type
+  *   - use monad stack M[_] : Monad
   */
 class OrientDbStorage(url: Option[String], dbPassword: String)
     extends Storage[Future]
@@ -117,7 +116,12 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
   }
 
-  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
+  override def listTopActivities(
+      athleteId: Long,
+      actionType: ActionType.Entry,
+      activityType: String,
+      limit: Int
+  ): Future[Iterable[Activity]] = ???
 
   override def getLastActivity(athleteId: Long): Future[Option[Activity]] = ???
 

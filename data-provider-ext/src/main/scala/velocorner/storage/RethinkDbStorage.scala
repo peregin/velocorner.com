@@ -21,10 +21,7 @@ import mouse.all._
 
 /** Created by levi on 14/09/16.
   *
-  * From Data Explorer:
-  * <code>
-  *   r.db('velocorner').table('activity');
-  * </code>
+  * From Data Explorer: <code> r.db('velocorner').table('activity'); </code>
   */
 class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
@@ -48,7 +45,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def listActivityYears(athleteId: Long, activityType: String): M[Iterable[Int]] = Monad[M].pure(Iterable.empty[Int])
 
-  //Cursor[java.util.HashMap[String, String]]
+  // Cursor[java.util.HashMap[String, String]]
   override def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]] = Monad[M].pure {
     val result: Result[java.util.HashMap[String, String]] = client
       .table(ACTIVITY_TABLE)

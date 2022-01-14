@@ -14,8 +14,7 @@ import org.joda.time.DateTime
 import velocorner.ServiceProvider
 import velocorner.build.BuildInfo
 
-/** Serves the web pages, rendered from server side.
-  * Being replaced with web-front module running on node, with react components.
+/** Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
   */
 class WebController @Inject() (
     components: ControllerComponents,
