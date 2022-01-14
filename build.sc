@@ -119,7 +119,7 @@ object dataProvider extends CommonModule {
     def testFrameworks = Seq("org.specs2.runner.Specs2Framework")
     def ivyDeps = T {
       Agg(
-        ivy"com.opentable.components:otj-pg-embedded::0.13.3"
+        ivy"com.opentable.components:otj-pg-embedded::0.13.4"
       ) ++ specs2
     }
   }
