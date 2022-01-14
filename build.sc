@@ -37,7 +37,7 @@ val logging = Agg(
 )
 val apacheCommons = Agg(
   ivy"commons-io:commons-io:2.6",
-  ivy"commons-codec:commons-codec:1.14"
+  ivy"commons-codec:commons-codec:1.15"
 )
 val cats = Agg(
   ivy"org.typelevel::cats-core::$catsVersion",
