@@ -16,7 +16,7 @@ object Dependencies {
   val flywayVersion = "8.3.0"
   val elasticVersion = "7.16.1"
   val finatraVersion = "21.2.0"
-  val playWsVersion = "2.1.6" // standalone version
+  val playWsVersion = "2.1.7" // standalone version
   val playJsonVersion = "2.9.2"
   val jwtVersion = "9.0.2"
   val squantsVersion = "1.8.3"
