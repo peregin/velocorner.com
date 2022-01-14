@@ -130,7 +130,7 @@ object webApp extends CommonModule with BuildInfo with PlayModule with DockerMod
   override def ivyDeps = T {
     super.ivyDeps() ++ Agg(filters()) ++ Agg(
       ivy"com.typesafe.play::play-ehcache::${playVersion()}",
-      ivy"com.github.jwt-scala::jwt-play-json::9.0.2",
+      ivy"com.github.jwt-scala::jwt-play-json::9.0.3",
       ivy"org.scala-lang.modules::scala-xml::1.2.0"
     )
   }
