@@ -17,7 +17,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
 
 // Generate swagger doc from the routes
-addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.10.5-PLAY2.8")
+addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.10.5")
 
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
