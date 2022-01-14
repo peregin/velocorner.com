@@ -14,7 +14,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 // Gerolf's release plugin
-addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 // Generate swagger doc from the routes
 addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.10.5-PLAY2.8")
