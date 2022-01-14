@@ -1,6 +1,6 @@
 object Dependencies {
 
-  val projectScalaVersion = "2.13.7"
+  val projectScalaVersion = "2.13.8"
 
   val catsVersion = "2.7.0"
   val mouseVersion = "1.0.8"
