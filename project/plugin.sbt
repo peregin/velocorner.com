@@ -8,13 +8,13 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.3")
 
 // generates build information, timestamp
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
+addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
 
 // code coverage
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 // Gerolf's release plugin
-addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 
 // Generate swagger doc from the routes
 addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.10.5-PLAY2.8")
@@ -32,4 +32,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.11")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.2")
 
 // checkDuplicates for resources and classes
-addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0")
+addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")

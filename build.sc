@@ -14,7 +14,7 @@ val projectScalaVersion = "2.13.4"
 val catsVersion = "2.4.1"
 val zioVersion = "1.0.4"
 val shapelessVersion = "2.3.3"
-val logbackVersion = "1.2.3"
+val logbackVersion = "1.2.10"
 val doobieVersion = "0.10.0"
 val orientDbVersion = "3.1.15"
 val mongoDbVersion = "4.1.0"
@@ -119,7 +119,7 @@ object dataProvider extends CommonModule {
     def testFrameworks = Seq("org.specs2.runner.Specs2Framework")
     def ivyDeps = T {
       Agg(
-        ivy"com.opentable.components:otj-pg-embedded::0.13.3"
+        ivy"com.opentable.components:otj-pg-embedded::0.13.4"
       ) ++ specs2
     }
   }
@@ -130,7 +130,7 @@ object webApp extends CommonModule with BuildInfo with PlayModule with DockerMod
   override def ivyDeps = T {
     super.ivyDeps() ++ Agg(filters()) ++ Agg(
       ivy"com.typesafe.play::play-ehcache::${playVersion()}",
-      ivy"com.github.jwt-scala::jwt-play-json::9.0.2",
+      ivy"com.github.jwt-scala::jwt-play-json::9.0.3",
       ivy"org.scala-lang.modules::scala-xml::1.2.0"
     )
   }
