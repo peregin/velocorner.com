@@ -11,11 +11,11 @@ def analyze():
     sns.set_theme(style="darkgrid")
     sns.countplot(df['type'])
 
-    # plt.title('Types of activities')
-    # sns.pairplot(df, hue='type', diag_kind='hist')
-    corr = df.corr()
+    plt.title('Types of activities')
     plt.figure(figsize=(12, 8))
-    sns.heatmap(corr, annot=True, fmt=".2f")
+    # sns.pairplot(df, hue='type', diag_kind='hist')
+    # corr = df.corr()
+    # sns.heatmap(corr, annot=True, fmt=".2f")
 
     # trends
     trends = df.copy()
