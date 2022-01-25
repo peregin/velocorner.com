@@ -6,13 +6,15 @@ import seaborn as sns
 def analyze():
     df = cleanup("../resources/data/432909.json.gz")
 
-    plt.style.use('fivethirtyeight')
-    plt.title('Activity frequency')
-    sns.set_theme(style="darkgrid")
-    sns.countplot(df['type'])
+    # plt.style.use('fivethirtyeight')
+    # plt.title('Activity frequency')
+    # sns.set_theme(style="darkgrid")
+    df.hist(bins=20, figsize=(10, 8))
+    # sns.countplot(df['type'])
 
     plt.title('Types of activities')
-    plt.figure(figsize=(12, 8))
+    # plt.figure(figsize=(12, 8))
+
     # sns.pairplot(df, hue='type', diag_kind='hist')
     # corr = df.corr()
     # sns.heatmap(corr, annot=True, fmt=".2f")
