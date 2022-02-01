@@ -136,7 +136,9 @@ class PsqlDbStorageTest
 
   override def beforeAll(): Unit = {
     try {
-      val port = if (sys.env.get("USER").exists(_ == "circleci")) {
+      val maybeUser = sys.env.get("USER")
+      logger.info(s"user is $maybeUser...")
+      val port = if (maybeUser.exists(_ == "circleci")) {
         logger.info("connecting to circleci psql...")
         5432
       } else {
