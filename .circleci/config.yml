@@ -23,9 +23,6 @@ jobs:
       - run: .circleci/cachekey.sh checksums.txt
       - restore_cache:
           key: *cache_key
-      - run:
-          name: dockerhub login
-          command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run: sbt Compile/compile Test/compile
       - run: sbt Test/test
       - save_cache:
