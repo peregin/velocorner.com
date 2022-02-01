@@ -12,6 +12,11 @@ executors:
           username: peregin
           password: $DOCKERHUB_PASSWORD
         user: circleci
+      - image: postgres:12
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: postgres
     environment:
       JVM_OPTS: -Xmx3072m
 
