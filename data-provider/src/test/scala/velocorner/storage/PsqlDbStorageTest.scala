@@ -136,6 +136,7 @@ class PsqlDbStorageTest
 
   override def beforeAll(): Unit = {
     try {
+     logger.info(s"env is ${sys.env.mkString("\n")}")
       val maybeUser = sys.props.get("USER")
       logger.info(s"user is $maybeUser...")
       val port = if (maybeUser.exists(_ == "circleci")) {
