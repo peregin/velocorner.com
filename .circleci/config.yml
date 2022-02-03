@@ -12,6 +12,11 @@ executors:
           username: peregin
           password: $DOCKERHUB_PASSWORD
         user: circleci
+      - image: postgres:12
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: postgres
     environment:
       JVM_OPTS: -Xmx3072m
 
@@ -24,6 +29,7 @@ jobs:
       - restore_cache:
           key: *cache_key
       - run: sbt Compile/compile Test/compile
+      - run: sbt Test/test
       - save_cache:
           key: *cache_key
           paths:
@@ -37,7 +43,6 @@ jobs:
           root: .
           paths:
             - .
-      - run: sbt Test/test
 
   deploy_web-backend:
     executor: ci-executor

@@ -19,7 +19,7 @@ val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-postgres" % Dependencies.doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % Dependencies.doobieVersion,
   "org.flywaydb" % "flyway-core" % Dependencies.flywayVersion,
-  "com.opentable.components" % "otj-pg-embedded" % "0.13.4" % "test"
+  "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % "test"
 )
 
 val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
@@ -178,7 +178,8 @@ lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "d
     buildSettings,
     name := "data-analytics-spark",
     libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
-  ).dependsOn(dataProvider % "compile->compile; test->test")
+  )
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
   .settings(
@@ -218,11 +219,11 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
       },
       "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
     ),
-    buildInfoPackage := "test.service.scala.build",
-  ).enablePlugins(
+    buildInfoPackage := "test.service.scala.build"
+  )
+  .enablePlugins(
     BuildInfoPlugin
   )
-
 
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
@@ -233,7 +234,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       ehcache,
       playWsJsonStandalone,
       "com.github.jwt-scala" %% "jwt-play-json" % Dependencies.jwtVersion,
-      "com.google.inject" % "guice" % "5.0.1", // for Java 11 support,
+      "com.google.inject" % "guice" % "5.1.0", // for Java 11 support,
       playTest,
       playTestPlus,
       mockito,
@@ -288,8 +289,14 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
-    dataProvider, dataProviderExtension, dataSearch, dataAnalytics, dataAnalyticsSpark, webApp,
-    testServiceJava, testServiceScala
+    dataProvider,
+    dataProviderExtension,
+    dataSearch,
+    dataAnalytics,
+    dataAnalyticsSpark,
+    webApp,
+    testServiceJava,
+    testServiceScala
   )
   .settings(
     name := "velocorner",

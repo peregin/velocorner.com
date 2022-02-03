@@ -2,15 +2,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def analyze():
-    df = cleanup("data/432909.json.gz")
 
-    plt.style.use('fivethirtyeight')
+def analyze():
+    df = cleanup("../resources/data/432909.json.gz")
+
+    # plt.style.use('fivethirtyeight')
+    # plt.title('Activity frequency')
+    # sns.set_theme(style="darkgrid")
+    df.hist(bins=20, figsize=(10, 8))
     # sns.countplot(df['type'])
-    # plt.title('Types of activities')
+
+    plt.title('Types of activities')
+    # plt.figure(figsize=(12, 8))
+
     # sns.pairplot(df, hue='type', diag_kind='hist')
-    corr = df.corr()
-    plt.figure(figsize=(12, 8))
+    # corr = df.corr()
     # sns.heatmap(corr, annot=True, fmt=".2f")
 
     # trends
@@ -20,8 +26,8 @@ def analyze():
     print(trends.groupby('weekday').mean())
     trends.groupby('weekday').mean()['elapsed_mins'].plot(kind='bar')
 
+    plt.title('Daily distribution')
     plt.show()
-
 
 
 def cleanup(name):
@@ -81,13 +87,12 @@ def cleanup(name):
     df['max_watts'] = df['max_watts'].fillna(0)
     df['avg_watts'] = df['avg_watts'].fillna(0)
     df['avg_cadence'] = df['avg_cadence'].fillna(0)
-    df['avg_temp'] = df['avg_temp'].fillna(20) # avg 20 C if NA?
+    df['avg_temp'] = df['avg_temp'].fillna(20)  # avg 20 C if NA?
     # print(df.columns[df.isna().any()].tolist())
 
     print(df.info())
     print(df.head(n=5))
     return df
-
 
 
 if __name__ == "__main__":

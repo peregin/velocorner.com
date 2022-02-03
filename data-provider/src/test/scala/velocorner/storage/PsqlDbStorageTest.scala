@@ -24,7 +24,7 @@ class PsqlDbStorageTest
     with AttributeStorageBehaviour
     with LazyLogging {
 
-  @volatile var psql: EmbeddedPostgres = _
+  @volatile var psqlEmbedded: EmbeddedPostgres = _
   @volatile var psqlStorage: PsqlDbStorage = _
 
   val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
@@ -135,10 +135,17 @@ class PsqlDbStorageTest
   }
 
   override def beforeAll(): Unit = {
-    logger.info("starting embedded psql...")
     try {
-      psql = EmbeddedPsqlStorage()
-      val port = psql.getPort
+      val maybeCircleci = sys.env.get("CIRCLECI")
+      logger.info(s"maybe circleci: $maybeCircleci")
+      val port = if (maybeCircleci.map(_.toBoolean).getOrElse(false)) {
+        logger.info("connecting to circleci psql...")
+        5432
+      } else {
+        logger.info("starting embedded psql...")
+        psqlEmbedded = EmbeddedPsqlStorage()
+        psqlEmbedded.getPort
+      }
       // test resources are containing some overrides from the regular folder (V4__ip2nation.sql)
       // want to have test classes at the end
       FlywayMigrationUtil.copyInTemp("psql/migration") { tmpDir =>
@@ -152,12 +159,12 @@ class PsqlDbStorageTest
       }
     } catch {
       case any: Exception =>
-        logger.error("failed to start embedded psql", any)
+        logger.error("failed to connect to psql", any)
     }
   }
 
   override def afterAll(): Unit = {
     psqlStorage.destroy()
-    psql.close()
+    Option(psqlEmbedded).foreach(_.close())
   }
 }
