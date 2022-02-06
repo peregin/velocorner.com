@@ -69,7 +69,8 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     }
 
     form.value match {
-      case Some(v) if !form.hasErrors => formSuccess(v)
+      // TODO: testing headers in response
+      case Some(v) if !form.hasErrors => formSuccess(v).map(_.withHeaders("jwt" -> "hello"))
       case _                          => Future.successful(BadRequest)
     }
   }
@@ -92,10 +93,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     feed.getAthlete <| (_.onComplete(_ => feed.close()))
   }
 
-  def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser)(implicit
-      request: RequestHeader,
-      ctx: ExecutionContext
-  ): Future[Result] = {
+  def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser)(implicit ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}] and user[${consumerUser.athleteId}]")
     for {
       _ <- login(resp, consumerUser.some)
@@ -103,7 +101,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   }
 
   // matches the provider and consumer users
-  def onOAuthLoginSucceeded(resp: OAuth2TokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
+  def onOAuthLoginSucceeded(resp: OAuth2TokenResponse)(implicit ctx: ExecutionContext): Future[Result] = {
     logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
     for {
       athlete <- login(resp, none)
@@ -115,7 +113,6 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // same functionality when the account is linked with a given consumerUser or logged in to an existing mapping
   private def login(resp: OAuth2TokenResponse, consumerUser: Option[ConsumerUser])(implicit ctx: ExecutionContext): Future[ProviderUser] =
     for {
-      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
       // retrieve the provider user has more details than the user got at authentication
       athlete <- retrieveProviderUser(resp.accessToken)
       storage = connectivity.getStorage

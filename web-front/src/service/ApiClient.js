@@ -19,17 +19,18 @@ async function test() {
     method: 'POST',
     accept: "application/json",
     redirect: 'follow',
+    credential: 'include',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     mode: 'no-cors'
   }
-  let resp = await fetch(url, requestOptions)
-    //.then(checkStatus)
-    .then(r => r.text())
-    .then(a => console.log(`LOGIN response[${a}]`))
-  console.log(resp)
-  //window.location = '/'
+  //let resp = await fetch(url, requestOptions)
+  //  .then(res => console.log(`LOGIN response[${res}]`))
+  //  .catch(console.error);
+
+  let resp = window.location.href = url;
+  console.log(`AUTH response is ${resp}`);
 }
 
 function login() {
