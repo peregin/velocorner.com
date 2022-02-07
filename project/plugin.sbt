@@ -5,7 +5,7 @@ ThisBuild / resolvers += "Typesafe Simple Repository" at "https://repo.typesafe.
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 
 // check latest updates form maven
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.1")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.2")
 
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
