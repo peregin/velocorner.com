@@ -10,7 +10,8 @@ import zio.logging.{LogLevel, Logging}
 trait MyLocalConfig {
 
   // the property file having the application secrets, strava token, bucket password, etc.
-  sys.props += "config.file" -> "/Users/levi/Downloads/velo/velocorner/local.conf"
+  val home = sys.props.get("user.home").getOrElse("/Users/levi")
+  sys.props += "config.file" -> s"$home/Downloads/velo/velocorner/local.conf"
 
   lazy val zEnv: ZLayer[Console with Clock, Nothing, Logging] =
     Logging.console(logLevel = LogLevel.Debug, format = (_, logEntry) => logEntry)

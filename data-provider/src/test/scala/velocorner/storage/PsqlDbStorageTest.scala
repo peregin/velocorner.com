@@ -12,7 +12,7 @@ import velocorner.api.weather.WeatherForecast
 import velocorner.model.ActionType
 import velocorner.model.strava.Gear
 import velocorner.model.weather.ForecastResponse
-import velocorner.util.{FlywayMigrationUtil, JsonIo}
+import velocorner.util.{FlywaySupport, JsonIo}
 
 class PsqlDbStorageTest
     extends AnyFlatSpec
@@ -22,6 +22,7 @@ class PsqlDbStorageTest
     with AccountStorageBehaviour
     with WeatherStorageBehaviour
     with AttributeStorageBehaviour
+    with FlywaySupport
     with LazyLogging {
 
   @volatile var psqlEmbedded: EmbeddedPostgres = _
@@ -148,15 +149,8 @@ class PsqlDbStorageTest
       }
       // test resources are containing some overrides from the regular folder (V4__ip2nation.sql)
       // want to have test classes at the end
-      FlywayMigrationUtil.copyInTemp("psql/migration") { tmpDir =>
-        psqlStorage = new PsqlDbStorage(
-          dbUrl = s"jdbc:postgresql://localhost:$port/postgres",
-          dbUser = "postgres",
-          dbPassword = "test",
-          flywayLocation = "filesystem:" + tmpDir.getAbsolutePath
-        )
-        psqlStorage.initialize()
-      }
+      psqlStorage = testPsqlDb(port)
+      psqlStorage.initialize()
     } catch {
       case any: Exception =>
         logger.error("failed to connect to psql", any)
