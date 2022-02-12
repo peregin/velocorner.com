@@ -95,4 +95,22 @@ object BrandFeed extends LazyLogging {
     }
     first2 ++ extract(rest)
   }
+
+  // heading, url, name, url2, name2, ...
+  def bikeComponents(file: String): List[BrandUrl] = load(file) { row =>
+    def extract(list: Array[String]): List[BrandUrl] = list.map(_.trim).filter(_.nonEmpty) match {
+      case Array(l1, l2, _*) => List(BrandUrl(brand = Brand(l2, none), url = l1)) ++ extract(list.drop(2))
+      case _                 => List.empty
+    }
+    extract(row.drop(1))
+  }
+
+  // name1, url1, heading, url2, name2, ...
+  def bikester(file: String): List[BrandUrl] = load(file) { row =>
+    def extract(list: Array[String]): List[BrandUrl] = list.map(_.trim).filter(_.nonEmpty) match {
+      case Array(l1, l2, _*) => List(BrandUrl(brand = Brand(l2, none), url = l1)) ++ extract(list.drop(2))
+      case _                 => List.empty
+    }
+    BrandUrl(Brand(row(0), none), row(1)) +: extract(row.drop(3))
+  }
 }
