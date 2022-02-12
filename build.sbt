@@ -31,7 +31,8 @@ val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % De
 
 val apacheCommons = Seq(
   "commons-io" % "commons-io" % "2.11.0",
-  "commons-codec" % "commons-codec" % "1.15"
+  "commons-codec" % "commons-codec" % "1.15",
+  "org.apache.commons" % "commons-csv" % "1.9.0"
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"

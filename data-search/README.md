@@ -20,5 +20,7 @@ https://www.chainreactioncycles.com/ch/en/sitemap
 https://www.merlincycles.com/sitemap.html
 https://www.wiggle.com/sitemap
 https://www.performancebike.com/brands
+https://www.bike24.com/brands?menu=1664,1664
+https://www.probikeshop.com/en/gb/breands.html
 
 
