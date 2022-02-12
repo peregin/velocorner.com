@@ -96,8 +96,11 @@ object BrandFeed extends LazyLogging {
     first2 ++ extract(rest)
   }
 
+  def bikeComponents(file: String): List[BrandUrl] = headingUrlName(file)
+  def chainReaction(file: String): List[BrandUrl] = headingUrlName(file)
+
   // heading, url, name, url2, name2, ...
-  def bikeComponents(file: String): List[BrandUrl] = load(file) { row =>
+  private def headingUrlName(file: String): List[BrandUrl] = load(file) { row =>
     def extract(list: Array[String]): List[BrandUrl] = list.map(_.trim).filter(_.nonEmpty) match {
       case Array(l1, l2, _*) => List(BrandUrl(brand = Brand(l2, none), url = l1)) ++ extract(list.drop(2))
       case _                 => List.empty
@@ -112,5 +115,14 @@ object BrandFeed extends LazyLogging {
       case _                 => List.empty
     }
     BrandUrl(Brand(row(0), none), row(1)) +: extract(row.drop(3))
+  }
+
+  // name1, url1, ...
+  def bike24(file: String): List[BrandUrl] = load(file) { row =>
+    def extract(list: Array[String]): List[BrandUrl] = list.map(_.replace("\n", "").trim).filter(_.nonEmpty) match {
+      case Array(l1, l2, _*) => List(BrandUrl(brand = Brand(l1, none), url = l2)) ++ extract(list.drop(2))
+      case _                 => List.empty
+    }
+    extract(row)
   }
 }
