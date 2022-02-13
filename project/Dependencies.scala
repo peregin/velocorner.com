@@ -6,7 +6,7 @@ object Dependencies {
   val mouseVersion = "1.0.10"
   val zioVersion = "1.0.13"
   val zioLoggingVersion = "0.5.14"
-  val shapelessVersion = "2.3.7"
+  val shapelessVersion = "2.3.8"
   val argonautVersion = "6.3.8"
   val logbackVersion = "1.2.10"
   val doobieVersion = "0.13.4"
