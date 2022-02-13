@@ -8,18 +8,19 @@ import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
-// LocalNode is not supported anymore - SKIP TESTS HERE
-class ElasticSupportSpec extends AnyFlatSpec with Matchers with ElasticSupport with LazyLogging {
+//noinspection TypeAnnotation
+class ActivityElasticSupportSpec extends AnyFlatSpec with Matchers with ActivityElasticSupport with LazyLogging {
 
   val client = localCluster()
 
+  // LocalNode is not supported anymore - SKIP TESTS HERE
   ignore should "create indices" in {
     val activities = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
     activities must have size 30
     val indices = toIndices(activities).map(_.refresh(RefreshPolicy.IMMEDIATE))
     val res = indices.map(ix => client.execute(ix).await)
     val statuses = res.map(_.status)
-    statuses must have size (30) // it has 6 skiing events
+    statuses must have size 30 // it has 6 skiing events
     statuses must contain(201)
   }
 

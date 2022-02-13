@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
-import velocorner.search.ElasticSupport
+import velocorner.search.ActivityElasticSupport
 import velocorner.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,12 +13,12 @@ import cats.implicits._
 
 /** Simple utility to read the activities from the storage and feed it to elastic.
   */
-object BuildElasticFromStorageManual extends App with ElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
+object BuildActivityFromStorageManual extends App with ActivityElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
   val bulkSize = 20
   val athleteId = 432909
 
-  val storage = Storage.create("ps")//.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
+  val storage = Storage.create("ps") //.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
   storage.initialize()
   val elastic = localCluster()
   logger.info("initialized...")

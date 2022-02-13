@@ -6,11 +6,14 @@ https://pureinsights.com/blog/2021/elasticsearch-vs-opensearch-user-point-of-vie
 https://www.elastic.co/what-is/opensearch
 
 ## Local ELK Setup
-
 https://elk-docker.readthedocs.io/
 
-# Cycling Marketplace Aggregator (Brands)
+A minimum of 4GB RAM assigned to Docker is required for the container to run.
+```shell
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk:7.16.3
+```
 
+# Cycling Marketplace Aggregator (Brands)
 https://intheknowcycling.com/online-bike-store-rankings/
 
 https://www.bike-components.de/en/brands/
