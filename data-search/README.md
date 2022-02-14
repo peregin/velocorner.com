@@ -9,6 +9,11 @@ https://www.elastic.co/what-is/opensearch
 https://elk-docker.readthedocs.io/
 
 A minimum of 4GB RAM assigned to Docker is required for the container to run.
+See 2GB RAM for a single node for an MVP.
+```shell
+./scripts/start_elk.sh
+```
+or
 ```shell
 docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk:7.16.3
 ```
