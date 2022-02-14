@@ -12,6 +12,8 @@ GET     /search                                            controllers.WebContro
 ### NoDocs ###
 GET     /map                                               controllers.WebController.map
 ### NoDocs ###
+GET     /brands                                            controllers.WebController.brands
+### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
 ### NoDocs ###
 GET     /about                                             controllers.WebController.about

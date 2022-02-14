@@ -12,12 +12,11 @@ trait MarketplaceElasticSupport extends IndexApi with ElasticSupport {
 
   def delete(): DeleteIndexRequest = deleteIndex(ixName)
 
-  def setup(): CreateIndexRequest = createIndex(ixName)
-//    .mapping(
-//    properties(
-//      textField("marketplace_name")
-//    )
-//  )
+  def setup(): CreateIndexRequest = createIndex(ixName).mapping(
+    properties(
+      completionField("brand.name")
+    )
+  )
 
   def toIndices(markets: List[MarketplaceBrand]): List[IndexRequest] = {
     markets.map { market =>

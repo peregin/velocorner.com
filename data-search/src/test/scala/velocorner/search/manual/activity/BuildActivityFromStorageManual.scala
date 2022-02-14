@@ -1,4 +1,4 @@
-package velocorner.search.manual
+package velocorner.search.manual.activity
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy

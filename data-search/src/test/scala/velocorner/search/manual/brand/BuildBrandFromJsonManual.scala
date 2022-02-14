@@ -1,6 +1,5 @@
-package velocorner.search.manual
+package velocorner.search.manual.brand
 
-import cats.implicits._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
@@ -11,6 +10,8 @@ import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import cats.implicits._
 
 /** Simple utility to read marketplaces from file and feed it to elastic.
   */

@@ -14,9 +14,9 @@ import org.joda.time.DateTime
 import velocorner.ServiceProvider
 import velocorner.build.BuildInfo
 
-/** Serves the web pages, rendered from server side.
-  * Being replaced with web-front module running on node, with react components.
+/** Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
   */
+//noinspection TypeAnnotation
 class WebController @Inject() (
     components: ControllerComponents,
     val cache: SyncCacheApi,
@@ -70,6 +70,10 @@ class WebController @Inject() (
 
   def map = AuthAction { implicit request =>
     Ok(views.html.map(getPageContext("Explore")))
+  }
+
+  def brands = AuthAction { implicit request =>
+    Ok(views.html.brands(getPageContext("Brands")))
   }
 
   def marketing = AuthAction { implicit request =>
