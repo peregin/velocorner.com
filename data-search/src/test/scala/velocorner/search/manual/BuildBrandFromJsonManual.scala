@@ -4,7 +4,6 @@ import cats.implicits._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.feed.BrandFeed
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.model.brand.MarketplaceBrand
 import velocorner.search.MarketplaceElasticSupport
@@ -19,7 +18,7 @@ object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with 
 
   val bulkSize = 50
 
-  val markets = JsonIo.readFromFile[List[MarketplaceBrand]](BrandFeed.dir + "/markets.json")
+  val markets = JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz")
   logger.info(s"read ${markets.size} markets...")
 
   val elastic = localCluster()

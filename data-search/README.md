@@ -17,6 +17,11 @@ or
 ```shell
 docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk:7.16.3
 ```
+only elasticsearch
+```shell
+docker run -d --rm --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e "ES_JAVA_OPTS=-Xms256m -Xmx750m" elasticsearch:7.17.0
+```
+
 
 # Cycling Marketplace Aggregator (Brands)
 https://intheknowcycling.com/online-bike-store-rankings/
