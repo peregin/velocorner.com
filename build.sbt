@@ -285,7 +285,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
   )
-  .dependsOn(dataProvider % "compile->compile; test->test")
+  .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")

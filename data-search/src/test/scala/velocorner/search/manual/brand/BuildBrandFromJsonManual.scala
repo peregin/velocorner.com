@@ -3,6 +3,8 @@ package velocorner.search.manual.brand
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
+import cats.implicits._
+import mouse.all._
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.model.brand.MarketplaceBrand
 import velocorner.search.MarketplaceElasticSupport
@@ -10,9 +12,6 @@ import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-import cats.implicits._
-import mouse.all._
 
 /** Simple utility to read marketplaces from file and feed it to elastic.
   */
@@ -22,9 +21,6 @@ object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with 
 
   val markets = JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz")
   logger.info(s"read ${markets.size} markets...")
-
-  val elastic = localCluster()
-  logger.info("elastic cluster initialized...")
 
   val result = for {
     _ <- elastic.execute(delete()).recover { err =>
@@ -38,6 +34,7 @@ object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with 
       .sliding(bulkSize, bulkSize)
       .zipWithIndex
       .map { case (chunk, ix) =>
+        logger.info(s"bulk $ix indexing ...")
         val res = elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate))
         res <| (_.onComplete(_ => logger.info(s"bulk $ix done ...")))
       }

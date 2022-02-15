@@ -12,7 +12,7 @@ GET     /search                                            controllers.WebContro
 ### NoDocs ###
 GET     /map                                               controllers.WebController.map
 ### NoDocs ###
-GET     /brands                                            controllers.WebController.brands
+GET     /brand                                             controllers.WebController.brand
 ### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
 ### NoDocs ###
@@ -503,6 +503,24 @@ GET     /api/location/geo/:location                        controllers.LocationC
 #      description: Location not found
 ###
 GET     /api/location/ip                                   controllers.LocationController.ip()
+
+###
+#  summary: Suggests a list of brands based on the query parameter
+#  tags:
+#    - weather
+#  responses:
+#    200:
+#      description: Returns a list of brands
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items: string
+###
+GET     /api/brand/suggest                                 controllers.BrandController.suggest(query: String)
+
+### NoDocs ###
+GET     /api/brand/search                                  controllers.BrandController.search(query: String)
 
 # DOC
 ### NoDocs ###

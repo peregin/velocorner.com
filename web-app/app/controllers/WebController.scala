@@ -72,8 +72,8 @@ class WebController @Inject() (
     Ok(views.html.map(getPageContext("Explore")))
   }
 
-  def brands = AuthAction { implicit request =>
-    Ok(views.html.brands(getPageContext("Brands")))
+  def brand = AuthAction { implicit request =>
+    Ok(views.html.brand(getPageContext("Brands")))
   }
 
   def marketing = AuthAction { implicit request =>

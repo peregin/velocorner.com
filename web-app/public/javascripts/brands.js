@@ -5,9 +5,8 @@
     }
 
     function triggerSuggestion(suggestion) {
-        var activity = JSON.parse(suggestion);
-        console.log('selected suggestion\'s activity id: ' + activity.id);
-        searchPage(activity, null);
+        console.log('selected brand: ' + suggestion);
+        searchPage(suggestion, null);
     }
 
     // either suggested activity or queryToSearch
@@ -120,9 +119,6 @@
                 console.log('triggering search or suggestion');
                 searchField.val(urlParams.get('q') || "");
                 startSearch(null, urlParams.get('q'), urlParams.get('aid'));
-            } else {
-                // empty landing page, remove the progress bar
-                $('#search-progress').hide();
             }
         }
     });
