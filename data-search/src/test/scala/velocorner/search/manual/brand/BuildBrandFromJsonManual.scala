@@ -12,12 +12,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import cats.implicits._
+import mouse.all._
 
 /** Simple utility to read marketplaces from file and feed it to elastic.
   */
 object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
-  val bulkSize = 50
+  val bulkSize = 200
 
   val markets = JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz")
   logger.info(s"read ${markets.size} markets...")
@@ -35,7 +36,11 @@ object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with 
     indices = toIndices(markets)
     errors <- indices
       .sliding(bulkSize, bulkSize)
-      .map(chunk => elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate)))
+      .zipWithIndex
+      .map { case (chunk, ix) =>
+        val res = elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate))
+        res <| (_.onComplete(_ => logger.info(s"bulk $ix done ...")))
+      }
       .toList
       .sequence
       .map(_.filter(_.isError))
