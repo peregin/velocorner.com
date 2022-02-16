@@ -5,7 +5,8 @@ import com.sksamuel.elastic4s.http.JavaClient
 
 trait ElasticSupport {
 
-  private lazy val client = JavaClient(ElasticProperties(Seq(ElasticNodeEndpoint("http", "localhost", 9200, prefix = None))))
+  // TODO: extract it to config
+  private lazy val client = JavaClient(ElasticProperties("http://elasticsearch:9200"))
 
   def localCluster(): ElasticClient = ElasticClient(client)
 
