@@ -18,9 +18,9 @@ trait MarketplaceElasticSupport extends IndexApi with ElasticSupport with LazyLo
 
   val ixName = "marketplace"
 
-  def delete(): DeleteIndexRequest = deleteIndex(ixName)
+  def deleteRequest(): DeleteIndexRequest = deleteIndex(ixName)
 
-  def setup(): CreateIndexRequest = createIndex(ixName).mapping(
+  def setupRequest(): CreateIndexRequest = createIndex(ixName).mapping(
     properties(
       completionField("brand.name")
     )

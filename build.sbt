@@ -160,7 +160,10 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
     name := "data-search",
-    libraryDependencies ++= elastic4s
+    libraryDependencies ++= elastic4s ++ Seq(
+      "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion % "test"
+    ),
+    dependencyOverrides += "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 

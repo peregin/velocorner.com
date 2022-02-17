@@ -1,9 +1,10 @@
 package velocorner.search.manual.brand
 
+import cats.effect.{Async, IO, IOApp}
+import cats.implicits._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
-import cats.implicits._
 import mouse.all._
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.model.brand.MarketplaceBrand
@@ -11,24 +12,21 @@ import velocorner.search.MarketplaceElasticSupport
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 /** Simple utility to read marketplaces from file and feed it to elastic.
   */
-object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
+object BuildBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
   val bulkSize = 200
 
-  val markets = JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz")
-  logger.info(s"read ${markets.size} markets...")
-
-  val result = for {
-    _ <- elastic.execute(delete()).recover { err =>
-      logger.warn(s"delete failed: $err")
-      Future.unit
-    }
-    ixCreate <- elastic.execute(setup())
-    _ = logger.info(s"index updated $ixCreate")
+  def run: IO[Unit] = for {
+    _ <- IO(logger.info("start uploading brands ..."))
+    markets <- IO(JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz"))
+    _ <- IO(logger.info(s"read ${markets.size} markets..."))
+    _ <- Async[IO].fromFuture(IO(elastic.execute(deleteRequest())))
+    _ <- IO(logger.info("ix deleted ..."))
+    ixCreate <- Async[IO].fromFuture(IO(elastic.execute(setupRequest())))
+    _ <- IO(logger.info(s"index updated $ixCreate"))
     indices = toIndices(markets)
     errors <- indices
       .sliding(bulkSize, bulkSize)
@@ -36,16 +34,14 @@ object BuildBrandFromJsonManual extends App with MarketplaceElasticSupport with 
       .map { case (chunk, ix) =>
         logger.info(s"bulk $ix indexing ...")
         val res = elastic.execute(bulk(chunk).refresh(RefreshPolicy.Immediate))
-        res <| (_.onComplete(_ => logger.info(s"bulk $ix done ...")))
+        Async[IO].fromFuture(IO(res <| (_.onComplete(_ => logger.info(s"bulk $ix done ...")))))
       }
       .toList
-      .sequence
+      .parSequence
       .map(_.filter(_.isError))
-  } yield errors
-
-  val errors = result.await
-  logger.info(s"errors ${errors.size}")
-  if (errors.nonEmpty) logger.error(s"failed with $errors") else logger.info("done...")
-
-  elastic.close()
+    _ <- IO(if (errors.nonEmpty) logger.error(s"failed with $errors") else logger.info("done ..."))
+    // use resource
+    _ <- IO(elastic.close())
+    _ <- IO(logger.info("bye ..."))
+  } yield ()
 }
