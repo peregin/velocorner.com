@@ -58,9 +58,18 @@ def cats = Seq(
   "org.typelevel" %% "mouse" % Dependencies.mouseVersion
 )
 
+def catsEffect = Seq(
+  "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion
+)
+
 def zio = Seq(
   "dev.zio" %% "zio" % Dependencies.zioVersion,
   "dev.zio" %% "zio-logging" % Dependencies.zioLoggingVersion
+)
+
+def fs2 = Seq(
+  "co.fs2" %% "fs2-core" % Dependencies.fs2Version,
+  "co.fs2" %% "fs2-io" % Dependencies.fs2Version
 )
 
 def squants = Seq(
@@ -160,10 +169,11 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
     name := "data-search",
-    libraryDependencies ++= elastic4s ++ Seq(
-      "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion % "test"
-    ),
-    dependencyOverrides += "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion
+    libraryDependencies ++=
+      elastic4s
+        ++ catsEffect.map(_ % "test")
+        ++ fs2.map(_ % "test"),
+    dependencyOverrides ++= catsEffect
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 

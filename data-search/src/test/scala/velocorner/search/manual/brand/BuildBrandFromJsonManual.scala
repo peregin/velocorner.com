@@ -19,14 +19,16 @@ object BuildBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupp
 
   val bulkSize = 200
 
+  def info(msg: String): IO[Unit] = IO(logger.info(msg))
+
   def run: IO[Unit] = for {
-    _ <- IO(logger.info("start uploading brands ..."))
+    _ <- info("start uploading brands ...")
     markets <- IO(JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz"))
-    _ <- IO(logger.info(s"read ${markets.size} markets..."))
+    _ <- info(s"read ${markets.size} markets...")
     _ <- Async[IO].fromFuture(IO(elastic.execute(deleteRequest())))
-    _ <- IO(logger.info("ix deleted ..."))
+    _ <- info("ix deleted ...")
     ixCreate <- Async[IO].fromFuture(IO(elastic.execute(setupRequest())))
-    _ <- IO(logger.info(s"index updated $ixCreate"))
+    _ <- info(s"index updated $ixCreate")
     indices = toIndices(markets)
     errors <- indices
       .sliding(bulkSize, bulkSize)
@@ -39,9 +41,9 @@ object BuildBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupp
       .toList
       .parSequence
       .map(_.filter(_.isError))
-    _ <- IO(if (errors.nonEmpty) logger.error(s"failed with $errors") else logger.info("done ..."))
+    _ <- IO.whenA(errors.nonEmpty)(info(s"failed with $errors"))
     // use resource
     _ <- IO(elastic.close())
-    _ <- IO(logger.info("bye ..."))
+    _ <- info("bye ...")
   } yield ()
 }
