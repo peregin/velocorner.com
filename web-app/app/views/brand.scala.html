@@ -1,0 +1,32 @@
+@(context: PageContext)(implicit assets: AssetsFinder)
+@common.main(context) {
+
+    <h1 xmlns="http://www.w3.org/1999/html">Explore brands!</h1>
+    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+        <p>
+            Search for your favorite brands and see what they have to offer:
+        </p>
+        <!--  Search input form -->
+        <div class="input-group col-md-12 col-xs-12" style="float: left; margin: 10px;">
+            <input id="search_brand" name="search_brand" type="text" class="form-control" placeholder="Search for brands ...">
+            <span class="input-group-btn">
+                <button id="search_button_brand" name="search_button_brand" class="btn-u" type="button"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+        <p>
+            &nbsp;
+        </p>
+    </div>
+
+<!--=== Search Results ===-->
+<div id="brand-result" class="container s-results margin-bottom-50">
+    <span id="results-number" class="results-number">0 results</span>
+
+    <!--- Search results are populated here -->
+</div>
+
+}
+
+<!-- end of common main section -->
+
+<script type="text/javascript" src="@assets.path("javascripts/brands.js")"></script>
