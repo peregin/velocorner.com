@@ -2,6 +2,8 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.8"
 
+  val dockerBaseImage = "openjdk:11-jre-slim-buster"
+
   val catsVersion = "2.7.0"
   val catsEffectVersion = "3.3.7"
   val mouseVersion = "1.0.10"

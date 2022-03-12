@@ -253,7 +253,7 @@ lazy val infoService = (project in file("service-info") withId "info-service")
     buildInfoPackage := "velocorner.info.build",
     maintainer := "velocorner.com@gmail.com",
     Docker / packageName := "velocorner.info",
-    dockerBaseImage := "openjdk:11-jre-slim-buster",
+    dockerBaseImage := Dependencies.dockerBaseImage,
     dockerUsername := Some("peregin")
   )
 
@@ -277,14 +277,15 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       Seq(
         "elasticVersion" -> Dependencies.elasticVersion,
         "playVersion" -> play.core.PlayVersion.current,
-        "catsVersion" -> Dependencies.catsVersion
+        "catsVersion" -> Dependencies.catsVersion,
+        "dockerBaseImage" -> Dependencies.dockerBaseImage
       )
     ).value,
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
     Docker / packageName := "velocorner.com",
     Docker / dockerExposedPorts := Seq(9000),
-    dockerBaseImage := "openjdk:11-jre-slim-buster",
+    dockerBaseImage := Dependencies.dockerBaseImage,
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
