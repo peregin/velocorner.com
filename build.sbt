@@ -8,6 +8,21 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 import sbtrelease.ReleasePlugin.runtimeVersion
 
+// setup common keys for every service, some of them might have extra build information
+def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
+  Seq[BuildInfoKey](
+    name,
+    version,
+    scalaVersion,
+    sbtVersion,
+    BuildInfoKey.action("buildTime") {
+      // is parsed and used in sitemap as well
+      java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+    },
+    "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
+  ) ++ extraKeys
+)
+
 val rethinkClient = Seq(
   "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion,
   "com.googlecode.json-simple" % "json-simple" % "1.1.1"
@@ -222,21 +237,24 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
       "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       scalaTest
     ) ++ cats,
-    BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      BuildInfoKey.action("buildTime") {
-        // is parsed and used in sitemap as well
-        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-      },
-      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
-    ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "test.service.scala.build"
   )
   .enablePlugins(
     BuildInfoPlugin
+  )
+
+lazy val infoService = (project in file("service-info") withId "info-service")
+  .settings(
+    buildSettings,
+    name := "service-info",
+    libraryDependencies ++= cats ++ catsEffect,
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
+    buildInfoPackage := "velocorner.info.build",
+    maintainer := "velocorner.com@gmail.com",
+    Docker / packageName := "velocorner.info",
+    dockerBaseImage := "openjdk:11-jre-slim-buster",
+    dockerUsername := Some("peregin")
   )
 
 lazy val webApp = (project in file("web-app") withId "web-app")
@@ -255,25 +273,18 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       scalaTest
     ),
     routesGenerator := InjectedRoutesGenerator,
-    BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      BuildInfoKey.action("buildTime") {
-        // is parsed and used in sitemap as well
-        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-      },
-      "elasticVersion" -> Dependencies.elasticVersion,
-      "playVersion" -> play.core.PlayVersion.current,
-      "catsVersion" -> Dependencies.catsVersion,
-      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
-    ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
+      Seq(
+        "elasticVersion" -> Dependencies.elasticVersion,
+        "playVersion" -> play.core.PlayVersion.current,
+        "catsVersion" -> Dependencies.catsVersion
+      )
+    ).value,
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
     Docker / packageName := "velocorner.com",
     Docker / dockerExposedPorts := Seq(9000),
-    dockerBaseImage := "openjdk:11-jre-slim",
+    dockerBaseImage := "openjdk:11-jre-slim-buster",
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
@@ -309,6 +320,7 @@ lazy val root = (project in file(".") withId "velocorner")
     dataAnalytics,
     dataAnalyticsSpark,
     webApp,
+    infoService,
     testServiceJava,
     testServiceScala
   )
