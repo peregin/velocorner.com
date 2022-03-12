@@ -125,6 +125,8 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ThisBuild / resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
   ),
+  packageDoc / publishArtifact := false,
+  packageSrc / publishArtifact := false,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
@@ -244,17 +246,24 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
     BuildInfoPlugin
   )
 
-lazy val infoService = (project in file("service-info") withId "info-service")
+lazy val infoService = (project in file("info-service") withId "info-service")
   .settings(
     buildSettings,
-    name := "service-info",
+    name := "info-service",
     libraryDependencies ++= cats ++ catsEffect,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.info.build",
     maintainer := "velocorner.com@gmail.com",
     Docker / packageName := "velocorner.info",
+    Docker / dockerExposedPorts := Seq(9100),
     dockerBaseImage := Dependencies.dockerBaseImage,
-    dockerUsername := Some("peregin")
+    dockerUsername := Some("peregin"),
+    Docker / version := "latest"
+  )
+  .enablePlugins(
+    BuildInfoPlugin,
+    JavaAppPackaging,
+    DockerPlugin
   )
 
 lazy val webApp = (project in file("web-app") withId "web-app")
