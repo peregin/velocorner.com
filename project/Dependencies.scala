@@ -17,7 +17,7 @@ object Dependencies {
   val orientDbVersion = "3.2.5"
   val mongoDbVersion = "4.5.0"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "8.5.2"
+  val flywayVersion = "8.5.3"
   val elasticVersion = "7.17.2"
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.7" // standalone version
