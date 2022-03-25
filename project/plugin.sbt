@@ -26,7 +26,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.2")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.13")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.14")
 
 // format scala classes and generated file, see ScalafmtExtensionPlugin
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
