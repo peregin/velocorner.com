@@ -10,7 +10,7 @@ object Dependencies {
   val fs2Version = "3.2.5"
   val zioVersion = "1.0.13"
   val zioLoggingVersion = "0.5.14"
-  val shapelessVersion = "2.3.8"
+  val shapelessVersion = "2.3.9"
   val argonautVersion = "6.3.8"
   val logbackVersion = "1.2.11"
   val doobieVersion = "0.13.4"
