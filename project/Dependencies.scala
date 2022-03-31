@@ -28,5 +28,5 @@ object Dependencies {
   val scalaTestVersion = "3.2.11"
   val mockitoVersion = "4.4.0"
 
-  val springVersion = "2.6.5" // java world
+  val springVersion = "2.6.6" // java world
 }
