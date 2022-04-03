@@ -21,6 +21,8 @@ object IndexBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupp
 
   def info(msg: String): IO[Unit] = IO(logger.info(msg))
 
+  override def elasticUrl(): String = "http://localhost:9200"
+
   def run: IO[Unit] = for {
     _ <- info("start uploading brands ...")
     markets <- IO(JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz"))
