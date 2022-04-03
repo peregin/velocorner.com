@@ -22,7 +22,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
       _.url(s"${OpenWeatherFeed.baseUrl}/forecast")
         .withQueryStringParameters(
           ("q", location),
-          ("appid", config.getId(ServiceProvider.Weather)),
+          ("appid", config.getAuthId(ServiceProvider.Weather)),
           ("units", "metric"),
           ("lang", "en")
         )
@@ -39,7 +39,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
       _.url(s"${OpenWeatherFeed.baseUrl}/weather")
         .withQueryStringParameters(
           ("q", location),
-          ("appid", config.getId(ServiceProvider.Weather)),
+          ("appid", config.getAuthId(ServiceProvider.Weather)),
           ("units", "metric"),
           ("lang", "en")
         )

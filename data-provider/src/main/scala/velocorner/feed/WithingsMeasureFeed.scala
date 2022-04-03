@@ -16,7 +16,8 @@ object WithingsMeasureFeed {
   // for getting body measures
   val baseUrl = "https://api.health.nokia.com"
 
-  def consumerKey(config: SecretConfig) = ConsumerKey(config.getToken(ServiceProvider.Withings), config.getSecret(ServiceProvider.Withings))
+  def consumerKey(config: SecretConfig): ConsumerKey =
+    ConsumerKey(config.getAuthToken(ServiceProvider.Withings), config.getAuthSecret(ServiceProvider.Withings))
 }
 
 class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretConfig) extends HttpFeed with MeasureFeed with LazyLogging {

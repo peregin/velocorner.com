@@ -27,11 +27,11 @@ import mouse.all._
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
-  val clientSecret: String = connectivity.secretConfig.getSecret(ServiceProvider.Strava)
+  val clientSecret: String = connectivity.secretConfig.getAuthSecret(ServiceProvider.Strava)
   val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
   val providerName: String = "strava"
-  val clientId: String = connectivity.secretConfig.getId(ServiceProvider.Strava)
-  val callbackUrl: String = connectivity.secretConfig.getCallbackUrl(ServiceProvider.Strava)
+  val clientId: String = connectivity.secretConfig.getAuthId(ServiceProvider.Strava)
+  val callbackUrl: String = connectivity.secretConfig.getAuthCallbackUrl(ServiceProvider.Strava)
   val callbackUri = new URI(callbackUrl)
 
   private val logger = Logger.of(this.getClass)

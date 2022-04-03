@@ -14,7 +14,7 @@ object SecretConfig {
   implicit class PimpMyConfig(config: Config) {
 
     def getOptAs[T](path: String): Option[T] = {
-      val maybePath = if (config.hasPath(path)) Some(path) else None
+      val maybePath = Some(path).filter(config.hasPath)
       maybePath.map(config.getAnyRef).map(_.asInstanceOf[T])
     }
   }
@@ -25,13 +25,13 @@ case class SecretConfig(config: Config) {
 
   def isServiceEnabled(application: ServiceProvider.Value): Boolean = config.getOptAs[Boolean](s"$application.enabled").getOrElse(false)
 
-  def getId(application: ServiceProvider.Value): String = config.getString(s"$application.application.id")
+  def getAuthId(application: ServiceProvider.Value): String = config.getString(s"$application.application.id")
 
-  def getToken(application: ServiceProvider.Value): String = config.getString(s"$application.application.token")
+  def getAuthToken(application: ServiceProvider.Value): String = config.getString(s"$application.application.token")
 
-  def getSecret(application: ServiceProvider.Value): String = config.getString(s"$application.application.secret")
+  def getAuthSecret(application: ServiceProvider.Value): String = config.getString(s"$application.application.secret")
 
-  def getCallbackUrl(application: ServiceProvider.Value): String = config.getString(s"$application.application.callback.url")
+  def getAuthCallbackUrl(application: ServiceProvider.Value): String = config.getString(s"$application.application.callback.url")
 
   def getStorageType: Option[String] = config.getOptAs[String]("storage")
 
@@ -54,4 +54,6 @@ case class SecretConfig(config: Config) {
   def getProxyPassword: Option[String] = config.getOptAs[String]("proxy.password")
 
   def getJwtSecret: String = config.getString("jwt.secret")
+
+  def getElasticSearchUrl: String = config.getString("elasticsearch.url")
 }
