@@ -10,7 +10,9 @@ import scala.collection.immutable.SortedMap
 // search with filtering and sorting
 object SearchActivityElasticManual extends App with ActivityElasticSupport with AwaitSupport with LazyLogging {
 
-  val elastic = localCluster()
+  override def elasticUrl(): String = "http://localhost:9200"
+
+  val elastic = createElasticClient()
   logger.info("initialized...")
 
   val res = elastic
