@@ -58,7 +58,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion %
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
-  "org.codehaus.janino" % "janino" % "3.1.6", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.1.7", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
