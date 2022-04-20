@@ -34,7 +34,7 @@ val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-postgres" % Dependencies.doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % Dependencies.doobieVersion,
   "org.flywaydb" % "flyway-core" % Dependencies.flywayVersion,
-  "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % "test"
+  "com.opentable.components" % "otj-pg-embedded" % "1.0.1" % "test"
 )
 
 val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
