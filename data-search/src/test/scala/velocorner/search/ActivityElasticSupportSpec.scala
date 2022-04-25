@@ -11,7 +11,9 @@ import velocorner.util.JsonIo
 //noinspection TypeAnnotation
 class ActivityElasticSupportSpec extends AnyFlatSpec with Matchers with ActivityElasticSupport with LazyLogging {
 
-  val client = localCluster()
+  val client = createElasticClient()
+
+  override def elasticUrl(): String = "http://192.168.0.11:9200"
 
   // LocalNode is not supported anymore - SKIP TESTS HERE
   ignore should "create indices" in {

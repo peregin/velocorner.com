@@ -15,11 +15,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 /** Simple utility to read marketplaces from file and feed it to elastic.
   */
-object BuildBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
+object IndexBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
   val bulkSize = 200
 
   def info(msg: String): IO[Unit] = IO(logger.info(msg))
+
+  override def elasticUrl(): String = "http://localhost:9200"
 
   def run: IO[Unit] = for {
     _ <- info("start uploading brands ...")

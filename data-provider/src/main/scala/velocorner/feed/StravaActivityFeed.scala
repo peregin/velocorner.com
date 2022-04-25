@@ -40,8 +40,8 @@ object StravaActivityFeed extends LazyLogging {
 class StravaActivityFeed(maybeToken: Option[String], val config: SecretConfig) extends HttpFeed with ActivityFeed with LazyLogging {
 
   private val token =
-    maybeToken.getOrElse(config.getToken(ServiceProvider.Strava)) // dedicated token after authentication or application generic
-  private val clientId = config.getId(ServiceProvider.Strava)
+    maybeToken.getOrElse(config.getAuthToken(ServiceProvider.Strava)) // dedicated token after authentication or application generic
+  private val clientId = config.getAuthId(ServiceProvider.Strava)
   private val authHeader = s"Bearer $token"
 
   logger.info(s"connecting to strava with token [$token] and clientId[$clientId]...")

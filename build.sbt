@@ -8,6 +8,21 @@ import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 import sbtrelease.ReleasePlugin.runtimeVersion
 
+// setup common keys for every service, some of them might have extra build information
+def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
+  Seq[BuildInfoKey](
+    name,
+    version,
+    scalaVersion,
+    sbtVersion,
+    BuildInfoKey.action("buildTime") {
+      // is parsed and used in sitemap as well
+      java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
+    },
+    "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
+  ) ++ extraKeys
+)
+
 val rethinkClient = Seq(
   "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion,
   "com.googlecode.json-simple" % "json-simple" % "1.1.1"
@@ -19,7 +34,7 @@ val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-postgres" % Dependencies.doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % Dependencies.doobieVersion,
   "org.flywaydb" % "flyway-core" % Dependencies.flywayVersion,
-  "com.opentable.components" % "otj-pg-embedded" % "1.0.0" % "test"
+  "com.opentable.components" % "otj-pg-embedded" % "1.0.1" % "test"
 )
 
 val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
@@ -43,7 +58,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion %
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
-  "org.codehaus.janino" % "janino" % "3.1.6", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.1.7", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
@@ -110,6 +125,8 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ThisBuild / resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
   ),
+  packageDoc / publishArtifact := false,
+  packageSrc / publishArtifact := false,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
@@ -222,21 +239,31 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
       "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       scalaTest
     ) ++ cats,
-    BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      BuildInfoKey.action("buildTime") {
-        // is parsed and used in sitemap as well
-        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-      },
-      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
-    ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "test.service.scala.build"
   )
   .enablePlugins(
     BuildInfoPlugin
+  )
+
+lazy val infoService = (project in file("info-service") withId "info-service")
+  .settings(
+    buildSettings,
+    name := "info-service",
+    libraryDependencies ++= cats ++ catsEffect,
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
+    buildInfoPackage := "velocorner.info.build",
+    maintainer := "velocorner.com@gmail.com",
+    Docker / packageName := "velocorner.info",
+    Docker / dockerExposedPorts := Seq(9100),
+    dockerBaseImage := Dependencies.dockerBaseImage,
+    dockerUsername := Some("peregin"),
+    Docker / version := "latest"
+  )
+  .enablePlugins(
+    BuildInfoPlugin,
+    JavaAppPackaging,
+    DockerPlugin
   )
 
 lazy val webApp = (project in file("web-app") withId "web-app")
@@ -255,25 +282,19 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       scalaTest
     ),
     routesGenerator := InjectedRoutesGenerator,
-    BuildInfoKeys.buildInfoKeys := Seq[BuildInfoKey](
-      name,
-      version,
-      scalaVersion,
-      sbtVersion,
-      BuildInfoKey.action("buildTime") {
-        // is parsed and used in sitemap as well
-        java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
-      },
-      "elasticVersion" -> Dependencies.elasticVersion,
-      "playVersion" -> play.core.PlayVersion.current,
-      "catsVersion" -> Dependencies.catsVersion,
-      "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
-    ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
+      Seq(
+        "elasticVersion" -> Dependencies.elasticVersion,
+        "playVersion" -> play.core.PlayVersion.current,
+        "catsVersion" -> Dependencies.catsVersion,
+        "dockerBaseImage" -> Dependencies.dockerBaseImage
+      )
+    ).value,
     buildInfoPackage := "velocorner.build",
     maintainer := "velocorner.com@gmail.com",
     Docker / packageName := "velocorner.com",
     Docker / dockerExposedPorts := Seq(9000),
-    dockerBaseImage := "openjdk:11-jre-slim",
+    dockerBaseImage := Dependencies.dockerBaseImage,
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
@@ -309,6 +330,7 @@ lazy val root = (project in file(".") withId "velocorner")
     dataAnalytics,
     dataAnalyticsSpark,
     webApp,
+    infoService,
     testServiceJava,
     testServiceScala
   )

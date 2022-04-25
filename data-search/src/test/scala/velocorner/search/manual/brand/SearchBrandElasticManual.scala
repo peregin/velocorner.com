@@ -7,6 +7,8 @@ import velocorner.search.MarketplaceElasticSupport
 
 object SearchBrandElasticManual extends App with MarketplaceElasticSupport with AwaitSupport with LazyLogging {
 
+  override def elasticUrl(): String = "http://localhost:9200"
+
   logger.info("initialized...")
 
   val searchTerm = "Schwalbe"

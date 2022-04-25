@@ -14,7 +14,7 @@ import scala.concurrent.Future
 //noinspection TypeAnnotation
 trait MarketplaceElasticSupport extends IndexApi with ElasticSupport with LazyLogging {
 
-  lazy val elastic = localCluster()
+  lazy val elastic = createElasticClient()
 
   val ixName = "marketplace"
 
@@ -45,13 +45,6 @@ trait MarketplaceElasticSupport extends IndexApi with ElasticSupport with LazyLo
     markets.map { market =>
       val ixDefinition = indexInto(ixName)
       ixDefinition
-//        .fields(
-//          "marketplace_name" -> market.marketplace.name,
-//        "marketplace.url" -> market.marketplace.url,
-//        "marketplace.logo.url" -> market.marketplace.logoUrl,
-//        "brand.name" -> market.brand.name,
-//        "url" -> market.url
-//        )
         .withId(market.marketplace.name + "/" + market.brand.name)
         .doc(Json.toJson(market).toString())
     }

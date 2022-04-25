@@ -18,8 +18,8 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   private val logger = Logger.of(this.getClass)
   private val storage = Storage.create("ps", secretConfig)
-  storage.initialize()
 
+  storage.initialize()
   logger.info("ready...")
 
   def getStorage = storage
@@ -29,6 +29,8 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
 
   def getWeatherFeed = new OpenWeatherFeed(secretConfig)
+
+  def getElasticUrl(): String = secretConfig.getElasticSearchUrl
 
   def disconnect(): Unit = {
     logger.info("releasing storage connections...")

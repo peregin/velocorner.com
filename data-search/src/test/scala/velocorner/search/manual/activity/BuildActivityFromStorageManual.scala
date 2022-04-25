@@ -15,12 +15,14 @@ import cats.implicits._
   */
 object BuildActivityFromStorageManual extends App with ActivityElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
+  override def elasticUrl(): String = "http://192.168.0.11:9200"
+
   val bulkSize = 20
   val athleteId = 432909
 
   val storage = Storage.create("ps") //.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
   storage.initialize()
-  val elastic = localCluster()
+  val elastic = createElasticClient()
   logger.info("initialized...")
 
   val result = for {
