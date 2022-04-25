@@ -25,7 +25,7 @@ object Dependencies {
   val jwtVersion = "9.0.5"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.2.1"
-  val scalaTestVersion = "3.2.11"
+  val scalaTestVersion = "3.2.12"
   val mockitoVersion = "4.5.1"
 
   val springVersion = "2.6.7" // java world
