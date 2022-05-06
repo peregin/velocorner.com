@@ -6,7 +6,7 @@ object Dependencies {
 
   val catsVersion = "2.7.0"
   val catsEffectVersion = "3.3.11"
-  val mouseVersion = "1.0.10"
+  val mouseVersion = "1.0.11"
   val fs2Version = "3.2.7"
   val zioVersion = "1.0.14"
   val zioLoggingVersion = "0.5.14"
@@ -14,10 +14,10 @@ object Dependencies {
   val argonautVersion = "6.3.8"
   val logbackVersion = "1.2.11"
   val doobieVersion = "0.13.4"
-  val orientDbVersion = "3.2.5"
+  val orientDbVersion = "3.2.6"
   val mongoDbVersion = "4.6.0"
   val rethinkDbVersion = "2.4.4"
-  val flywayVersion = "8.5.9"
+  val flywayVersion = "8.5.10"
   val elasticVersion = "8.1.0"
   val finatraVersion = "21.2.0"
   val playWsVersion = "2.1.7" // standalone version
