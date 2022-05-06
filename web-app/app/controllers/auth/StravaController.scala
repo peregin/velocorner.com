@@ -34,20 +34,20 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
-  // from FE web
+  // called from FE web-app
   def login(scope: String) = timed("LOGIN") {
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
         // already logged in
         case Some(_) => Redirect(controllers.routes.WebController.index)
-        // authorize - scope is the host from FE
+        // authorize - scope is the host from FE - calls Strava with the callback url (authorize)
         case None => Redirect(authenticator.getAuthorizationUrl(scope, none))
       }
     }
   }
 
-  // callback from OAuth2
+  // callback from OAuth2 (triggered by Strava from web-app or web-front)
   def authorize = Action.async { implicit request =>
     val form = Form(
       tuple(
