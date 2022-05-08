@@ -1,5 +1,7 @@
 package controllers.auth
 
+import akka.actor.ActorSystem
+import akka.util.Helpers
 import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{OAuth2StateKey, ec}
@@ -29,8 +31,9 @@ object StravaController {
   // verifies the code between the session and submitted form
   val OAuth2StateKey = "velocorner.oauth2.state"
 
-  implicit val ec =
-    ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true))))
+  implicit val ec = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(5, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true)))
+  )
 }
 
 class StravaController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
@@ -41,18 +44,32 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   // called from FE web-app ONLY
   def login(scope: String) = timed("LOGIN") {
-    Action { implicit request =>
+    Action.async { implicit request =>
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
         // already logged in
-        case Some(_) => Redirect(controllers.routes.WebController.index)
-        // authorize - scope is the host from FE - calls Strava with the callback url (authorize)
+        case Some(account) =>
+          logger.info(s"already logged in ${account.athleteId}")
+          Future.successful(Redirect(controllers.routes.WebController.index))
 
+        // not logged, in call OAuth2 provider
         case None =>
+          // authorize - scope is the host from FE - calls Strava with the callback url (authorize)
           val state = UUID.randomUUID().toString
-          Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
+          val result = Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
             request.session + (OAuth2StateKey -> state)
           )
+
+          // TODO: read response content into json
+          implicit val system = ActorSystem.create("login-feed")
+          for {
+            data <- result.body.consumeData
+            payload = data.toString()
+            token = (Json.parse(payload) \ "token").as[String]
+            jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
+            sessionToken <- idContainer.startNewSession(jwtUser.id, sessionTimeoutInSeconds)
+            _ = tokenAccessor.put(sessionToken)(result)
+          } yield result
       }
     }
   }
@@ -74,18 +91,15 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       _ = logger.info(s"OAUTH succeeded with access token[${accessTokenResponse.accessToken}]")
       account <- login(accessTokenResponse, none)
       jwtUser = JwtUser.toJwtUser(account)
-      sessionToken <- idContainer.startNewSession(account.athleteId, sessionTimeoutInSeconds)
       jwt = jwtUser.toToken(connectivity.secretConfig.getJwtSecret)
-      result = Ok(Json.obj("token" -> JsString(jwt)))
-      _ = tokenAccessor.put(sessionToken)(result)
-    } yield result
+    } yield Ok(Json.obj("token" -> JsString(jwt)))
 
     val result = form.value match {
       case Some(v) if !form.hasErrors =>
         val (code, _) = v
         formSuccess(code)
       case _ =>
-        Future.successful[Result](BadRequest)
+        Future.successful[Result](Unauthorized)
     }
     result.map(_.removingFromSession(OAuth2StateKey))
   }
@@ -106,23 +120,6 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     logger.info(s"retrieve provider user for $token")
     val feed = connectivity.getStravaFeed(token)
     feed.getAthlete <| (_.onComplete(_ => feed.close()))
-  }
-
-  def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser)(implicit ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth LINK succeeded with token[${resp.accessToken}] and user[${consumerUser.athleteId}]")
-    for {
-      _ <- login(resp, consumerUser.some)
-    } yield Redirect(controllers.routes.WebController.index)
-  }
-
-  // matches the provider and consumer users
-  def onOAuthLoginSucceeded(resp: OAuth2TokenResponse)(implicit ctx: ExecutionContext): Future[Result] = {
-    logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
-    for {
-      account <- login(resp, none)
-      token <- idContainer.startNewSession(account.athleteId, sessionTimeoutInSeconds)
-      result <- Future.successful(Redirect(controllers.routes.WebController.index))
-    } yield tokenAccessor.put(token)(result)
   }
 
   // same functionality when the account is linked with a given consumerUser or logged in to an existing mapping

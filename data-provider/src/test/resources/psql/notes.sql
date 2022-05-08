@@ -62,5 +62,7 @@ delete from weather;
 
 select jsonb_pretty(data) from activity order by data->>'start_date' desc limit 10;
 
+select * from forecast f;
+
 
 

@@ -4,7 +4,6 @@ import java.io.Closeable
 import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
