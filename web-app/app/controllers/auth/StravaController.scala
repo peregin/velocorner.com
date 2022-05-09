@@ -1,7 +1,8 @@
 package controllers.auth
 
 import akka.actor.ActorSystem
-import akka.util.Helpers
+import akka.stream.scaladsl.Sink
+import akka.util.{ByteString, Helpers}
 import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{OAuth2StateKey, ec}
@@ -60,10 +61,10 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
             request.session + (OAuth2StateKey -> state)
           )
 
-          // TODO: read response content into json
-          implicit val system = ActorSystem.create("login-feed")
+          implicit val system = ActorSystem.create("login-response-feed")
+          val sink = Sink.fold[ByteString, ByteString](ByteString.empty)(_ ++ _)
           for {
-            data <- result.body.consumeData
+            data <- result.body.dataStream.runWith(sink)
             payload = data.toString()
             token = (Json.parse(payload) \ "token").as[String]
             jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
@@ -92,6 +93,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       account <- login(accessTokenResponse, none)
       jwtUser = JwtUser.toJwtUser(account)
       jwt = jwtUser.toToken(connectivity.secretConfig.getJwtSecret)
+      _ = logger.info(s"logging in as ${account.athleteId}")
     } yield Ok(Json.obj("token" -> JsString(jwt)))
 
     val result = form.value match {
