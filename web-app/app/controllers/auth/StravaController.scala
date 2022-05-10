@@ -1,8 +1,5 @@
 package controllers.auth
 
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Sink
-import akka.util.{ByteString, Helpers}
 import cats.implicits._
 import controllers.ConnectivitySettings
 import controllers.auth.StravaController.{OAuth2StateKey, ec}
@@ -57,19 +54,17 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
         case None =>
           // authorize - scope is the host from FE - calls Strava with the callback url (authorize)
           val state = UUID.randomUUID().toString
-          val result = Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
-            request.session + (OAuth2StateKey -> state)
-          )
+//          val result = Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
+//            request.session + (OAuth2StateKey -> state)
+//          )
 
-          implicit val system = ActorSystem.create("login-response-feed")
-          val sink = Sink.fold[ByteString, ByteString](ByteString.empty)(_ ++ _)
           for {
-            data <- result.body.dataStream.runWith(sink)
-            payload = data.toString()
-            token = (Json.parse(payload) \ "token").as[String]
+            token <- authenticator.authorize(authenticator.getAuthorizationUrl(scope, state.some))
             jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
             sessionToken <- idContainer.startNewSession(jwtUser.id, sessionTimeoutInSeconds)
+            result = Ok
             _ = tokenAccessor.put(sessionToken)(result)
+            // result.map(_.removingFromSession(OAuth2StateKey))
           } yield result
       }
     }
@@ -96,14 +91,13 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       _ = logger.info(s"logging in as ${account.athleteId}")
     } yield Ok(Json.obj("token" -> JsString(jwt)))
 
-    val result = form.value match {
+    form.value match {
       case Some(v) if !form.hasErrors =>
         val (code, _) = v
         formSuccess(code)
       case _ =>
         Future.successful[Result](Unauthorized)
     }
-    result.map(_.removingFromSession(OAuth2StateKey))
   }
 
   def logout = Action { implicit request =>

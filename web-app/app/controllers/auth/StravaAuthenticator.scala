@@ -49,6 +49,18 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     s"$authorizationUrl?client_id=$encodedClientId&redirect_uri=$encodedRedirectUri$stateParam&response_type=code&approval_prompt=auto&scope=$encodedScope"
   }
 
+  def authorize(url: String)(implicit ctx: ExecutionContext): Future[String] = {
+    logger.info("authorizing...")
+    val feed = connectivity.getStravaFeed
+    val resp = feed
+      .ws(_.url(url))
+      .withHttpHeaders(HeaderNames.ACCEPT -> MimeTypes.JSON)
+      .withFollowRedirects(true)
+      .get
+      .map(r => (r.body[JsValue] \ "token").as[String])
+    resp <| (_.onComplete(_ => feed.close()))
+  }
+
   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"retrieve token for code[$code]")
     val feed = connectivity.getStravaFeed
