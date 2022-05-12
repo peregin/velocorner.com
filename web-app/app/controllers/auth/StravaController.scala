@@ -54,18 +54,16 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
         case None =>
           // authorize - scope is the host from FE - calls Strava with the callback url (authorize)
           val state = UUID.randomUUID().toString
-//          val result = Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
-//            request.session + (OAuth2StateKey -> state)
-//          )
+          val result = Redirect(authenticator.getAuthorizationUrl(scope, state.some)).withSession(
+            request.session + (OAuth2StateKey -> state)
+          )
 
+          val token = "" //authenticator.authorize(authenticator.getAuthorizationUrl(scope, state.some))
+          val jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
           for {
-            token <- authenticator.authorize(authenticator.getAuthorizationUrl(scope, state.some))
-            jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
             sessionToken <- idContainer.startNewSession(jwtUser.id, sessionTimeoutInSeconds)
-            result = Ok
             _ = tokenAccessor.put(sessionToken)(result)
-            // result.map(_.removingFromSession(OAuth2StateKey))
-          } yield result
+          } yield result.removingFromSession(OAuth2StateKey)
       }
     }
   }
