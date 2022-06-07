@@ -364,7 +364,7 @@ GET     /api/activities/:activity/years                    controllers.ActivityC
 #    500:
 #      description: Internal error
 ###
-GET     /api/activities/last                               controllers.ActivityController.last
+GET     /api/activities/last                               controllers.ActivityController.last()
 
 ###
 #  summary: Retrieves an activity
