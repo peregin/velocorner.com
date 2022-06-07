@@ -5,7 +5,7 @@ ThisBuild / resolvers += "Typesafe Simple Repository" at "https://repo.typesafe.
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
 
 // check latest updates form maven
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.2")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.3")
 
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.11.0")
@@ -26,7 +26,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.0")
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.15")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.16")
 
 // format scala classes and generated file, see ScalafmtExtensionPlugin
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")

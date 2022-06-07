@@ -22,8 +22,9 @@ import scala.util.control.NonFatal
 // for kestrel combinator and unsafeTap
 import mouse.all._
 
-/** Created by levi on 09/12/15.
-  */
+/**
+ * Created by levi on 09/12/15.
+ */
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   val authorizationUrl: String = StravaActivityFeed.authorizationUrl
@@ -72,6 +73,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
     resp <| (_.onComplete(_ => feed.close()))
   }
 
+  // invoked when accessing Strava API but the current token is expired
   def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
     logger.info(s"refreshing token with[$refreshToken]")
     val feed = connectivity.getStravaFeed

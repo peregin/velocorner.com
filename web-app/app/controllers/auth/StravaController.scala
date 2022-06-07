@@ -2,7 +2,7 @@ package controllers.auth
 
 import cats.implicits._
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{OAuth2StateKey, ec}
+import controllers.auth.StravaController.{ec, OAuth2StateKey}
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, optional, text, tuple}
@@ -58,7 +58,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
             request.session + (OAuth2StateKey -> state)
           )
 
-          val token = "" //authenticator.authorize(authenticator.getAuthorizationUrl(scope, state.some))
+          val token = "" // authenticator.authorize(authenticator.getAuthorizationUrl(scope, state.some))
           val jwtUser = JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)
           for {
             sessionToken <- idContainer.startNewSession(jwtUser.id, sessionTimeoutInSeconds)
