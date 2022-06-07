@@ -1,10 +1,11 @@
 # ToDo
-- upgrade postgres (multirange types)
+- caching: add for forecast - generates way too many entries - and remove existing entries
 - restart service for changed images only - or publish image from ci conditionally
 - show last ride and similar ones (+/-15% distance, elevation)
+- upgrade postgres (multirange types)
 - health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 - recommendation for the week and month based on previous or other activities
-- setup ActivityStorage with ScalaCache
+- caching: setup ActivityStorage with ScalaCache
 - variation of the greeting, instead of Hello
 - add QR code to the About page 
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html

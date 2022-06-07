@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.Executors
 import cats.implicits._
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{OAuth2StateKey, ec}
+import controllers.auth.StravaController.{ec, OAuth2StateKey}
 
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
@@ -29,8 +29,9 @@ object StravaController {
   // verifies the code between the session and submitted form
   val OAuth2StateKey = "velocorner.oauth2.state"
 
-  implicit val ec =
-    ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true))))
+  implicit val ec = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(5, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true)))
+  )
 }
 
 class StravaController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
@@ -39,7 +40,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
-  // from FE web
+  // called from FE web-app ONLY
   def login(scope: String) = timed("LOGIN") {
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
@@ -126,9 +127,11 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   }
 
   // same functionality when the account is linked with a given consumerUser or logged in to an existing mapping
+  // consumerUser - when empty means a new login
+  // consumerUser - when present links the login with the given account
   private def login(resp: OAuth2TokenResponse, consumerUser: Option[ConsumerUser])(implicit ctx: ExecutionContext): Future[ProviderUser] =
     for {
-      //athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
+      // athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
       // retrieve the provider user has more details than the user got at authentication
       athlete <- retrieveProviderUser(resp.accessToken)
       storage = connectivity.getStorage

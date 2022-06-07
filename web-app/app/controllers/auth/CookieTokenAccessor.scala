@@ -12,7 +12,7 @@ class CookieTokenAccessor(
     protected val cookieMaxAge: Option[Int] = None
 ) {
 
-  def put(token: AuthenticityToken)(result: Result)(implicit request: RequestHeader): Result = {
+  def put(token: AuthenticityToken)(result: Result): Result = {
     val c = Cookie(cookieName, token, cookieMaxAge, cookiePathOption, cookieDomainOption, cookieSecureOption, cookieHttpOnlyOption)
     result.withCookies(c)
   }
