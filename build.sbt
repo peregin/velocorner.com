@@ -194,6 +194,15 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
+lazy val dataSearchZinc = (project in file("data-search-zinc") withId "data-search-zinc")
+  .settings(
+    buildSettings,
+    name := "data-search-zinc",
+    libraryDependencies ++= catsEffect.map(_ % "test"),
+    dependencyOverrides ++= catsEffect
+  )
+  .dependsOn(dataProvider % "test->test;compile->compile")
+
 // module for various analytics supporting the generic stack
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
   .settings(
@@ -327,6 +336,7 @@ lazy val root = (project in file(".") withId "velocorner")
     dataProvider,
     dataProviderExtension,
     dataSearch,
+    dataSearchZinc,
     dataAnalytics,
     dataAnalyticsSpark,
     webApp,
