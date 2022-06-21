@@ -8,19 +8,20 @@ import velocorner.search.ActivityElasticSupport
 import velocorner.storage.Storage
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import cats.implicits._
+import velocorner.SecretConfig
 
-/** Simple utility to read the activities from the storage and feed it to elastic.
-  */
+/**
+ * Simple utility to read the activities from the storage and feed it to elastic.
+ */
 object BuildActivityFromStorageManual extends App with ActivityElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
-  override def elasticUrl(): String = "http://192.168.0.11:9200"
+  override val config = SecretConfig.load()
 
   val bulkSize = 20
   val athleteId = 432909
 
-  val storage = Storage.create("ps") //.asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
+  val storage = Storage.create("ps") // .asInstanceOf[OrientDbStorage] // re, co, mo, dy, or
   storage.initialize()
   val elastic = createElasticClient()
   logger.info("initialized...")

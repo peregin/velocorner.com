@@ -14,7 +14,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
     with MarketplaceElasticSupport
     with WebMetrics {
 
-  override def elasticUrl(): String = connectivity.getElasticUrl()
+  override val config = connectivity.secretConfig
 
   // route mapped to /api/brand/suggest
   def suggest(query: String): Action[AnyContent] =

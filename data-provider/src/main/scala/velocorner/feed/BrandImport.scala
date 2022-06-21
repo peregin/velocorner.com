@@ -12,8 +12,11 @@ import scala.jdk.CollectionConverters._
 import scala.util.control.Exception._
 import scala.util.{Failure, Success, Try}
 
+/**
+ * Convert the scraping format into the model.
+ */
 //noinspection TypeAnnotation
-object BrandFeed extends LazyLogging {
+object BrandImport extends LazyLogging {
 
   val home = sys.props.get("user.home").getOrElse("/Users/levi")
   val dir = s"$home/Downloads/velo/velocorner/brands"
@@ -72,7 +75,7 @@ object BrandFeed extends LazyLogging {
     val rest = row.drop(7)
     def extract(list: Array[String]): List[BrandUrl] = list match {
       case l3 if l3.length >= 3 =>
-        //println(l3.take(3).mkString("\t"))
+        // println(l3.take(3).mkString("\t"))
         val first = l3(0).trim
         val second = l3(1).trim
         val third = l3(2).trim

@@ -7,13 +7,14 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
+import velocorner.SecretConfig
 
 //noinspection TypeAnnotation
 class ActivityElasticSupportSpec extends AnyFlatSpec with Matchers with ActivityElasticSupport with LazyLogging {
 
   val client = createElasticClient()
 
-  override def elasticUrl(): String = "http://192.168.0.11:9200"
+  override val config = SecretConfig.load()
 
   // LocalNode is not supported anymore - SKIP TESTS HERE
   ignore should "create indices" in {

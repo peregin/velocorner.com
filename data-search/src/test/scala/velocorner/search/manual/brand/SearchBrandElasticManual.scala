@@ -4,10 +4,11 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.AwaitSupport
 import velocorner.search.MarketplaceElasticSupport
+import velocorner.SecretConfig
 
 object SearchBrandElasticManual extends App with MarketplaceElasticSupport with AwaitSupport with LazyLogging {
 
-  override def elasticUrl(): String = "http://localhost:9200"
+  override val config = SecretConfig.load()
 
   logger.info("initialized...")
 

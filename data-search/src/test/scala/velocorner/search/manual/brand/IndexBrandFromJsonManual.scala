@@ -10,18 +10,20 @@ import velocorner.manual.{AwaitSupport, MyLocalConfig}
 import velocorner.model.brand.MarketplaceBrand
 import velocorner.search.MarketplaceElasticSupport
 import velocorner.util.JsonIo
+import velocorner.SecretConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/** Simple utility to read marketplaces from file and feed it to elastic.
-  */
+/**
+ * Simple utility to read marketplaces from file and feed it to elastic.
+ */
 object IndexBrandFromJsonManual extends IOApp.Simple with MarketplaceElasticSupport with AwaitSupport with LazyLogging with MyLocalConfig {
 
   val bulkSize = 200
 
   def info(msg: String): IO[Unit] = IO(logger.info(msg))
 
-  override def elasticUrl(): String = "http://localhost:9200"
+  override val config = SecretConfig.load()
 
   def run: IO[Unit] = for {
     _ <- info("start uploading brands ...")

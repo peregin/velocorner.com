@@ -3,8 +3,9 @@ package velocorner
 import com.typesafe.config.{Config, ConfigFactory}
 import velocorner.SecretConfig.PimpMyConfig
 
-/** Created by levi on 29/03/15.
-  */
+/**
+ * Created by levi on 29/03/15.
+ */
 object SecretConfig {
 
   def load(config: Config): SecretConfig = new SecretConfig(config)
@@ -56,4 +57,7 @@ case class SecretConfig(config: Config) {
   def getJwtSecret: String = config.getString("jwt.secret")
 
   def getElasticSearchUrl: String = config.getString("elasticsearch.url")
+  def getZincUrl: String = config.getString("zinc.url")
+  def getZincUser: String = config.getString("zinc.user")
+  def getZincPassword: String = config.getString("zinc.password")
 }
