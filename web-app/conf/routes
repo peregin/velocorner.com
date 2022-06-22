@@ -42,6 +42,10 @@ GET     /ws                                                controllers.ApiContro
 ### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status
 
+### NoDocs ###
++ nocsrf
+POST    /api/admin/brand/upload                            controllers.AdminController.brandUpload
+
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
 #  tags:

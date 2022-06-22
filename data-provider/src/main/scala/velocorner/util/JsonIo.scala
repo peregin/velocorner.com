@@ -1,9 +1,9 @@
 package velocorner.util
 
 import java.util.zip.GZIPInputStream
-
 import play.api.libs.json._
 
+import java.io.FileInputStream
 import scala.io.Source
 
 object JsonIo extends CloseableResource {
@@ -22,6 +22,12 @@ object JsonIo extends CloseableResource {
   def readFromFile[T](fileName: String)(implicit fjs: Reads[T]): T = {
     val json = withCloseable(Source.fromFile(fileName))(_.mkString)
     read[T](json)
+  }
+
+  def readFromGzipFile[T](fileName: String)(implicit fjs: Reads[T]): T = {
+    val in = new GZIPInputStream(new FileInputStream(fileName))
+    val raw = Source.fromInputStream(in).mkString
+    read(raw)
   }
 
   def read[T](json: String)(implicit fjs: Reads[T]): T = {

@@ -2,7 +2,6 @@
 @common.main(context) {
 
     <h1 xmlns="http://www.w3.org/1999/html">Admin</h1>
-
     <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
         <div class="panel-body">
             <span class="row">
@@ -21,6 +20,18 @@
                     </li>
                 </ul>
             </span>
+        </div>
+    </div>
+
+    <h1 xmlns="http://www.w3.org/1999/html">Brands</h1>
+    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+        <div class="panel-body">
+            @helper.form(action = routes.AdminController.brandUpload, Symbol("enctype") -> "multipart/form-data") {
+            <input type="file" name="brands">
+            <p>
+                <input type="submit">
+            </p>
+            }
         </div>
     </div>
 }
