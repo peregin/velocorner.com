@@ -3,7 +3,7 @@ package controllers
 import controllers.util.WebMetrics
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
-import velocorner.search.MarketplaceElasticSupport
+import velocorner.search.BrandSearch
 import velocorner.util.JsonIo
 
 import javax.inject.Inject
@@ -11,17 +11,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class BrandController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
-    with MarketplaceElasticSupport
     with WebMetrics {
 
-  override val config = connectivity.secretConfig
+  val feed = new BrandSearch(connectivity.secretConfig)
 
   // route mapped to /api/brand/suggest
   def suggest(query: String): Action[AnyContent] =
     Action.async {
       timedRequest(s"suggest brand for $query") { implicit request =>
         for {
-          brands <- suggestBrands(query)
+          brands <- feed.suggestBrands(query)
           jsonBrands = brands.map(b => Json.obj("value" -> b, "data" -> b))
         } yield Ok(Json.obj("suggestions" -> jsonBrands))
       }
@@ -32,7 +31,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
     Action.async {
       timedRequest(s"search brand for $query") { implicit request =>
         for {
-          brands <- searchBrands(query)
+          brands <- feed.searchBrands(query)
         } yield Ok(JsonIo.write(brands))
       }
     }

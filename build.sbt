@@ -182,10 +182,10 @@ lazy val dataProviderExtension = (project in file("data-provider-ext") withId "d
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
-lazy val dataSearch = (project in file("data-search") withId "data-search")
+lazy val dataSearchElastic = (project in file("data-search-elastic") withId "data-search-elastic")
   .settings(
     buildSettings,
-    name := "data-search",
+    name := "data-search-elastic",
     libraryDependencies ++=
       elastic4s
         ++ catsEffect.map(_ % "test")
@@ -328,14 +328,14 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
   )
-  .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
+  .dependsOn(dataProvider % "compile->compile; test->test", dataSearchZinc)
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
     dataProvider,
     dataProviderExtension,
-    dataSearch,
+    dataSearchElastic,
     dataSearchZinc,
     dataAnalytics,
     dataAnalyticsSpark,
