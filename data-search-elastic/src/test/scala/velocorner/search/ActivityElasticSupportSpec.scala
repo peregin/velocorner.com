@@ -12,7 +12,7 @@ import velocorner.SecretConfig
 //noinspection TypeAnnotation
 class ActivityElasticSupportSpec extends AnyFlatSpec with Matchers with ActivityElasticSupport with LazyLogging {
 
-  val client = createElasticClient()
+  lazy val client = createElasticClient()
 
   override val config = SecretConfig.load()
 
