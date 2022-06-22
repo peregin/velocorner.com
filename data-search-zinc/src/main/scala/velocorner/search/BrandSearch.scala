@@ -13,8 +13,8 @@ import scala.concurrent.Future
 
 class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
 
-  val baseUrl = config.getZincUrl
-  val ixName = "marketplace"
+  private val baseUrl = config.getZincUrl
+  private val ixName = "marketplace"
 
   def bulk(brands: List[MarketplaceBrand]): Future[Unit] = {
     logger.debug(s"indexing ${brands.size} brands")
@@ -34,4 +34,8 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
       .post(payload)
     response.map(_.body[String]).map(resp => logger.info(s"resp = $resp"))
   }
+
+  def searchBrands(term: String): Future[List[MarketplaceBrand]] = ???
+
+  def suggestBrands(term: String): Future[List[String]] = ???
 }
