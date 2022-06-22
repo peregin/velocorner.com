@@ -38,22 +38,26 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
   }
 
   // def mapped to /api/admin/brand/upload
-  def brandUpload = Action(parse.multipartFormData) { request =>
-    request.body
-      .file("brands")
-      .map { payload =>
-        // only get the last part of the filename
-        // otherwise someone can send a path like ../../home/foo/bar.txt to write to other files on the system
-        logger.info(s"uploaded ${payload.ref.getAbsolutePath} $payload")
-        val brands = JsonIo.readFromGzipFile[List[MarketplaceBrand]](payload.ref.getAbsolutePath)
-        logger.info(s"found ${brands.size}")
+  def brandUpload = Action(parse.multipartFormData) { implicit request =>
+    if (loggedIn(request).exists(_.isAdmin())) {
+      request.body
+        .file("brands")
+        .map { payload =>
+          // only get the last part of the filename
+          // otherwise someone can send a path like ../../home/foo/bar.txt to write to other files on the system
+          logger.info(s"uploaded ${payload.ref.getAbsolutePath} $payload")
+          val brands = JsonIo.readFromGzipFile[List[MarketplaceBrand]](payload.ref.getAbsolutePath)
+          logger.info(s"found ${brands.size}")
 
-        val feed = new BrandSearch(connectivity.secretConfig)
-        Await.result(feed.bulk(brands), 60.seconds)
-        Ok("File uploaded")
-      }
-      .getOrElse {
-        Redirect(routes.WebController.admin).flashing("error" -> "Missing file")
-      }
+          val feed = new BrandSearch(connectivity.secretConfig)
+          Await.result(feed.bulk(brands), 60.seconds)
+          Ok("File uploaded")
+        }
+        .getOrElse {
+          Redirect(routes.WebController.admin).flashing("error" -> "Missing file")
+        }
+    } else {
+      Forbidden
+    }
   }
 }

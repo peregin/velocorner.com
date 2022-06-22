@@ -1,6 +1,6 @@
 package controllers.auth
 
-import StravaController.{Id, ResultUpdater, User, ec}
+import StravaController.{ec, Id, ResultUpdater, User}
 import controllers.ConnectivitySettings
 import controllers.auth.AuthChecker.{OAuth2AttrKey, OAuth2CookieKey}
 import play.api.cache.SyncCacheApi
@@ -74,19 +74,16 @@ trait AuthChecker extends WebMetrics {
 
   def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
 
-  def loggedIn(implicit request: Request[AnyContent]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
+  def loggedIn(implicit request: Request[_]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
 
-  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] = {
+  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] =
     (for {
       token <- tokenAccessor.extract(request)
     } yield for {
       Some(userId) <- idContainer.get(token)
       Some(user) <- resolveUser(userId)
       _ <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
-    } yield {
-      Option(user) -> tokenAccessor.put(token) _
-    }) getOrElse {
+    } yield Option(user) -> tokenAccessor.put(token) _) getOrElse {
       Future.successful(Option.empty -> identity)
     }
-  }
 }
