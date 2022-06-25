@@ -21,7 +21,9 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
   object Hits {
     implicit val format = Format[Hits](Json.reads[Hits], Json.writes[Hits])
   }
-  case class Hits(max_score: Double, hits: List[SearchMeta])
+  case class Hits(max_score: Double, hits: Option[List[SearchMeta]]) {
+    def list(): List[SearchMeta] = hits.getOrElse(Nil)
+  }
   object SearchResult {
     implicit val format = Format[SearchResult](Json.reads[SearchResult], Json.writes[SearchResult])
   }
@@ -49,10 +51,10 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
   }
 
   def searchBrands(term: String): Future[List[MarketplaceBrand]] =
-    search(term, "matchphrase").map(_.hits.hits.map(_._source))
+    search(term, "matchphrase").map(_.hits.list().map(_._source))
 
   def suggestBrands(term: String): Future[List[String]] =
-    search(term, "prefix").map(_.hits.hits.map(_._source.brand.name).distinct)
+    search(term, "prefix").map(_.hits.list().map(_._source.brand.name).distinct)
 
   private def search(term: String, searchType: String): Future[SearchResult] = {
     val payload =
