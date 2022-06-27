@@ -162,8 +162,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       ++ cats
       ++ squants
       ++ zio.map(_ % "test")
-      ++ catsEffect.map(_ % "test"),
-    dependencyOverrides ++= catsEffect
+      ++ catsEffect.map(_ % "test")
   )
 
 lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")
@@ -190,8 +189,7 @@ lazy val dataSearchElastic = (project in file("data-search-elastic") withId "dat
     libraryDependencies ++=
       elastic4s
         ++ catsEffect.map(_ % "test")
-        ++ fs2.map(_ % "test"),
-    dependencyOverrides ++= catsEffect
+        ++ fs2.map(_ % "test")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -199,8 +197,7 @@ lazy val dataSearchZinc = (project in file("data-search-zinc") withId "data-sear
   .settings(
     buildSettings,
     name := "data-search-zinc",
-    libraryDependencies ++= catsEffect.map(_ % "test"),
-    dependencyOverrides ++= catsEffect
+    libraryDependencies ++= catsEffect.map(_ % "test")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
