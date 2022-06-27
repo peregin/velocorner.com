@@ -9,5 +9,6 @@ object AdminInfo {
 case class AdminInfo(
     accounts: Long,
     activeAccounts: Long,
-    activities: Long
+    activities: Long,
+    brands: Long
 )

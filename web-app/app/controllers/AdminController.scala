@@ -22,18 +22,22 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     extends AbstractController(components)
     with AuthChecker {
 
+  lazy val brandFeed = new BrandSearch(connectivity.secretConfig)
+  lazy val adminStorage = connectivity.getStorage.getAdminStorage
+
   // def mapped to /api/admin/status
   def status: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val res = for {
       _ <- OptionT(Future(loggedIn.filter(_.isAdmin())))
-      adminStorage = connectivity.getStorage.getAdminStorage
       accounts <- OptionT.liftF(adminStorage.countAccounts)
       activeAccounts <- OptionT.liftF(adminStorage.countActiveAccounts)
       activities <- OptionT.liftF(adminStorage.countActivities)
+      brands <- OptionT.liftF(brandFeed.countBrands())
     } yield AdminInfo(
       accounts = accounts,
       activeAccounts = activeAccounts,
-      activities = activities
+      activities = activities,
+      brands = brands
     )
     res.map(info => Ok(Json.toJson(info))).getOrElse(Forbidden)
   }
@@ -50,8 +54,7 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
           val brands = JsonIo.readFromGzipFile[List[MarketplaceBrand]](payload.ref.getAbsolutePath)
           logger.info(s"found ${brands.size}")
 
-          val feed = new BrandSearch(connectivity.secretConfig)
-          Await.result(feed.bulk(brands), 60.seconds)
+          Await.result(brandFeed.bulk(brands), 60.seconds)
           Redirect(routes.WebController.admin).flashing("success" -> "Uploaded...")
         }
         .getOrElse {

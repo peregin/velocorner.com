@@ -30,6 +30,11 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
   }
   case class SearchResult(hits: Hits, error: Option[String])
 
+  object IndexMeta {
+    implicit val format = Format[IndexMeta](Json.reads[IndexMeta], Json.writes[IndexMeta])
+  }
+  case class IndexMeta(name: String, doc_num: Long)
+
   private val baseUrl = config.getZincUrl
   private val ixName = "brand"
 
@@ -75,8 +80,19 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
     response
       .map(_.body[String])
       .map { resp =>
-        // logger.info(s"search resp = $resp")
         JsonIo.read[SearchResult](resp)
       }
+  }
+
+  def countBrands(): Future[Long] = {
+    val response = ws(_.url(s"$baseUrl/api/index"))
+      .withAuth(config.getZincUser, config.getZincPassword, WSAuthScheme.BASIC)
+      .get()
+    response
+      .map(_.body[String])
+      .map { resp =>
+        JsonIo.read[List[IndexMeta]](resp)
+      }
+      .map(_.find(_.name == ixName).map(_.doc_num).getOrElse(0L))
   }
 }

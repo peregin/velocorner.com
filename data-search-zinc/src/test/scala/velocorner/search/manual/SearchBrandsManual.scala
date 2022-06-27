@@ -17,6 +17,9 @@ object SearchBrandsManual extends IOApp.Simple with BrandsSupport with MyLocalCo
 
         suggestions <- Sync[IO].fromFuture(IO(feed.suggestBrands(suggestionText)))
         _ <- info(s"suggestions[$suggestionText]: $suggestions")
+
+        count <- Sync[IO].fromFuture(IO(feed.countBrands()))
+        _ <- info(s"count: $count")
       } yield ()
     }
     _ <- info("done ...")
