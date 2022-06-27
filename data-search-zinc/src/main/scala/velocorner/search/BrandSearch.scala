@@ -40,7 +40,7 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
     // Second line is document data
     val payload = brands
       .map { b =>
-        val id = Option(b.toId.filter(_.nonEmpty).getOrElse(UUID.randomUUID().toString)
+        val id = Option(b.toId).filter(_.nonEmpty).getOrElse(UUID.randomUUID().toString)
         val doc = JsonIo.write(b, pretty = false)
         s"""{ "index":{ "_index":"$ixName", "_id": "$id" } }
           |$doc""".stripMargin
