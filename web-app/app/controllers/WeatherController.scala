@@ -29,7 +29,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // keeps the weather data so much time in the cache
   val refreshTimeoutInMinutes = 15
 
-  def clock() = DateTime.now() // inject time iterator instead
+  def clock(): DateTime = DateTime.now() // inject time iterator instead
 
   // extract the functionality that check the cache and refreshes data based on a expiration time
   def retrieveCacheOrService[T, M[_]: Monad](
@@ -65,8 +65,8 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
 
   // retrieves the weather forecast for a given place
   // route mapped to /api/weather/forecast/:location
-  def forecast(location: String) = Action.async {
-    timedRequest(s"query weather forecast for $location") { implicit request =>
+  def forecast(location: String): Action[AnyContent] = Action.async {
+    timedRequest[AnyContent](s"query weather forecast for $location") { implicit request =>
       val weatherStorage = connectivity.getStorage.getWeatherStorage
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
       val resultET = for {
@@ -106,8 +106,8 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
 
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/weather/current/:location
-  def current(location: String) = Action.async {
-    timedRequest(s"query current weather for $location") { implicit request =>
+  def current(location: String): Action[AnyContent] = Action.async {
+    timedRequest[AnyContent](s"query current weather for $location") { implicit request =>
       // convert city[,country] to city[,isoCountry]
       val weatherStorage = connectivity.getStorage.getWeatherStorage
       val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
@@ -159,7 +159,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // route mapped to /api/weather/suggest
   def suggest(query: String): Action[AnyContent] =
     Action.async {
-      timedRequest(s"suggest location for $query") { implicit request =>
+      timedRequest[AnyContent](s"suggest location for $query") { implicit request =>
         logger.debug(s"suggesting for $query")
         val storage = connectivity.getStorage
         val suggestionsF = storage match {

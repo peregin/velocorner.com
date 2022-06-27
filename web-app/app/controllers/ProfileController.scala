@@ -16,7 +16,7 @@ class ProfileController @Inject() (val connectivity: ConnectivitySettings, val c
     with AuthChecker {
 
   // def mapped to /api/athletes/units
-  def unit(unit: String) = AuthAsyncAction { implicit request =>
+  def unit(unit: String): Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     // validate unit
     val newUnit = Account.convert(unit)
     val res = for {

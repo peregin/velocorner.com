@@ -30,7 +30,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // def mapped to /api/athletes/statistics/profile/:activity
   // current year's progress
   def profile(activity: String, year: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for profile in $activity") { implicit request =>
+    TimedAuthAsyncAction(s"query for profile in $activity")(parse.default) { implicit request =>
       val storage = connectivity.getStorage
       val ytd = LocalDate.now().withYear(year.toInt)
       logger.info(s"profile from $ytd for $activity")
@@ -64,7 +64,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
 
   // route mapped to /api/athletes/statistics/yearly/:action/:activity
   def yearlyStatistics(action: String, activity: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for yearly statistics in $action/$activity") { implicit request =>
+    TimedAuthAsyncAction(s"query for yearly statistics in $action/$activity")(parse.default) { implicit request =>
       val storage = connectivity.getStorage
 
       val result = for {
@@ -84,7 +84,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // year to date aggregation
   // route mapped to /api/athletes/statistics/ytd/:action/:activity
   def ytdStatistics(action: String, activity: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for ytd statistics in $action/$activity") { implicit request =>
+    TimedAuthAsyncAction(s"query for ytd statistics in $action/$activity")(parse.default) { implicit request =>
       val now = LocalDate.now()
       val storage = connectivity.getStorage
       val result = for {
@@ -102,7 +102,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // all daily activity list for the last 12 months, shown in the calendar heatmap
   // route mapped to /api/athletes/statistics/daily/:action
   def dailyStatistics(action: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for all daily activities in $action") { implicit request =>
+    TimedAuthAsyncAction(s"query for all daily activities in $action")(parse.default) { implicit request =>
       val now = DateTime.now(DateTimeZone.UTC)
       val last12Month = now.minusMonths(12)
       val storage = connectivity.getStorage
@@ -126,8 +126,8 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
 
   // yearly histogram based on predefined ranges
   // route mapped to /api/athletes/statistics/histogram/:action/:activity
-  def yearlyHistogram(action: String, activity: String): Action[AnyContent] = {
-    TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity") { implicit request =>
+  def yearlyHistogram(action: String, activity: String): Action[AnyContent] =
+    TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity")(parse.default) { implicit request =>
       val result = for {
         account <- OptionT(Future(loggedIn))
         storage = connectivity.getStorage
@@ -141,12 +141,11 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
 
       result.getOrElse(List.empty).map(series => Json.toJson(series)).map(Ok(_))
     }
-  }
 
   // top 10 activities for distance and elevation
   // route mapped to /api/athletes/statistics/top/:action/:activity
-  def top(action: String, activity: String): Action[AnyContent] = {
-    TimedAuthAsyncAction(s"top 10 statistics in $action/$activity") { implicit request =>
+  def top(action: String, activity: String): Action[AnyContent] =
+    TimedAuthAsyncAction(s"top 10 statistics in $action/$activity")(parse.default) { implicit request =>
       val result = for {
         account <- OptionT(Future(loggedIn))
         storage = connectivity.getStorage
@@ -154,12 +153,11 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       } yield activities
       result.getOrElse(List.empty).map(Json.toJson(_)).map(Ok(_))
     }
-  }
 
   // list of achievements
   // route mapped to /api/statistics/achievements/:activity
   def achievements(activity: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for achievements in $activity") { implicit request =>
+    TimedAuthAsyncAction(s"query for achievements in $activity")(parse.default) { implicit request =>
       val storage = connectivity.getStorage.getAchievementStorage
       loggedIn
         .map { account =>
@@ -202,7 +200,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // retrieves the activity with the given id
   // route mapped to /api/activities/last
   def last(): Action[AnyContent] =
-    TimedAuthAsyncAction("query for last activity") { implicit request =>
+    TimedAuthAsyncAction("query for last activity")(parse.default) { implicit request =>
       val resultET = for {
         account <- EitherT(Future(loggedIn.toRight(Forbidden)))
         activity <- EitherT(connectivity.getStorage.getLastActivity(account.athleteId).map(_.toRight(NotFound)))
@@ -217,7 +215,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // retrieves the activity with the given id
   // route mapped to /api/activities/:id
   def activity(id: Long): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for activity $id") { implicit request =>
+    TimedAuthAsyncAction(s"query for activity $id")(parse.default) { implicit request =>
       val resultET = for {
         _ <- EitherT(Future(loggedIn.toRight(Forbidden)))
         activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRight(NotFound)))
@@ -230,7 +228,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
     }
 
   // route mapped to /api/activities/types
-  def activityTypes: Action[AnyContent] = AuthAsyncAction { implicit request =>
+  def activityTypes: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
       account <- OptionT(Future(loggedIn))
@@ -244,7 +242,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   }
 
   // route mapped to /api/activities/:activity/years
-  def activityYears(activity: String): Action[AnyContent] = AuthAsyncAction { implicit request =>
+  def activityYears(activity: String): Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
       account <- OptionT(Future(loggedIn))
@@ -260,7 +258,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // suggestions when searching, workaround until elastic access, use the storage directly
   // route mapped to /api/activities/suggest
   def suggest(query: String): Action[AnyContent] =
-    TimedAuthAsyncAction(s"suggest for $query") { implicit request =>
+    TimedAuthAsyncAction(s"suggest for $query")(parse.default) { implicit request =>
       logger.debug(s"suggesting for $query")
       val storage = connectivity.getStorage
       val suggestionsTF = for {
@@ -280,7 +278,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   // word cloud titles and descriptions with occurrences
   // route mapped to /api/activities/wordcloud
   def wordcloud(): Action[AnyContent] =
-    TimedAuthAsyncAction("wordcloud") { implicit request =>
+    TimedAuthAsyncAction("wordcloud")(parse.default) { implicit request =>
       val storage = connectivity.getStorage
       val wordsTF = for {
         account <- OptionT(Future(loggedIn))

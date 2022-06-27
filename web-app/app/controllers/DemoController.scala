@@ -1,6 +1,5 @@
 package controllers
 
-import cats.data.OptionT
 import controllers.util.{ActivityOps, WebMetrics}
 import model.apexcharts
 import org.joda.time.LocalDate
@@ -22,8 +21,8 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
 
   // demo ytd data
   // route mapped to /api/demo/statistics/ytd/:action/:activity
-  def ytdStatistics(action: String, activity: String) = Action.async {
-    timedRequest(s"demo ytd data for $action") { implicit request =>
+  def ytdStatistics(action: String, activity: String): Action[AnyContent] = Action.async {
+    timedRequest[AnyContent](s"demo ytd data for $action") { implicit request =>
       val activities = DemoActivityUtils.generate()
       val now = LocalDate.now()
       val series = toSumYtdSeries(activities, now, action, Units.Metric)
@@ -33,7 +32,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
 
   // demo yearly progress data
   // route mapped to /api/demo/statistics/yearly/:action/:activity
-  def yearlyStatistics(action: String, activity: String) = Action.async {
+  def yearlyStatistics(action: String, activity: String): Action[AnyContent] = Action.async {
     val activities = DemoActivityUtils.generate()
     val series = toYearlySeries(activities, action, Units.Metric)
     Future(Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series))))
@@ -71,7 +70,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
   }
 
   // route mapped to /api/demo/statistics/histogram/:action/:activity
-  def yearlyHistogram(action: String, activity: String) = Action { implicit request =>
+  def yearlyHistogram(action: String, activity: String): Action[AnyContent] = Action { implicit request =>
     val activities = DemoActivityUtils.generate()
     val series = action.toLowerCase match {
       case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, Units.Metric)

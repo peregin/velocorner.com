@@ -51,10 +51,10 @@ trait AuthChecker extends WebMetrics {
     connectivity.getStorage.getAccountStorage.getAccount(id)
   }
 
-  class AuthActionBuilder extends ActionBuilder[Request, AnyContent] {
+  class AuthActionBuilder[B](p: BodyParser[B]) extends ActionBuilder[Request, B] {
 
     override protected def executionContext: ExecutionContext = ec
-    override def parser: BodyParser[AnyContent] = parse.default
+    override def parser: BodyParser[B] = p
 
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       implicit val r = request
@@ -67,12 +67,12 @@ trait AuthChecker extends WebMetrics {
     }
   }
 
-  def AuthAsyncAction(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = new AuthActionBuilder().async(f)
-  def TimedAuthAsyncAction(text: String)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] = AuthAsyncAction(
+  def AuthAsyncAction[B](p: BodyParser[B])(f: Request[B] => Future[Result]): Action[B] = new AuthActionBuilder(p).async(f)
+  def TimedAuthAsyncAction[B](text: String)(p: BodyParser[B])(f: Request[B] => Future[Result]): Action[B] = AuthAsyncAction(p)(
     timedRequest(text)(f)
   )
 
-  def AuthAction(f: Request[AnyContent] => Result): Action[AnyContent] = new AuthActionBuilder().apply(f)
+  def AuthAction[B](p: BodyParser[B])(f: Request[B] => Result): Action[B] = new AuthActionBuilder(p).apply(f)
 
   def loggedIn(implicit request: Request[_]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
 

@@ -65,5 +65,7 @@ package object brand {
     implicit val marketplaceBrandFormat = Format[MarketplaceBrand](Json.reads[MarketplaceBrand], Json.writes[MarketplaceBrand])
     implicit val listFormat = Format[List[MarketplaceBrand]](Reads.list(marketplaceBrandFormat), Writes.list(marketplaceBrandFormat))
   }
-  case class MarketplaceBrand(marketplace: Marketplace, brand: Brand, url: String)
+  case class MarketplaceBrand(marketplace: Marketplace, brand: Brand, url: String) {
+    def toId: String = s"${marketplace.name}/${brand.name}".filterNot(_.isWhitespace).toLowerCase.replaceAll("[^a-z\\d/]", "")
+  }
 }

@@ -10,6 +10,7 @@ import velocorner.feed.HttpFeed
 import velocorner.model.brand.MarketplaceBrand
 import velocorner.util.JsonIo
 
+import java.util.UUID
 import scala.concurrent.Future
 
 class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
@@ -30,7 +31,7 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
   case class SearchResult(hits: Hits, error: Option[String])
 
   private val baseUrl = config.getZincUrl
-  private val ixName = "marketplace"
+  private val ixName = "brand"
 
   def bulk(brands: List[MarketplaceBrand]): Future[Unit] = {
     logger.debug(s"indexing ${brands.size} brands")
@@ -39,8 +40,9 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
     // Second line is document data
     val payload = brands
       .map { b =>
+        val id = Option(b.toId.filter(_.nonEmpty).getOrElse(UUID.randomUUID().toString)
         val doc = JsonIo.write(b, pretty = false)
-        s"""{ "index":{ "_index":"$ixName" } }
+        s"""{ "index":{ "_index":"$ixName", "_id": "$id" } }
           |$doc""".stripMargin
       }
       .mkString("\n")

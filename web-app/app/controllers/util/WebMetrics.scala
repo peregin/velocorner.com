@@ -8,9 +8,9 @@ import scala.concurrent.Future
 
 trait WebMetrics extends Metrics {
 
-  type RequestResponseFun = Request[AnyContent] => Future[Result]
+  type RequestResponseFun[B] = Request[B] => Future[Result]
 
-  def timedRequest(text: String)(fun: RequestResponseFun): RequestResponseFun = {
+  def timedRequest[B](text: String)(fun: RequestResponseFun[B]): RequestResponseFun[B] = {
     val mark = System.currentTimeMillis()
     fun.andThen { g =>
       g.onComplete { _ =>

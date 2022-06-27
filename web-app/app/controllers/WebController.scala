@@ -14,8 +14,9 @@ import org.joda.time.DateTime
 import velocorner.ServiceProvider
 import velocorner.build.BuildInfo
 
-/** Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
-  */
+/**
+ * Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
+ */
 //noinspection TypeAnnotation
 class WebController @Inject() (
     components: ControllerComponents,
@@ -26,11 +27,11 @@ class WebController @Inject() (
     extends AbstractController(components)
     with AuthChecker {
 
-  def index = AuthAction { implicit request =>
+  def index = AuthAction(parse.default) { implicit request =>
     Ok(views.html.index(getPageContext("Home")))
   }
 
-  def refresh = AuthAsyncAction { implicit request =>
+  def refresh = AuthAsyncAction(parse.default) { implicit request =>
     val maybeAccount = loggedIn
     logger.info(s"refreshing page for $maybeAccount")
     val result = for {
@@ -64,27 +65,27 @@ class WebController @Inject() (
       }
   }
 
-  def search = AuthAction { implicit request =>
+  def search = AuthAction(parse.default) { implicit request =>
     Ok(views.html.search(getPageContext("Search")))
   }
 
-  def map = AuthAction { implicit request =>
+  def map = AuthAction(parse.default) { implicit request =>
     Ok(views.html.map(getPageContext("Explore")))
   }
 
-  def brand = AuthAction { implicit request =>
+  def brand = AuthAction(parse.default) { implicit request =>
     Ok(views.html.brand(getPageContext("Brands")))
   }
 
-  def marketing = AuthAction { implicit request =>
+  def marketing = AuthAction(parse.default) { implicit request =>
     Redirect("https://leventes-initial-project-936798.webflow.io/")
   }
 
-  def about = AuthAction { implicit request =>
+  def about = AuthAction(parse.default) { implicit request =>
     Ok(views.html.about(getPageContext("About")))
   }
 
-  def admin = AuthAction { implicit request =>
+  def admin = AuthAction(parse.default) { implicit request =>
     Ok(views.html.admin(getPageContext("Admin")))
   }
 

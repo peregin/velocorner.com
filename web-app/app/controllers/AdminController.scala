@@ -7,6 +7,7 @@ import controllers.auth.AuthChecker
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
+import play.api.libs.Files
 import play.api.mvc._
 import velocorner.api.AdminInfo
 import velocorner.model.brand.MarketplaceBrand
@@ -22,7 +23,7 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     with AuthChecker {
 
   // def mapped to /api/admin/status
-  def status = AuthAsyncAction { implicit request =>
+  def status: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val res = for {
       _ <- OptionT(Future(loggedIn.filter(_.isAdmin())))
       adminStorage = connectivity.getStorage.getAdminStorage
@@ -38,7 +39,7 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
   }
 
   // def mapped to /api/admin/brand/upload
-  def brandUpload = Action(parse.multipartFormData) { implicit request =>
+  def brandUpload: Action[MultipartFormData[Files.TemporaryFile]] = AuthAction(parse.multipartFormData) { implicit request =>
     if (loggedIn(request).exists(_.isAdmin())) {
       request.body
         .file("brands")
@@ -51,10 +52,10 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
 
           val feed = new BrandSearch(connectivity.secretConfig)
           Await.result(feed.bulk(brands), 60.seconds)
-          Ok("File uploaded")
+          Redirect(routes.WebController.admin).flashing("success" -> "Uploaded...")
         }
         .getOrElse {
-          Redirect(routes.WebController.admin).flashing("error" -> "Missing file")
+          Redirect(routes.WebController.admin).flashing("error" -> "Missing file...")
         }
     } else {
       Forbidden

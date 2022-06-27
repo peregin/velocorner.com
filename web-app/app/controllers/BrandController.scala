@@ -18,7 +18,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
   // route mapped to /api/brand/suggest
   def suggest(query: String): Action[AnyContent] =
     Action.async {
-      timedRequest(s"suggest brand for $query") { implicit request =>
+      timedRequest[AnyContent](s"suggest brand for $query") { implicit request =>
         for {
           brands <- feed.suggestBrands(query)
           jsonBrands = brands.map(b => Json.obj("value" -> b, "data" -> b))
@@ -29,7 +29,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
   // route mapped to /api/brand/search
   def search(query: String): Action[AnyContent] =
     Action.async {
-      timedRequest(s"search brand for $query") { implicit request =>
+      timedRequest[AnyContent](s"search brand for $query") { implicit request =>
         for {
           brands <- feed.searchBrands(query)
         } yield Ok(JsonIo.write(brands))
