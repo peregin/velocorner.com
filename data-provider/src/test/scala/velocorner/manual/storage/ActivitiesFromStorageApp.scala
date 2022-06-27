@@ -3,19 +3,16 @@ package velocorner.manual.storage
 import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.model.DailyProgress
 import velocorner.storage.Storage
-import zio.{ExitCode, URIO, ZIO}
+import zio.{Scope, ZIO, ZIOAppArgs}
 
-object ActivitiesFromStorageApp extends zio.App with AggregateActivities with MyLocalConfig {
+object ActivitiesFromStorageApp extends zio.ZIOAppDefault with AggregateActivities with MyLocalConfig {
 
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
-    val res = for {
-      storage <- ZIO.effect(Storage.create("or"))
-      _ <- ZIO.effect(storage.initialize())
+  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
+    for {
+      storage <- ZIO.attempt(Storage.create("or"))
+      _ <- ZIO.attempt(storage.initialize())
       progress <- ZIO.fromFuture(_ => storage.listAllActivities(432909, "Ride")).map(DailyProgress.from)
-      _ <- ZIO.effect(printAllProgress(progress))
-      _ <- ZIO.effect(storage.destroy())
+      _ <- ZIO.succeed(printAllProgress(progress))
+      _ <- ZIO.attempt(storage.destroy())
     } yield ()
-    res.fold(_ => ExitCode.failure, _ => ExitCode.success)
-  }
-
 }

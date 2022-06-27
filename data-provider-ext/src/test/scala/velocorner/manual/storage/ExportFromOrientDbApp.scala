@@ -3,42 +3,33 @@ package velocorner.manual.storage
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.strava.Activity
 import velocorner.manual.MyLocalConfig
-import velocorner.storage.{OrientDbStorage, Storage}
+import velocorner.storage.Storage
 import velocorner.util.JsonIo
-import zio.{ExitCode, Task, URIO, ZIO}
+import zio.{Scope, Task, ZIO, ZIOAppArgs}
 
 import java.io.PrintWriter
 
-object ExportFromOrientDbApp extends zio.App with LazyLogging with MyLocalConfig {
+object ExportFromOrientDbApp extends zio.ZIOAppDefault with LazyLogging with MyLocalConfig {
 
-  def writeJson(name: String, activities: Iterable[Activity]): Task[Unit] = {
+  def writeJson(name: String, activities: Iterable[Activity]): Task[Unit] =
     ZIO
-      .effect(new PrintWriter(name))
-      .bracket {
+      .acquireReleaseWith(ZIO.attempt(new PrintWriter(name))) { out =>
         logger.info(s"file $name has been created ...")
-        out => ZIO.effectTotal(out.close())
+        ZIO.succeed(out.close())
       } { out =>
-        ZIO.effectTotal(out.println(JsonIo.write(activities)))
+        ZIO.attempt(out.println(JsonIo.write(activities)))
       }
-  }
 
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
+  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] = {
     val athleteId = 432909
-    val res = for {
-      storage <- ZIO.effect(Storage.create("or"))
-      _ <- ZIO.effect(storage.initialize())
+    for {
+      storage <- ZIO.attempt(Storage.create("or"))
+      _ <- ZIO.attempt(storage.initialize())
       activities <- ZIO.fromFuture(_ => storage.listAllActivities(athleteId, activityType = "Ride"))
       _ = logger.info(s"found ${activities.size} rides ...")
       _ <- writeJson(s"/Users/levi/Downloads/$athleteId.json", activities)
-      _ <- ZIO.effect(storage.destroy())
+      _ <- ZIO.attempt(storage.destroy())
     } yield ()
-    res.fold(
-      err => {
-        logger.error("failed to extract data", err)
-        ExitCode.failure
-      },
-      _ => ExitCode.success
-    )
   }
 
 }

@@ -2,7 +2,7 @@ package velocorner.storage
 
 import java.util.concurrent.Executors
 import cats.data.OptionT
-import cats.effect.{Blocker, IO}
+import cats.effect.IO
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
@@ -34,8 +34,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
     extends Storage[Future]
     with LazyLogging {
 
-  private implicit val cs = IO.contextShift(ExecutionContext.global)
-
   private val config = new HikariConfig()
   config.setDriverClassName("org.postgresql.Driver")
   config.setJdbcUrl(dbUrl)
@@ -45,7 +43,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   config.setMinimumIdle(2)
   config.setPoolName("hikari-db-pool")
   config.setAutoCommit(true)
-  //config.validate() // for debugging connection details
+  // config.validate() // for debugging connection details
 
   private lazy val connectEC = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(
@@ -53,16 +51,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
       (r: Runnable) => new Thread(r, "connect ec") <| (_.setDaemon(true))
     )
   )
-  private lazy val blockingEC = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(
-      5,
-      (r: Runnable) => new Thread(r, "blocking ec") <| (_.setDaemon(true))
-    )
-  )
   private lazy val transactor = Transactor.fromDataSource[IO](
     dataSource = new HikariDataSource(config),
-    connectEC = connectEC,
-    blocker = Blocker.liftExecutionContext(blockingEC)
+    connectEC = connectEC
   )
 
   def playJsonMeta[A: Reads: Writes: Manifest]: Meta[A] = Meta.Advanced
@@ -83,7 +74,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
-    def transactToFuture: Future[T] = cio.transact(transactor).unsafeToFuture()
+    def transactToFuture: Future[T] = cio.transact(transactor).unsafeToFuture()(cats.effect.unsafe.implicits.global)
   }
 
   // to access it from the migration
@@ -309,7 +300,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         mapperFunc: Activity => Option[Double],
         max: Boolean = true
     ): Future[Option[Achievement]] = {
-      //implicit val han = LogHandler.jdkLogHandler
+      // implicit val han = LogHandler.jdkLogHandler
       val minMax = max.fold("desc", "asc")
       val clause =
         s" and cast(data->>'$field' as numeric) is not null order by cast(data->>'$field' as numeric) $minMax limit 1"
@@ -356,7 +347,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   }
 
   override def getAdminStorage: AdminStorage = adminStorage
-  lazy val adminStorage = new AdminStorage {
+  private lazy val adminStorage = new AdminStorage {
     override def countAccounts: Future[Long] = count("account")
 
     override def countActivities: Future[Long] = count("activity")
@@ -374,7 +365,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   }
 
   override def getLocationStorage: LocationStorage = locationStorage
-  lazy val locationStorage = new LocationStorage {
+  private lazy val locationStorage = new LocationStorage {
     override def store(
         location: String,
         position: GeoPosition

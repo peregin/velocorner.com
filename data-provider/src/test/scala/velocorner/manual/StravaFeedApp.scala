@@ -10,7 +10,7 @@ import velocorner.feed.{HttpFeed, StravaActivityFeed}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-object StravaFeedApp extends App with LazyLogging with MyLocalConfig {
+object StravaFeedApp extends App with LazyLogging with MyLocalConfig with AwaitSupport {
 
   val config = SecretConfig.load()
   val feed = new StravaActivityFeed(None, config)
@@ -21,11 +21,12 @@ object StravaFeedApp extends App with LazyLogging with MyLocalConfig {
   val response: Future[StandaloneWSRequest#Response] = feed.ws(_.url("https://strava.com")).get()
   logger.info("retrieving...")
 
-  response.andThen { case _ =>
-    feed.close()
-    HttpFeed.shutdown()
-    executorService.shutdownNow()
-  }
+  response
+    .andThen { case _ =>
+      feed.close()
+      HttpFeed.shutdown()
+      executorService.shutdownNow()
+    }
 
   response.onComplete {
     case Success(reply) =>

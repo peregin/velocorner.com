@@ -1,22 +1,19 @@
 package velocorner.manual.storage
 
-import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.MyLocalConfig
 import velocorner.util.FlywaySupport
-import zio.{ExitCode, URIO, ZIO}
+import zio.{Scope, ZIO, ZIOAppArgs}
 
-object AchievementsFromStorageApp extends zio.App with LazyLogging with FlywaySupport with MyLocalConfig {
+object AchievementsFromStorageApp extends zio.ZIOAppDefault with FlywaySupport with MyLocalConfig {
 
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
-    val res = for {
-      storage <- ZIO.effect(localPsqlDb)
-      _ <- ZIO.effect(storage.initialize())
+  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
+    for {
+      storage <- ZIO.attempt(localPsqlDb)
+      _ <- ZIO.attempt(storage.initialize())
       maxAchievement <- ZIO.fromFuture(global =>
         storage.getAchievementStorage.maxAverageHeartRate(9463742, "Ride").recover { case _ => None }(global)
       )
-      _ <- ZIO.effect(logger.info(s"max achievement ${maxAchievement.toString}"))
-      _ <- ZIO.effect(storage.destroy())
+      _ <- zio.Console.printLine(s"max achievement ${maxAchievement.mkString}")
+      _ <- ZIO.attempt(storage.destroy())
     } yield ()
-    res.fold(_ => ExitCode.failure, _ => ExitCode.success)
-  }
 }

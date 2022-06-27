@@ -8,12 +8,11 @@ object Dependencies {
   val catsEffectVersion = "3.3.12"
   val mouseVersion = "1.0.11"
   val fs2Version = "3.2.8"
-  val zioVersion = "1.0.15"
-  val zioLoggingVersion = "0.5.14"
+  val zioVersion = "2.0.0"
   val shapelessVersion = "2.3.9"
   val argonautVersion = "6.3.8"
   val logbackVersion = "1.2.11"
-  val doobieVersion = "0.13.4"
+  val doobieVersion = "1.0.0-RC2"
   val orientDbVersion = "3.2.7"
   val mongoDbVersion = "4.6.1"
   val rethinkDbVersion = "2.4.4"
@@ -28,5 +27,5 @@ object Dependencies {
   val scalaTestVersion = "3.2.12"
   val mockitoVersion = "4.6.1"
 
-  val springVersion = "2.7.0" // java world
+  val springVersion = "2.7.1" // java world
 }

@@ -74,12 +74,11 @@ def cats = Seq(
 )
 
 def catsEffect = Seq(
-  "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion
+  "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion withSources () withJavadoc ()
 )
 
 def zio = Seq(
-  "dev.zio" %% "zio" % Dependencies.zioVersion,
-  "dev.zio" %% "zio-logging" % Dependencies.zioLoggingVersion
+  "dev.zio" %% "zio" % Dependencies.zioVersion
 )
 
 def fs2 = Seq(
@@ -161,8 +160,10 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       ++ psqlDbClient
       ++ apacheCommons
       ++ cats
-      ++ zio.map(_ % "test")
       ++ squants
+      ++ zio.map(_ % "test")
+      ++ catsEffect.map(_ % "test"),
+    dependencyOverrides ++= catsEffect
   )
 
 lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")

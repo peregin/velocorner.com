@@ -2,7 +2,7 @@ package velocorner.manual.brand
 
 import velocorner.feed.BrandImport
 
-object BrandApp extends App {
+object BrandImportApp extends App {
 
   // val entries = BrandFeed.wiggle("wiggle.csv")
   // val entries = BrandFeed.performanceBike("performancebike.csv")
