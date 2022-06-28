@@ -69,10 +69,6 @@ class WebController @Inject() (
     Ok(views.html.search(getPageContext("Search")))
   }
 
-  def map = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.map(getPageContext("Explore")))
-  }
-
   def brand = AuthAction(parse.default) { implicit request =>
     Ok(views.html.brand(getPageContext("Brands")))
   }

@@ -19,6 +19,15 @@ executors:
           POSTGRES_DB: postgres
     environment:
       JVM_OPTS: -Xmx3072m
+  ci-deploy-executor:
+    docker:
+      - image: peregin/circleci:latest
+        auth:
+          username: peregin
+          password: $DOCKERHUB_PASSWORD
+        user: circleci
+    environment:
+      JVM_OPTS: -Xmx3072m
 
 jobs:
   build:
@@ -45,7 +54,7 @@ jobs:
             - .
 
   deploy_web-backend:
-    executor: ci-executor
+    executor: ci-deploy-executor
     steps:
       - attach_workspace:
           at: .
@@ -67,7 +76,7 @@ jobs:
           command: ssh-keyscan github.com >> ~/.ssh/known_hosts && git push --tags --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$CIRCLE_BRANCH"
 
   deploy_web-frontend:
-    executor: ci-executor
+    executor: ci-deploy-executor
     steps:
       - attach_workspace:
           at: .
@@ -86,7 +95,8 @@ jobs:
           command: cd web-front && ./deploy.sh
 
   restart_stack:
-    executor: ci-executor
+    docker:
+      - image: cimg/base:2021.04
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
 
