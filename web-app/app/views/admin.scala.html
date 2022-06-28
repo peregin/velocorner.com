@@ -35,10 +35,8 @@
                 </ul>
             </span>
             @helper.form(action = routes.AdminController.brandUpload, Symbol("enctype") -> "multipart/form-data") {
-            <input type="file" name="brands">
-            <p>
-                <input type="submit">
-            </p>
+                <input type="file" name="brands">
+                <button type="submit" class="btn-u">Submit</button>
             }
         </div>
     </div>
