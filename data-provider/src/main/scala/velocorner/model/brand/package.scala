@@ -1,6 +1,7 @@
 package velocorner.model
 
 import play.api.libs.json.{Format, Json, Reads, Writes}
+import velocorner.model.brand.NameNormalizer._
 
 //noinspection TypeAnnotation
 package object brand {
@@ -64,8 +65,18 @@ package object brand {
   object MarketplaceBrand {
     implicit val marketplaceBrandFormat = Format[MarketplaceBrand](Json.reads[MarketplaceBrand], Json.writes[MarketplaceBrand])
     implicit val listFormat = Format[List[MarketplaceBrand]](Reads.list(marketplaceBrandFormat), Writes.list(marketplaceBrandFormat))
+
+    // pairs brands listed on different marketplaces with slightly different names
+    def normalize(mb: List[MarketplaceBrand]): List[MarketplaceBrand] = {
+      val group = mb.groupBy(_.brand.name.normalize())
+      group.flatMap { case (_, list) =>
+        val brands = list.map(_.brand)
+        val brand = brands.find(_.logoUrl.isDefined).getOrElse(brands.head)
+        list.map(_.copy(brand = brand))
+      }
+    }.toList
   }
   case class MarketplaceBrand(marketplace: Marketplace, brand: Brand, url: String) {
-    def toId: String = s"${marketplace.name}/${brand.name}".filterNot(_.isWhitespace).toLowerCase.replaceAll("[^a-z\\d/]", "")
+    def toId: String = s"${marketplace.name}/${brand.name}".normalize()
   }
 }

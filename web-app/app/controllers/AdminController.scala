@@ -54,7 +54,8 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
           val brands = JsonIo.readFromGzipFile[List[MarketplaceBrand]](payload.ref.getAbsolutePath)
           logger.info(s"found ${brands.size}")
 
-          Await.result(brandFeed.bulk(brands), 60.seconds)
+          val normalized = MarketplaceBrand.normalize(brands)
+          Await.result(brandFeed.bulk(normalized), 60.seconds)
           Redirect(routes.WebController.admin).flashing("success" -> "Uploaded...")
         }
         .getOrElse {

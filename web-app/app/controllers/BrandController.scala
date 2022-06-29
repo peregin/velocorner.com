@@ -21,6 +21,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
       timedRequest[AnyContent](s"suggest brand for $query") { implicit request =>
         for {
           brands <- feed.suggestBrands(query)
+          _ = logger.debug(s"suggest[$query] has ${brands.size} results")
           jsonBrands = brands.map(b => Json.obj("value" -> b, "data" -> b))
         } yield Ok(Json.obj("suggestions" -> jsonBrands))
       }

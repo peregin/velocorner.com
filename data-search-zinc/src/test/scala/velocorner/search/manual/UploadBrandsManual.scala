@@ -14,7 +14,8 @@ object UploadBrandsManual extends IOApp.Simple with BrandsSupport with MyLocalCo
       for {
         brands <- IO(JsonIo.readFromGzipResource[List[MarketplaceBrand]]("/markets.json.gz"))
         _ <- info(s"read ${brands.size} markets...")
-        _ <- Sync[IO].fromFuture(IO(feed.bulk(brands)))
+        normalized = MarketplaceBrand.normalize(brands)
+        _ <- Sync[IO].fromFuture(IO(feed.bulk(normalized)))
       } yield ()
     }
     _ <- info("done ...")
