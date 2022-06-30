@@ -82,6 +82,10 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
       .map { resp =>
         JsonIo.read[SearchResult](resp)
       }
+      .map { sr =>
+        logger.debug(s"$searchType[$term] has ${sr.hits.list().size} results")
+        sr
+      }
   }
 
   def countBrands(): Future[Long] = {
