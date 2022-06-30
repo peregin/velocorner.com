@@ -68,8 +68,9 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
       s"""{
          |    "search_type": "$searchType",
          |    "query": {
-         |        "term": "$term"
+         |        "term": "${term.toLowerCase}"
          |    },
+         |    "sort_fields": ["-@timestamp"],
          |    "from": 0,
          |    "max_results": 20,
          |    "_source": []

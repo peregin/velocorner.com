@@ -5,8 +5,8 @@ import cats.effect.kernel.Sync
 import velocorner.manual.MyLocalConfig
 
 object SearchBrandsManual extends IOApp.Simple with BrandsSupport with MyLocalConfig {
-  val searchTerm = "Schwalbe"
-  val suggestionText = "sch"
+  val searchTerm = "ass"
+  val suggestionText = "ass"
 
   override def run: IO[Unit] = for {
     _ <- info("searching ...")

@@ -53,7 +53,9 @@
                 serviceUrl: '/api/brand/suggest',
                 onSelect: function (suggestion) {
                     searchPage(suggestion.data);
-                }
+                },
+                minChars: 1,
+                noCache: true
             });
             $('#search_button_brand').click(function() {
                 triggerSearch();
