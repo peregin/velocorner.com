@@ -150,6 +150,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
   .settings(
     buildSettings,
     name := "data-provider",
+    description := "from storage and API feeds",
     libraryDependencies ++= Seq(
       playJson,
       playJsonExtensions,
@@ -185,6 +186,7 @@ lazy val dataProviderExtension = (project in file("data-provider-ext") withId "d
 lazy val dataSearchElastic = (project in file("data-search-elastic") withId "data-search-elastic")
   .settings(
     buildSettings,
+    description := "search with classic ElasticSearch",
     name := "data-search-elastic",
     libraryDependencies ++=
       elastic4s
@@ -193,11 +195,21 @@ lazy val dataSearchElastic = (project in file("data-search-elastic") withId "dat
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
-lazy val dataSearchZinc = (project in file("data-search-zinc") withId "data-search-zinc")
+lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
     buildSettings,
-    name := "data-search-zinc",
+    name := "data-search",
+    description := "search with zinc lightweight engine",
     libraryDependencies ++= catsEffect.map(_ % "test")
+  )
+  .dependsOn(dataProvider % "test->test;compile->compile")
+
+lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
+  .settings(
+    buildSettings,
+    name := "data-crawler",
+    description := "crawler to feed up to date data",
+    libraryDependencies ++= catsEffect
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -326,15 +338,16 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
   )
-  .dependsOn(dataProvider % "compile->compile; test->test", dataSearchZinc)
+  .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
+    dataCrawler,
     dataProvider,
     dataProviderExtension,
     dataSearchElastic,
-    dataSearchZinc,
+    dataSearch,
     dataAnalytics,
     dataAnalyticsSpark,
     webApp,
