@@ -1,4 +1,5 @@
 # ToDo
+- add and collect events
 - caching: add for forecast - generates way too many entries - and remove existing entries
 - restart service for changed images only - or publish image from ci conditionally
 - show last ride and similar ones (+/-15% distance, elevation)

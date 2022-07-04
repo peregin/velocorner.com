@@ -210,6 +210,11 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
     name := "data-crawler",
     description := "crawler to feed up to date data",
     libraryDependencies ++= catsEffect
+      ++ Seq(
+        "org.http4s" %% "http4s-ember-client",
+        "org.http4s" %% "http4s-circe",
+        "org.http4s" %% "http4s-dsl"
+      ).map(_ % Dependencies.http4s)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
