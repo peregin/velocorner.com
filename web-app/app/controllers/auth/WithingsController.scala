@@ -47,14 +47,11 @@ class WithingsController @Inject() (val connectivity: ConnectivitySettings, comp
   // FIXME: not implemented yet, re-use
   def loggedIn(implicit request: Request[AnyContent]): Option[Account] = None
 
-  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
+  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] =
     for {
       token <- request.session.get("token")
       secret <- request.session.get("secret")
-    } yield {
-      RequestToken(token, secret)
-    }
-  }
+    } yield RequestToken(token, secret)
 
   private def process(request: Request[AnyContent]): Result = {
     val res = request

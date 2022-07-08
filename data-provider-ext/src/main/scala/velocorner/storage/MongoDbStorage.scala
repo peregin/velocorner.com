@@ -19,9 +19,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
-/** Created by levi on 28/09/16.
-  * Access layer to the MongoDb.
-  */
+/**
+ * Created by levi on 28/09/16.
+ * Access layer to the MongoDb.
+ */
 class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   lazy private val client = MongoClient()
@@ -74,8 +75,12 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
     } yield docs.map(_.toJson()).map(JsonIo.read[Activity])
   }
 
-
-  override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
+  override def listTopActivities(
+      athleteId: Long,
+      actionType: ActionType.Entry,
+      activityType: String,
+      limit: Int
+  ): Future[Iterable[Activity]] = ???
 
   override def getLastActivity(athleteId: Long): Future[Option[Activity]] = ???
 
@@ -143,9 +148,8 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   }
 
   // releases any connections, resources used
-  override def destroy(): Unit = {
+  override def destroy(): Unit =
     client.close()
-  }
 }
 
 object MongoDbStorage {

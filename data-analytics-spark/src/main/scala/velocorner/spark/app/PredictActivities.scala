@@ -60,12 +60,11 @@ object PredictActivities extends App with LocalSpark[String] with Logging with M
 
   object FeatureExtractor {
 
-    def from(startDate: DateTime): Array[Double] = {
+    def from(startDate: DateTime): Array[Double] =
       Array(
         startDate.getMonthOfYear.toDouble,
         startDate.getDayOfMonth.toDouble,
         startDate.getDayOfWeek.toDouble
       )
-    }
   }
 }

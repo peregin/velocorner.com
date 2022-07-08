@@ -2,8 +2,9 @@ package velocorner.api.weather
 
 import play.api.libs.json.{Format, Json}
 
-/** The structure from the storage layer, also exposed to the REST API.
-  */
+/**
+ * The structure from the storage layer, also exposed to the REST API.
+ */
 object WeatherForecast {
   implicit val storageFormat = Format[WeatherForecast](Json.reads[WeatherForecast], Json.writes[WeatherForecast])
 }

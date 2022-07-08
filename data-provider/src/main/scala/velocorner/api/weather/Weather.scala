@@ -4,8 +4,9 @@ import org.joda.time.DateTime
 import play.api.libs.json._
 import velocorner.model.EpochFormatter
 
-/** https://openweathermap.org/forecast5#format
-  */
+/**
+ * https://openweathermap.org/forecast5#format
+ */
 object WindDescription {
   implicit val responseFormat = Format[WindDescription](Json.reads[WindDescription], Json.writes[WindDescription])
 }

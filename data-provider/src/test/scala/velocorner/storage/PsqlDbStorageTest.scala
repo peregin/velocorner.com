@@ -135,7 +135,7 @@ class PsqlDbStorageTest
     awaitOn(locationStorage.getCountry("188.156.14.255")) mustBe Some("HU")
   }
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     try {
       val maybeCircleci = sys.env.get("CIRCLECI")
       logger.info(s"maybe circleci: $maybeCircleci")
@@ -155,7 +155,6 @@ class PsqlDbStorageTest
       case any: Exception =>
         logger.error("failed to connect to psql", any)
     }
-  }
 
   override def afterAll(): Unit = {
     psqlStorage.destroy()

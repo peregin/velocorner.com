@@ -61,10 +61,9 @@ object FlywaySupport {
       Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
     }
 
-    try {
+    try
       block(tmpDir)
-    } finally {
+    finally
       tmpDir.delete()
-    }
   }
 }

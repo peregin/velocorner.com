@@ -33,11 +33,10 @@ trait Metrics extends LazyLogging {
 
   def timed[T](text: => String)(body: => T): T = {
     val mark = System.currentTimeMillis()
-    try {
+    try
       body
-    } finally {
+    finally
       log(text, mark)
-    }
   }
 
   def timedFuture[T](text: => String)(body: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
