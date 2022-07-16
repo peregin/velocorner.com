@@ -256,6 +256,7 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
   .settings(
     buildSettings,
     name := "test-service-scala",
+    description := "test service with finatra",
     libraryDependencies ++= Seq(
       "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
       "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
@@ -270,10 +271,11 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
     BuildInfoPlugin
   )
 
-lazy val infoService = (project in file("info-service") withId "info-service")
+lazy val infoService = (project in file("test/info-service") withId "info-service")
   .settings(
     buildSettings,
     name := "info-service",
+    description := "test service with cats-effect",
     libraryDependencies ++= cats ++ catsEffect,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.info.build",
