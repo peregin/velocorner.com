@@ -1,7 +1,7 @@
 # ToDo
-- add and collect events
+- restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
-- restart service for changed images only - or publish image from ci conditionally
+- add and collect events for search
 - show last ride and similar ones (+/-15% distance, elevation)
 - upgrade postgres (multirange types)
 - health check, tiny go service connect uptimerobot with statuspage with a tiny go app

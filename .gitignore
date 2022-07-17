@@ -17,6 +17,7 @@ go.sum
 .idea_modules/*
 .bloop
 .metals
+.vscode
 .bsp
 bin/
 target/
