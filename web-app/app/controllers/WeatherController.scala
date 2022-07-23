@@ -80,7 +80,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
               for {
                 entries <- connectivity.getWeatherFeed
                   .forecast(place)
-                  .map(res => res.points.map(w => WeatherForecast(place, w.dt.getMillis, w)))
+                  .map(res => res.points.map(w => WeatherForecast(place, w.dt, w)))
                 _ = logger.info(s"querying latest weather forecast for $place")
                 _ <- weatherStorage.storeRecentForecast(entries)
               } yield entries,

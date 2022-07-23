@@ -113,10 +113,10 @@ class PsqlDbStorageTest
   it should "suggest weather locations" in {
     lazy val weatherStorage = psqlStorage.getWeatherStorage
     lazy val fixtures = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
-    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt.getMillis, e))))
-    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt.getMillis, e))))
-    awaitOn(weatherStorage.suggestLocations("zur")) must contain theSameElementsAs (List("Zurich,CH"))
-    awaitOn(weatherStorage.suggestLocations("bud")) must contain theSameElementsAs (List("Budapest,HU"))
+    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt, e))))
+    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt, e))))
+    awaitOn(weatherStorage.suggestLocations("zur")) must contain theSameElementsAs List("Zurich,CH")
+    awaitOn(weatherStorage.suggestLocations("bud")) must contain theSameElementsAs List("Budapest,HU")
     awaitOn(weatherStorage.suggestLocations("wien")) mustBe empty
   }
 
@@ -135,11 +135,11 @@ class PsqlDbStorageTest
     awaitOn(locationStorage.getCountry("188.156.14.255")) mustBe Some("HU")
   }
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     try {
       val maybeCircleci = sys.env.get("CIRCLECI")
       logger.info(s"maybe circleci: $maybeCircleci")
-      val port = if (maybeCircleci.map(_.toBoolean).getOrElse(false)) {
+      val port = if (maybeCircleci.exists(_.toBoolean)) {
         logger.info("connecting to circleci psql...")
         5432
       } else {
@@ -155,7 +155,6 @@ class PsqlDbStorageTest
       case any: Exception =>
         logger.error("failed to connect to psql", any)
     }
-  }
 
   override def afterAll(): Unit = {
     psqlStorage.destroy()

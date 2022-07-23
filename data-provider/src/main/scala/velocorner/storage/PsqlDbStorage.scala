@@ -6,12 +6,13 @@ import cats.effect.IO
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import doobie._
 import doobie.implicits._
-import doobie.{ConnectionIO, _}
+import doobie.implicits.javasql.TimestampMeta
+// needed for sql interpolator when filtering on start date on activity (or DateTime in general)
+import doobie.postgres.implicits._
 import velocorner.api.weather.CurrentWeather
 import velocorner.model.ActionType
-// needed for sql interpolator when filtering on start date
-import doobie.postgres.implicits._
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
@@ -30,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
 import mouse.all._
 
+//noinspection TypeAnnotation
 class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLocation: String = "psql/migration")
     extends Storage[Future]
     with LazyLogging {
@@ -72,6 +74,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   private implicit val forecastMeta: Meta[WeatherForecast] = playJsonMeta[WeatherForecast]
   private implicit val weatherMeta: Meta[CurrentWeather] = playJsonMeta[CurrentWeather]
   private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
+  // doobie/joda/ts
+  private implicit val jodaDateTimeMeta: Meta[DateTime] =
+    Meta[java.sql.Timestamp].timap(ts => new DateTime(ts.getTime))(dt => new java.sql.Timestamp(dt.getMillis))
 
   implicit class ConnectionIOOps[T](cio: ConnectionIO[T]) {
     def transactToFuture: Future[T] = cio.transact(transactor).unsafeToFuture()(cats.effect.unsafe.implicits.global)

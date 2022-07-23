@@ -79,6 +79,16 @@ where location = 'Adliswil,CH'
 order by (data->'forecast'->'dt')::numeric desc
 limit 20;
 
+select count(*) from forecast;
+
+select location, update_time::timestamp from forecast;
+
+select count(*) from forecast where update_time < current_timestamp + interval '2 days';
+
+-- cleanup old entries
+delete from forecast where update_time < current_timestamp;
+
+
 
 
 

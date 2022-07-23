@@ -34,7 +34,7 @@ class WeatherSpec extends AnyWordSpec with Matchers {
 
     "read and written" in {
       val weather = forecast.points.head
-      val storageEntry = WeatherForecast("Zurich, CH", weather.dt.getMillis, weather)
+      val storageEntry = WeatherForecast("Zurich, CH", weather.dt, weather)
       val json = JsonIo.write(storageEntry)
       val entity = JsonIo.read[WeatherForecast](json)
       entity === storageEntry
@@ -44,7 +44,7 @@ class WeatherSpec extends AnyWordSpec with Matchers {
   "list of entries" should {
 
     "be grouped by day" in {
-      val entries = forecast.points.map(w => WeatherForecast("Zurich,CH", w.dt.getMillis, w))
+      val entries = forecast.points.map(w => WeatherForecast("Zurich,CH", w.dt, w))
       val dailyForecast = DailyWeather.list(entries)
       dailyForecast must have size 5
     }

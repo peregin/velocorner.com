@@ -20,6 +20,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
+//noinspection TypeAnnotation
 class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {
@@ -40,7 +41,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     when(storageMock.getAttributeStorage).thenReturn(attributeStorage)
     when(storageMock.getWeatherStorage).thenReturn(weatherStorage)
     when(attributeStorage.getAttribute("Zurich", attributeStorage.forecastTsKey)).thenReturn(Future(nowTxt.some))
-    val wf = forecastFixture.points.map(w => WeatherForecast("Zurich", now.getMillis, w))
+    val wf = forecastFixture.points.map(w => WeatherForecast("Zurich", now, w))
     when(weatherStorage.listRecentForecast("Zurich")).thenReturn(Future(wf))
     val cw = CurrentWeather(
       location = "Zurich",
