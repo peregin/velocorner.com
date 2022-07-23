@@ -1,0 +1,40 @@
+openapi: 3.0.3
+
+info:
+  title: Crawler API
+  description: |
+    Crawler API enables to extract product information from cycling sites.
+    Crawls products and brands. 
+
+  version: 1.0.0
+  x-logo:
+    url: "https://velocorner.com/assets/images/logo50.png"
+    backgroundColor: "#FFFFFF"
+    altText: "Velocorner"
+
+servers:
+  - url: http://localhost:9010/v1
+    description: Local
+
+paths:
+  /info:
+    get:
+      tags:
+        - info
+      summary: Retrieve generic information
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'info.yaml'                
+        '429':
+          description: Request limit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: 'error.yaml'
