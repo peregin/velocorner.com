@@ -10,7 +10,6 @@ checksums.txt
 .settings
 .gradle
 .cache
-go.sum
 .idea/*
 !.idea/runConfigurations/
 */.idea/*
