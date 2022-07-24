@@ -22,12 +22,13 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
+- gears and usage YTD
 - return JWT after login
 - implement JWT between Frontend and Backend
-- add 3D profile of the last activity gpx
 
 # Not sure if adds value
 - map with origins and destinations flagged
+- add 3D profile of the last activity gpx
 
 # Done
 - top 10 longest rides, top 10 most elevations 
