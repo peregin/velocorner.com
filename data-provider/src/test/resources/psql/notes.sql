@@ -88,6 +88,8 @@ select count(*) from forecast where update_time < current_timestamp + interval '
 -- cleanup old entries
 delete from forecast where update_time < current_timestamp;
 
+select * from gear;
+
 
 
 

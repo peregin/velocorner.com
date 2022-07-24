@@ -131,7 +131,6 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // consumerUser - when present links the login with the given account
   private def login(resp: OAuth2TokenResponse, consumerUser: Option[ConsumerUser])(implicit ctx: ExecutionContext): Future[ProviderUser] =
     for {
-      // athlete <- resp.athlete.map(Future.successful).getOrElse(retrieveProviderUser(resp.accessToken))
       // retrieve the provider user has more details than the user got at authentication
       athlete <- retrieveProviderUser(resp.accessToken)
       storage = connectivity.getStorage
