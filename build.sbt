@@ -204,6 +204,24 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
+lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
+  .settings(
+    buildSettings,
+    name := "data-crawler",
+    description := "crawler to feed up to date data",
+    libraryDependencies ++= catsEffect
+      ++ Seq(
+        "org.http4s" %% "http4s-ember-client",
+        "org.http4s" %% "http4s-ember-server",
+        "org.http4s" %% "http4s-circe",
+        "org.http4s" %% "http4s-dsl"
+      ).map(_ % Dependencies.http4s)
+      ++ Seq(
+        "org.typelevel" %% "log4cats-slf4j" % "2.4.0"
+      )
+  )
+  .dependsOn(dataProvider % "test->test;compile->compile")
+
 // module for various analytics supporting the generic stack
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
   .settings(
@@ -336,6 +354,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
+    dataCrawler,
     dataProvider,
     dataProviderExtension,
     dataSearchElastic,
