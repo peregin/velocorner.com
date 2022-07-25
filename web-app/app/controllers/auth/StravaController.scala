@@ -146,8 +146,10 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       )
       _ = logger.info(s"last updated at ${account.lastUpdate.mkString}")
       _ <- storage.getAccountStorage.store(account)
-      _ <- athlete.bikes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Bike))
-      _ <- athlete.shoes.getOrElse(Nil).traverse(storage.getGearStorage.store(_, Gear.Shoe))
-      _ = logger.info(s"athlete[${athlete.id}] has ${athlete.bikes.size} bikes and ${athlete.shoes.size} shoes")
+      bikes = athlete.bikes.getOrElse(Nil)
+      _ <- bikes.traverse(storage.getGearStorage.store(_, Gear.Bike))
+      shoes = athlete.shoes.getOrElse(Nil)
+      _ <- shoes.traverse(storage.getGearStorage.store(_, Gear.Shoe))
+      _ = logger.info(s"athlete[${athlete.id}] has ${bikes.size} bikes and ${shoes.size} shoes")
     } yield athlete
 }
