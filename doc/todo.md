@@ -22,7 +22,7 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- gears and usage YTD
+- gears and usage YTD - added to OAuth2
 - return JWT after login
 - implement JWT between Frontend and Backend
 
