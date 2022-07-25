@@ -51,7 +51,9 @@ package object brand {
 
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
   }
-  case class Marketplace(name: String, url: String, logoUrl: String)
+  case class Marketplace(name: String, url: String, logoUrl: String) {
+    def toId: String = name.normalize()
+  }
 
   object Brand {
     implicit val brandFormat = Format[Brand](Json.reads[Brand], Json.writes[Brand])
