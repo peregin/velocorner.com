@@ -11,8 +11,9 @@ import scala.concurrent.Future
 import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/** Implementation to connect with Strava REST API
-  */
+/**
+ * Implementation to connect with Strava REST API
+ */
 object StravaActivityFeed extends LazyLogging {
 
   val baseUrl = "https://www.strava.com/api/v3"
@@ -25,14 +26,12 @@ object StravaActivityFeed extends LazyLogging {
     feed.listAthleteActivities(1, StravaActivityFeed.maxItemsPerPage)
 
   def listAllAthleteActivities(implicit feed: ActivityFeed): Future[List[Activity]] = {
-
-    def list(page: Int, accu: List[Activity]): Future[List[Activity]] = {
+    def list(page: Int, accu: List[Activity]): Future[List[Activity]] =
       for {
         activities <- feed.listAthleteActivities(page, StravaActivityFeed.maxItemsPerPage)
         _ = logger.debug(s"page $page, activities ${activities.size}")
         next <- if (activities.size < StravaActivityFeed.maxItemsPerPage) Future(activities ++ accu) else list(page + 1, activities ++ accu)
       } yield next
-    }
     list(1, List.empty)
   }
 }
