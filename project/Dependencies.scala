@@ -21,7 +21,7 @@ object Dependencies {
   val orientDbVersion = "3.2.7"
   val mongoDbVersion = "4.7.0"
   val rethinkDbVersion = "2.4.4"
-  val elasticVersion = "8.3.0"
+  val elasticVersion = "8.3.1"
   val jwtVersion = "9.0.6"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.3.0"
