@@ -11,10 +11,11 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Main extends IOApp.Simple {
 
-  val crawlerService = HttpRoutes.of[IO] {
-    case GET -> Root / "crawler" =>
+  val crawlerService = HttpRoutes
+    .of[IO] { case GET -> Root / "crawler" =>
       Ok("Hello")
-  }.orNotFound
+    }
+    .orNotFound
 
   override def run: IO[Unit] = {
     val server: Resource[IO, Server] = for {

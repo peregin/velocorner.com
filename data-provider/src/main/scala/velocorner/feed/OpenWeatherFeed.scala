@@ -49,7 +49,7 @@ class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLoggin
       res.status match {
         case 200 =>
           val body = res.body
-          //logger.debug(s"current weather response is $body")
+          // logger.debug(s"current weather response is $body")
           JsonIo.read[WeatherResponse](body).some
         case _ => None
       }

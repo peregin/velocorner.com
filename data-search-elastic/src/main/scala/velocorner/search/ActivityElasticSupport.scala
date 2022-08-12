@@ -16,7 +16,7 @@ trait ActivityElasticSupport extends IndexApi with ElasticSupport {
 
   def setup(): CreateIndexRequest = createIndex(ixName).mapping(properties(geopointField("location")))
 
-  def toIndices(activities: Iterable[Activity]): Iterable[IndexRequest] = {
+  def toIndices(activities: Iterable[Activity]): Iterable[IndexRequest] =
     activities.map { activity =>
       val ixDefinition = indexInto(ixName)
       val ix = ixDefinition.withId(activity.id.toString)
@@ -38,7 +38,6 @@ trait ActivityElasticSupport extends IndexApi with ElasticSupport {
       }
       ix.doc(json.toString())
     }
-  }
 
   // specific to elastic bulk upload, doc json must be in one line
   private def extractFullDoc(a: Activity, id: IndexRequest): IndexRequest = id.doc(JsonIo.write(a, pretty = false))

@@ -18,13 +18,13 @@ import mouse.all._
 
 class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends LazyLogging with Metrics {
 
-  def doIt(): Future[Unit] = {
+  def doIt(): Future[Unit] =
     for {
       _ <- migrateTable[Account](OrientDbStorage.ACCOUNT_CLASS, "account", e => e.traverse(psql.getAccountStorage.store).void)
 
       _ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeRecentForecast(e))
 
-      //_ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeRecentWeather).void)
+      // _ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeRecentWeather).void)
 
       _ <- migrateTable[KeyValue](
         OrientDbStorage.ATTRIBUTE_CLASS,
@@ -34,7 +34,6 @@ class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends L
 
       _ <- migrateTable[Activity](OrientDbStorage.ACTIVITY_CLASS, "activity", e => psql.storeActivity(e))
     } yield ()
-  }
 
   protected def migrateTable[T: Reads](orientTable: String, psqlTable: String, psqlStore: List[T] => Future[Unit]): Future[Unit] = for {
     entries <- timedFuture(s"query $orientTable")(orient.queryFor[T](s"SELECT FROM $orientTable"))

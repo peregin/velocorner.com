@@ -70,7 +70,7 @@ object Setup extends App {
 
   def read(in: List[String]): Input = {
     val test = Input("1", 12.3, "Bike".some)
-    val gen = Generic[Input].to(test) //.from(in)
+    val gen = Generic[Input].to(test) // .from(in)
     Generic[Input].from(gen)
   }
 

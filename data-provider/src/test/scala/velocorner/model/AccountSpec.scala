@@ -5,8 +5,9 @@ import cats.implicits._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-/** Created by levi on 01/12/15.
-  */
+/**
+ * Created by levi on 01/12/15.
+ */
 class AccountSpec extends AnyWordSpec with Matchers with AccountFixtures {
 
   "model" should {

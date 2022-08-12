@@ -2,12 +2,13 @@ package velocorner.util
 
 import velocorner.model.CountryIso
 
-/** Utility to convert a country name (if given) into 2 letter ISO standard.
-  * <city[,country]>
-  * E.g.
-  * Zurich,Switzerland = Zurich,CH
-  * London = London
-  */
+/**
+ * Utility to convert a country name (if given) into 2 letter ISO standard.
+ * <city[,country]>
+ * E.g.
+ * Zurich,Switzerland = Zurich,CH
+ * London = London
+ */
 object CountryUtils {
 
   // Switzerland -> CH
@@ -20,9 +21,8 @@ object CountryUtils {
     countries.map(ci => (ci.name.toLowerCase, ci.code)).toMap
   }
 
-  def readCapitals(): Map[String, String] = {
+  def readCapitals(): Map[String, String] =
     JsonIo.readReadFromResource[Map[String, String]]("/capitals.json")
-  }
 
   // converts location as Zurich,CH
   def iso(location: String): String = {

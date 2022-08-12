@@ -23,13 +23,13 @@ object HttpFeed extends LazyLogging {
   logger.info(s"available processors $processors")
   implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
 
-  def shutdown(): Future[Unit] = {
+  def shutdown(): Future[Unit] =
     system.terminate().map(_ => ())
-  }
 }
 
-/** Created by levi on 25.10.16.
-  */
+/**
+ * Created by levi on 25.10.16.
+ */
 trait HttpFeed extends Closeable {
 
   import HttpFeed._
@@ -58,14 +58,13 @@ trait HttpFeed extends Closeable {
 
   def ws[T](func: StandaloneWSClient => T): T = {
     val client = wsClient
-    try {
+    try
       func(client)
-    } finally {
+    finally {
       // cleanup any resources here
     }
   }
 
-  def close() = {
+  def close() =
     wsClient.close()
-  }
 }
