@@ -32,7 +32,11 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
       accounts <- OptionT.liftF(adminStorage.countAccounts)
       activeAccounts <- OptionT.liftF(adminStorage.countActiveAccounts)
       activities <- OptionT.liftF(adminStorage.countActivities)
-      brands <- OptionT.liftF(brandFeed.countBrands())
+      brands <- OptionT.liftF(brandFeed.countBrands().recover{
+        case error =>
+          logger.error(s"error while counting brands: ${error.getMessage}")
+          0L
+      })
     } yield AdminInfo(
       accounts = accounts,
       activeAccounts = activeAccounts,
