@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 // Represents a generic measurement entry.
 case class Measurement(
     id: String,
-    `type`: MeasurementType.Entry,
+    `type`: MeasurementType,
     value: Double,
     athleteId: Int,
     updateTime: DateTime

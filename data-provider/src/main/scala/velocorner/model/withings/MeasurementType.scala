@@ -1,79 +1,65 @@
 package velocorner.model.withings
 
-/**  Measurement type is one of the following:
-  *
-  *  1 : Weight (kg)
-  *  4 : Height (meter)
-  *  5 : Fat Free Mass (kg)
-  *  6 : Fat Ratio (%)
-  *  8 : Fat Mass Weight (kg)
-  *  9 : Diastolic Blood Pressure (mmHg)
-  *  10 : Systolic Blood Pressure (mmHg)
-  *  11 : Heart Pulse (bpm)
-  *  12 : Temperature
-  *  54 : SP02(%)
-  *  71 : Body Temperature
-  *  73 : Skin Temperature
-  *  76 : Muscle Mass
-  *  77 : Hydration
-  *  88 : Bone Mass
-  *  91 : Pulse Wave Velocity
-  */
-object MeasurementType {
+import enumeratum._
 
-  val all = Seq(
-    Weight,
-    Height,
-    FatFreeMass,
-    FatRatio,
-    FatMassWeight,
-    DiastolicBloodPressure,
-    SystolicBloodPressure,
-    HeartPulse,
-    Temperature,
-    SP02,
-    BodyTemperature,
-    SkinTemperature,
-    MuscleMass,
-    Hydration,
-    BoneMass,
-    PulseWaveVelocity
-  )
+sealed abstract class MeasurementType(val name: String, val value: Int) extends EnumEntry
 
-  val value2Type = all.map(o => (o.value, o)).toMap
+/**
+ *  Measurement type is one of the following:
+ *
+ *  1 : Weight (kg)
+ *  4 : Height (meter)
+ *  5 : Fat Free Mass (kg)
+ *  6 : Fat Ratio (%)
+ *  8 : Fat Mass Weight (kg)
+ *  9 : Diastolic Blood Pressure (mmHg)
+ *  10 : Systolic Blood Pressure (mmHg)
+ *  11 : Heart Pulse (bpm)
+ *  12 : Temperature
+ *  54 : SP02(%)
+ *  71 : Body Temperature
+ *  73 : Skin Temperature
+ *  76 : Muscle Mass
+ *  77 : Hydration
+ *  88 : Bone Mass
+ *  91 : Pulse Wave Velocity
+ */
+object MeasurementType extends Enum[MeasurementType] {
 
-  sealed class Entry(val name: String, val value: Int)
+  val values = findValues
 
-  case object Weight extends Entry("Weight", 1)
+  val value2Type = values.map(o => (o.value, o)).toMap
 
-  case object Height extends Entry("Height", 4)
+  case object Weight extends MeasurementType("Weight", 1)
 
-  case object FatFreeMass extends Entry("FatFreeMass", 5)
+  case object Height extends MeasurementType("Height", 4)
 
-  case object FatRatio extends Entry("FatRatio", 6)
+  case object FatFreeMass extends MeasurementType("FatFreeMass", 5)
 
-  case object FatMassWeight extends Entry("FatMassWeight", 8)
+  case object FatRatio extends MeasurementType("FatRatio", 6)
 
-  case object DiastolicBloodPressure extends Entry("DiastolicBloodPressure", 9)
+  case object FatMassWeight extends MeasurementType("FatMassWeight", 8)
 
-  case object SystolicBloodPressure extends Entry("SystolicBloodPressure", 10)
+  case object DiastolicBloodPressure extends MeasurementType("DiastolicBloodPressure", 9)
 
-  case object HeartPulse extends Entry("HeartPulse", 11)
+  case object SystolicBloodPressure extends MeasurementType("SystolicBloodPressure", 10)
 
-  case object Temperature extends Entry("Temperature", 12)
+  case object HeartPulse extends MeasurementType("HeartPulse", 11)
 
-  case object SP02 extends Entry("SP02", 54)
+  case object Temperature extends MeasurementType("Temperature", 12)
 
-  case object BodyTemperature extends Entry("BodyTemperature", 71)
+  case object SP02 extends MeasurementType("SP02", 54)
 
-  case object SkinTemperature extends Entry("BodyTemperature", 73)
+  case object BodyTemperature extends MeasurementType("BodyTemperature", 71)
 
-  case object MuscleMass extends Entry("MuscleMass", 76)
+  case object SkinTemperature extends MeasurementType("BodyTemperature", 73)
 
-  case object Hydration extends Entry("Hydration", 77)
+  case object MuscleMass extends MeasurementType("MuscleMass", 76)
 
-  case object BoneMass extends Entry("BoneMass", 88)
+  case object Hydration extends MeasurementType("Hydration", 77)
 
-  case object PulseWaveVelocity extends Entry("PulseWaveVelocity", 91)
+  case object BoneMass extends MeasurementType("BoneMass", 88)
+
+  case object PulseWaveVelocity extends MeasurementType("PulseWaveVelocity", 91)
 
 }

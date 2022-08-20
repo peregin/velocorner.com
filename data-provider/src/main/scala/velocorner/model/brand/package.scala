@@ -2,11 +2,12 @@ package velocorner.model
 
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.model.brand.NameNormalizer._
+import enumeratum._
 
 //noinspection TypeAnnotation
 package object brand {
 
-  object Marketplace {
+  object Marketplace extends Enum[Marketplace] {
     object Wiggle
         extends Marketplace(
           "Wiggle",
@@ -50,8 +51,10 @@ package object brand {
         )
 
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
+
+    val values = findValues
   }
-  case class Marketplace(name: String, url: String, logoUrl: String) {
+  sealed case class Marketplace(name: String, url: String, logoUrl: String) extends EnumEntry {
     def toId: String = name.normalize()
   }
 

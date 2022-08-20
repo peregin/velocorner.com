@@ -90,6 +90,8 @@ delete from forecast where update_time < current_timestamp;
 
 select * from gear;
 
+select jsonb_pretty(data) from activity a where a.athlete_id = 432909 order by a."data"->>'start_date' desc;
+
 
 
 
