@@ -8,7 +8,7 @@ object Dependencies {
   val catsEffectVersion = "3.3.14"
   val mouseVersion = "1.1.0"
   val fs2Version = "3.2.12"
-  val zioVersion = "2.0.0"
+  val zioVersion = "2.0.1"
   val http4s = "0.23.14"
   val finatraVersion = "21.2.0"
   val argonautVersion = "6.3.8"
