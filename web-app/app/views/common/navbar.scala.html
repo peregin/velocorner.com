@@ -34,9 +34,7 @@
                 <!-- Home -->
                 <li class="@(if (context.title == "Home") "active" else "")"><a href="/">Home</a></li>
                 <!-- Best price comparison -->
-                <li class="@(if (context.title == "Products") "active" else "")"><a href="/product">Find Best Price</a></li>
-                <!-- Exploring brands -->
-                <li class="@(if (context.title == "Brands") "active" else "")"><a href="/brand">Brands</a></li>
+                <li class="@(if (context.title == "Best") "active" else "")"><a href="/best">Find Best Price</a></li>
                 <!-- About -->
                 <li class="@(if (context.title == "About") "active" else "")"><a href="/about">About Us</a></li>
             @if(context.isAdmin()) {

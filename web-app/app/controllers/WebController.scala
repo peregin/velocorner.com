@@ -65,16 +65,13 @@ class WebController @Inject() (
       }
   }
 
+  // activity search results
   def search = AuthAction(parse.default) { implicit request =>
     Ok(views.html.search(getPageContext("Search")))
   }
 
-  def product = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.product(getPageContext("Products")))
-  }
-
-  def brand = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.brand(getPageContext("Brands")))
+  def best = AuthAction(parse.default) { implicit request =>
+    Ok(views.html.best(getPageContext("Best")))
   }
 
   def marketing = AuthAction(parse.default) { implicit request =>
