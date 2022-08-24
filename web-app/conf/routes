@@ -509,7 +509,7 @@ GET     /api/location/ip                                   controllers.LocationC
 ###
 #  summary: Suggests a list of brands based on the query parameter
 #  tags:
-#    - weather
+#    - brand
 #  responses:
 #    200:
 #      description: Returns a list of brands
@@ -517,11 +517,25 @@ GET     /api/location/ip                                   controllers.LocationC
 #        application/json:
 #          schema:
 #            type: array
-#            items: string
+#            items:
+#               $ref: `#/components/schemas/velocorner.model.brand.MarketplaceBrand`
 ###
 GET     /api/brand/suggest                                 controllers.BrandController.suggest(query: String)
 
-### NoDocs ###
+###
+#  summary: Lookup for a list of brands based on the search parameter
+#  tags:
+#    - brand
+#  responses:
+#    200:
+#      description: Returns a list of brands
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#               $ref: `#/components/schemas/velocorner.model.brand.MarketplaceBrand`
+###
 GET     /api/brand/search                                  controllers.BrandController.search(query: String)
 
 # DOC
