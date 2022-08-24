@@ -101,9 +101,9 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://velocorner.com/map</loc>
+    <loc>https://velocorner.com/best</loc>
     <lastmod>{lastmod}</lastmod>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://velocorner.com/about</loc>
