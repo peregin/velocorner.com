@@ -518,7 +518,7 @@ GET     /api/location/ip                                   controllers.LocationC
 #          schema:
 #            type: array
 #            items:
-#               $ref: `#/components/schemas/velocorner.model.brand.MarketplaceBrand`
+#               $ref: '#/components/schemas/velocorner.model.brand.MarketplaceBrand'
 ###
 GET     /api/brand/suggest                                 controllers.BrandController.suggest(query: String)
 
@@ -534,7 +534,7 @@ GET     /api/brand/suggest                                 controllers.BrandCont
 #          schema:
 #            type: array
 #            items:
-#               $ref: `#/components/schemas/velocorner.model.brand.MarketplaceBrand`
+#               $ref: '#/components/schemas/velocorner.model.brand.MarketplaceBrand'
 ###
 GET     /api/brand/search                                  controllers.BrandController.search(query: String)
 
