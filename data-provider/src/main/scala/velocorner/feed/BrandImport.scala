@@ -5,7 +5,7 @@ import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import mouse.all._
 import org.apache.commons.csv.CSVFormat
-import velocorner.model.brand.{Brand, BrandUrl}
+import velocorner.api.brand.{Brand, BrandUrl}
 
 import java.io.FileReader
 import scala.jdk.CollectionConverters._

@@ -1,8 +1,8 @@
-package velocorner.model
+package velocorner.api
 
+import enumeratum.{Enum, EnumEntry}
 import play.api.libs.json.{Format, Json, Reads, Writes}
-import velocorner.model.brand.NameNormalizer._
-import enumeratum._
+import velocorner.brand.NameNormalizer._
 
 //noinspection TypeAnnotation
 package object brand {

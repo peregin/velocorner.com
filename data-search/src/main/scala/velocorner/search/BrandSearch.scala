@@ -7,7 +7,7 @@ import play.api.libs.ws.DefaultBodyWritables._
 import play.api.libs.ws.WSAuthScheme
 import velocorner.SecretConfig
 import velocorner.feed.HttpFeed
-import velocorner.model.brand.MarketplaceBrand
+import velocorner.api.brand.MarketplaceBrand
 import velocorner.util.JsonIo
 
 import java.util.UUID

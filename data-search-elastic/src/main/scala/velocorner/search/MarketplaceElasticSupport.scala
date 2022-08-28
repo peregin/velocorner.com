@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.api.IndexApi
 import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, DeleteIndexRequest, IndexRequest}
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.json.Json
-import velocorner.model.brand.MarketplaceBrand
+import velocorner.api.brand.MarketplaceBrand
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +28,7 @@ trait MarketplaceElasticSupport extends IndexApi with ElasticSupport with LazyLo
 
   def suggestBrands(term: String): Future[List[String]] = {
     val sugComp = completionSuggestion("mysugg", "brand.name").prefix(term).skipDuplicates(true)
-    val res = elastic.execute(search(ixName).suggestions { sugComp } limit 10)
+    val res = elastic.execute(search(ixName).suggestions(sugComp) limit 10)
     res.map(_.result.completionSuggestion("mysugg").values.flatMap(_.options).map(_.text).toList)
   }
 
@@ -41,12 +41,11 @@ trait MarketplaceElasticSupport extends IndexApi with ElasticSupport with LazyLo
     }
   }
 
-  def toIndices(markets: List[MarketplaceBrand]): List[IndexRequest] = {
+  def toIndices(markets: List[MarketplaceBrand]): List[IndexRequest] =
     markets.map { market =>
       val ixDefinition = indexInto(ixName)
       ixDefinition
         .withId(market.marketplace.name + "/" + market.brand.name)
         .doc(Json.toJson(market).toString())
     }
-  }
 }

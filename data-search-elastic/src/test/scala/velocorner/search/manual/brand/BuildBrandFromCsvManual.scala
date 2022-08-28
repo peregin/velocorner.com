@@ -3,9 +3,9 @@ package velocorner.search.manual.brand
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.feed.BrandImport
 import velocorner.manual.MyLocalConfig
-import velocorner.model.brand.Marketplace.{Bike24, BikeComponents, Bikester, ChainReactionCycles, PerformanceBike, Wiggle}
-import velocorner.model.brand.{BrandUrl, Marketplace, MarketplaceBrand}
 import velocorner.util.JsonIo
+import velocorner.api.brand._
+import velocorner.api.brand.Marketplace._
 
 import java.io.PrintWriter
 

@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.api
 
 import play.api.libs.json.{Format, Json}
 

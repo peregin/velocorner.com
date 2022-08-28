@@ -3,8 +3,8 @@ package velocorner.search.manual
 import cats.effect.{IO, IOApp}
 import cats.effect.kernel.Sync
 import velocorner.manual.MyLocalConfig
-import velocorner.model.brand.MarketplaceBrand
 import velocorner.util.JsonIo
+import velocorner.api.brand.MarketplaceBrand
 
 object UploadBrandsManual extends IOApp.Simple with BrandsSupport with MyLocalConfig {
 

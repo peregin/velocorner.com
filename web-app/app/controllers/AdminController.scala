@@ -10,7 +10,7 @@ import play.api.libs.json.Json
 import play.api.libs.Files
 import play.api.mvc._
 import velocorner.api.AdminInfo
-import velocorner.model.brand.MarketplaceBrand
+import velocorner.api.brand.MarketplaceBrand
 import velocorner.search.BrandSearch
 import velocorner.util.JsonIo
 

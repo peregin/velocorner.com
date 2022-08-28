@@ -2,8 +2,7 @@ package velocorner.search
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import velocorner.model.brand.MarketplaceBrand
-import velocorner.model.brand.NameNormalizer._
+import velocorner.api.brand.MarketplaceBrand
 import velocorner.util.JsonIo
 
 class BrandNormalizerSpec extends AnyWordSpec with Matchers {

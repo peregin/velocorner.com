@@ -1,8 +1,7 @@
-package velocorner.api
+package velocorner.api.brand
 
 import play.api.libs.json.{Format, Json}
-import velocorner.model.Money
-import velocorner.model.brand.{Brand, Marketplace}
+import velocorner.api.Money
 
 object ProductDetails {
   implicit val pdFormat = Format[ProductDetails](Json.reads[ProductDetails], Json.writes[ProductDetails])
@@ -14,5 +13,6 @@ case class ProductDetails(
     name: String,
     description: Option[String],
     price: Money,
-    url: String
+    imageUrl: String,
+    productUrl: String
 )

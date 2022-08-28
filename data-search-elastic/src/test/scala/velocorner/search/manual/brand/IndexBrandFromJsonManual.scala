@@ -7,10 +7,10 @@ import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.typesafe.scalalogging.LazyLogging
 import mouse.all._
 import velocorner.manual.{AwaitSupport, MyLocalConfig}
-import velocorner.model.brand.MarketplaceBrand
 import velocorner.search.MarketplaceElasticSupport
 import velocorner.util.JsonIo
 import velocorner.SecretConfig
+import velocorner.api.brand._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

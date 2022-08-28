@@ -1,4 +1,4 @@
-package velocorner.model.brand
+package velocorner.api.brand
 
 import cats.implicits.none
 import org.scalatest.matchers.should.Matchers

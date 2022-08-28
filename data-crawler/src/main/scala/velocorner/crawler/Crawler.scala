@@ -1,8 +1,8 @@
 package velocorner.crawler
 
-import velocorner.model.brand.Marketplace
+import velocorner.api.brand.{Marketplace, ProductDetails}
 
 trait Crawler[F[_]] {
 
-  def products(market: Marketplace, searchTerm: String): F[Unit]
+  def products(market: Marketplace, searchTerm: String): F[List[ProductDetails]]
 }
