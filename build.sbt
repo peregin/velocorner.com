@@ -143,7 +143,10 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   releaseCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]", // it is invoked from ci, skip a new trigger
   releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
-  libraryDependencies ++= Seq("org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2")
+  libraryDependencies ++= Seq(
+    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
+    "org.slf4j" % "slf4j-log4j12" % "2.0.0" % Test pomOnly()
+  )
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
