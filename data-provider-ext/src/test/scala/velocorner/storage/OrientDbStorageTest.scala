@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.{BeforeAndAfterAll, Ignore}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
@@ -27,7 +27,7 @@ class OrientDbStorageTest
 
   "attribute storage" should behave like attributeFragments(orientDbStorage)
 
-  it should "select achievements" in {
+  ignore should "select achievements" in {
     val achievementStorage = orientDbStorage.getAchievementStorage
     awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) mustBe Some(7.932000160217285d)
     awaitOn(achievementStorage.maxDistance(432909, "Ride")).map(_.value) mustBe Some(90514.3984375d)
