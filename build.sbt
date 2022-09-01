@@ -144,8 +144,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
   libraryDependencies ++= Seq(
-    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
-    "org.slf4j" % "slf4j-log4j12" % "2.0.0" % Test pomOnly()
+    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   )
 )
 
@@ -314,7 +313,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playTestPlus,
       mockito,
       scalaTest
-    ),
+    ) ++ logging,
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
       Seq(
@@ -353,6 +352,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
   )
+  .disablePlugins(PlayLogback)
   .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
 
 // top level aggregate
