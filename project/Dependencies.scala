@@ -4,7 +4,7 @@ object Dependencies {
 
   val dockerBaseImage = "openjdk:11-jre-slim-buster"
 
-  val flywayVersion = "9.2.1"
+  val flywayVersion = "9.2.2"
   val catsVersion = "2.8.0"
   val catsEffectVersion = "3.3.14"
   val mouseVersion = "1.1.0"
