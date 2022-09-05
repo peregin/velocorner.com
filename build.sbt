@@ -221,9 +221,24 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
       ).map(_ % Dependencies.http4s)
       ++ Seq(
         "org.typelevel" %% "log4cats-slf4j" % "2.4.0"
-      )
+      ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
+    buildInfoPackage := "velocorner.info.build",
+    maintainer := "velocorner.com@gmail.com",
+    Docker / packageName := "velocorner.crawler",
+    Docker / dockerExposedPorts := Seq(9100),
+    dockerBaseImage := Dependencies.dockerBaseImage,
+    dockerUsername := Some("peregin"),
+    Docker / version := "latest",
+    // implicit0, withFilter, final map
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
+  .enablePlugins(
+    BuildInfoPlugin,
+    JavaAppPackaging,
+    DockerPlugin
+  )
 
 // module for various analytics supporting the generic stack
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
