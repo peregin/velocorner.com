@@ -95,9 +95,23 @@ def spark = Seq(
   "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude ("com.google.inject", "guice")
 )
 
-def smile = Seq(
+def smile: Seq[ModuleID] = Seq(
   "com.github.haifengl" % "smile-core" % "2.6.0"
 )
+
+def http4s: Seq[ModuleID] = Seq(
+  "org.http4s" %% "http4s-ember-client",
+  "org.http4s" %% "http4s-ember-server",
+  "org.http4s" %% "http4s-circe",
+  "org.http4s" %% "http4s-dsl"
+).map(_ % Dependencies.http4s)
+
+def circe: Seq[ModuleID] = Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-parser",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-generic-extras"
+).map(_ % Dependencies.circeVersion)
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
@@ -159,7 +173,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
         365.days
       ),
       excludeMainMethod = false,
-      dialect = unused_code.Dialect.Scala3,
+      dialect = unused_code.Dialect.Scala213,
     )
   }
 )
@@ -229,12 +243,8 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
     name := "data-crawler",
     description := "crawler to feed up to date data",
     libraryDependencies ++= catsEffect
-      ++ Seq(
-        "org.http4s" %% "http4s-ember-client",
-        "org.http4s" %% "http4s-ember-server",
-        "org.http4s" %% "http4s-circe",
-        "org.http4s" %% "http4s-dsl"
-      ).map(_ % Dependencies.http4s)
+      ++ http4s
+      ++ circe
       ++ Seq(
         "org.typelevel" %% "log4cats-slf4j" % "2.4.0"
       ),
