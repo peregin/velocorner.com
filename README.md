@@ -48,3 +48,10 @@ sbt -Xms512M \
     -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf \
   "project web-app" run
 ```
+
+## Code
+Some useful plugins
+```shell
+sbt unusedCode
+sbt "scalafix WarnUnusedCode"
+```

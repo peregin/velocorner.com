@@ -9,8 +9,5 @@ object DailyPoint {
   implicit val pointFormat = Format[DailyPoint](Json.reads[DailyPoint], Json.writes[DailyPoint])
 }
 
-case class DailyPoint(day: LocalDate, value: Double) {
-
-  def getMonth: Int = day.getMonthOfYear - 1 // in javascript date starts with 0
-  def getDay: Int = day.getDayOfMonth
-}
+// getMonthOfYear - in javascript date starts with 0
+case class DailyPoint(day: LocalDate, value: Double)

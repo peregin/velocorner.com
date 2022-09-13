@@ -16,8 +16,6 @@ class WithingsController @Inject() (val connectivity: ConnectivitySettings, comp
   val callbackUrl: String = connectivity.secretConfig.getAuthCallbackUrl(ServiceProvider.Withings)
   private val KEY = ConsumerKey(clientToken, clientSecret)
 
-  val OAuthStateKey = "velocorner.oauth.state"
-
   private val oauth = OAuth(
     ServiceInfo(
       "https://developer.health.nokia.com/account/request_token",

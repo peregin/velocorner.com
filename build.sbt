@@ -7,6 +7,7 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 import sbtrelease.ReleasePlugin.runtimeVersion
+import concurrent.duration._
 
 // setup common keys for every service, some of them might have extra build information
 def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
@@ -145,7 +146,22 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
-  )
+  ),
+  unusedCodeConfig ~= { c =>
+    c.copy(
+      excludeNameRegex = Set(
+        ".*Service"
+      ),
+      excludePath = c.excludePath ++ Set(
+        "glob:some-project/**"
+      ),
+      excludeGitLastCommit = Some(
+        365.days
+      ),
+      excludeMainMethod = false,
+      dialect = unused_code.Dialect.Scala3,
+    )
+  }
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
