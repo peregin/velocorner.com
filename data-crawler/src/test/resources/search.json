@@ -1,0 +1,231 @@
+{
+  "term" : "sram chain 1x10",
+  "suggestions" : {
+    "trackingParams" : {
+      "channel" : null,
+      "query" : null
+    },
+    "products" : [
+      {
+        "id" : 94098,
+        "productId" : 48742,
+        "storeKey" : "48742-ca6ad84580b4c56d3ee38caf9706d3c23b7a918f",
+        "name" : "SRAM Apex 1 11-speed Rear Derailleur",
+        "description" : "The SRAM Apex 1 drivetrain offers an optimal gear range and allows for easy shifting - so you can just start riding. The Apex 1 rear derailleur makes this ratio range a reality and ensures smooth, clean shifting thanks to SRAM's X-Horizon&trade; geometry and Roller Bearing Clutch&trade;.\nLet's go: A",
+        "price" : "54.29€",
+        "basePrice" : "",
+        "strikeThroughPrice" : "",
+        "percentageDiscount" : 0,
+        "hasDiscountUntilFlag" : false,
+        "imageSmall" : {
+          "path" : "/assets/p/i/160x120/304481.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/160x120/304481.webp",
+          "avif" : "/assets/p/i/160x120/304481.avif"
+        },
+        "imageMedium" : {
+          "path" : "/assets/p/i/320x240/304481.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/320x240/304481.webp",
+          "avif" : "/assets/p/i/320x240/304481.avif"
+        },
+        "link" : "/en/SRAM/Apex-1-11-speed-Rear-Derailleur-p48742/",
+        "reviewStars" : 5,
+        "reviewsCount" : 1,
+        "isBestPrice" : false,
+        "isOutdated" : false,
+        "isOffer" : false,
+        "isNew" : false,
+        "trackingParams" : null,
+        "isSoldOut" : false,
+        "isBuyable" : true,
+        "stockQuantity" : 168,
+        "categoryTrail" : "Components/Shifters & Derailleurs/Rear Derailleurs",
+        "manufacturer" : "SRAM",
+        "tracking" : {
+          "categoryTrail" : "Komponenten/Schaltung/Schaltwerke",
+          "name" : "SRAM Apex 1 Schaltwerk 11-fach"
+        }
+      },
+      {
+        "id" : 112616,
+        "productId" : 75454,
+        "storeKey" : "75454-ca6ad84580b4c56d3ee38caf9706d3c23b7a918f",
+        "name" : "SRAM GX Eagle Rear Derailleur Spare Parts",
+        "description" : "Models:1 / GX Eagle:\nmounting bolts and B-bolt / limit screws kit for GX Eagle rear derailleurs\nManufacturer Number: 11.7518.086.000\n2 / black:\nX-Sync derailleur pulley set with cage plate for GX Eagle rear derailleurs\nManufacturer Number: 11.7518.087.000\n3 / black:\nX-Sync derailleur pulley set for ",
+        "price" : " <span>from</span>  7.23€",
+        "basePrice" : "",
+        "strikeThroughPrice" : "",
+        "percentageDiscount" : 0,
+        "hasDiscountUntilFlag" : false,
+        "imageSmall" : {
+          "path" : "/assets/p/i/160x120/323054.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/160x120/323054.webp",
+          "avif" : "/assets/p/i/160x120/323054.avif"
+        },
+        "imageMedium" : {
+          "path" : "/assets/p/i/320x240/323054.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/320x240/323054.webp",
+          "avif" : "/assets/p/i/320x240/323054.avif"
+        },
+        "link" : "/en/SRAM/GX-Eagle-Rear-Derailleur-Spare-Parts-p75454/",
+        "reviewStars" : 5,
+        "reviewsCount" : 1,
+        "isBestPrice" : false,
+        "isOutdated" : false,
+        "isOffer" : false,
+        "isNew" : false,
+        "trackingParams" : null,
+        "isSoldOut" : false,
+        "isBuyable" : true,
+        "stockQuantity" : 142,
+        "categoryTrail" : "Tools & Maintenance/Spare Parts/SRAM",
+        "manufacturer" : "SRAM",
+        "tracking" : {
+          "categoryTrail" : "Werkstatt/Ersatzteile/SRAM",
+          "name" : "SRAM Ersatzteile GX Eagle Schaltwerk"
+        }
+      },
+      {
+        "id" : 114119,
+        "productId" : 75455,
+        "storeKey" : "75455-ca6ad84580b4c56d3ee38caf9706d3c23b7a918f",
+        "name" : "SRAM NX Eagle Rear Derailleur Spare Parts",
+        "description" : "Models:1 / NX Eagle:\nmounting bolts and adjustment screw kit for NX Eagle rear derailleurs\nManufacturer Number: 11.7518.091.000\n2 / black:\nX-Sync derailleur pulley set for NX / SX Eagle rear derailleurs\nManufacturer Number: 11.7518.090.000\n3 / mechanical 1x12/11/10/7:\nchain gap adjustment gauge for ",
+        "price" : " <span>from</span>  5.42€",
+        "basePrice" : "",
+        "strikeThroughPrice" : "",
+        "percentageDiscount" : 0,
+        "hasDiscountUntilFlag" : false,
+        "imageSmall" : {
+          "path" : "/assets/p/i/160x120/323058.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/160x120/323058.webp",
+          "avif" : "/assets/p/i/160x120/323058.avif"
+        },
+        "imageMedium" : {
+          "path" : "/assets/p/i/320x240/323058.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/320x240/323058.webp",
+          "avif" : "/assets/p/i/320x240/323058.avif"
+        },
+        "link" : "/en/SRAM/NX-Eagle-Rear-Derailleur-Spare-Parts-p75455/",
+        "reviewStars" : 0,
+        "reviewsCount" : 0,
+        "isBestPrice" : false,
+        "isOutdated" : false,
+        "isOffer" : false,
+        "isNew" : false,
+        "trackingParams" : null,
+        "isSoldOut" : false,
+        "isBuyable" : true,
+        "stockQuantity" : 12,
+        "categoryTrail" : "Tools & Maintenance/Spare Parts/SRAM",
+        "manufacturer" : "SRAM",
+        "tracking" : {
+          "categoryTrail" : "Werkstatt/Ersatzteile/SRAM",
+          "name" : "SRAM Ersatzteile NX Eagle Schaltwerk"
+        }
+      },
+      {
+        "id" : 112372,
+        "productId" : 75456,
+        "storeKey" : "75456-ca6ad84580b4c56d3ee38caf9706d3c23b7a918f",
+        "name" : "SRAM SX Eagle Rear Derailleur Spare Parts",
+        "description" : "Models:1 / SX Eagle:\nmounting bolts and B-bolt / limit screws kit for SX Eagle rear derailleurs\nManufacturer Number: 11.7518.094.000\n2 / black:\nX-Sync derailleur pulley set for NX / SX Eagle rear derailleurs\nManufacturer Number: 11.7518.090.000\n3 / mechanical 1x12/11/10/7:\nchain gap adjustment gauge",
+        "price" : " <span>from</span>  5.42€",
+        "basePrice" : "",
+        "strikeThroughPrice" : "",
+        "percentageDiscount" : 0,
+        "hasDiscountUntilFlag" : false,
+        "imageSmall" : {
+          "path" : "/assets/p/i/160x120/323065.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/160x120/323065.webp",
+          "avif" : "/assets/p/i/160x120/323065.avif"
+        },
+        "imageMedium" : {
+          "path" : "/assets/p/i/320x240/323065.jpg",
+          "mimeType" : "image/jpeg",
+          "webP" : "/assets/p/i/320x240/323065.webp",
+          "avif" : "/assets/p/i/320x240/323065.avif"
+        },
+        "link" : "/en/SRAM/SX-Eagle-Rear-Derailleur-Spare-Parts-p75456/",
+        "reviewStars" : 1,
+        "reviewsCount" : 1,
+        "isBestPrice" : false,
+        "isOutdated" : false,
+        "isOffer" : false,
+        "isNew" : false,
+        "trackingParams" : null,
+        "isSoldOut" : false,
+        "isBuyable" : true,
+        "stockQuantity" : 12,
+        "categoryTrail" : "Tools & Maintenance/Spare Parts/SRAM",
+        "manufacturer" : "SRAM",
+        "tracking" : {
+          "categoryTrail" : "Werkstatt/Ersatzteile/SRAM",
+          "name" : "SRAM Ersatzteile SX Eagle Schaltwerk"
+        }
+      }
+    ],
+    "categories" : [
+      {
+        "name" : "Rear Derailleurs",
+        "parents" : [
+          {
+            "name" : "Components",
+            "url" : "/en/components/"
+          },
+          {
+            "name" : "Shifters & Derailleurs",
+            "url" : "/en/components/shifters-derailleurs/"
+          }
+        ],
+        "image" : "",
+        "url" : "/en/components/shifters-derailleurs/rear-derailleurs/"
+      },
+      {
+        "name" : "Small Parts",
+        "parents" : [
+          {
+            "name" : "Components",
+            "url" : "/en/components/"
+          },
+          {
+            "name" : "Shifters & Derailleurs",
+            "url" : "/en/components/shifters-derailleurs/"
+          }
+        ],
+        "image" : "",
+        "url" : "/en/components/shifters-derailleurs/small-parts/"
+      },
+      {
+        "name" : "SRAM",
+        "parents" : [
+          {
+            "name" : "Tools & Maintenance",
+            "url" : "/en/tools-maintenance/"
+          },
+          {
+            "name" : "Spare Parts",
+            "url" : "/en/tools-maintenance/spare-parts/"
+          }
+        ],
+        "image" : "",
+        "url" : "/en/tools-maintenance/spare-parts/sram/"
+      }
+    ],
+    "manufacturers" : [
+      {
+        "name" : "SRAM",
+        "image" : "/assets/m/logo/s1/62-e81392a98faf6f024db3e146e3d85250874a6302.png",
+        "url" : "/en/SRAM/"
+      }
+    ],
+    "blog_posts" : [
+    ]
+  }
+}
