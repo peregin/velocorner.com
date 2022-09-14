@@ -26,7 +26,7 @@ package object brand {
         extends Marketplace(
           "Bike-Components",
           "https://www.bike-components.de/",
-          "https://www.bike-components.de/cache/de46e7f80030462106dd0aa86db679fe.png"
+          "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
         )
 
     object ChainReactionCycles
