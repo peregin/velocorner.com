@@ -32,7 +32,7 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
 
 // refactoring and linting
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.1")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.2")
 
 // detect unused code - unusedCode
 addSbtPlugin("com.github.xuwei-k" % "unused-code-plugin" % "0.2.0")
