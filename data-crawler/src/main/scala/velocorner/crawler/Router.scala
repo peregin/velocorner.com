@@ -14,6 +14,8 @@ import velocorner.api.brand.{Brand, Marketplace, ProductDetails}
 
 class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends Http4sDsl[F] {
 
+  // models are defined in the data-provider module
+  // setup codecs to encode in json with circe
   implicit val codecMarket: Codec[Marketplace] = deriveCodec
   implicit val codecMoney: Codec[Money] = deriveCodec
   implicit val codecBrand: Codec[Brand] = deriveCodec
