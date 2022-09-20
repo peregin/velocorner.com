@@ -51,6 +51,13 @@ package object brand {
           "https://assets10.bike24.net/static/images/8e6800bd228af47a3e77.svg"
         )
 
+    object Galaxus
+      extends Marketplace(
+        "Galaxus",
+        "https://www.galaxus.ch/",
+        "https://www.galaxus.ch/static/images/galaxus/logo.svg"
+      )
+
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
 
     val values = findValues

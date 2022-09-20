@@ -8,6 +8,7 @@ import org.http4s.implicits._
 import org.http4s.server.Server
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.Logger
+import velocorner.api.brand.Marketplace
 
 object Main extends IOApp.Simple {
 
@@ -19,7 +20,8 @@ object Main extends IOApp.Simple {
       crawlers = List(
         new CrawlerBikeComponents[IO](client)
       )
-      _ <- info(s"using crawlers for ${crawlers.map(_.market().name).mkString(",")} ...")
+      _ <- info(s"possible marketplaces: ${Marketplace.values.map(_.name).mkString("\n", "\n", "\n")} ...")
+      _ <- info(s"using crawlers: ${crawlers.map(_.market().name).mkString("\n", "\n", "\n")} ...")
       router = new Router[IO](crawlers)
       server <- defaultServer
         .withPort(Port.fromInt(9011).getOrElse(defaultServer.port))
