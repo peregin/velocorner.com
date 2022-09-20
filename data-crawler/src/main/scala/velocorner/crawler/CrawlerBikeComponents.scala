@@ -2,18 +2,22 @@ package velocorner.crawler
 
 import cats.implicits._
 import cats.effect.Async
+import fs2.text
+import fs2.text.utf8
 import io.circe.Codec
 import io.circe.generic.semiauto.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.client._
 import org.http4s.{Method, Uri}
 import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.Status.BadRequest
 import velocorner.api.Money
 import velocorner.api.brand.Marketplace.BikeComponents
 import velocorner.api.brand.{Brand, Marketplace, ProductDetails}
 import velocorner.crawler.CrawlerBikeComponents._
 
 import java.net.URLEncoder
+import scala.util.{Failure, Success, Try}
 
 object CrawlerBikeComponents {
 
@@ -62,14 +66,19 @@ object CrawlerBikeComponents {
   /**
    * patterns:
    * |54.29€
+   * |1,629.08€
    * | <span>from</span> 7.23€
    * | <span>from</span> 5.42€
    */
   def extractPrice(s: String): Money = {
-    val amountCcy = s.split('>').last.trim
+    val amountCcy = s.replace(",", "").split('>').last.trim
     amountCcy match {
-      case pricePattern(amount, currency) => Money(BigDecimal(amount), normalizeCurrency(currency))
-      case other                          => throw new IllegalArgumentException(s"invalid price pattern $other")
+      case pricePattern(amount, currency) =>
+        Try(Money(BigDecimal(amount), normalizeCurrency(currency))) match {
+          case Success(value) => value
+          case Failure(err)   => throw new IllegalArgumentException(s"unable to parse price $s, because $err")
+        }
+      case other => throw new IllegalArgumentException(s"invalid price pattern $other")
     }
   }
 
