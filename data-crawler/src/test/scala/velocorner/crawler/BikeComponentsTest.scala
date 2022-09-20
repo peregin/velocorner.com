@@ -1,9 +1,8 @@
-package velocorner.crawler.manual
+package velocorner.crawler
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import velocorner.api.Money
-import velocorner.crawler.CrawlerBikeComponents
 
 class BikeComponentsTest extends AnyFlatSpec with should.Matchers {
 

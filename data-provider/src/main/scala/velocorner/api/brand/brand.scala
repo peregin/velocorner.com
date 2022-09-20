@@ -1,5 +1,6 @@
 package velocorner.api
 
+import enumeratum.EnumEntry.LowerCamelcase
 import enumeratum.{Enum, EnumEntry}
 import play.api.libs.json.{Format, Json, Reads, Writes}
 import velocorner.brand.NameNormalizer._
@@ -7,7 +8,7 @@ import velocorner.brand.NameNormalizer._
 //noinspection TypeAnnotation
 package object brand {
 
-  object Marketplace extends Enum[Marketplace] {
+  object Marketplace extends Enum[Marketplace] with LowerCamelcase {
     object Wiggle
         extends Marketplace(
           "Wiggle",
