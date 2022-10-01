@@ -10,5 +10,6 @@ case class AdminInfo(
     accounts: Long,
     activeAccounts: Long,
     activities: Long,
-    brands: Long
+    brands: Long,
+    markets: Long
 )

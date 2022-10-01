@@ -13,7 +13,7 @@ object OpenWeatherFeed {
   val baseUrl = "https://api.openweathermap.org/data/2.5"
 }
 
-class OpenWeatherFeed(val config: SecretConfig) extends HttpFeed with LazyLogging {
+class OpenWeatherFeed(override val config: SecretConfig) extends HttpFeed with LazyLogging {
 
   // for 5 days
   def forecast(location: String): Future[ForecastResponse] = {

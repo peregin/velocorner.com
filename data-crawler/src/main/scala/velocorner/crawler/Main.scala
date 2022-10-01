@@ -1,11 +1,14 @@
 package velocorner.crawler
 
 import cats.effect.{IO, IOApp, Resource}
+import cats.implicits._
 import com.comcast.ip4s.Port
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
 import org.http4s.server.Server
+import org.http4s.server.middleware.{ErrorHandling, RequestLogger}
+import org.http4s.HttpApp
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.Logger
 import velocorner.api.brand.Marketplace
@@ -26,12 +29,19 @@ object Main extends IOApp.Simple {
       server <- defaultServer
         .withPort(Port.fromInt(9011).getOrElse(defaultServer.port))
         .withLogger(logger)
-        .withHttpApp(router.routes.orNotFound)
+        .withHttpApp(
+          httpLogger(logger)(ErrorHandling(router.routes.orNotFound))
+        )
         .build
       _ <- info("starting crawler service ...")
     } yield server
     server.useForever
   }
 
-  def info[IO[_]: Logger](s: String): Resource[IO, Unit] = Resource.eval(Logger[IO].info(s))
+  def httpLogger(logger: Logger[IO]): HttpApp[IO] => HttpApp[IO] = {
+    val logAction = (s: String) => logger.info(s)
+    RequestLogger.httpApp(logHeaders = true, logBody = false, logAction = logAction.some)
+  }
+
+  def info[F[_]: Logger](s: String): Resource[F, Unit] = Resource.eval(Logger[F].info(s))
 }

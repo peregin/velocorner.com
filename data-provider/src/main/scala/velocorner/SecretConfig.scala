@@ -60,4 +60,6 @@ case class SecretConfig(config: Config) {
   def getZincUrl: String = config.getString("zinc.url")
   def getZincUser: String = config.getString("zinc.user")
   def getZincPassword: String = config.getString("zinc.password")
+
+  def getCrawlerUrl: String = config.getString("crawler.url")
 }

@@ -11,6 +11,7 @@ import play.api.libs.Files
 import play.api.mvc._
 import velocorner.api.AdminInfo
 import velocorner.api.brand.MarketplaceBrand
+import velocorner.feed.ProductCrawlerFeed
 import velocorner.search.BrandSearch
 import velocorner.util.JsonIo
 
@@ -23,29 +24,40 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     with AuthChecker {
 
   lazy val brandFeed = new BrandSearch(connectivity.secretConfig)
+  lazy val productFeed = new ProductCrawlerFeed(connectivity.secretConfig)
   lazy val adminStorage = connectivity.getStorage.getAdminStorage
 
   // def mapped to /api/admin/status
   def status: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val res = for {
       _ <- OptionT(Future(loggedIn.filter(_.isAdmin())))
-      accounts <- OptionT.liftF(adminStorage.countAccounts)
-      activeAccounts <- OptionT.liftF(adminStorage.countActiveAccounts)
-      activities <- OptionT.liftF(adminStorage.countActivities)
-      brands <- OptionT.liftF(brandFeed.countBrands().recover{
-        case error =>
-          logger.error(s"error while counting brands: ${error.getMessage}")
-          0L
-      })
-    } yield AdminInfo(
-      accounts = accounts,
-      activeAccounts = activeAccounts,
-      activities = activities,
-      brands = brands
-    )
+      adminInfo <- OptionT.liftF(retrieveAdminInfo())
+    } yield adminInfo
     res.map(info => Ok(Json.toJson(info))).getOrElse(Forbidden)
   }
 
+  private def retrieveAdminInfo(): Future[AdminInfo] = for {
+    accounts <- adminStorage.countAccounts
+    activeAccounts <- adminStorage.countActiveAccounts
+    activities <- adminStorage.countActivities
+    brands <- brandFeed.countBrands().recover {
+      case error =>
+        logger.error(s"error while counting brands: ${error.getMessage}")
+        0L
+    }
+    markets <- productFeed.supported().map(_.size.toLong).recover{
+      case error => logger.error(s"error while counting markets: ${error.getMessage}")
+        0L
+    }
+  } yield AdminInfo(
+    accounts = accounts,
+    activeAccounts = activeAccounts,
+    activities = activities,
+    brands = brands,
+    markets = markets
+  )
+
+  // called from the admin GUI
   // def mapped to /api/admin/brand/upload
   def brandUpload: Action[MultipartFormData[Files.TemporaryFile]] = AuthAction(parse.multipartFormData) { implicit request =>
     if (loggedIn(request).exists(_.isAdmin())) {

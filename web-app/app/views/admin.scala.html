@@ -23,13 +23,27 @@
         </div>
     </div>
 
+    <h1 xmlns="http://www.w3.org/1999/html">Products</h1>
+    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+        <div class="panel-body">
+                <span class="row">
+                    <ul class="list-group sidebar-nav-v1" id="sidebar-nav-2">
+                        <li class="list-group-item">
+                            <span id="admin-markets" class="badge badge-sea rounded-2x">X</span>
+                            <div class="VC_padding8">Markets</div>
+                        </li>
+                    </ul>
+                </span>
+        </div>
+    </div>
+
     <h1 xmlns="http://www.w3.org/1999/html">Brands</h1>
     <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
         <div class="panel-body">
             <span class="row">
-                <ul class="list-group sidebar-nav-v1" id="sidebar-nav-2">
+                <ul class="list-group sidebar-nav-v1" id="sidebar-nav-3">
                     <li class="list-group-item">
-                        <span id="admin-brands" class="badge badge-aqua rounded-2x">X</span>
+                        <span id="admin-brands" class="badge badge-red rounded-2x">X</span>
                         <div class="VC_padding8">Brands</div>
                     </li>
                 </ul>
@@ -59,6 +73,7 @@
                 $('#admin-active-accounts').html(data.activeAccounts)
                 $('#admin-activities').html(data.activities)
                 $('#admin-brands').html(data.brands)
+                $('#admin-markets').html(data.markets)
            }
        });
     })();

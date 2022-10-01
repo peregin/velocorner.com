@@ -20,7 +20,7 @@ object WithingsMeasureFeed {
     ConsumerKey(config.getAuthToken(ServiceProvider.Withings), config.getAuthSecret(ServiceProvider.Withings))
 }
 
-class WithingsMeasureFeed(userId: Long, token: RequestToken, val config: SecretConfig) extends HttpFeed with MeasureFeed with LazyLogging {
+class WithingsMeasureFeed(userId: Long, token: RequestToken, override val config: SecretConfig) extends HttpFeed with MeasureFeed with LazyLogging {
 
   logger.info(s"connecting to withings with token [${token.token}]...")
 
