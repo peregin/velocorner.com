@@ -31,3 +31,8 @@ object Dependencies {
 
   val springVersion = "2.7.4" // java world
 }
+
+object DockerBuild {
+
+  val maintainer = "velocorner.com@gmail.com"
+}
