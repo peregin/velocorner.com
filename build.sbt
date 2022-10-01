@@ -253,7 +253,7 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
     maintainer := DockerBuild.maintainer,
     Docker / packageName := "velocorner.crawler",
     Docker / dockerExposedPorts := Seq(9011),
-    dockerBaseImage := Dependencies.dockerBaseImage,
+    dockerBaseImage := DockerBuild.baseImage,
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
     // implicit0, withFilter, final map
@@ -319,27 +319,6 @@ lazy val testServiceScala = (project in file("test/test-service-scala") withId "
     BuildInfoPlugin
   )
 
-lazy val infoService = (project in file("test/info-service") withId "info-service")
-  .settings(
-    buildSettings,
-    name := "info-service",
-    description := "test service with cats-effect",
-    libraryDependencies ++= cats ++ catsEffect,
-    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
-    buildInfoPackage := "velocorner.info.build",
-    maintainer := DockerBuild.maintainer,
-    Docker / packageName := "velocorner.info",
-    Docker / dockerExposedPorts := Seq(9100),
-    dockerBaseImage := Dependencies.dockerBaseImage,
-    dockerUsername := Some("peregin"),
-    Docker / version := "latest"
-  )
-  .enablePlugins(
-    BuildInfoPlugin,
-    JavaAppPackaging,
-    DockerPlugin
-  )
-
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
@@ -361,14 +340,14 @@ lazy val webApp = (project in file("web-app") withId "web-app")
         "elasticVersion" -> Dependencies.elasticVersion,
         "playVersion" -> play.core.PlayVersion.current,
         "catsVersion" -> Dependencies.catsVersion,
-        "dockerBaseImage" -> Dependencies.dockerBaseImage
+        "dockerBaseImage" -> DockerBuild.baseImage
       )
     ).value,
     buildInfoPackage := "velocorner.build",
     maintainer := DockerBuild.maintainer,
     Docker / packageName := "velocorner.com",
     Docker / dockerExposedPorts := Seq(9000),
-    dockerBaseImage := Dependencies.dockerBaseImage,
+    dockerBaseImage := DockerBuild.baseImage,
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null"),
@@ -407,7 +386,6 @@ lazy val root = (project in file(".") withId "velocorner")
     dataAnalytics,
     dataAnalyticsSpark,
     webApp,
-    infoService,
     testServiceJava,
     testServiceScala
   )

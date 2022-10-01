@@ -2,8 +2,6 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.9"
 
-  val dockerBaseImage = "openjdk:11-jre-slim-buster"
-
   val flywayVersion = "9.4.0"
   val catsVersion = "2.8.0"
   val catsEffectVersion = "3.3.14"
@@ -34,5 +32,6 @@ object Dependencies {
 
 object DockerBuild {
 
+  val baseImage = "openjdk:11-jre-slim-buster"
   val maintainer = "velocorner.com@gmail.com"
 }
