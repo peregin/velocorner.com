@@ -4,7 +4,7 @@ object Dependencies {
 
   val dockerBaseImage = "openjdk:11-jre-slim-buster"
 
-  val flywayVersion = "9.3.1"
+  val flywayVersion = "9.4.0"
   val catsVersion = "2.8.0"
   val catsEffectVersion = "3.3.14"
   val mouseVersion = "1.1.0"
@@ -26,7 +26,7 @@ object Dependencies {
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.3.0"
   val circeVersion = "0.14.2"
-  val scalaTestVersion = "3.2.13"
+  val scalaTestVersion = "3.2.14"
   val mockitoVersion = "4.8.0"
 
   val springVersion = "2.7.4" // java world
