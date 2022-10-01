@@ -249,7 +249,7 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
         "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
       ),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
-    buildInfoPackage := "velocorner.info.build",
+    buildInfoPackage := "velocorner.crawler.build",
     maintainer := DockerBuild.maintainer,
     Docker / packageName := "velocorner.crawler",
     Docker / dockerExposedPorts := Seq(9011),

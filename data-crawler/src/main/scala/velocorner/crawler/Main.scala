@@ -2,7 +2,7 @@ package velocorner.crawler
 
 import cats.effect.{IO, IOApp, Resource}
 import cats.implicits._
-import com.comcast.ip4s.Port
+import com.comcast.ip4s.{IpLiteralSyntax, Port}
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
@@ -12,6 +12,7 @@ import org.http4s.HttpApp
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.Logger
 import velocorner.api.brand.Marketplace
+import velocorner.crawler.build.BuildInfo
 
 object Main extends IOApp.Simple {
 
@@ -27,13 +28,15 @@ object Main extends IOApp.Simple {
       _ <- info(s"using crawlers: ${crawlers.map(_.market().name).mkString("\n", "\n", "\n")} ...")
       router = new Router[IO](crawlers)
       server <- defaultServer
-        .withPort(Port.fromInt(9011).getOrElse(defaultServer.port))
+        .withHost(ip"0.0.0.0")
+        .withPort(port"9011")
         .withLogger(logger)
         .withHttpApp(
           httpLogger(logger)(ErrorHandling(router.routes.orNotFound))
         )
         .build
       _ <- info("starting crawler service ...")
+      _ <- info(s"built time: ${BuildInfo.buildTime}")
     } yield server
     server.useForever
   }
