@@ -109,9 +109,10 @@ def http4s: Seq[ModuleID] = Seq(
 def circe: Seq[ModuleID] = Seq(
   "io.circe" %% "circe-core",
   "io.circe" %% "circe-parser",
-  "io.circe" %% "circe-generic",
-  "io.circe" %% "circe-generic-extras"
-).map(_ % Dependencies.circeVersion)
+  "io.circe" %% "circe-generic"
+).map(_ % Dependencies.circeVersion) ++ Seq(
+  "io.circe" %% "circe-generic-extras" % "0.14.2"
+)
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
