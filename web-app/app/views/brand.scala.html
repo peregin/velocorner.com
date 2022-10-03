@@ -9,14 +9,6 @@
 
 </div>
 
-<!-- Coming Soon Plugin -->
-<div align="center" class="row">
-    <div class="col-md-12 coming-soon-plugin">
-        <div id="defaultCountdown"></div>
-    </div>
-</div>
-
-
 <!-- Brand Search Input -->
 <br>
 <br>
@@ -40,6 +32,7 @@
 <!--=== Brand Search Results ===-->
 <div id="brand-result" class="container s-results margin-bottom-50">
     <span id="results-number" class="results-number">0 results</span>
+
     <!--- Search results are populated here -->
 </div>
 
@@ -47,13 +40,3 @@
 <!-- end of common main section -->
 
 <script type="text/javascript" src="@assets.path("javascripts/brands.js")"></script>
-
-<script type="text/javascript" src="@assets.path("unify/assets/plugins/countdown/jquery.countdown.js")"></script>
-<script type="text/javascript">
-    $(function () {
-        var austDay = new Date();
-        austDay = new Date(austDay.getFullYear(), 9, 17);
-        $('#defaultCountdown').countdown({until: austDay});
-        $('#year').text(austDay.getFullYear());
-    });
-</script>
