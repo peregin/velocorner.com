@@ -43,6 +43,27 @@
     <!--- Search results are populated here -->
 </div>
 
+<!-- Best price and product search input -->
+<h3 xmlns="http://www.w3.org/1999/html">Sneak peek review</h3>
+<br>
+<br>
+<h2 xmlns="http://www.w3.org/1999/html">Find the best price for bikes, components, accessories, clothing, brands and items</h2>
+<div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
+    <p>
+        Search for the best price on your favorite brands, components, bicycles and accessories:
+    </p>
+    <!--  Search input form -->
+    <div class="input-group col-md-12 col-xs-12" style="float: left; margin: 10px;">
+        <input id="search_best" name="search_brand" type="text" class="form-control" placeholder="Search for best price ...">
+        <span class="input-group-btn">
+            <button id="search_button_best" name="search_button_best" class="btn-u" type="button"><i class="fa fa-search"></i></button>
+        </span>
+    </div>
+    <p>
+        &nbsp;
+    </p>
+</div>
+
 <!--=== Product search result ===-->
 <div class="row illustration-v2">
     <div class="col-md-3 col-sm-6 md-margin-bottom-30">
@@ -71,7 +92,7 @@
                 <li><i class="rating-selected fa fa-star"></i></li>
                 <li><i class="rating fa fa-star"></i></li>
                 <li><i class="rating fa fa-star"></i></li>
-                <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-heart"></i></a></li>
+                <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-check"></i></a></li>
             </ul>
         </div>
     </div>
@@ -81,6 +102,7 @@
 }
 <!-- end of common main section -->
 
+<script type="text/javascript" src="@assets.path("javascripts/best.js")"></script>
 <script type="text/javascript" src="@assets.path("javascripts/brands.js")"></script>
 
 <script type="text/javascript" src="@assets.path("unify/assets/plugins/countdown/jquery.countdown.js")"></script>

@@ -1,5 +1,5 @@
     function triggerSearch() {
-        var query = $('#search_brand').val();
+        var query = $('#search_best').val();
         console.log('searching for ' + query);
         searchPage(query);
     }
@@ -9,13 +9,13 @@
         // mark search in progress TODO
 
         // clean up existing entries
-        $('#brand-result .inner-results').remove();
+        $('#best-result .inner-results').remove();
 
         // trigger asynchronous search
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/api/brands/search?query="+queryToSearch,
+            url: "/api/products/search?query="+queryToSearch,
             timeout: 20000,
             success: function(result) {
                 finishSearch(result);
@@ -47,17 +47,17 @@
     }
 
     $(document).ready(function() {
-        var searchField = $('#search_brand')
+        var searchField = $('#search_best')
         if (searchField.length) {
             searchField.autocomplete({
-                serviceUrl: '/api/brands/suggest',
+                serviceUrl: '/api/products/suggest',
                 onSelect: function (suggestion) {
                     searchPage(suggestion.data);
                 },
                 minChars: 1,
                 noCache: true
             });
-            $('#search_button_brand').click(function() {
+            $('#search_button_best').click(function() {
                 triggerSearch();
             });
             searchField.keypress(function(e) {

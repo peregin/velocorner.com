@@ -10,7 +10,7 @@ GET     /refresh                                           controllers.WebContro
 ### NoDocs ###
 GET     /search                                            controllers.WebController.search
 ### NoDocs ###
-GET     /brands                                            controllers.WebController.brand
+GET     /brands                                            controllers.WebController.brands
 ### NoDocs ###
 GET     /best                                              controllers.WebController.best
 ### NoDocs ###
@@ -522,7 +522,7 @@ GET     /api/location/ip                                   controllers.LocationC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brand/suggest                                 controllers.BrandController.suggest(query: String)
+GET     /api/brands/suggest                                controllers.ProductsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a list of brands based on the search parameter
@@ -538,7 +538,7 @@ GET     /api/brand/suggest                                 controllers.BrandCont
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brand/search                                  controllers.BrandController.search(query: String)
+GET     /api/brands/search                                 controllers.ProductsController.search(query: String)
 
 # DOC
 ### NoDocs ###
