@@ -540,6 +540,38 @@ GET     /api/brands/suggest                                controllers.BrandsCon
 ###
 GET     /api/brands/search                                 controllers.BrandsController.search(query: String)
 
+###
+#  summary: Suggests a list of product names based on the query parameter
+#  tags:
+#    - product
+#  responses:
+#    200:
+#      description: Returns a list of product names
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#               string
+###
+GET     /api/products/suggest                              controllers.ProductsController.suggest(query: String)
+
+###
+#  summary: Lookup for a products based on the search parameter
+#  tags:
+#    - product
+#  responses:
+#    200:
+#      description: Returns a list of product details with prices
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#               $ref: '#/components/schemas/velocorner.api.brand.ProductDetails'
+###
+GET     /api/products/search                               controllers.ProductsController.search(query: String)
+
 # DOC
 ### NoDocs ###
 GET     /swagger.json                                      controllers.Assets.at(path="/public", file="swagger.json")

@@ -30,7 +30,7 @@
         $('#results-number').text(markets.length+' '+resultText);
 
         $.each(markets, function(ix, entry) {
-            $("#brand-result").append(
+            $("#best-result").append(
               '<div class="inner-results">'+
               '    <hr>'+
               '    <h3><a href="'+entry.marketplace.url+'">'+entry.marketplace.name+'</a></h3>'+

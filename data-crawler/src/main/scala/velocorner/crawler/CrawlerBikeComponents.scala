@@ -44,14 +44,15 @@ object CrawlerBikeComponents {
 
   case class SuggestResponse(term: String, suggestions: Suggest) {
     def toApi(): List[ProductDetails] = suggestions.products.map { p =>
+      val baseUrl = BikeComponents.url.stripSuffix("/")
       ProductDetails(
         market = BikeComponents,
         brand = Brand(name = p.manufacturer, logoUrl = none).some,
         name = p.name,
         description = p.description.some,
         price = extractPrice(p.price),
-        imageUrl = p.imageMedium.path,
-        productUrl = p.link
+        imageUrl = baseUrl + p.imageMedium.path,
+        productUrl = baseUrl + p.link
       )
     }
   }
