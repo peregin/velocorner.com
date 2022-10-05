@@ -9,7 +9,7 @@ import velocorner.util.JsonIo
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ProductsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
+class BrandsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
     with WebMetrics {
 

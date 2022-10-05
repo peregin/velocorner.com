@@ -522,7 +522,7 @@ GET     /api/location/ip                                   controllers.LocationC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/suggest                                controllers.ProductsController.suggest(query: String)
+GET     /api/brands/suggest                                controllers.BrandsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a list of brands based on the search parameter
@@ -538,7 +538,7 @@ GET     /api/brands/suggest                                controllers.ProductsC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/search                                 controllers.ProductsController.search(query: String)
+GET     /api/brands/search                                 controllers.BrandsController.search(query: String)
 
 # DOC
 ### NoDocs ###
