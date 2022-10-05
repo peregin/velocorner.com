@@ -9,13 +9,13 @@ import velocorner.util.JsonIo
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class BrandController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
+class BrandsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
     with WebMetrics {
 
   val feed = new BrandSearch(connectivity.secretConfig)
 
-  // route mapped to /api/brand/suggest
+  // route mapped to /api/brands/suggest
   def suggest(query: String): Action[AnyContent] =
     Action.async {
       timedRequest[AnyContent](s"suggest brand for $query") { implicit request =>
@@ -26,7 +26,7 @@ class BrandController @Inject() (val connectivity: ConnectivitySettings, compone
       }
     }
 
-  // route mapped to /api/brand/search
+  // route mapped to /api/brands/search
   def search(query: String): Action[AnyContent] =
     Action.async {
       timedRequest[AnyContent](s"search brand for $query") { implicit request =>

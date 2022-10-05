@@ -1,35 +1,17 @@
 @(context: PageContext)(implicit assets: AssetsFinder)
 @common.main(context) {
 
-<div align="center" class="row">
-    <div class="col-md-12 coming-soon">
-        <h1>Find the best price for bikes, components, accessories, clothing, brands and items on sale! </h1>
-        <h2>Stay tuned, coming soon...</h2><br>
-    </div>
-
-</div>
-
-<!-- Coming Soon Plugin -->
-<div align="center" class="row">
-    <div class="col-md-12 coming-soon-plugin">
-        <div id="defaultCountdown"></div>
-    </div>
-</div>
-
-
-<!-- Brand Search Input -->
-<br>
-<br>
-<h2 xmlns="http://www.w3.org/1999/html">Until then explore brands from various online shops</h2>
+<!-- Best price and product search input -->
+<h2 xmlns="http://www.w3.org/1999/html">Find the best price for bikes, components, accessories, clothing, brands and items</h2>
 <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
     <p>
-        Search for your favorite brands and see what they have to offer:
+        Search for the best price on your favorite brands, components, bicycles and accessories:
     </p>
     <!--  Search input form -->
     <div class="input-group col-md-12 col-xs-12" style="float: left; margin: 10px;">
-        <input id="search_brand" name="search_brand" type="text" class="form-control" placeholder="Search for brands ...">
+        <input id="search_best" name="search_best" type="text" class="form-control" placeholder="Search for best price ...">
         <span class="input-group-btn">
-            <button id="search_button_brand" name="search_button_brand" class="btn-u" type="button"><i class="fa fa-search"></i></button>
+            <button id="search_button_best" name="search_button_best" class="btn-u" type="button"><i class="fa fa-search"></i></button>
         </span>
     </div>
     <p>
@@ -37,58 +19,17 @@
     </p>
 </div>
 
-<!--=== Brand Search Results ===-->
-<div id="brand-result" class="container s-results margin-bottom-50">
+<div class="container s-results margin-bottom-50">
     <span id="results-number" class="results-number">0 results</span>
-    <!--- Search results are populated here -->
 </div>
 
-<!--=== Product search result ===-->
-<div class="row illustration-v2">
-    <div class="col-md-3 col-sm-6 md-margin-bottom-30">
-        <div class="product-img">
-            <a href="shop-ui-inner.html"><img class="full-width img-responsive" src="@assets.path("unify/assets/img/blog/05.jpg")" alt="Product"></a>
-            <a class="product-review" href="shop-ui-inner.html">Quick review</a>
-            <a class="add-to-cart" href="#"><i class="fa fa-shopping-cart"></i>Visit shop</a>
-<!--            <div class="shop-rgba-red rgba-banner">Out of stock</div>-->
-            <div class="shop-rgba-dark-green rgba-banner">New</div>
-        </div>
-        <div class="product-description product-description-brd">
-            <div class="overflow-h margin-bottom-5">
-                <div class="pull-left">
-                    <h4 class="title-price"><a href="shop-ui-inner.html">Saddle</a></h4>
-                    <span class="gender text-uppercase">Woman</span>
-                    <span class="gender">Suits - Blazers</span>
-                </div>
-                <div class="product-price">
-                    <span class="title-price">$92.00</span>
-                    <span class="title-price line-through">$99.00</span>
-                </div>
-            </div>
-            <ul class="list-inline product-ratings">
-                <li><i class="rating-selected fa fa-star"></i></li>
-                <li><i class="rating-selected fa fa-star"></i></li>
-                <li><i class="rating-selected fa fa-star"></i></li>
-                <li><i class="rating fa fa-star"></i></li>
-                <li><i class="rating fa fa-star"></i></li>
-                <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-heart"></i></a></li>
-            </ul>
-        </div>
-    </div>
+<!--=== Product Search Results ===-->
+<div id="best-result" class="row illustration-v2">
+    <!--- Search results are populated here -->
 </div>
 <!--=== End of product search result ===-->
 
 }
 <!-- end of common main section -->
 
-<script type="text/javascript" src="@assets.path("javascripts/brands.js")"></script>
-
-<script type="text/javascript" src="@assets.path("unify/assets/plugins/countdown/jquery.countdown.js")"></script>
-<script type="text/javascript">
-    $(function () {
-        var austDay = new Date();
-        austDay = new Date(austDay.getFullYear(), 9, 17);
-        $('#defaultCountdown').countdown({until: austDay});
-        $('#year').text(austDay.getFullYear());
-    });
-</script>
+<script type="text/javascript" src="@assets.path("javascripts/best.js")"></script>

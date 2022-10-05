@@ -1,7 +1,7 @@
 package velocorner.feed
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.api.brand.Marketplace
+import velocorner.api.brand.{Marketplace, ProductDetails}
 import velocorner.SecretConfig
 import velocorner.util.JsonIo
 
@@ -11,6 +11,8 @@ import scala.concurrent.Future
 trait ProductFeed {
 
   def supported(): Future[List[Marketplace]]
+
+  def search(term: String): Future[List[ProductDetails]]
 }
 
 class ProductCrawlerFeed(override val config: SecretConfig) extends HttpFeed with LazyLogging with ProductFeed {
@@ -22,4 +24,8 @@ class ProductCrawlerFeed(override val config: SecretConfig) extends HttpFeed wit
       .map(_.body)
       .map(JsonIo.read[List[Marketplace]])
 
+  override def search(term: String): Future[List[ProductDetails]] =
+    ws(_.url(s"$baseUrl/search/$term").get())
+      .map(_.body)
+      .map(JsonIo.read[List[ProductDetails]])
 }

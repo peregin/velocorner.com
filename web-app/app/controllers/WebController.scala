@@ -71,8 +71,8 @@ class WebController @Inject() (
   }
 
   // just to access the brand search from elastic
-  def brand = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.brand(getPageContext("Brands")))
+  def brands = AuthAction(parse.default) { implicit request =>
+    Ok(views.html.brands(getPageContext("Brands")))
   }
 
   def best = AuthAction(parse.default) { implicit request =>

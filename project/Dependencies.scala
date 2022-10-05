@@ -17,7 +17,7 @@ object Dependencies {
   val logbackVersion = "1.4.3"
   val doobieVersion = "1.0.0-RC2"
   val orientDbVersion = "3.2.10"
-  val mongoDbVersion = "4.7.1"
+  val mongoDbVersion = "4.7.2"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.4.2"
   val jwtVersion = "9.1.1"

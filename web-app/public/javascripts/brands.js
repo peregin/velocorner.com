@@ -15,7 +15,7 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: "/api/brand/search?query="+queryToSearch,
+            url: "/api/brands/search?query="+queryToSearch,
             timeout: 20000,
             success: function(result) {
                 finishSearch(result);
@@ -50,7 +50,7 @@
         var searchField = $('#search_brand')
         if (searchField.length) {
             searchField.autocomplete({
-                serviceUrl: '/api/brand/suggest',
+                serviceUrl: '/api/brands/suggest',
                 onSelect: function (suggestion) {
                     searchPage(suggestion.data);
                 },
