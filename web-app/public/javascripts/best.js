@@ -31,16 +31,38 @@
 
         $.each(markets, function(ix, entry) {
             $("#best-result").append(
-              '<div class="inner-results">'+
-              '    <hr>'+
-              '    <h3><a href="'+entry.marketplace.url+'">'+entry.marketplace.name+'</a></h3>'+
-              '    <div class="overflow-h">'+
-              '       <img src="'+entry.marketplace.logoUrl+'" alt="">'+
-              '       <div class="overflow-a">'+
-              '           <a href="'+entry.url+'">'+entry.brand.name+'</a>'+
-              '       </div>'+
-              '    </div>'+
-              '<div>');
+              `    <div class="col-md-3 col-sm-6 md-margin-bottom-30">
+                       <div class="product-img">
+                           <a href="${entry.productUrl}"><img class="full-width img-responsive" src="${entry.imageUrl}" alt="Product"></a>
+                           <a class="product-review" href="${entry.productUrl}">Quick review</a>
+                           <a class="add-to-cart" href="${entry.productUrl}"><i class="fa fa-shopping-cart"></i>Visit shop</a>
+                           <!-- <div class="shop-rgba-red rgba-banner">Out of stock</div>-->
+                           <div class="shop-rgba-dark-green rgba-banner">New</div>
+                       </div>
+                       <div class="product-description product-description-brd">
+                           <div class="overflow-h margin-bottom-5">
+                               <div class="pull-left">
+                                   <h4 class="title-price"><a href="${entry.imageUrl}">${entry.name}</a></h4>
+                                   <span class="gender text-uppercase">${entry.brand.name}</span>
+                                   <span class="gender">${entry.description}</span>
+                               </div>
+                               <div class="product-price">
+                                   <span class="title-price">${entry.price.value} ${entry.price.currency}</span>
+                                   <!-- <span class="title-price line-through">$99.00</span> -->
+                               </div>
+                           </div>
+                           <!--
+                           <ul class="list-inline product-ratings">
+                               <li><i class="rating-selected fa fa-star"></i></li>
+                               <li><i class="rating-selected fa fa-star"></i></li>
+                               <li><i class="rating-selected fa fa-star"></i></li>
+                               <li><i class="rating fa fa-star"></i></li>
+                               <li><i class="rating fa fa-star"></i></li>
+                               <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-check"></i></a></li>
+                           </ul>
+                           -->
+                       </div>
+                   </div>`);
         });
 
         // hide search in progress TODO
