@@ -23,7 +23,8 @@ class ModelTest extends AnyFlatSpec with should.Matchers {
       description = "great compinent".some,
       price = Money(10.2, "EUR"),
       imageUrl = "image",
-      productUrl = "product/url"
+      productUrl = "product/url",
+      reviewStars = 4
     )
     val json = pd.asJson.spaces4
     json shouldBe
@@ -44,7 +45,8 @@ class ModelTest extends AnyFlatSpec with should.Matchers {
         |        "currency" : "EUR"
         |    },
         |    "imageUrl" : "image",
-        |    "productUrl" : "product/url"
+        |    "productUrl" : "product/url",
+        |    "reviewStars" : 4
         |}""".stripMargin
   }
 }

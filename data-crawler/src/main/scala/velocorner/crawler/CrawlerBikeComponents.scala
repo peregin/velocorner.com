@@ -27,7 +27,15 @@ object CrawlerBikeComponents {
     implicit val codec: Codec[SuggestImage] = deriveCodec
   }
 
-  case class SuggestProduct(name: String, price: String, description: String, imageMedium: SuggestImage, link: String, manufacturer: String)
+  case class SuggestProduct(
+      name: String,
+      price: String,
+      description: String,
+      imageMedium: SuggestImage,
+      link: String,
+      manufacturer: String,
+      reviewStars: Option[Int]
+  )
   object SuggestProduct {
     implicit val codec: Codec[SuggestProduct] = deriveCodec
   }
@@ -52,7 +60,8 @@ object CrawlerBikeComponents {
         description = p.description.some,
         price = extractPrice(p.price),
         imageUrl = baseUrl + p.imageMedium.path,
-        productUrl = baseUrl + p.link
+        productUrl = baseUrl + p.link,
+        reviewStars = p.reviewStars.getOrElse(0)
       )
     }
   }
