@@ -24,6 +24,7 @@ object Dependencies {
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.3.0"
   val circeVersion = "0.14.3"
+  val scalacacheVersion = "0.28.0"
   val scalaTestVersion = "3.2.14"
   val mockitoVersion = "4.8.0"
 

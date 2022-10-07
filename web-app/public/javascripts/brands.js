@@ -21,6 +21,9 @@
                 finishSearch(result);
             }
         });
+        analytics.track('Brands', {
+            term: queryToSearch
+        });
     }
 
     function finishSearch(markets) {

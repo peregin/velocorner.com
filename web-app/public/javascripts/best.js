@@ -9,7 +9,7 @@
         // mark search in progress TODO
 
         // clean up existing entries
-        $('#best-result .inner-results').remove();
+        $('#best-result').html("");
 
         // trigger asynchronous search
         $.ajax({
@@ -20,6 +20,9 @@
             success: function(result) {
                 finishSearch(result);
             }
+        });
+        analytics.track('Best', {
+            term: queryToSearch
         });
     }
 

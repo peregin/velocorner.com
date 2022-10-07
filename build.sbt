@@ -114,6 +114,11 @@ def circe: Seq[ModuleID] = Seq(
   "io.circe" %% "circe-generic-extras" % "0.14.2"
 )
 
+def scalacache = Seq(
+  "com.github.cb372" %% "scalacache-core",
+  "com.github.cb372" %% "scalacache-guava"
+).map(_ % Dependencies.scalacacheVersion)
+
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -158,7 +163,9 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   releaseCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]", // it is invoked from ci, skip a new trigger
   releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
-  libraryDependencySchemes += "org.scala-lang.modules" %% "scala-java8-compat" % "always",
+  libraryDependencySchemes ++= Seq(
+    "org.scala-lang.modules" %% "scala-java8-compat" % "always"
+  ),
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   ),
@@ -174,7 +181,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
         365.days
       ),
       excludeMainMethod = false,
-      dialect = unused_code.Dialect.Scala213,
+      dialect = unused_code.Dialect.Scala213
     )
   }
 )
@@ -246,6 +253,7 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
     libraryDependencies ++= catsEffect
       ++ http4s
       ++ circe
+      ++ scalacache
       ++ Seq(
         "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
       ),
