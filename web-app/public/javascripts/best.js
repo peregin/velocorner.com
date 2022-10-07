@@ -53,10 +53,10 @@
                            </div>
                            <ul class="list-inline product-ratings">
                                <li><i class="${entry.reviewStars > 0 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
-                               <li><i class="rating-selected fa fa-star"></i></li>
-                               <li><i class="rating-selected fa fa-star"></i></li>
-                               <li><i class="rating fa fa-star"></i></li>
-                               <li><i class="rating fa fa-star"></i></li>
+                               <li><i class="${entry.reviewStars > 1 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
+                               <li><i class="${entry.reviewStars > 2 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
+                               <li><i class="${entry.reviewStars > 3 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
+                               <li><i class="${entry.reviewStars > 4 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
                                <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-check"></i></a></li>
                            </ul>
                        </div>
