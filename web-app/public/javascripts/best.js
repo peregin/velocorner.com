@@ -51,16 +51,14 @@
                                    <!-- <span class="title-price line-through">$99.00</span> -->
                                </div>
                            </div>
-                           <!--
                            <ul class="list-inline product-ratings">
-                               <li><i class="rating-selected fa fa-star"></i></li>
+                               <li><i class="${entry.reviewStars > 0 ? 'rating-selected' : 'rating'} fa fa-star"></i></li>
                                <li><i class="rating-selected fa fa-star"></i></li>
                                <li><i class="rating-selected fa fa-star"></i></li>
                                <li><i class="rating fa fa-star"></i></li>
                                <li><i class="rating fa fa-star"></i></li>
                                <li class="like-icon"><a data-original-title="Add to wishlist" data-toggle="tooltip" data-placement="left" class="tooltips" href="#"><i class="fa fa-check"></i></a></li>
                            </ul>
-                           -->
                        </div>
                    </div>`);
         });

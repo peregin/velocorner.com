@@ -34,7 +34,7 @@ object CrawlerBikeComponents {
       imageMedium: SuggestImage,
       link: String,
       manufacturer: String,
-      reviewStars: Option[Int]
+      reviewStars: Option[Double]
   )
   object SuggestProduct {
     implicit val codec: Codec[SuggestProduct] = deriveCodec

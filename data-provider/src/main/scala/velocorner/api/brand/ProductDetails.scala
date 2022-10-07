@@ -15,5 +15,5 @@ case class ProductDetails(
     price: Money,
     imageUrl: String,
     productUrl: String,
-    reviewStars: Int
+    reviewStars: Double
 )
