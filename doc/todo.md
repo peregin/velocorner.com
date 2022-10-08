@@ -1,12 +1,13 @@
 # ToDo
+- add throttling
+- show the time spent in search
 - restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
-- add and collect events for search
 - show last ride and similar ones (+/-15% distance, elevation)
 - upgrade postgres (multirange types)
 - health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 - recommendation for the week and month based on previous or other activities
-- caching: setup ActivityStorage with ScalaCache
+- caching: setup ActivityStorage with ScalaCache - component search is already cached
 - variation of the greeting, instead of Hello
 - add QR code to the About page 
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
@@ -21,6 +22,7 @@
 - add garmin data field section
 - PubSub (pusher or alternative) for updates
 
+- add and collect events for search
 # InProgress
 - gears and usage YTD - added to OAuth2
 - return JWT after login

@@ -255,7 +255,8 @@ lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
       ++ circe
       ++ scalacache
       ++ Seq(
-        "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
+        "org.typelevel" %% "log4cats-slf4j" % "2.5.0",
+        "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
       ),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.crawler.build",

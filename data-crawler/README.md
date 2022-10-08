@@ -8,5 +8,6 @@ Searches for products from multiple sources and shows the price, availability, d
 
 Useful commands
 ```shell
-curl localhost:9011/search/frame
+curl localhost:9011/search/Specialized
+curl localhost:9011/search/SRAM+xx1
 ```
