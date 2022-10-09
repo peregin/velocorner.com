@@ -12,13 +12,15 @@
         $('#best-result').html("");
 
         // trigger asynchronous search
+        var startTime = new Date().getTime();
         $.ajax({
             type: "GET",
             dataType: "json",
             url: "/api/products/search?query="+queryToSearch,
             timeout: 20000,
             success: function(result) {
-                finishSearch(result);
+                var elapsedTime = new Date().getTime() - startTime;
+                finishSearch(result, elapsedTime);
             }
         });
         analytics.track('Best', {
@@ -26,13 +28,14 @@
         });
     }
 
-    function finishSearch(markets) {
+    function finishSearch(products, elapsedTime) {
         // populate table with the results
-        console.log('populating with '+markets.length+' result(s)');
-        var resultText = markets.length == 1 ? 'result' : 'results';
-        $('#results-number').text(markets.length+' '+resultText);
+        let took = (moment.duration(elapsedTime, "ms").milliseconds() / 1000).toFixed(2);
+        console.log('populating with '+products.length+' result(s), query took '+took+' seconds');
+        var resultText = products.length == 1 ? 'result' : 'results' ;
+        $('#results-number').text(products.length+' '+resultText+' in '+took+' seconds');
 
-        $.each(markets, function(ix, entry) {
+        $.each(products, function(ix, entry) {
             $("#best-result").append(
               `    <div class="col-md-3 col-sm-6 md-margin-bottom-30">
                        <div class="product-img">

@@ -1,6 +1,5 @@
 # ToDo
 - add throttling
-- show the time spent in search
 - restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
 - show last ride and similar ones (+/-15% distance, elevation)
@@ -22,7 +21,6 @@
 - add garmin data field section
 - PubSub (pusher or alternative) for updates
 
-- add and collect events for search
 # InProgress
 - gears and usage YTD - added to OAuth2
 - return JWT after login
@@ -33,6 +31,8 @@
 - add 3D profile of the last activity gpx
 
 # Done
+- add and collect events for search
+- show the time spent in search
 - top 10 longest rides, top 10 most elevations 
 - show current min/max temperature
 - speedup node docker image creation
