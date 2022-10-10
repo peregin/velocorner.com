@@ -38,15 +38,13 @@
         $.each(products, function(ix, entry) {
             $("#best-result").append(
               `    <div class="col-md-3 col-sm-6 md-margin-bottom-30">
-                       <div class="product-img">
-                           <a href="${entry.productUrl}"><img class="full-width img-responsive" src="${entry.imageUrl}" alt="Product"></a>
-                           <a class="product-review" href="${entry.productUrl}">Quick review</a>
-                           <a class="add-to-cart" href="${entry.productUrl}"><i class="fa fa-shopping-cart"></i>Visit shop</a>
+                       <div class="min-width: 100%; height: 200px;">
+                           <a href="${entry.productUrl}"><img class="full-width img-responsive" src="${entry.imageUrl}" alt="Product" loading="lazy"></a>
                            <!-- <div class="shop-rgba-red rgba-banner">Out of stock</div>-->
                            <div class="shop-rgba-dark-green rgba-banner">New</div>
                        </div>
                        <div class="product-description product-description-brd">
-                           <div class="overflow-h margin-bottom-5">
+                           <div class="margin-bottom-10">
                                <div class="pull-left">
                                    <h4 class="title-price"><a href="${entry.imageUrl}">${entry.name}</a></h4>
                                    <span class="gender text-uppercase">${entry.brand.name}</span>
