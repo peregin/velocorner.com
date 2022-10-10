@@ -47,7 +47,7 @@
                            <div class="margin-bottom-10">
                                <div class="pull-left">
                                    <h4 class="title-price"><a href="${entry.imageUrl}">${entry.name}</a></h4>
-                                   <span class="gender text-uppercase">${entry.brand.name}</span>
+                                   <span class="gender text-uppercase">${entry.brand ? entry.brand.name : ''}</span>
                                    <span class="gender">${entry.market.name}</span>
                                </div>
                                <div class="product-price">

@@ -18,6 +18,8 @@ import scala.util.{Failure, Success, Try}
 
 object CrawlerBikeComponents {
 
+  val baseUrl = BikeComponents.url.stripSuffix("/")
+
   // the BC specific request and responses
   case class SuggestImage(path: String, mimeType: String)
   object SuggestImage {
@@ -49,7 +51,6 @@ object CrawlerBikeComponents {
 
   case class SuggestResponse(term: String, suggestions: Suggest) {
     def toApi(): List[ProductDetails] = suggestions.products.map { p =>
-      val baseUrl = BikeComponents.url.stripSuffix("/")
       ProductDetails(
         market = BikeComponents,
         brand = Brand(name = p.manufacturer, logoUrl = none).some,
@@ -67,9 +68,6 @@ object CrawlerBikeComponents {
   }
 
   // ---------------- utility functions ----------------
-
-  val pricePattern = "([\\d\\s.,]*\\d)\\s*(\\S*)".r
-
   /**
    * patterns:
    * |54.29€
@@ -78,21 +76,8 @@ object CrawlerBikeComponents {
    * | <span>from</span> 5.42€
    */
   def extractPrice(s: String): Money = {
-    val amountCcy = s.replace(",", "").split('>').last.trim
-    amountCcy match {
-      case pricePattern(amount, currency) =>
-        Try(Money(BigDecimal(amount), normalizeCurrency(currency))) match {
-          case Success(value) => value
-          case Failure(err)   => throw new IllegalArgumentException(s"unable to parse price $s, because $err")
-        }
-      case other => throw new IllegalArgumentException(s"invalid price pattern $other")
-    }
-  }
-
-  def normalizeCurrency(c: String): String = c match {
-    case "€"   => "EUR"
-    case "$"   => "USD"
-    case other => other
+    val amountCcy = s.split('>').last.trim
+    PriceParser.parse(amountCcy)
   }
 }
 

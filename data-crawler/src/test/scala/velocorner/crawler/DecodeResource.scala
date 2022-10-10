@@ -10,8 +10,10 @@ import scala.io.Source
 // with debugging information
 trait DecodeResource extends CloseableResource {
 
+  def load(resource: String): String = withCloseable(Source.fromURL(getClass.getResource(resource)))(_.mkString)
+
   def assert[T: Decoder](resource: String): T = {
-    val reply = withCloseable(Source.fromURL(getClass.getResource(resource)))(_.mkString)
+    val reply = load(resource)
     parse(reply) match {
       case Left(f) => fail(f.message)
       case Right(value) =>

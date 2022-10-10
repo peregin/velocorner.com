@@ -1,4 +1,6 @@
 # ToDo
+
+- add progress bar when searching for prices
 - add throttling
 - restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
@@ -25,10 +27,6 @@
 - gears and usage YTD - added to OAuth2
 - return JWT after login
 - implement JWT between Frontend and Backend
-
-# Not sure if adds value
-- map with origins and destinations flagged
-- add 3D profile of the last activity gpx
 
 # Done
 - add and collect events for search
@@ -65,3 +63,7 @@
 - persist gears when retrieving provider user
 - distinguish the provider between consumer users for OAuth2
 - Account holds Strava and Withings related info in different structures
+
+# Not sure if adds value
+- map with origins and destinations flagged
+- add 3D profile of the last activity gpx
