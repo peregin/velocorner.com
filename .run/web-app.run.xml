@@ -7,7 +7,7 @@
     </option>
     <option name="tasks" value="&quot;project web-app&quot; run" />
     <option name="useSbtShell" value="false" />
-    <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true -Dconfig.file=$USER_HOME$/Downloads/velo/velocorner/local.conf" />
+    <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 -Dlogback.debug=true --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true -Dconfig.file=$USER_HOME$/Downloads/velo/velocorner/local.conf" />
     <option name="workingDir" value="$PROJECT_DIR$" />
     <method v="2" />
   </configuration>
