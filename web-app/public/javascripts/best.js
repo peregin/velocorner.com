@@ -50,7 +50,7 @@
                                <div class="pull-left">
                                    <h4 class="title-price"><a href="${entry.imageUrl}">${entry.name}</a></h4>
                                    <span class="gender text-uppercase">${entry.brand.name}</span>
-                                   <span class="gender">${entry.description}</span>
+                                   <span class="gender">${entry.market.name}</span>
                                </div>
                                <div class="product-price">
                                    <span class="title-price">${entry.price.value} ${entry.price.currency}</span>

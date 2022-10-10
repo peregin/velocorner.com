@@ -22,7 +22,8 @@ object Main extends IOApp.Simple {
       defaultServer = EmberServerBuilder.default[IO]
       client <- EmberClientBuilder.default[IO].build
       crawlers = List(
-        new CrawlerBikeComponents[IO](client)
+        new CrawlerBikeComponents[IO](client),
+        new CrawlerGalaxus[IO](client)
       )
       _ <- info(s"possible marketplaces: ${Marketplace.values.map(_.name).mkString("\n", "\n", "\n")} ...")
       _ <- info(s"using crawlers: ${crawlers.map(_.market().name).mkString("\n", "\n", "\n")} ...")

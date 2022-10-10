@@ -1,16 +1,13 @@
 package velocorner.crawler
 
-import cats.implicits._
 import cats.effect.Async
-import fs2.text
-import fs2.text.utf8
+import cats.implicits._
 import io.circe.Codec
 import io.circe.generic.semiauto.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.client._
-import org.http4s.{Method, Uri}
 import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.Status.BadRequest
+import org.http4s.{Method, Uri}
 import velocorner.api.Money
 import velocorner.api.brand.Marketplace.BikeComponents
 import velocorner.api.brand.{Brand, Marketplace, ProductDetails}
