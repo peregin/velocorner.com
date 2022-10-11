@@ -6,7 +6,11 @@
 
     // start searching for the query term
     function searchPage(queryToSearch) {
-        // mark search in progress TODO
+        // mark search in progress
+        $('#search-progress-bar').attr('aria-valuenow', 50);
+        $('#search-progress-bar').css('width', '50%');
+        $('#search-progress-bar').text('50% Searching...');
+        $('#search-progress').fadeIn();
 
         // clean up existing entries
         $('#best-result').html("");
@@ -30,7 +34,7 @@
 
     function finishSearch(products, elapsedTime) {
         // populate table with the results
-        let took = (moment.duration(elapsedTime, "ms").milliseconds() / 1000).toFixed(2);
+        let took = (elapsedTime / 1000).toFixed(2);
         console.log('populating with '+products.length+' result(s), query took '+took+' seconds');
         var resultText = products.length == 1 ? 'result' : 'results' ;
         $('#results-number').text(products.length+' '+resultText+' in '+took+' seconds');
@@ -67,7 +71,12 @@
                    </div>`);
         });
 
-        // hide search in progress TODO
+        // hide search in progress
+        $('#search-progress-bar').attr('aria-valuenow', 100);
+        $('#search-progress-bar').css('width', '100%');
+        $('#search-progress-bar').text('Done');
+        $('#search-progress').fadeOut();
+        $('#results-number').fadeIn();
     }
 
     $(document).ready(function() {
@@ -91,6 +100,7 @@
             });
 
             // empty landing page, remove results counter
-            //$('#results-number').hide();
+            $('#results-number').hide();
+            $('#search-progress').hide();
         }
     });

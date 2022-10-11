@@ -1,5 +1,4 @@
 # ToDo
-
 - add progress bar when searching for prices
 - add throttling
 - restart service for changed images only - or publish image from ci conditionally - orb filter
