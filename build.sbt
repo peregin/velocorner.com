@@ -20,7 +20,8 @@ def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
       // is parsed and used in sitemap as well
       java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(java.time.ZonedDateTime.now())
     },
-    "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a")
+    "gitHash" -> git.gitHeadCommit.value.getOrElse("n/a"),
+    "builtFromBranch" -> git.gitCurrentBranch.value
   ) ++ extraKeys
 )
 
