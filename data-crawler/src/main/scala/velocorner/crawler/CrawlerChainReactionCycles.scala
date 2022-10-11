@@ -30,7 +30,6 @@ object CrawlerChainReactionCycles {
       val price = Option(g.select("li[class=fromamt] > span").text().trim).filter(_.nonEmpty)
         .getOrElse(g.select("li[class=fromamt]").text().trim)
         .split("-").headOption.getOrElse("").trim // take the first from the range if any
-      println(price)
       ProductDetails(
         market = ChainReactionCycles,
         brand = none,
