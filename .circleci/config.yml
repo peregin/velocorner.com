@@ -37,7 +37,7 @@ jobs:
       - run: .circleci/cachekey.sh checksums.txt
       - restore_cache:
           key: *cache_key
-      - run: sbt Compile/compile Test/compile
+      - run: sbt Compile/compile
       - run: sbt Test/test
       - save_cache:
           key: *cache_key
@@ -119,6 +119,12 @@ workflows:
     jobs:
       - build
       - deploy_web-backend:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master.*/
+      - deploy_crawler-backend:
           requires:
             - build
           filters:
