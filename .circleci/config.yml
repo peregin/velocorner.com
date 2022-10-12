@@ -87,7 +87,7 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy crawler-backend
-          command: sbt "crawler-service/docker:publish"
+          command: sbt "data-crawler/docker:publish"
 
   deploy_web-frontend:
     executor: ci-deploy-executor
