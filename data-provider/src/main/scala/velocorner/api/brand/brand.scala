@@ -9,12 +9,27 @@ import velocorner.brand.NameNormalizer._
 package object brand {
 
   object Marketplace extends Enum[Marketplace] with LowerCamelcase {
-    object Wiggle
-        extends Marketplace(
-          "Wiggle",
-          "https://www.wiggle.co.uk/",
-          "https://www.wigglestatic.com/images/ui/wiggle-logo/desktop-wiggle_master_rgb_logo.svg"
-        )
+
+    object Bike24
+      extends Marketplace(
+        "Bike24",
+        "https://www.bike24.com/",
+        "https://assets10.bike24.net/static/images/8e6800bd228af47a3e77.svg"
+      )
+
+    // part of crawling
+    object BikeComponents
+      extends Marketplace(
+        "Bike-Components",
+        "https://www.bike-components.de/",
+        "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
+      )
+
+    object BikeImport extends Marketplace(
+      "BikeImport",
+      "https://bikeimport.ch/",
+      "https://bikeimport.ch/images/bikeimport_logo.png"
+    )
 
     object Bikester
         extends Marketplace(
@@ -23,19 +38,21 @@ package object brand {
           "https://www.bikester.ch/on/demandware.static/Sites-bikester-ch-Site/-/default/dw3867b4e6/images/logo.svg"
         )
 
-    object BikeComponents
-        extends Marketplace(
-          "Bike-Components",
-          "https://www.bike-components.de/",
-          "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
-        )
-
+    // part of crawling
     object ChainReactionCycles
         extends Marketplace(
           "Chain Reaction Cycles",
           "https://www.chainreactioncycles.com/",
           "https://i.pinimg.com/originals/44/2e/07/442e073967b3705bb70a11fed3188833.jpg"
         )
+
+    // part of crawling
+    object Galaxus
+      extends Marketplace(
+        "Galaxus",
+        "https://www.galaxus.ch/",
+        "https://www.galaxus.ch/static/images/galaxus/logo.svg"
+      )
 
     object PerformanceBike
         extends Marketplace(
@@ -44,19 +61,19 @@ package object brand {
           "https://www.performancebike.com/cdn-cgi/image/width=600/content/skins/performancebike/images/site-logo.png"
         )
 
-    object Bike24
-        extends Marketplace(
-          "Bike24",
-          "https://www.bike24.com/",
-          "https://assets10.bike24.net/static/images/8e6800bd228af47a3e77.svg"
-        )
+    object MountainBikeParts extends Marketplace(
+      "MountainBike Parts",
+      "https://www.mountainbike-parts.ch/",
+      "https://www.mountainbike-parts.ch/images/mountain_bike_logo.svg"
+    )
 
-    object Galaxus
+    object Wiggle
       extends Marketplace(
-        "Galaxus",
-        "https://www.galaxus.ch/",
-        "https://www.galaxus.ch/static/images/galaxus/logo.svg"
+        "Wiggle",
+        "https://www.wiggle.co.uk/",
+        "https://www.wigglestatic.com/images/ui/wiggle-logo/desktop-wiggle_master_rgb_logo.svg"
       )
+
 
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
 
