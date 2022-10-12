@@ -11,7 +11,8 @@ object CrawlerApp extends IOApp.Simple {
     client <- EmberClientBuilder.default[IO].build
     // new CrawlerGalaxus[IO](client)
     // CrawlerBikeComponents[IO](client)
-    crawler = new CrawlerChainReactionCycles[IO](client)
+    //CrawlerChainReactionCycles[IO](client)
+    crawler = new CrawlerBikeImport[IO](client)
     res <- Resource.eval(crawler.products("sram xx1"))
   } yield res).use { res =>
     val clean = res.map(p => p.copy(market = p.market.copy(url = "", logoUrl = ""), description = none))

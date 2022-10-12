@@ -2,15 +2,15 @@ package velocorner.crawler
 
 import cats.effect.{IO, IOApp, Resource}
 import cats.implicits._
-import com.comcast.ip4s.{IpLiteralSyntax, Port}
+import com.comcast.ip4s.IpLiteralSyntax
+import org.http4s.HttpApp
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
 import org.http4s.server.Server
 import org.http4s.server.middleware.{ErrorHandling, RequestLogger}
-import org.http4s.HttpApp
-import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import velocorner.api.brand.Marketplace
 import velocorner.crawler.build.BuildInfo
 
@@ -24,7 +24,8 @@ object Main extends IOApp.Simple {
       crawlers = List(
         new CrawlerBikeComponents[IO](client),
         new CrawlerGalaxus[IO](client),
-        new CrawlerChainReactionCycles[IO](client)
+        new CrawlerChainReactionCycles[IO](client),
+        new CrawlerBikeImport[IO](client)
       )
       _ <- info(s"possible marketplaces: ${Marketplace.values.map(_.name).mkString("\n", "\n", "\n")} ...")
       _ <- info(s"using crawlers: ${crawlers.map(_.market().name).mkString("\n", "\n", "\n")} ...")

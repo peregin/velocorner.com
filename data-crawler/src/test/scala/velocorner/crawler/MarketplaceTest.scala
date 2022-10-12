@@ -21,4 +21,10 @@ class MarketplaceTest extends AnyFlatSpec with should.Matchers with DecodeResour
     val products = CrawlerChainReactionCycles.scrape(page, 5)
     products should have size 5
   }
+
+  "bikeimport page response" should "be converted" in {
+    val page = load("/bikeimport/search.html")
+    val products = CrawlerBikeImport.scrape(page, 5)
+    products should have size 5
+  }
 }

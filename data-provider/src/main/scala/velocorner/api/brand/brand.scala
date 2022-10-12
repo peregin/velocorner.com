@@ -25,12 +25,14 @@ package object brand {
         "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
       )
 
+    // part of crawling
     object BikeImport extends Marketplace(
       "BikeImport",
       "https://bikeimport.ch/",
       "https://bikeimport.ch/images/bikeimport_logo.png"
     )
 
+    // part of crawling
     object Bikester
         extends Marketplace(
           "Bikester",
