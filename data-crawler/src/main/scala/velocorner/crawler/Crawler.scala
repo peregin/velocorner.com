@@ -6,5 +6,5 @@ trait Crawler[F[_]] {
 
   def market(): Marketplace
 
-  def products(searchTerm: String): F[List[ProductDetails]]
+  def products(searchTerm: String, limit: Int): F[List[ProductDetails]]
 }

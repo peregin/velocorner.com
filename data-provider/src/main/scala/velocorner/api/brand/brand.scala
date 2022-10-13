@@ -69,11 +69,12 @@ package object brand {
       "https://www.mountainbike-parts.ch/images/mountain_bike_logo.svg"
     )
 
-    object VeloFactory {
-      "VeloFactory"
-      "https://www.velofactory.ch"
+    // part of crawling
+    object VeloFactory extends Marketplace(
+      "VeloFactory",
+      "https://www.velofactory.ch",
       "https://www.velofactory.ch/bilder/intern/shoplogo/velofactory-logo_v2.jpg"
-    }
+    )
 
     object Wiggle
       extends Marketplace(

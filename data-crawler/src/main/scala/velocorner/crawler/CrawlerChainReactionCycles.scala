@@ -54,7 +54,7 @@ class CrawlerChainReactionCycles[F[_]: Async](client: Client[F]) extends Crawler
 
   override def market(): Marketplace = ChainReactionCycles
 
-  override def products(searchTerm: String): F[List[ProductDetails]] = {
+  override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val limit = 5
     val search = URLEncoder.encode(searchTerm, "UTF-8")
     val uri = s"https://www.chainreactioncycles.com/s?q=$search&cat=direct"

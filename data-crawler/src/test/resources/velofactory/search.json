@@ -1,0 +1,1303 @@
+{
+  "custom_results_id": null,
+  "facets": {
+    "availability_label": {
+      "doc_count": 256,
+      "label": "Availability",
+      "order": 3,
+      "selected": {
+        "buckets": [],
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0
+      },
+      "terms": {
+        "buckets": [
+          {
+            "doc_count": 247,
+            "key": "in stock"
+          },
+          {
+            "doc_count": 9,
+            "key": "out of stock"
+          }
+        ],
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0
+      },
+      "total": {
+        "value": 256
+      },
+      "visible": true
+    },
+    "brand": {
+      "doc_count": 256,
+      "label": "Brand",
+      "order": 2,
+      "selected": {
+        "buckets": [],
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0
+      },
+      "terms": {
+        "buckets": [
+          {
+            "doc_count": 224,
+            "key": "SRAM"
+          },
+          {
+            "doc_count": 6,
+            "key": "Race Face"
+          },
+          {
+            "doc_count": 5,
+            "key": "BBB"
+          },
+          {
+            "doc_count": 4,
+            "key": "QUARQ"
+          },
+          {
+            "doc_count": 3,
+            "key": "DT Swiss"
+          },
+          {
+            "doc_count": 3,
+            "key": "Kool Stop"
+          },
+          {
+            "doc_count": 3,
+            "key": "Trickstuff"
+          },
+          {
+            "doc_count": 2,
+            "key": "Crank Brothers"
+          },
+          {
+            "doc_count": 2,
+            "key": "TRUVATIV"
+          },
+          {
+            "doc_count": 1,
+            "key": "Ceramicspeed"
+          },
+          {
+            "doc_count": 1,
+            "key": "Easton"
+          },
+          {
+            "doc_count": 1,
+            "key": "SwissStop"
+          },
+          {
+            "doc_count": 1,
+            "key": "VAR"
+          }
+        ],
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0
+      },
+      "total": {
+        "value": 256
+      },
+      "visible": true
+    },
+    "categories": {
+      "doc_count": 256,
+      "label": "Categories",
+      "order": 1,
+      "selected": {
+        "buckets": [],
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0
+      },
+      "terms": {
+        "buckets": [
+          {
+            "doc_count": 234,
+            "key": "MTB"
+          },
+          {
+            "doc_count": 137,
+            "key": "Drive"
+          },
+          {
+            "doc_count": 92,
+            "key": "Chainrings"
+          },
+          {
+            "doc_count": 75,
+            "key": "Gear change"
+          },
+          {
+            "doc_count": 23,
+            "key": "Cage, small parts"
+          },
+          {
+            "doc_count": 22,
+            "key": "Road bike"
+          },
+          {
+            "doc_count": 20,
+            "key": "Workshop & Maintenance"
+          },
+          {
+            "doc_count": 19,
+            "key": "Brakes"
+          },
+          {
+            "doc_count": 19,
+            "key": "Gear shift lever"
+          },
+          {
+            "doc_count": 16,
+            "key": "Crank and chain wheel set"
+          },
+          {
+            "doc_count": 12,
+            "key": "Brake pads"
+          },
+          {
+            "doc_count": 12,
+            "key": "Brakes, Service"
+          },
+          {
+            "doc_count": 12,
+            "key": "Disc brake pads"
+          },
+          {
+            "doc_count": 10,
+            "key": "Cassettes"
+          },
+          {
+            "doc_count": 10,
+            "key": "Rear derailleur"
+          },
+          {
+            "doc_count": 9,
+            "key": "Chains"
+          },
+          {
+            "doc_count": 9,
+            "key": "Change gears, shift rollers, small parts"
+          },
+          {
+            "doc_count": 9,
+            "key": "Wheels"
+          },
+          {
+            "doc_count": 8,
+            "key": "Cranks"
+          },
+          {
+            "doc_count": 7,
+            "key": "Freewheel body"
+          }
+        ],
+        "doc_count_error_upper_bound": 2,
+        "sum_other_doc_count": 76
+      },
+      "total": {
+        "value": 831
+      },
+      "visible": true
+    }
+  },
+  "hashid": "54e8e92f3b6055a6b454a8b88d75f76d",
+  "max_score": 27.876534,
+  "page": 1,
+  "query": "SRAM XX1",
+  "query_counter": 6,
+  "query_name": "match_and",
+  "results": [
+    {
+      "article_no": "27828",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 46.3,
+      "bestseller": "1",
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Chains"
+      ],
+      "description": "The XX1 chain follows a long SRAM tradition of stable, lightweight chains. When every bit of propulsion counts, you can be sure that this chain will deliver the required performance. Rivet type Hollow Pin Lock type Power Lock Number of links 118 Directional Yes, only chain lock Material Steel | Finisch inner link / Finisch outer link: chrome plated / nickel plated Weight 246 g MTB groups X01 XX1 Main group Drive parts Category Mountainbike Product subgroup Chains Activity Cycling Sport E-bike Mountain bike Brand Sram Sales unit Piece NAV Article commission group 820: Sram",
+      "df_grouping_id": "26868",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@4dff7cccfc092f41b8170fc6d7dc93c0",
+      "dfscore": 27.876534,
+      "gtin": "0710845712258",
+      "highlight": {
+        "description": [
+          "The <em>XX1</em> chain follows a long <em>SRAM</em> tradition of stable, lightweight chains. When every bit of propulsion",
+          "plated / nickel plated Weight 246 g MTB groups X01 <em>XX1</em> Main group Drive parts Category Mountainbike Product",
+          "Mountain bike Brand <em>Sram</em> Sales unit Piece NAV Article commission group 820: <em>Sram</em>"
+        ]
+      },
+      "id": "26868",
+      "image_link": "https://www.velofactory.ch/media/image/product/26868/md/sram-xx1-20-11-speed-chain.jpg",
+      "kartikel": "26868",
+      "link": "https://www.velofactory.ch/SRAM-XX1-20-11-speed-chain",
+      "minprice": "44",
+      "minpricelocalized": "44.00 CHF",
+      "mpn": "00.2518.000.006",
+      "number_of_chain_links": "118",
+      "number_of_gears": "11",
+      "price": 46.3,
+      "priceprefix": "starting from",
+      "series": "XX1",
+      "short_description": "118 chain links, including PowerLock",
+      "stock": "1758",
+      "title": "SRAM XX1 20 11-speed chain",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "55",
+      "uvp_localized": "55.00 CHF"
+    },
+    {
+      "number_of_gears": "12",
+      "ust": "7.7",
+      "number_of_chain_links": "126",
+      "df_grouping_id": "26913",
+      "title": "SRAM XX1 EAGLE 12-speed chain rainbow",
+      "minprice": "75.9",
+      "availability": "in stock",
+      "technology": "Eagle",
+      "stock": "379",
+      "short_description": "126 chain links, including PowerLock, rainbow",
+      "id": "26913",
+      "kartikel": "26913",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@4b53088e5fc197779935acef19a404df",
+      "additional_image_link": "https://www.velofactory.ch/media/image/product/26913/md/sram-xx1-eagle-12-speed-chain-rainbow~2.jpg",
+      "categories": [
+        "MTB > Drive > Chains"
+      ],
+      "price": 79.9,
+      "type": "product",
+      "brand": "SRAM",
+      "series": "XX1 Eagle",
+      "priceprefix": "starting from",
+      "best_price": 79.9,
+      "availability_label": "in stock",
+      "uvp": "89",
+      "uvp_localized": "89.00 CHF",
+      "image_link": "https://www.velofactory.ch/media/image/product/26913/md/sram-xx1-eagle-12-speed-chain-rainbow.jpg",
+      "highlight": {
+        "description": [
+          "The PC <em>XX1</em> Eagle 12-speed chain from <em>SRAM</em> is lightweight, quiet and stable. The <em>SRAM</em> PC <em>XX1</em> chain is",
+          "(chain lock). Recommended groupsets: X01 Eagle, <em>XX1</em> Eagle Material: steel Compatibility: - Eagle drives",
+          "have a four times higher (wear) strength than other <em>SRAM</em> chains. This is due to the machining process for"
+        ]
+      },
+      "gtin": "0710845825446",
+      "description": "The PC XX1 Eagle 12-speed chain from SRAM is lightweight, quiet and stable. The SRAM PC XX1 chain is made for Eagle 12-speed drives and shines on your mountain bike with a lightweight, durable design and several color options. Hollow pins make the chain light, while the Flow Link™ technology with smooth, flat plates for precise, buttery smooth shifting and almost silent operation. At the same time, the chain is uncompromisingly strong without any loss of performance and extremely wear-resistant. Aesthetes also get their money's worth thanks to the color selection matched to Eagle components. Specifications: Range of application: cross country, all mountain, enduro Gear ratios: 12-speed Technical data: Number of links: 126 Lock type: chain lock (PowerLock™) Rivet type: hollow (hollow pins), chrome-plated Directional: No (chain), Yes (chain lock). Recommended groupsets: X01 Eagle, XX1 Eagle Material: steel Compatibility: - Eagle drives Features: - Inner lugs chrome plated with PVD coating. - Outer link plates nickel plated with PVD coating - Flow Link and Hard Chrome™ technologies for reduced wear and tear - color-matched to Eagle components - quiet, lightweight and durable - strong PowerLock chain lock Technologies: Flow Link™: The ultra-smooth inner link plates of the chain are completely free of edges. This reduces friction on the cassette and chainring. The result: quiet performance and longer component life. The chain design allows for a narrower profile. The chain is thus more torsion-resistant. Due to its smooth outer plates, the riveting is more uniform and the tensile strength is higher. Hard Chrome™: Chains with Hard Chrome have a four times higher (wear) strength than other SRAM chains. This is due to the machining process for the inner links and rollers. The push pin strength and overall strength are equivalent to current SRAM chains. Chains with Hard Chrome last longer and are extremely stable. PowerLock™ SRAM have developed PowerLock as a tool-free, secure and consistent way to connect SRAM chains. Although the PowerLock chain lock does not require any special tools for assembly, but given the narrow tolerance range of modern drives, each PowerLock can only be used once. X-Sync™: Chains with X-Sync technology are perfectly matched for use with X-Sync chainrings. X-Sync chainrings from SRAM ensure maximum performance and durability. The long X-Sync tooth edges grip the chain earlier than traditional teeth in triangular shape. The sharp and narrow tooth profile and the rounded angled edges support the chain guide.To provide the best possible performance even in muddy terrain, the X-Sync chainrings have depressions to remove dirt and mud for the inner chain links and rollers. Scope of delivery: - 1 x chain SRAM PC XX1 Eagle - 1 x chain lock SRAM PowerLock Weight: 12 speed: 250 g",
+      "article_no": "27873",
+      "mpn": "00.2518.039.010",
+      "dfscore": 27.876534,
+      "bestseller": "1",
+      "link": "https://www.velofactory.ch/SRAM-XX1-EAGLE-12-speed-chain-rainbow",
+      "minpricelocalized": "75.90 CHF"
+    },
+    {
+      "number_of_gears": "12",
+      "ust": "7.7",
+      "number_of_chain_links": "126",
+      "df_grouping_id": "26914",
+      "title": "SRAM XX1 EAGLE 12-speed chain copper",
+      "minprice": "72.5",
+      "availability": "in stock",
+      "technology": "Eagle",
+      "stock": "1923",
+      "short_description": "126 chain links, including Power Lock, copper",
+      "id": "26914",
+      "kartikel": "26914",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@1df58e63816ec9ab895d8f14640a5f47",
+      "additional_image_link": null,
+      "categories": [
+        "MTB > Drive > Chains"
+      ],
+      "price": 76.3,
+      "type": "product",
+      "brand": "SRAM",
+      "series": "XX1 Eagle",
+      "priceprefix": "starting from",
+      "best_price": 76.3,
+      "availability_label": "in stock",
+      "uvp": "89",
+      "uvp_localized": "89.00 CHF",
+      "image_link": "https://www.velofactory.ch/media/image/product/26914/md/sram-xx1-eagle-12-speed-chain-copper.jpg",
+      "highlight": {
+        "description": [
+          "The PC <em>XX1</em> Eagle 12-speed chain from <em>SRAM</em> is lightweight, quiet and stable The <em>SRAM</em> PC <em>XX1</em> chain is made",
+          "(chain lock). Recommended groupsets: X01 Eagle, <em>XX1</em> Eagle Material: Steel Color Copper Range of use MTB"
+        ]
+      },
+      "gtin": "0710845852169",
+      "description": "The PC XX1 Eagle 12-speed chain from SRAM is lightweight, quiet and stable The SRAM PC XX1 chain is made for Eagle 12-speed drives and shines on your mountain bike with lightweight, durable design and different color options. Hollow pins make the chain light, while the Flow Link™ technology with smooth, flat plates for precise, buttery smooth shifting and almost silent operation. At the same time, the chain is uncompromisingly strong without any loss of performance and extremely wear-resistant. Aesthetes also get their money's worth thanks to the color selection matched to Eagle components. Range of use: Cross Country, All Mountain, Enduro Gear ratios: 12-speed Technical data: Number of links: 126 Lock type: chain lock (PowerLock™) Rivet type: hollow (hollow pins), chrome-plated Directional: No (chain), Yes (chain lock). Recommended groupsets: X01 Eagle, XX1 Eagle Material: Steel Color Copper Range of use MTB Gears 12 Type Chains",
+      "article_no": "27874",
+      "mpn": "00.2518.043.010",
+      "dfscore": 27.876534,
+      "bestseller": "1",
+      "link": "https://www.velofactory.ch/SRAM-XX1-EAGLE-12-speed-chain-copper",
+      "minpricelocalized": "72.50 CHF"
+    },
+    {
+      "article_no": "134413",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 164.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "Three decades ago SRAM was founded - based on a single product called Grip Shift and the thought that the bicycle gearshift should be lighter, better and more intuitive. The completely redesigned XX1 Eagle™ Grip Shift shifter still follows exactly this thought - even though it has been significantly further developed. In the current XX1-Eagle™ shift grip is a new, stable inner workings, which is more durable and makes the shifting even more precise. And like the original, it puts full control in your hands. Weight 143 g Scope of delivery Twist shifter right incl. shift cable, handlebar grip right and left and handlebar end pin Shift lever type Grip Shift MTB groups XX1 Eagle Goods main group Drive parts Category Mountain bike Product subgroup Gear shift lever Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "61560",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@cdbe869d2fe04483b8e7c9fc8fc39077",
+      "dfscore": 27.876534,
+      "elektrisch": "Nein",
+      "gtin": "0710845788369",
+      "highlight": {
+        "description": [
+          "Three decades ago <em>SRAM</em> was founded - based on a single product called Grip Shift and the thought that",
+          "better and more intuitive. The completely redesigned <em>XX1</em> Eagle™ Grip Shift shifter still follows exactly this",
+          "significantly further developed. In the current <em>XX1</em>-Eagle™ shift grip is a new, stable inner workings"
+        ]
+      },
+      "id": "61560",
+      "image_link": "https://www.velofactory.ch/media/image/product/61560/md/gripshift-sram-xx1-eagle-12-speed-black.jpg",
+      "kartikel": "61560",
+      "link": "https://www.velofactory.ch/GripShift-SRAM-XX1-Eagle-12-speed-black",
+      "minprice": "155.8",
+      "minpricelocalized": "155.80 CHF",
+      "mounting": "Rechts",
+      "mpn": "00.7018.303.001",
+      "number_of_gears": "12",
+      "price": 164.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "1005",
+      "title": "GripShift SRAM XX1 Eagle 12-speed black",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163076",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 195.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "Simpler, lighter and more durable built than any other shift lever, the SRAM XX1 shift lever Trigger with X-ACTUATION™ ensures crisp and smooth gear changes over the entire transmission range of the cassette - from 10 to 42 teeth. No matter where you ride and what you have in front of you. Feature Matchmaker / Matchmaker X compatible Feature Shifter Reach Adjust: shift lever width adjustment Weight 97 g Scope of delivery Trigger incl. Discrete Clamp (clamp) Shift lever type Trigger Gear ratio X-actuation MTB groups XX1 Main group Drive parts Category Mountainbike Product subgroup Gear shift lever Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "126192",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@0cc8f7bf8a8d56980414a6e4bc69cdc6",
+      "dfscore": 27.876534,
+      "elektrisch": "Nein",
+      "gtin": "0710845713187",
+      "highlight": {
+        "description": [
+          "durable built than any other shift lever, the <em>SRAM</em> <em>XX1</em> shift lever Trigger with X-ACTUATION™ ensures",
+          "lever type Trigger Gear ratio X-actuation MTB groups <em>XX1</em> Main group Drive parts Category Mountainbike Product",
+          "lever Activity Cycling Sport Mountain bike Brand <em>Sram</em> Sales unit Piece"
+        ]
+      },
+      "id": "126192",
+      "image_link": "https://www.velofactory.ch/media/image/product/126192/md/sram-shifter-xx1-trigger-11sp-red_2.jpg",
+      "kartikel": "126192",
+      "link": "https://www.velofactory.ch/Sram-Shifter-XX1-Trigger-11SP-red_2",
+      "minprice": "185.3",
+      "minpricelocalized": "185.30 CHF",
+      "mounting": "Rechts",
+      "mpn": "00.7018.021.000",
+      "number_of_gears": "11",
+      "price": 195.0,
+      "priceprefix": "starting from",
+      "series": "XX1",
+      "stock": "9",
+      "title": "Sram Shifter XX1 Trigger 11SP red",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "additional_image_link": "https://www.velofactory.ch/media/image/product/61637/md/sram-xx1-x01-eagle-trigger-barrel-adjuster-kit-gold-sram_2~2.jpg",
+      "article_no": "134492",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 8.6,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Covers"
+      ],
+      "description": "XX1/X01 Eagle Trigger Barrel Adjuster Kit Gold Color gold Range of use MTB XCO Type Service & Spare Parts",
+      "df_grouping_id": "61637",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@467bfb5449e92104c28a0574de0e3992",
+      "dfscore": 27.104227,
+      "gtin": "0710845785313",
+      "highlight": {
+        "description": [
+          "<em>XX1</em>/X01 Eagle Trigger Barrel Adjuster Kit Gold Color gold Range of use MTB XCO Type Service & Spare Parts"
+        ]
+      },
+      "id": "61637",
+      "image_link": "https://www.velofactory.ch/media/image/product/61637/md/sram-xx1-x01-eagle-trigger-barrel-adjuster-kit-gold-sram_2.jpg",
+      "kartikel": "61637",
+      "link": "https://www.velofactory.ch/SRAM-XX1-X01-Eagle-Trigger-Barrel-Adjuster-Kit-Gold-Sram_2",
+      "minprice": "8.2",
+      "minpricelocalized": "8.20 CHF",
+      "mpn": "11.7018.055.000",
+      "price": 8.6,
+      "priceprefix": "starting from",
+      "stock": "5",
+      "title": "SRAM XX1/X01 Eagle Trigger Barrel Adjuster Kit Gold, Sram",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "134493",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 8.6,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Covers"
+      ],
+      "description": "Adjustment hub for trigger shifters XX1 Eagle and X01 Eagle Shift lever type Trigger MTB groupsets X01 Eagle XX1 Eagle Main product group Drive parts Category Mountain bike Product subgroup Gear shift lever Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "61638",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@1a5b3ea32ec9b15779a8d133ec844fde",
+      "dfscore": 27.104227,
+      "gtin": "0710845785320",
+      "highlight": {
+        "description": [
+          "trigger shifters <em>XX1</em> Eagle and X01 Eagle Shift lever type Trigger MTB groupsets X01 Eagle <em>XX1</em> Eagle Main product",
+          "lever Activity Cycling Sport Mountain bike Brand <em>Sram</em> Sales unit Piece"
+        ]
+      },
+      "id": "61638",
+      "image_link": "https://www.velofactory.ch/media/image/product/61638/md/sram-xx1-x01-eagle-trigger-barrel-adjuster-kit-black-sram_1.jpg",
+      "kartikel": "61638",
+      "link": "https://www.velofactory.ch/SRAM-XX1-X01-Eagle-Trigger-Barrel-Adjuster-Kit-Black-Sram_1",
+      "minprice": "8.2",
+      "minpricelocalized": "8.20 CHF",
+      "mpn": "11.7018.055.010",
+      "price": 8.6,
+      "priceprefix": "starting from",
+      "stock": "23",
+      "title": "SRAM XX1/X01 Eagle Trigger Barrel Adjuster Kit Black, Sram",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "accessories": "Hebel",
+      "article_no": "134494",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 43.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "XX1 Eagle Trigger Pull Lever Kit, Right Range of use MTB XCO Type Service & Spare Parts",
+      "df_grouping_id": "61639",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@22e64710cc40fc26bffb1413be195627",
+      "dfscore": 27.104227,
+      "gtin": "0710845785337",
+      "highlight": {
+        "description": [
+          "<em>XX1</em> Eagle Trigger Pull Lever Kit, Right Range of use MTB XCO Type Service & Spare Parts"
+        ]
+      },
+      "id": "61639",
+      "image_link": "https://www.velofactory.ch/media/image/product/61639/md/sram-xx1-eagle-trigger-pull-lever-kit-right-sram_2.jpg",
+      "kartikel": "61639",
+      "link": "https://www.velofactory.ch/SRAM-XX1-Eagle-Trigger-Pull-Lever-Kit-Right-Sram_2",
+      "minprice": "40.9",
+      "minpricelocalized": "40.90 CHF",
+      "mpn": "11.7018.056.000",
+      "price": 43.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "3",
+      "title": "SRAM XX1 Eagle Trigger Pull Lever Kit, Right Sram",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "134495",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 32.3,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Covers"
+      ],
+      "description": "XX1 Eagle Trigger Cover Kit Right Gold Color gold Range of use MTB XCO Type Service & Spare Parts",
+      "df_grouping_id": "61640",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@edf22bf82c37b76099d0beaaca760293",
+      "dfscore": 27.104227,
+      "gtin": "0710845785344",
+      "highlight": {
+        "description": [
+          "<em>XX1</em> Eagle Trigger Cover Kit Right Gold Color gold Range of use MTB XCO Type Service & Spare Parts"
+        ]
+      },
+      "id": "61640",
+      "image_link": "https://www.velofactory.ch/media/image/product/61640/md/sram-xx1-eagle-trigger-cover-kit-right-gold-sram_2.jpg",
+      "kartikel": "61640",
+      "link": "https://www.velofactory.ch/SRAM-XX1-Eagle-Trigger-Cover-Kit-Right-Gold-Sram_2",
+      "minprice": "30.7",
+      "minpricelocalized": "30.70 CHF",
+      "mpn": "11.7018.058.000",
+      "price": 32.3,
+      "priceprefix": "starting from",
+      "stock": "8",
+      "title": "SRAM XX1 Eagle Trigger Cover Kit Right Gold Sram",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "134496",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 32.3,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Covers"
+      ],
+      "description": "XX1 Eagle Trigger Cover Kit Right Neutral Color black Range of use MTB XCO Type Service & Spare Parts",
+      "df_grouping_id": "61641",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@b9ceb071b3e6533d3179056672d05ebf",
+      "dfscore": 27.104227,
+      "gtin": "0710845785351",
+      "highlight": {
+        "description": [
+          "<em>XX1</em> Eagle Trigger Cover Kit Right Neutral Color black Range of use MTB XCO Type Service & Spare Parts"
+        ]
+      },
+      "id": "61641",
+      "image_link": "https://www.velofactory.ch/media/image/product/61641/md/sram-xx1-eagle-trigger-cover-kit-right-black-sram_2.jpg",
+      "kartikel": "61641",
+      "link": "https://www.velofactory.ch/SRAM-XX1-Eagle-Trigger-Cover-Kit-Right-Black-Sram_2",
+      "minprice": "30.7",
+      "minpricelocalized": "30.70 CHF",
+      "mpn": "11.7018.058.010",
+      "price": 32.3,
+      "priceprefix": "starting from",
+      "stock": "1",
+      "title": "SRAM XX1 Eagle Trigger Cover Kit Right Black Sram",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "accessories": "Kurbelschutz",
+      "article_no": "28185",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 11.4,
+      "bestseller": "1",
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Crank and chain wheel set",
+        "MTB > Drive > Cranks"
+      ],
+      "description": "SRAM cranks are strong and durable, ready for any kind of ride. Therefore, it is inevitable that pedal strokes and dirt wear the end of the crank. The carbon crank sleeve from SRAM is an upgrade that counteracts the signs of wear caused by hard riding. The cuff protects the crank from surface damage. For XX1 Eagle and X01 Eagle crank arms: FC-X0-1-B1, FC-X0-1-C1, FC-X0-1-C2, FC-X0-1-C3, FC-X0-1DH-B1, FC-XX-1-B1, FC-XX-1-C1, FC-XX-1-C2 MTB groups X01 Eagle X01 Eagle AXS XX1 Eagle XX1 Eagle AXS Main product group Drivetrain parts Category Mountain bike Product subgroup Cranksets Activity Cycling Sport Mountain bike Brand Sram Sales unit Pair NAV item commission group 820: Sram",
+      "df_grouping_id": "27225",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@204febcbbc5ee18b88a7c4680f293c19",
+      "dfscore": 24.146412,
+      "gtin": "0710845790966",
+      "highlight": {
+        "description": [
+          "<em>SRAM</em> cranks are strong and durable, ready for any kind of ride. Therefore, it is inevitable that pedal",
+          "the end of the crank. The carbon crank sleeve from <em>SRAM</em> is an upgrade that counteracts the signs of wear",
+          "damage. For <em>XX1</em> Eagle and X01 Eagle crank arms: FC-X0-<em>1</em>-B1, FC-X0-<em>1</em>-C1, FC-X0-<em>1</em>-C2, FC-X0-<em>1</em>-C3, FC-X0-1DH-B1"
+        ]
+      },
+      "id": "27225",
+      "image_link": "https://www.velofactory.ch/media/image/product/27225/md/sram-crank-guard-xx1-x01-eagle-2pcs-black.jpg",
+      "kartikel": "27225",
+      "link": "https://www.velofactory.ch/SRAM-crank-guard-XX1-X01-Eagle-2pcs-black",
+      "minprice": "10.8",
+      "minpricelocalized": "10.80 CHF",
+      "mpn": "00.6118.444.000",
+      "price": 11.4,
+      "priceprefix": "starting from",
+      "series": "X01 Eagle/XX1 Eagle",
+      "short_description": "2stk., schwarz",
+      "stock": "1055",
+      "title": "SRAM crank guard XX1/X01 Eagle, 2pcs, black",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "13.9",
+      "uvp_localized": "13.90 CHF"
+    },
+    {
+      "article_no": "28190",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 23.7,
+      "brand": "SRAM",
+      "categories": [
+        "Road bike > Drive > Powermeter / Wattmeter system",
+        "MTB > Drive > Powermeter / Wattmeter system"
+      ],
+      "df_grouping_id": "27230",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@fa980e7b000b6545a4c0c5373eb1b7f3",
+      "dfscore": 24.146412,
+      "gtin": "0710845725449",
+      "id": "27230",
+      "image_link": "https://www.velofactory.ch/media/image/product/27230/md/sram-quarq-battery-cover-for-red-xx1-ab-mod-2015.jpg",
+      "kartikel": "27230",
+      "link": "https://www.velofactory.ch/SRAM-Quarq-battery-cover-for-Red-XX1-ab-Mod-2015",
+      "minprice": "22.5",
+      "minpricelocalized": "22.50 CHF",
+      "mpn": "00.7918.032.000",
+      "price": 23.7,
+      "priceprefix": "starting from",
+      "short_description": "ab. Mod. 2015",
+      "stock": "1",
+      "title": "SRAM Quarq battery cover for Red/XX1, ab. Mod. 2015",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "37",
+      "uvp_localized": "37.00 CHF"
+    },
+    {
+      "article_no": "27824",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 187.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "Simpler, lighter and more durable built than any other shift lever, the SRAM XX1 shift lever Trigger with X-ACTUATION™ ensures crisp and smooth gear changes over the entire transmission range of the cassette - from 10 to 42 teeth. No matter where you ride and what you have in front of you. Feature Matchmaker / Matchmaker X compatible Feature Shifter Reach Adjust: shift lever width adjustment Weight 97 g Scope of delivery Trigger incl. Discrete Clamp (clamp) Shift lever type Trigger Gear ratio X-actuation MTB groups XX1 Main group Drive parts Category Mountainbike Product subgroup Gear shift lever Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece NAV item commission group 820: Sram",
+      "df_grouping_id": "26864",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@223fa774f48cac82119ba7bbcdd475d2",
+      "dfscore": 24.146412,
+      "elektrisch": "Nein",
+      "gtin": "0710845764301",
+      "highlight": {
+        "description": [
+          "durable built than any other shift lever, the <em>SRAM</em> <em>XX1</em> shift lever Trigger with X-ACTUATION™ ensures",
+          "lever type Trigger Gear ratio X-actuation MTB groups <em>XX1</em> Main group Drive parts Category Mountainbike Product",
+          "Sport Mountain bike Brand <em>Sram</em> Sales unit Piece NAV item commission group 820: <em>Sram</em>"
+        ]
+      },
+      "id": "26864",
+      "image_link": "https://www.velofactory.ch/media/image/product/26864/md/sram-xx1-20-1x11-shift-unit-trigger-with-clamp-black.jpg",
+      "kartikel": "26864",
+      "link": "https://www.velofactory.ch/SRAM-XX1-20-1x11-shift-unit-trigger-with-clamp-black",
+      "minprice": "177.7",
+      "minpricelocalized": "177.70 CHF",
+      "mounting": "Rechts",
+      "mpn": "00.7018.021.001",
+      "number_of_gears": "11",
+      "price": 187.0,
+      "priceprefix": "starting from",
+      "series": "XX1",
+      "short_description": "mit Klemme, schwarz",
+      "stock": "15",
+      "title": "SRAM XX1 20 1x11 shift unit trigger, with clamp, black",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "199",
+      "uvp_localized": "199.00 CHF"
+    },
+    {
+      "article_no": "27825",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 181.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "Weight: 140 g",
+      "df_grouping_id": "26865",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@9bfa4291fb5844d8d79e81724c9d853c",
+      "dfscore": 24.146412,
+      "gtin": "0710845713194",
+      "id": "26865",
+      "image_link": "https://www.velofactory.ch/media/image/product/26865/md/sram-xx1-20-1x11-shift-unit-gripshift-locking-grip-black.jpg",
+      "kartikel": "26865",
+      "link": "https://www.velofactory.ch/SRAM-XX1-20-1x11-shift-unit-GripShift-Locking-Grip-black",
+      "minprice": "171.9",
+      "minpricelocalized": "171.90 CHF",
+      "mpn": "00.7018.022.000",
+      "price": 181.0,
+      "priceprefix": "starting from",
+      "short_description": "Locking Grip, schwarz",
+      "stock": "3",
+      "title": "SRAM XX1 20 1x11 shift unit GripShift, Locking Grip, black",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "179",
+      "uvp_localized": "179.00 CHF"
+    },
+    {
+      "number_of_gears": "12",
+      "ust": "7.7",
+      "number_of_chain_links": "126",
+      "df_grouping_id": "26886",
+      "title": "SRAM XX1 EAGLE 20 12-speed chain gold",
+      "minprice": "72.5",
+      "availability": "in stock",
+      "technology": "Eagle",
+      "stock": "1761",
+      "short_description": "126 chain links, including PowerLock, gold",
+      "id": "26886",
+      "kartikel": "26886",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@f6f20ada728b7a41ea4c0eb996c817b6",
+      "additional_image_link": "https://www.velofactory.ch/media/image/product/26886/md/sram-xx1-eagle-20-12-speed-chain-gold~2.jpg",
+      "categories": [
+        "MTB > Drive > Chains"
+      ],
+      "price": 76.3,
+      "type": "product",
+      "brand": "SRAM",
+      "series": "XX1 Eagle",
+      "priceprefix": "starting from",
+      "best_price": 76.3,
+      "availability_label": "in stock",
+      "uvp": "89",
+      "uvp_localized": "89.00 CHF",
+      "image_link": "https://www.velofactory.ch/media/image/product/26886/md/sram-xx1-eagle-20-12-speed-chain-gold.jpg",
+      "gtin": "0710845788482",
+      "description": "Color gold Material nickel Range of use XC / TR Technology FlowLink, Hard Chrome, PowerLock, X,Sync Mounting PowerLock Gears 12 Type Chains Weight 250 gram",
+      "article_no": "27846",
+      "mpn": "00.2518.024.020",
+      "dfscore": 24.146412,
+      "bestseller": "1",
+      "link": "https://www.velofactory.ch/SRAM-XX1-EAGLE-20-12-speed-chain-gold",
+      "minpricelocalized": "72.50 CHF"
+    },
+    {
+      "article_no": "27849",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 314.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Rear derailleur"
+      ],
+      "description": "The revised XX1 Eagle rear derailleur opens up new worlds for uncompromising racers or dreambike builders. The crisp, precise shifting feel of the XX1 Eagle, on which generations of racers have relied, now gets a new cage shape for even better chain guidance. The XX1 Eagle rear derailleur takes full advantage of the capabilities of the new 10-52 cassette and is still fully backward compatible for 10-50 teeth. Feature Max 52T cassette Material Cage: Carbon Weight 268 g Gear ratio X-actuation MTB groups XX1 Eagle Main group Drive parts Category Mountainbike Product subgroup Rear derailleur Activity Cycling Sport E-bike Mountain bike Brand Sram Sales unit Piece NAV Article commission group 820: Sram",
+      "df_grouping_id": "26889",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@40b87e83a83d74e976dda3848aead243",
+      "dfscore": 24.146412,
+      "elektrisch": "Nein",
+      "gtin": "0710845853531",
+      "highlight": {
+        "description": [
+          "The revised <em>XX1</em> Eagle rear derailleur opens up new worlds for uncompromising racers or dreambike builders",
+          "builders. The crisp, precise shifting feel of the <em>XX1</em> Eagle, on which generations of racers have relied",
+          "new cage shape for even better chain guidance. The <em>XX1</em> Eagle rear derailleur takes full advantage of the"
+        ]
+      },
+      "id": "26889",
+      "image_link": "https://www.velofactory.ch/media/image/product/26889/md/sram-xx1-eagle-21-1x12-change-10-52-black-grey.jpg",
+      "kartikel": "26889",
+      "link": "https://www.velofactory.ch/SRAM-XX1-EAGLE-21-1x12-change-10-52-black-grey",
+      "minprice": "298.3",
+      "minpricelocalized": "298.30 CHF",
+      "mpn": "00.7518.139.000",
+      "number_of_gears": "12",
+      "price": 314.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "short_description": "10-52, schwarz-grau",
+      "stock": "1023",
+      "title": "SRAM XX1 EAGLE 21 1x12 change, 10-52, black-grey",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "335",
+      "uvp_localized": "335.00 CHF"
+    },
+    {
+      "article_no": "27853",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 210.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "The sheer shifting performance of the Eagle AXS™ alone makes a significant difference. Gear changes under full load, in the roughest terrain, uphill or without having to loosen the handlebar grip. The Eagle AXS™ gives you more control over your bike when you are under pressure and give your utmost. In addition, it also changes the way you deal with your bike. With no shift cable and shrouds to consider, the Eagle AXS™ controller opens up a whole new range of possibilities in design and technology. With its ergonomic shift paddles and very low operating forces, we've paved the way for a completely new shifting experience. Using the AXS™ app, you can freely configure the controller to your preferences and determine which controller does what. Feature AXS™ software that allows you to customize and program the new SRAM and RockShox components. Feature Battery CR2032 Weight 69 g Scope of delivery Controller incl. Discrete Clamp (clamp) Shifter type AXS Controller MTB groups X01 Eagle AXS XX1 Eagle AXS Goods main group Drive parts Category Mountain bike Product subgroup Gear shift lever Activity Cycling Sport E-bike Gravel and cyclocross Mountain bike Brand Sram Sales unit Piece NAV Article commission group 820: Sram",
+      "df_grouping_id": "26893",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@eac2949b8b90be506f77db750ef05417",
+      "dfscore": 24.146412,
+      "elektrisch": "Ja",
+      "gtin": "0710845824081",
+      "highlight": {
+        "description": [
+          "that allows you to customize and program the new <em>SRAM</em> and RockShox components. Feature Battery CR2032",
+          "Shifter type AXS Controller MTB groups X01 Eagle AXS <em>XX1</em> Eagle AXS Goods main group Drive parts Category Mountain",
+          "Mountain bike Brand <em>Sram</em> Sales unit Piece NAV Article commission group 820: <em>Sram</em>"
+        ]
+      },
+      "id": "26893",
+      "image_link": "https://www.velofactory.ch/media/image/product/26893/md/sram-xx1-eagle-20-axs-trigger-with-clamp-black-grey.jpg",
+      "kartikel": "26893",
+      "link": "https://www.velofactory.ch/SRAM-XX1-EAGLE-20-AXS-Trigger-with-clamp-black-grey",
+      "minprice": "199.5",
+      "minpricelocalized": "199.50 CHF",
+      "mounting": "Rechts",
+      "mpn": "00.7018.397.000",
+      "number_of_gears": "12",
+      "price": 210.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle/X01 Eagle",
+      "short_description": "mit Klemme, schwarz-grau",
+      "stock": "999",
+      "title": "SRAM XX1 EAGLE 20 AXS Trigger, with clamp, black-grey",
+      "type": "product",
+      "ust": "7.7",
+      "uvp": "219",
+      "uvp_localized": "219.00 CHF"
+    },
+    {
+      "accessories": "Hebel",
+      "article_no": "134817",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 15.8,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "ELECTRONIC CONTROLLER SHIFTER LEVER XX1 X01 EAGLE AXS",
+      "df_grouping_id": "61958",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@51d15344f3fa8922900c2cf4cb70bc44",
+      "dfscore": 24.146412,
+      "elektrisch": "Ja",
+      "gtin": "0710845824548",
+      "highlight": {
+        "description": [
+          "ELECTRONIC CONTROLLER SHIFTER LEVER <em>XX1</em> X01 EAGLE AXS"
+        ]
+      },
+      "id": "61958",
+      "image_link": "https://www.velofactory.ch/media/image/product/61958/md/sram-electronic-controller-shifter-lever-xx1-x01-eagle-axs_2.jpg",
+      "kartikel": "61958",
+      "link": "https://www.velofactory.ch/SRAM-ELECTRONIC-CONTROLLER-SHIFTER-LEVER-XX1-X01-EAGLE-AXS_2",
+      "minprice": "15",
+      "minpricelocalized": "15.00 CHF",
+      "mounting": "Rechts",
+      "mpn": "11.7018.076.000",
+      "price": 15.8,
+      "priceprefix": "starting from",
+      "series": "XX1/X01 Eagle",
+      "stock": "4",
+      "title": "SRAM ELECTRONIC CONTROLLER SHIFTER LEVER XX1 X01 EAGLE AXS",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "134536",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 73.3,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Change gears, shift rollers, small parts"
+      ],
+      "description": "Sram change gears for Sram XX1 Eagle, X01 Eagle (mechanical and electronic shifting), with ceramic bearings. Feature Change gears with 12/14T Weight 28 g Scope of delivery 1 pair of change gears MTB groups X01 Eagle X01 Eagle AXS XX1 Eagle XX1 Eagle AXS Product main group Drive parts Category Mountain bike Product subgroup Rear derailleur Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "61681",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@e8d78faa5adb41b851b7ca49df858218",
+      "dfscore": 24.146412,
+      "gtin": "0710845799440",
+      "highlight": {
+        "description": [
+          "<em>Sram</em> change gears for <em>Sram</em> <em>XX1</em> Eagle, X01 Eagle (mechanical and electronic shifting), with ceramic bearings",
+          "Scope of delivery <em>1</em> pair of change gears MTB groups X01 Eagle X01 Eagle AXS <em>XX1</em> Eagle <em>XX1</em> Eagle AXS Product",
+          "derailleur Activity Cycling Sport Mountain bike Brand <em>Sram</em> Sales unit Piece"
+        ]
+      },
+      "id": "61681",
+      "image_link": "https://www.velofactory.ch/media/image/product/61681/md/sram-change-gear-xx1-x01-eagle-12-speed-x-sync2.jpg",
+      "kartikel": "61681",
+      "link": "https://www.velofactory.ch/SRAM-change-gear-XX1-X01-Eagle-12-speed-X-Sync2",
+      "minprice": "69.6",
+      "minpricelocalized": "69.60 CHF",
+      "mpn": "00.7518.103.000",
+      "price": 73.3,
+      "priceprefix": "starting from",
+      "stock": "1027",
+      "title": "SRAM change gear XX1/X01 Eagle 12-speed X-Sync2",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "133912",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 20.8,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Stem > Handles"
+      ],
+      "colour": "Schwarz",
+      "description": "Color black / silver Size 100 / 122 mm Material rubber Application area CC Mounting screwable Spring deflection 0 Product length 100 / 122 mm Type Accessories",
+      "df_grouping_id": "61068",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@4919b0833ba145b85ca5b342c0c39d91",
+      "dfscore": 24.146412,
+      "griffform": "Rund",
+      "gtin": "0710845724107",
+      "id": "61068",
+      "image_link": "https://www.velofactory.ch/media/image/product/61068/md/handlebar-grip-sram-lockinggrips-xx1-pair-100-122mm-black-silver.jpg",
+      "kartikel": "61068",
+      "link": "https://www.velofactory.ch/Handlebar-grip-SRAM-LockingGrips-XX1-pair-100-122mm-black-silver",
+      "minprice": "19.8",
+      "minpricelocalized": "19.80 CHF",
+      "mounting": "Schraubbar",
+      "mpn": "00.7918.013.004",
+      "price": 20.8,
+      "priceprefix": "starting from",
+      "stock": "3",
+      "title": "Handlebar grip SRAM LockingGrips XX1 pair 100/122mm black / silver",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "133913",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 20.8,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Stem > Handles"
+      ],
+      "colour": "Schwarz",
+      "description": "Color black Size 100 / 122 mm Material Rubber Application area CC Mounting screwable Spring deflection 0 Product length 100 / 122 mm Type Accessories",
+      "df_grouping_id": "61069",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@572eaf865a8b470b4408829ddf1480c3",
+      "dfscore": 24.146412,
+      "griffform": "Rund",
+      "gtin": "0710845724114",
+      "id": "61069",
+      "image_link": "https://www.velofactory.ch/media/image/product/61069/md/sram-handlebar-grip-lockinggrips-xx1-pair-100-122mm-black.jpg",
+      "kartikel": "61069",
+      "link": "https://www.velofactory.ch/SRAM-handlebar-grip-LockingGrips-XX1-pair-100-122mm-black",
+      "minprice": "19.8",
+      "minpricelocalized": "19.80 CHF",
+      "mounting": "Schraubbar",
+      "mpn": "00.7918.013.005",
+      "price": 20.8,
+      "priceprefix": "starting from",
+      "stock": "24",
+      "title": "SRAM handlebar grip LockingGrips XX1 pair 100/122mm black",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "133942",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 45.3,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Powermeter / Wattmeter system"
+      ],
+      "description": "SPIDER W CHAINRING BOLTS XX1 BB30 76 11S SRAM",
+      "df_grouping_id": "61098",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@bbe3a23611885241d4f2622e39f29a95",
+      "dfscore": 24.146412,
+      "gtin": "0710845739422",
+      "highlight": {
+        "description": [
+          "SPIDER W CHAINRING BOLTS <em>XX1</em> BB30 76 11S <em>SRAM</em>"
+        ]
+      },
+      "id": "61098",
+      "image_link": "https://www.velofactory.ch/media/image/product/61098/md/spider-w-chainring-bolts-xx1-bb30-76-11s-sram_1.jpg",
+      "kartikel": "61098",
+      "link": "https://www.velofactory.ch/SPIDER-W-CHAINRING-BOLTS-XX1-BB30-76-11S-SRAM_1",
+      "minprice": "43",
+      "minpricelocalized": "43.00 CHF",
+      "mpn": "11.6118.004.002",
+      "price": 45.3,
+      "priceprefix": "starting from",
+      "stock": "7",
+      "title": "SPIDER W CHAINRING BOLTS XX1 BB30 76 11S SRAM",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "132976",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 12.2,
+      "brand": "SRAM",
+      "categories": [
+        "Road bike > Gear change > Cage, small parts"
+      ],
+      "description": "Compatible for crankset XX1-A1 Feature Thread length 5 mm Material Aluminum MTB groupsets XX1 Main product group Drive parts Category Mountainbike Product subgroup Chainrings Activity Cycling Sport Mountain bike Brand Sram Sales unit Set NAV item commission group 820: Sram",
+      "df_grouping_id": "60325",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@0fc07985420c4e102223ce28629649d0",
+      "dfscore": 24.146412,
+      "gtin": "0710845727610",
+      "highlight": {
+        "description": [
+          "Compatible for crankset <em>XX1</em>-A1 Feature Thread length 5 mm Material Aluminum MTB groupsets <em>XX1</em> Main product group",
+          "Sport Mountain bike Brand <em>Sram</em> Sales unit Set NAV item commission group 820: <em>Sram</em>"
+        ]
+      },
+      "id": "60325",
+      "image_link": "https://www.velofactory.ch/media/image/product/60325/md/sram-chainring-bolt-kit-xx1-4-alum-zrgry_2.jpg",
+      "kartikel": "60325",
+      "link": "https://www.velofactory.ch/SRAM-CHAINRING-BOLT-KIT-XX1-4-ALUM-ZRGRY_2",
+      "minprice": "11.6",
+      "minpricelocalized": "11.60 CHF",
+      "mpn": "11.6918.001.000",
+      "price": 12.2,
+      "priceprefix": "starting from",
+      "stock": "19",
+      "title": "SRAM CHAINRING BOLT KIT XX1 4 ALUM ZRGRY",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "137773",
+      "availability": "out of stock",
+      "availability_label": "out of stock",
+      "best_price": 209.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Cranks"
+      ],
+      "crank_length_in_mm": "170",
+      "description": "Type Service & Spare Parts",
+      "df_grouping_id": "64438",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@7682e8463d6a49b46d71f0759325e095",
+      "dfscore": 24.146412,
+      "gtin": "0710845809729",
+      "id": "64438",
+      "image_link": "https://www.velofactory.ch/media/image/product/64438/md/sram-left-crank-arm-xx1-eagle-gxp-170mm-black_2.jpg",
+      "kartikel": "64438",
+      "link": "https://www.velofactory.ch/SRAM-Left-Crank-Arm-XX1-Eagle-GXP-170mm-Black_2",
+      "minprice": "198.5",
+      "minpricelocalized": "198.50 CHF",
+      "mounting": "GXP",
+      "mpn": "11.6118.057.000",
+      "price": 209.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "title": "SRAM Left Crank Arm XX1 Eagle GXP 170mm Black",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163115",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 9.4,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Gear shift lever"
+      ],
+      "description": "Adjustment hub for trigger shift levers XX1, X01, X01 DH and EX1 Shift lever type Trigger MTB groups EX1 X01 X01 DH XX1 Main product group Drive parts Category Mountain bike Product subgroup Gear shift lever Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "126231",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@97d325c325b1600e99c2289cee503719",
+      "dfscore": 24.146412,
+      "gtin": "0710845718342",
+      "highlight": {
+        "description": [
+          "shift levers <em>XX1</em>, X01, X01 DH and EX1 Shift lever type Trigger MTB groups EX1 X01 X01 DH <em>XX1</em> Main product",
+          "lever Activity Cycling Sport Mountain bike Brand <em>Sram</em> Sales unit Piece"
+        ]
+      },
+      "id": "126231",
+      "image_link": "https://www.velofactory.ch/media/image/product/126231/md/sram-trigger-shifter-barrel-adjuster-xx1-x01-x01-dh-ex1_2.jpg",
+      "kartikel": "126231",
+      "link": "https://www.velofactory.ch/Sram-Trigger-Shifter-Barrel-Adjuster-XX1-X01-X01-DH-EX1_2",
+      "minprice": "8.9",
+      "minpricelocalized": "8.90 CHF",
+      "mpn": "11.7018.012.000",
+      "price": 9.4,
+      "priceprefix": "starting from",
+      "stock": "19",
+      "title": "Sram Trigger Shifter Barrel Adjuster XX1/X01/X01 DH/EX1",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163056",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 547.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Crank and chain wheel set"
+      ],
+      "crank_length_in_mm": "170",
+      "description": "Color: black Size: 170mm/30t",
+      "df_grouping_id": "126172",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@5e062e3c14b907a0de78da2e2db3cf86",
+      "dfscore": 24.146412,
+      "gtin": "0710845798160",
+      "id": "126172",
+      "image_link": "https://www.velofactory.ch/media/image/product/126172/md/sram-crankset-xx1-eagle-bb30-cannondale-black-170mm-30t_2.jpg",
+      "kartikel": "126172",
+      "link": "https://www.velofactory.ch/Sram-Crankset-XX1-Eagle-BB30-Cannondale-black-170mm-30t_2",
+      "minprice": "519.6",
+      "minpricelocalized": "519.60 CHF",
+      "mpn": "00.6118.442.004",
+      "number_of_teeth_1x_drive": "30",
+      "price": 547.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "3",
+      "title": "Sram Crankset XX1 Eagle BB30 Cannondale black 170mm/30t",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163057",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 547.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Crank and chain wheel set"
+      ],
+      "chainline_in_mm": "49",
+      "chainring_assembly": "Direct Mount",
+      "crank_length_in_mm": "175",
+      "description": "Feature Available with chainring: 30T Feature Compatible for 142mm rear hubs Chainline 49.0mm Bottom bracket type BB30 Chainring mounting Direct Mount - 3 Bolt Offset 6 mm Diameter 30 mm Material Carbon Weight 645 g Scope of delivery Bottom bracket not included MTB groups XX1 XX1 Eagle XX1 Eagle AXS Goods main group Drive parts Category Mountainbike Product subgroup Cranksets Activity Cycling Sport Mountain bike Brand Sram Sales unit Piece",
+      "df_grouping_id": "126173",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@e0a22fa75e2dd98e037442f0fb45b15d",
+      "dfscore": 24.146412,
+      "gtin": "0710845798177",
+      "highlight": {
+        "description": [
+          "delivery Bottom bracket not included MTB groups <em>XX1</em> <em>XX1</em> Eagle <em>XX1</em> Eagle AXS Goods main group Drive parts Category",
+          "Cranksets Activity Cycling Sport Mountain bike Brand <em>Sram</em> Sales unit Piece"
+        ]
+      },
+      "id": "126173",
+      "image_link": "https://www.velofactory.ch/media/image/product/126173/md/sram-crankset-xx1-eagle-bb30-cannondale-black-175mm-30t_2.jpg",
+      "kartikel": "126173",
+      "link": "https://www.velofactory.ch/Sram-Crankset-XX1-Eagle-BB30-Cannondale-black-175mm-30t_2",
+      "minprice": "519.6",
+      "minpricelocalized": "519.60 CHF",
+      "mounting": "BB30",
+      "mpn": "00.6118.442.005",
+      "number_of_teeth_1x_drive": "30",
+      "price": 547.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "1",
+      "title": "Sram Crankset XX1 Eagle BB30 Cannondale black 175mm/30t",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163064",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 568.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Crank and chain wheel set"
+      ],
+      "chainring_assembly": "Direct Mount",
+      "crank_length_in_mm": "170",
+      "description": "Real competition guys are always looking for any competitive advantage - a constant hunt for even lighter, stiffer, stronger or more stable equipment. To design the best possible drive, we have scrutinized and revised every detail of the crankset. The latest XX1 Eagle™ CARBON TUNED™ crankset is our lightest, stiffest and strongest crank yet. DUB™ technology optimizes and simplifies the interaction of the crank axle and bottom bracket, improving durability. Our DUB cranksets are simpler, more universal and more durable. Color: black Size: 170mm/34t",
+      "df_grouping_id": "126180",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@580a005faa42b4fce94b0422357cf6f3",
+      "dfscore": 24.146412,
+      "gtin": "0710845813627",
+      "highlight": {
+        "description": [
+          "revised every detail of the crankset. The latest <em>XX1</em> Eagle™ CARBON TUNED™ crankset is our lightest, stiffest"
+        ]
+      },
+      "id": "126180",
+      "image_link": "https://www.velofactory.ch/media/image/product/126180/md/sram-crankset-xx1-eagle-boost-dub-black-170mm-34t_2.jpg",
+      "kartikel": "126180",
+      "link": "https://www.velofactory.ch/Sram-Crankset-XX1-Eagle-Boost-DUB-black-170mm-34t_2",
+      "minprice": "539.6",
+      "minpricelocalized": "539.60 CHF",
+      "mounting": "DUB",
+      "mpn": "00.6118.526.007",
+      "number_of_teeth_1x_drive": "34",
+      "price": 568.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "5",
+      "title": "Sram Crankset XX1 Eagle Boost DUB black 170mm/34t",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163065",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 568.0,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Drive > Crank and chain wheel set"
+      ],
+      "crank_length_in_mm": "175",
+      "description": "Real competition guys are always looking for any competitive advantage - a constant hunt for even lighter, stiffer, stronger or more stable equipment. To design the best possible drive, we have scrutinized and revised every detail of the crankset. The latest XX1 Eagle™ CARBON TUNED™ crankset is our lightest, stiffest and strongest crank yet. DUB™ technology optimizes and simplifies the interaction of the crank axle and bottom bracket, improving durability. Our DUB cranksets are simpler, more universal and more durable. Color: black Size: 175mm/34t",
+      "df_grouping_id": "126181",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@8adb56b43f39ae5fb44b82295625d676",
+      "dfscore": 24.146412,
+      "gtin": "0710845813610",
+      "highlight": {
+        "description": [
+          "revised every detail of the crankset. The latest <em>XX1</em> Eagle™ CARBON TUNED™ crankset is our lightest, stiffest"
+        ]
+      },
+      "id": "126181",
+      "image_link": "https://www.velofactory.ch/media/image/product/126181/md/sram-crankset-xx1-eagle-boost-dub-black-175mm-34t_2.jpg",
+      "kartikel": "126181",
+      "link": "https://www.velofactory.ch/Sram-Crankset-XX1-Eagle-Boost-DUB-black-175mm-34t_2",
+      "minprice": "539.6",
+      "minpricelocalized": "539.60 CHF",
+      "mounting": "DUB",
+      "mpn": "00.6118.526.006",
+      "number_of_teeth_1x_drive": "34",
+      "price": 568.0,
+      "priceprefix": "starting from",
+      "series": "XX1 Eagle",
+      "stock": "7",
+      "title": "Sram Crankset XX1 Eagle Boost DUB black 175mm/34t",
+      "type": "product",
+      "ust": "7.7"
+    },
+    {
+      "article_no": "163109",
+      "availability": "in stock",
+      "availability_label": "in stock",
+      "best_price": 28.1,
+      "brand": "SRAM",
+      "categories": [
+        "MTB > Gear change > Rear derailleur",
+        "MTB > Gear change > Change gears, shift rollers, small parts"
+      ],
+      "description": "Rear derailleur fixing screw for XX1 and X01 11-speed",
+      "df_grouping_id": "126225",
+      "dfid": "54e8e92f3b6055a6b454a8b88d75f76d@product@42cc736825296f44e16fb0d789c1a4b3",
+      "dfscore": 24.146412,
+      "gtin": "0710845793936",
+      "highlight": {
+        "description": [
+          "Rear derailleur fixing screw for <em>XX1</em> and X01 11-speed"
+        ]
+      },
+      "id": "126225",
+      "image_link": "https://www.velofactory.ch/media/image/product/126225/md/sram-rear-derailleur-b-bolt-kit-xx1-x01-11sp_2.jpg",
+      "kartikel": "126225",
+      "link": "https://www.velofactory.ch/Sram-Rear-Derailleur-B-Bolt-Kit-XX1-X01-11SP_2",
+      "minprice": "26.7",
+      "minpricelocalized": "26.70 CHF",
+      "mpn": "11.7518.081.000",
+      "price": 28.1,
+      "priceprefix": "starting from",
+      "stock": "17",
+      "title": "Sram Rear Derailleur B-Bolt Kit XX1/X01 11SP",
+      "type": "product",
+      "ust": "7.7"
+    }
+  ],
+  "results_per_page": 30,
+  "total": 256,
+  "total_found": 256
+}

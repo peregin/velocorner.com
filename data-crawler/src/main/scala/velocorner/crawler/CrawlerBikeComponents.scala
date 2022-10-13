@@ -85,12 +85,12 @@ class CrawlerBikeComponents[F[_]: Async](client: Client[F]) extends Crawler[F] w
 
   override def market(): Marketplace = BikeComponents
 
-  override def products(searchTerm: String): F[List[ProductDetails]] = {
+  override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val term = URLEncoder.encode(searchTerm, "UTF-8")
     val uri = Uri.unsafeFromString(s"https://www.bike-components.de/en/suggest/term_suggestion/?keywords=$term&variant=DEFAULT")
     val request = Method.GET(uri)
     for {
       res <- client.expect[SuggestResponse](request)
-    } yield res.toApi()
+    } yield res.toApi().take(limit)
   }
 }

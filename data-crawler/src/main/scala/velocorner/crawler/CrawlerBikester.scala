@@ -53,8 +53,7 @@ class CrawlerBikester[F[_]: Async](client: Client[F]) extends Crawler[F] with Ht
 
   override def market(): Marketplace = Bikester
 
-  override def products(searchTerm: String): F[List[ProductDetails]] = {
-    val limit = 5
+  override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val search = URLEncoder.encode(searchTerm, "UTF-8")
     val uri = s"https://www.bikester.ch/suche/?q=$search"
     for {

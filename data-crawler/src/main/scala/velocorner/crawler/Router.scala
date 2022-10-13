@@ -18,7 +18,7 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
   private def search(term: String): F[List[ProductDetails]] = for {
     _ <- Logger[F].info(s"searching for $term...")
     suggestions <- crawlers.parTraverse{c =>
-      c.products(term).handleErrorWith { e =>
+      c.products(term, 5).handleErrorWith { e =>
         Logger[F].error(e)("unable to crawl") *> List.empty[ProductDetails].pure[F]
       }
     }.map(_.flatten)

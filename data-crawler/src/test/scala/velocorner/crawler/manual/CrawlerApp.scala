@@ -13,8 +13,9 @@ object CrawlerApp extends IOApp.Simple {
     // CrawlerBikeComponents[IO](client)
     // CrawlerChainReactionCycles[IO](client)
     // new CrawlerBikeImport[IO](client)
-    crawler = new CrawlerBikester[IO](client)
-    res <- Resource.eval(crawler.products("sram xx1"))
+    // new CrawlerBikester[IO](client)
+    crawler = new CrawlerVeloFactory[IO](client)
+    res <- Resource.eval(crawler.products("Garmin Edge 830", 10))
   } yield res).use { res =>
     val clean = res.map(p => p.copy(market = p.market.copy(url = "", logoUrl = ""), description = none))
     IO.println(s"search result = ${clean.mkString("\n", "\n", "\n")}")

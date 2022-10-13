@@ -19,6 +19,8 @@ import java.net.URLEncoder
 
 object CrawlerGalaxus {
 
+  val baseUrl = Galaxus.url.stripSuffix("/")
+
   case class GalaxusImage(url: String)
 
   object GalaxusImage {
@@ -78,7 +80,6 @@ object CrawlerGalaxus {
     def convert(s: String): String = s.toLowerCase.replace(' ', '-')
     def toApi(): List[ProductDetails] = data.search.products.results.map { res =>
       val p = res.product
-      val baseUrl = Galaxus.url.stripSuffix("/")
       ProductDetails(
         market = Galaxus,
         brand = Brand(name = p.brandName, logoUrl = none).some,
@@ -127,8 +128,7 @@ class CrawlerGalaxus[F[_]: Async](client: Client[F]) extends Crawler[F] with Htt
       |]
       |""".stripMargin
 
-  override def products(searchTerm: String): F[List[ProductDetails]] = {
-    val limit = 5
+  override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val headers: Headers = Headers(
       Header.Raw(CIString("authority"), "www.galaxus.ch"),
       Header.Raw(CIString("referer"), s"https://www.galaxus.ch/search?q=${URLEncoder.encode(searchTerm, "UTF-8")}"),

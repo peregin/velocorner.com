@@ -52,8 +52,7 @@ class CrawlerBikeImport[F[_]: Async](client: Client[F]) extends Crawler[F] with 
 
   override def market(): Marketplace = BikeImport
 
-  override def products(searchTerm: String): F[List[ProductDetails]] = {
-    val limit = 5
+  override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val search = URLEncoder.encode(searchTerm, "UTF-8")
     val uri = s"https://bikeimport.ch/shop/search/$search"
     for {
