@@ -1,4 +1,6 @@
 # ToDo
+- badge for new, available, sales, lead times
+- https://exchangerate.host/#/ to spot prices, and align prices in the output
 - add progress bar when searching for prices
 - add throttling
 - restart service for changed images only - or publish image from ci conditionally - orb filter
