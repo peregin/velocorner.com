@@ -14,8 +14,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 // for kestrel combinator
 import mouse.all._
 
-/** Isolate the update the logic to refresh club and account activities.
-  */
+/**
+ * Isolate the update the logic to refresh club and account activities.
+ */
 @Singleton
 class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
 
@@ -25,7 +26,7 @@ class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
   val stalePeriodInMillis = 60000 // more than a minute
 
   // query from the storage and eventually from the activity feed
-  def refreshAccountActivities(account: Account, now: DateTime): Future[Iterable[Activity]] = {
+  def refreshAccountActivities(account: Account, now: DateTime): Future[Iterable[Activity]] =
     account.stravaAccess
       .map(_.accessToken)
       .map { accessToken =>
@@ -45,7 +46,6 @@ class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
         activitiesF <| (_.onComplete(_ => feed.close()))
       }
       .getOrElse(Future(Iterable.empty))
-  }
 
   protected def retrieveNewActivities(
       feed: ActivityFeed,
@@ -53,7 +53,7 @@ class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
       athleteId: Long,
       lastUpdate: Option[DateTime],
       now: DateTime
-  ): Future[Iterable[Activity]] = {
+  ): Future[Iterable[Activity]] =
     lastUpdate.map(_.getMillis) match {
 
       case None => // it was never synchronized, do a full update
@@ -84,6 +84,5 @@ class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
         log.info(s"was already refreshed in the last $stalePeriodInMillis millis")
         Future(Iterable.empty)
     }
-  }
 
 }

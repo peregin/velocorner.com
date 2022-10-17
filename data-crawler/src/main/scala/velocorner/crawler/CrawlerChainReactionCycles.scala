@@ -20,16 +20,20 @@ object CrawlerChainReactionCycles {
   def scrape(content: String, limit: Int): List[ProductDetails] = {
     val dom = Jsoup.parse(content)
     val grids = dom.select("div[class=products_details_container]").asScala.take(limit)
-    grids.map{ g =>
+    grids.map { g =>
       val desc = g.select("li[class=description] > a")
       val productUrl = baseUrl + desc.attr("href")
       val name = desc.select("h2").text()
       val imageUrl = g.select("div[class=product_image1 placeholder] > a > img").attr("src")
       // has text in range: £419.99&nbsp;-&nbsp;£505.99
       // or in a span element a single price £287.00
-      val price = Option(g.select("li[class=fromamt] > span").text().trim).filter(_.nonEmpty)
+      val price = Option(g.select("li[class=fromamt] > span").text().trim)
+        .filter(_.nonEmpty)
         .getOrElse(g.select("li[class=fromamt]").text().trim)
-        .split("-").headOption.getOrElse("").trim // take the first from the range if any
+        .split("-")
+        .headOption
+        .getOrElse("")
+        .trim // take the first from the range if any
       ProductDetails(
         market = ChainReactionCycles,
         brand = none,

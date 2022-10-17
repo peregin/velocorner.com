@@ -25,11 +25,10 @@ trait LocalSpark[T] extends Logging {
 
   def runSpark(): T = {
     val result =
-      try {
+      try
         spark(sc)
-      } finally {
+      finally
         sc.stop()
-      }
     resulted(result)
   }
 }

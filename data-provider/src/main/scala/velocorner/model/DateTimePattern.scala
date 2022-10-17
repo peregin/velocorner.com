@@ -17,8 +17,9 @@ import play.api.libs.json.{
   Reads
 }
 
-/** Created by levi on 24/12/15.
-  */
+/**
+ * Created by levi on 24/12/15.
+ */
 object DateTimePattern {
 
   // used UTC, otherwise DST can cause problems reading the time in a different zone.

@@ -18,15 +18,15 @@ object PriceParser {
     case pricePattern(amount, currency) =>
       Try(Money(BigDecimal(amount), normalizeCurrency(currency))) match {
         case Success(value) => value
-        case Failure(err) => throw new IllegalArgumentException(s"unable to parse price $amountCcy, because $err")
+        case Failure(err)   => throw new IllegalArgumentException(s"unable to parse price $amountCcy, because $err")
       }
     case other => throw new IllegalArgumentException(s"invalid price pattern $other")
   }
 
   def normalizeCurrency(c: String): String = c match {
-    case "€" => "EUR"
-    case "$" => "USD"
-    case "£" => "GBP"
+    case "€"   => "EUR"
+    case "$"   => "USD"
+    case "£"   => "GBP"
     case other => other
   }
 }

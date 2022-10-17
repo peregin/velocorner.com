@@ -4,8 +4,9 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.Progress
 import velocorner.model.YearlyProgress
 
-/** Created by levi on 17/08/15.
-  */
+/**
+ * Created by levi on 17/08/15.
+ */
 object YearlyAggregate {
 
   def from(yp: YearlyProgress): YearlyAggregate = {
@@ -16,7 +17,6 @@ object YearlyAggregate {
 
 case class YearlyAggregate(year: Int, aggregate: Progress) extends LazyLogging {
 
-  def prettyPrint(): Unit = {
+  def prettyPrint(): Unit =
     logger.info(f"year $year -> ${aggregate.distance}%6.0f km, ${aggregate.elevation}%7.0f \u2191m, ${aggregate.rides}%4d rides")
-  }
 }

@@ -40,14 +40,13 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     accounts <- adminStorage.countAccounts
     activeAccounts <- adminStorage.countActiveAccounts
     activities <- adminStorage.countActivities
-    brands <- brandFeed.countBrands().recover {
-      case error =>
-        logger.error(s"error while counting brands: ${error.getMessage}")
-        0L
+    brands <- brandFeed.countBrands().recover { case error =>
+      logger.error(s"error while counting brands: ${error.getMessage}")
+      0L
     }
-    markets <- productFeed.supported().map(_.size.toLong).recover{
-      case error => logger.error(s"error while counting markets: ${error.getMessage}")
-        0L
+    markets <- productFeed.supported().map(_.size.toLong).recover { case error =>
+      logger.error(s"error while counting markets: ${error.getMessage}")
+      0L
     }
   } yield AdminInfo(
     accounts = accounts,

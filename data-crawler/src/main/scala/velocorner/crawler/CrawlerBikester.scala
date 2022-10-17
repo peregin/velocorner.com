@@ -20,7 +20,7 @@ object CrawlerBikester {
   def scrape(content: String, limit: Int): List[ProductDetails] = {
     val dom = Jsoup.parse(content)
     val grids = dom.select("div[id=search-result-items] > div").asScala.take(limit)
-    grids.map{ g =>
+    grids.map { g =>
       val box = g.select("div[class = product-tile-inner] > div")
       val productUrl = baseUrl + box.select("a").attr("href")
       val imageUrl = box.select("div[class=product-image] > img").attr("data-src")

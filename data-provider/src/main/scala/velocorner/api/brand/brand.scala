@@ -11,26 +11,27 @@ package object brand {
   object Marketplace extends Enum[Marketplace] with LowerCamelcase {
 
     object Bike24
-      extends Marketplace(
-        "Bike24",
-        "https://www.bike24.com/",
-        "https://assets10.bike24.net/static/images/8e6800bd228af47a3e77.svg"
-      )
+        extends Marketplace(
+          "Bike24",
+          "https://www.bike24.com/",
+          "https://assets10.bike24.net/static/images/8e6800bd228af47a3e77.svg"
+        )
 
     // part of crawling
     object BikeComponents
-      extends Marketplace(
-        "Bike-Components",
-        "https://www.bike-components.de/",
-        "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
-      )
+        extends Marketplace(
+          "Bike-Components",
+          "https://www.bike-components.de/",
+          "https://www.bike-components.de/assets/favicons/android-chrome-192x192.png"
+        )
 
     // part of crawling
-    object BikeImport extends Marketplace(
-      "BikeImport",
-      "https://bikeimport.ch/",
-      "https://bikeimport.ch/images/bikeimport_logo.png"
-    )
+    object BikeImport
+        extends Marketplace(
+          "BikeImport",
+          "https://bikeimport.ch/",
+          "https://bikeimport.ch/images/bikeimport_logo.png"
+        )
 
     // part of crawling
     object Bikester
@@ -50,11 +51,11 @@ package object brand {
 
     // part of crawling
     object Galaxus
-      extends Marketplace(
-        "Galaxus",
-        "https://www.galaxus.ch/",
-        "https://www.galaxus.ch/static/images/galaxus/logo.svg"
-      )
+        extends Marketplace(
+          "Galaxus",
+          "https://www.galaxus.ch/",
+          "https://www.galaxus.ch/static/images/galaxus/logo.svg"
+        )
 
     object PerformanceBike
         extends Marketplace(
@@ -63,26 +64,27 @@ package object brand {
           "https://www.performancebike.com/cdn-cgi/image/width=600/content/skins/performancebike/images/site-logo.png"
         )
 
-    object MountainBikeParts extends Marketplace(
-      "MountainBike Parts",
-      "https://www.mountainbike-parts.ch/",
-      "https://www.mountainbike-parts.ch/images/mountain_bike_logo.svg"
-    )
+    object MountainBikeParts
+        extends Marketplace(
+          "MountainBike Parts",
+          "https://www.mountainbike-parts.ch/",
+          "https://www.mountainbike-parts.ch/images/mountain_bike_logo.svg"
+        )
 
     // part of crawling
-    object VeloFactory extends Marketplace(
-      "VeloFactory",
-      "https://www.velofactory.ch",
-      "https://www.velofactory.ch/bilder/intern/shoplogo/velofactory-logo_v2.jpg"
-    )
+    object VeloFactory
+        extends Marketplace(
+          "VeloFactory",
+          "https://www.velofactory.ch",
+          "https://www.velofactory.ch/bilder/intern/shoplogo/velofactory-logo_v2.jpg"
+        )
 
     object Wiggle
-      extends Marketplace(
-        "Wiggle",
-        "https://www.wiggle.co.uk/",
-        "https://www.wigglestatic.com/images/ui/wiggle-logo/desktop-wiggle_master_rgb_logo.svg"
-      )
-
+        extends Marketplace(
+          "Wiggle",
+          "https://www.wiggle.co.uk/",
+          "https://www.wigglestatic.com/images/ui/wiggle-logo/desktop-wiggle_master_rgb_logo.svg"
+        )
 
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
 

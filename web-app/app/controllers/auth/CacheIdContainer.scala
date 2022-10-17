@@ -42,12 +42,10 @@ class CacheIdContainer[Id: ClassTag] @Inject() (cache: SyncCacheApi) {
     unsetToken(token)
   }
 
-  private[auth] def unsetToken(token: AuthenticityToken): Unit = {
+  private[auth] def unsetToken(token: AuthenticityToken): Unit =
     cache.remove(token + tokenSuffix)
-  }
-  private[auth] def unsetUserId(userId: Id): Unit = {
+  private[auth] def unsetUserId(userId: Id): Unit =
     cache.remove(userId.toString + userIdSuffix)
-  }
 
   def get(token: AuthenticityToken): Option[Id] = cache.get[Id](token + tokenSuffix)
 
@@ -56,8 +54,7 @@ class CacheIdContainer[Id: ClassTag] @Inject() (cache: SyncCacheApi) {
     cache.set(userId.toString + userIdSuffix, token, timeoutInSeconds seconds)
   }
 
-  def prolongTimeout(token: AuthenticityToken, timeoutInSeconds: Int): Unit = {
+  def prolongTimeout(token: AuthenticityToken, timeoutInSeconds: Int): Unit =
     get(token).foreach(store(token, _, timeoutInSeconds))
-  }
 
 }

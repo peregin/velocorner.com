@@ -9,8 +9,9 @@ import scala.concurrent.Await
 import scala.language.postfixOps
 import scala.jdk.CollectionConverters._
 
-/** Implementation to connect with Withings REST API
-  */
+/**
+ * Implementation to connect with Withings REST API
+ */
 object WithingsMeasureFeed {
 
   // for getting body measures
@@ -20,7 +21,10 @@ object WithingsMeasureFeed {
     ConsumerKey(config.getAuthToken(ServiceProvider.Withings), config.getAuthSecret(ServiceProvider.Withings))
 }
 
-class WithingsMeasureFeed(userId: Long, token: RequestToken, override val config: SecretConfig) extends HttpFeed with MeasureFeed with LazyLogging {
+class WithingsMeasureFeed(userId: Long, token: RequestToken, override val config: SecretConfig)
+    extends HttpFeed
+    with MeasureFeed
+    with LazyLogging {
 
   logger.info(s"connecting to withings with token [${token.token}]...")
 
