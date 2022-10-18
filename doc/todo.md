@@ -1,5 +1,6 @@
 # ToDo
 - badge for new, available, sales, lead times
+- suggestions when searching products
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
 - add progress bar when searching for prices
 - add throttling
