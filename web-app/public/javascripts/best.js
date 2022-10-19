@@ -42,7 +42,7 @@
         $.each(products, function(ix, entry) {
             $("#best-result").append(
               `    <div class="col-md-3 col-sm-6 md-margin-bottom-30">
-                       <div class="product-img">
+                       <div class="product-img" style="height:300px;margin-top:10px;">
                            <a href="${entry.productUrl}"><img class="full-width img-responsive" src="${entry.imageUrl}" alt="Product" loading="lazy"></a>
                            <!-- <div class="shop-rgba-red rgba-banner">Out of stock</div>-->
                            <div class="shop-rgba-dark-green rgba-banner">New</div>
