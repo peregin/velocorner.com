@@ -1,4 +1,5 @@
 # ToDo
+- show zinc search version (endpoint with same name), instead of elastic
 - badge for new, available, sales, lead times
 - suggestions when searching products
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
