@@ -15,5 +15,8 @@ case class ProductDetails(
     price: Money,
     imageUrl: String,
     productUrl: String,
-    reviewStars: Double
+    reviewStars: Double,
+    isNew: Boolean,
+    onSales: Boolean,
+    onStock: Boolean
 )

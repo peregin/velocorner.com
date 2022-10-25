@@ -47,7 +47,10 @@ class MarketplaceTest extends AnyFlatSpec with should.Matchers with DecodeResour
       price = Money(46.3, "CHF"),
       imageUrl = "https://www.velofactory.ch/media/image/product/26868/md/sram-xx1-20-11-speed-chain.jpg",
       productUrl = "https://www.velofactory.ch/SRAM-XX1-20-11-speed-chain",
-      reviewStars = 0d
+      reviewStars = 0d,
+      isNew = false,
+      onSales = false,
+      onStock = true
     )
   }
 }

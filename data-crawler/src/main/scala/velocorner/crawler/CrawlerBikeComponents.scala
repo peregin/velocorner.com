@@ -33,7 +33,10 @@ object CrawlerBikeComponents {
       imageMedium: SuggestImage,
       link: String,
       manufacturer: String,
-      reviewStars: Option[Double]
+      reviewStars: Option[Double],
+      isNew: Option[Boolean],
+      isBuyable: Option[Boolean],
+      isOffer: Option[Boolean]
   )
   object SuggestProduct {
     implicit val codec: Codec[SuggestProduct] = deriveCodec
@@ -59,7 +62,10 @@ object CrawlerBikeComponents {
         price = extractPrice(p.price),
         imageUrl = baseUrl + p.imageMedium.path,
         productUrl = baseUrl + p.link,
-        reviewStars = p.reviewStars.getOrElse(0)
+        reviewStars = p.reviewStars.getOrElse(0),
+        isNew = p.isNew.getOrElse(false),
+        onSales = p.isOffer.getOrElse(false),
+        onStock = p.isBuyable.getOrElse(true)
       )
     }
   }

@@ -23,7 +23,10 @@ class ModelTest extends AnyFlatSpec with should.Matchers with DecodeResource {
       price = Money(10.2, "EUR"),
       imageUrl = "image",
       productUrl = "product/url",
-      reviewStars = 4
+      reviewStars = 4,
+      isNew = false,
+      onSales = false,
+      onStock = true
     )
     val json = pd.asJson.spaces4
     json shouldBe
@@ -45,7 +48,10 @@ class ModelTest extends AnyFlatSpec with should.Matchers with DecodeResource {
         |    },
         |    "imageUrl" : "image",
         |    "productUrl" : "product/url",
-        |    "reviewStars" : 4.0
+        |    "reviewStars" : 4.0,
+        |    "isNew" : false,
+        |    "onSales" : false,
+        |    "onStock" : true
         |}""".stripMargin
   }
 }

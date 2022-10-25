@@ -25,6 +25,7 @@ object CrawlerBikeImport {
       val imageUrl = baseUrl + g.select("a > img").attr("src")
       val title = g.select("div[class=title]")
       val brand = title.select("span[class=brand]").text()
+      val maybeSale = Option(title.select("span[class=onsale]"))
       val name = title.text()
       val price = g.select("div[class=price]").text().trim
       ProductDetails(
@@ -35,7 +36,10 @@ object CrawlerBikeImport {
         price = extractPrice(price),
         imageUrl = imageUrl,
         productUrl = productUrl,
-        reviewStars = 0
+        reviewStars = 0,
+        isNew = false,
+        onSales = maybeSale.nonEmpty,
+        onStock = true
       )
     }.toList
   }

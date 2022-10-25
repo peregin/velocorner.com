@@ -36,7 +36,10 @@ object CrawlerBikester {
         price = extractPrice(price),
         imageUrl = imageUrl,
         productUrl = productUrl,
-        reviewStars = 0
+        reviewStars = 0,
+        isNew = false,
+        onSales = false,
+        onStock = true
       )
     }.toList
   }

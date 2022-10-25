@@ -90,7 +90,10 @@ object CrawlerGalaxus {
         productUrl = baseUrl + "/en/product/" + convert(p.name) + "-" + convert(p.nameProperties) + "-" + convert(
           p.productTypeName
         ) + "-" + p.productId,
-        reviewStars = p.averageRating.getOrElse(0)
+        reviewStars = p.averageRating.getOrElse(0),
+        isNew = false,
+        onSales = false,
+        onStock = true
       )
     }
   }

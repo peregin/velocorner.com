@@ -43,7 +43,10 @@ object CrawlerVeloFactory {
         price = Money(BigDecimal(p.best_price.getOrElse(p.price)), "CHF"),
         imageUrl = p.image_link,
         productUrl = p.link,
-        reviewStars = 0
+        reviewStars = 0,
+        isNew = false,
+        onSales = false,
+        onStock = true
       )
     }
   }
