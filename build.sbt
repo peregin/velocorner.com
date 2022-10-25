@@ -112,7 +112,7 @@ def circe: Seq[ModuleID] = Seq(
   "io.circe" %% "circe-parser",
   "io.circe" %% "circe-generic"
 ).map(_ % Dependencies.circeVersion) ++ Seq(
-  "io.circe" %% "circe-generic-extras" % "0.14.2"
+  "io.circe" %% "circe-generic-extras" % "0.14.3"
 )
 
 def scalacache = Seq(
