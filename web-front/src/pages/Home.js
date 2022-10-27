@@ -1,6 +1,8 @@
 import React from 'react';
 import ApiClient from "../service/ApiClient";
 
+import { Button, Heading } from '@chakra-ui/react'
+
 const Home = () => {
 
     const handleClick = () => {
@@ -10,8 +12,8 @@ const Home = () => {
 
     return (
         <div>
-            <h2>Home</h2>
-            <button onClick={handleClick}>Test JWT</button>
+            <Heading>Home</Heading>
+            <Button onClick={handleClick}>Test JWT</Button>
         </div>
     )
 }

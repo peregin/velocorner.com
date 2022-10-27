@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Flex } from '@chakra-ui/react'
 
 class Header extends Component {
     render() {
         return (
             <div className="header no-topbar">
-                <br/>
-                
+                <br />
+
                 <div className="navbar navbar-default mega-menu navbar-responsive-collapse" role="navigation">
                     <div className="container">
 
@@ -18,7 +19,7 @@ class Header extends Component {
                             </button>
                             <h2>
                                 <a className="navbar-brand VC_nopadding" href="/">
-                                    <img id="logo-header" className="VC_logo_size" src="/images/logo50.png" alt="Logo1"/>
+                                    <img id="logo-header" className="VC_logo_size" src="/images/logo50.png" alt="Logo1" />
                                 </a>
                                 <a className="navbar-brand" href="/">VELOCORNER</a>
                             </h2>
@@ -26,35 +27,38 @@ class Header extends Component {
 
                         {/*  Search input form */}
                         {/* TODO: shortcut - only if logged in */}
-                        <div className="input-group col-md-6 col-xs-12" style={{float: 'left', margin: '10px'}}>
-                            <input id="search" name="search" type="text" className="form-control" placeholder="Search for activities ..."/>
+                        <div className="input-group col-md-6 col-xs-12" style={{ float: 'left', margin: '10px' }}>
+                            <input id="search" name="search" type="text" className="form-control" placeholder="Search for activities ..." />
                             <span className="input-group-btn">
                                 <button id="search_button" name="search_button" className="btn-u" type="button"><i className="fa fa-search"></i></button>
                             </span>
                         </div>
-                    
+
 
                         {/* Collect the nav links, forms, and other content for toggling */}
                         <div className="collapse navbar-collapse navbar-responsive-collapse">
                             <ul className="nav navbar-nav">
                                 {/* Home */}
-                                <li className={ this.props.page === "Home" ? 'active' : '' }><a href="/">Home</a></li>
+                                <li className={this.props.page === "Home" ? 'active' : ''}><a href="/">Home</a></li>
                                 {/* About */}
-                                <li className={ this.props.page === "About" ? 'active' : '' }><a href="/about">About Us</a></li>
+                                <li className={this.props.page === "About" ? 'active' : ''}><a href="/about">About Us</a></li>
                             </ul>
                         </div> {/* navbar-collapse */}
                     </div>
                 </div>
 
                 {/* <script src="%PUBLIC_URL%/javascripts/search.js" type="text/javascript"></script> */}
+                <Flex as="header" position="fixed" backgroundColor="rgba(255, 255, 255, 0.8)" w="100%">
+                    TEST
+                </Flex>
 
                 <header role="banner">
                     <section className="header no-topbar">
                         <Link id="logo" to="/" title="Velocorner" />
                         <nav>
                             <ul>
-                                <li><Link to="/" className={ this.props.page === "main" ? 'current' : '' }>Home</Link></li>
-                                <li><Link to="/about" className={ this.props.page === "about" ? 'current' : '' }>About</Link></li>
+                                <li><Link to="/" className={this.props.page === "main" ? 'current' : ''}>Home</Link></li>
+                                <li><Link to="/about" className={this.props.page === "about" ? 'current' : ''}>About2</Link></li>
                             </ul>
                         </nav>
                     </section>

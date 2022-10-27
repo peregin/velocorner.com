@@ -3,6 +3,8 @@ import {
   BrowserRouter, Route, Routes,
 } from 'react-router-dom';
 
+import { ChakraProvider, Progress } from '@chakra-ui/react'
+
 import Home from "./pages/Home";
 import About from "./pages/About";
 
@@ -30,22 +32,25 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <div className="wrapper">
+      <ChakraProvider>
+        <BrowserRouter>
+          <div className="wrapper">
 
-          <Header />
+            <Header />
 
-          <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
+            <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
+            <Progress hasStripe value={this.state.memoryUsage}/>
 
-          <Routes>
-            <Route exact path="/" element={<Home/>} />
-            <Route path="/about" element={<About/>} />
-          </Routes>
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+            </Routes>
 
-          <Footer />
+            <Footer />
 
           </div>
-      </BrowserRouter>
+        </BrowserRouter>
+      </ChakraProvider>
     )
   }
 }
