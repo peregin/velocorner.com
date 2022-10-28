@@ -4,11 +4,7 @@ function getStatus(cb) {
   const requestOptions = {
     method: 'GET',
     accept: 'application/json',
-    cache: 'no-cache',
-    referrerPolicy: 'no-referrer',
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
+    cache: 'no-cache'
   }
   return fetch(apiHost + '/api/status', requestOptions)
     .then(checkStatus)
