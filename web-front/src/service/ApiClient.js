@@ -1,12 +1,12 @@
 
-
+const apiHost = process.env.API_HOST || 'http://localhost:9001'
 
 function getStatus(cb) {
   const requestOptions = {
     method: 'GET',
     headers: authHeader()
   }
-  return fetch('/api/status', requestOptions)
+  return fetch(apiHost + '/api/status', requestOptions)
     .then(checkStatus)
     .then(r => r.json())
     .then(cb)
