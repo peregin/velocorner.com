@@ -3,8 +3,12 @@ const apiHost = process.env.API_HOST || 'http://localhost:9001'
 function getStatus(cb) {
   const requestOptions = {
     method: 'GET',
-    mode: 'no-cors',
-    accept: "application/json"
+    accept: 'application/json',
+    cache: 'no-cache',
+    referrerPolicy: 'no-referrer',
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
   }
   return fetch(apiHost + '/api/status', requestOptions)
     .then(checkStatus)
