@@ -22,4 +22,5 @@ ENV NODE_ENV production
 EXPOSE 3000
 
 # start app
-CMD ["npx", "serve", "build"]
+#CMD ["npx", "serve", "build"]
+CMD ["npm", "start"]
