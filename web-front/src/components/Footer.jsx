@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import Logo from './Logo';
 
 const Instagram = () => {
     return <div className="col-md-8 md-margin-bottom-40">
@@ -21,6 +21,7 @@ const Social = () => {
             <li className="VC_social_icon"><a href="mailto:velocorner.com@@gmail.com" data-original-title="Email" className="rounded-x social_email">velocorner.com@@gmail.com</a><small>EMAIL</small></li>
             <li className="VC_social_icon"><a href="https://www.facebook.com/101313662146829" data-original-title="Facebook" className="rounded-x social_facebook">Facebook</a><small>FACEBOOK</small></li>
         </ul>
+        <Logo/>
     </div>
 }
 
