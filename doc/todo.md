@@ -1,4 +1,5 @@
 # ToDo
+- add toppreise, and check other aggregators
 - show zinc search version (endpoint with same name), instead of elastic
 - badge for new, available, sales, lead times
 - suggestions when searching products

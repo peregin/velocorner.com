@@ -63,6 +63,12 @@ package object brand {
           "https://www.performancebike.com/cdn-cgi/image/width=600/content/skins/performancebike/images/site-logo.png"
         )
 
+    object TopPreise extends Marketplace(
+      name = "TopPreise",
+      url = "https://www.toppreise.ch/",
+      logoUrl = "https://www.toppreise.ch/files-cc471683-/images/tp_.png"
+    )
+
     object MountainBikeParts extends Marketplace(
       "MountainBike Parts",
       "https://www.mountainbike-parts.ch/",
