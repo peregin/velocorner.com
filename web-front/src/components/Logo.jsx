@@ -1,38 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import strava from "super-tiny-icons/images/svg/strava.svg";
+import React, { useReducer, useEffect } from 'react'
+import strava from 'super-tiny-icons/images/svg/strava.svg'
 import { Image, Link } from '@chakra-ui/react'
 
 const Logo = ({ rotation = 90, timing = 200 }) => {
 
-    const [isBooped, setIsBooped] = useState(false)
+    const initialState = {
+        isMouseJustOver: false, // is true for a short time after mouse is entering
+        isMouseStillOver: false // is always true when the mouse is over
+    }
+    const reducer = (state, newState) => ({ ...state, ...newState })
+    const [state, setState] = useReducer(reducer, initialState)
 
     useEffect(() => {
-        if (!isBooped) {
-          return;
+        if (!state.isMouseJustOver) {
+            return;
         }
         const timeoutId = window.setTimeout(() => {
-          setIsBooped(false);
+            setState({isMouseJustOver: false})
         }, timing)
         return () => {
-          window.clearTimeout(timeoutId);
+            window.clearTimeout(timeoutId)
         }
-      }, [isBooped, timing])
+    }, [state.isMouseJustOver, timing])
 
     const style = {
         display: 'inline-block',
         backfaceVisibility: 'hidden',
-        transform: isBooped ? `rotateY(${rotation}deg)` : `rotateY(0deg)`,
+        transform: state.isMouseJustOver ? `rotateY(${rotation}deg)` : `rotateY(0deg)`,
         transition: `transform ${timing}ms`,
-        filter: isBooped ? `grayscale(0%)` : `grayscale(95%)`,
-      }
+        filter: state.isMouseStillOver ? `grayscale(0%)` : `grayscale(95%)`,
+    }
 
     const handleMouseEnter = () => {
-        setIsBooped(true)
-     }
+        setState({
+            isMouseJustOver: true,
+            isMouseStillOver: true
+        });
+    }
+
+
+    const handleMouseLeave = () => {
+        setState({
+            isMouseJustOver: false,
+            isMouseStillOver: false
+        });
+    }
 
     return (
-        <Link src='https://www.strava.com/clubs/velocorner' onMouseEnter={handleMouseEnter}>
-            <Image src={strava} boxSize='40px' boxShadow='md' borderRadius='full' alt='Strava' style={style}/>
+        <Link src='https://www.strava.com/clubs/velocorner' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <Image src={strava} boxSize='40px' boxShadow='md' borderRadius='full' alt='Strava' style={style} />
         </Link>
     )
 }
