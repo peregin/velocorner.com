@@ -1,8 +1,7 @@
 import React, { useReducer, useEffect } from 'react'
-import strava from 'super-tiny-icons/images/svg/strava.svg'
-import { Image, Link } from '@chakra-ui/react'
+import { Image, Link, Tooltip } from '@chakra-ui/react'
 
-const Logo = ({ rotation = 90, timing = 200 }) => {
+const Logo = ({ image, name, link, rotation = 90, timing = 200 }) => {
 
     const initialState = {
         isMouseJustOver: false, // is true for a short time after mouse is entering
@@ -16,7 +15,7 @@ const Logo = ({ rotation = 90, timing = 200 }) => {
             return;
         }
         const timeoutId = window.setTimeout(() => {
-            setState({isMouseJustOver: false})
+            setState({ isMouseJustOver: false })
         }, timing)
         return () => {
             window.clearTimeout(timeoutId)
@@ -47,8 +46,10 @@ const Logo = ({ rotation = 90, timing = 200 }) => {
     }
 
     return (
-        <Link src='https://www.strava.com/clubs/velocorner' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <Image src={strava} boxSize='40px' boxShadow='md' borderRadius='full' alt='Strava' style={style} />
+        <Link href={link} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <Tooltip label={name}>
+                <Image src={image} boxSize='40px' boxShadow='md' borderRadius='full' alt={name} style={style} />
+            </Tooltip>
         </Link>
     )
 }
