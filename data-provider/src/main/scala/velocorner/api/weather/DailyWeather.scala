@@ -11,13 +11,12 @@ object DailyWeather {
   implicit val dateFormat = DateTimePattern.createShortFormatter
   implicit val entryFormat = Format[DailyWeather](Json.reads[DailyWeather], Json.writes[DailyWeather])
 
-  def list(entries: List[WeatherForecast]): List[DailyWeather] = {
+  def list(entries: List[WeatherForecast]): List[DailyWeather] =
     entries
       .groupBy(wf => new DateTime(wf.timestamp).toLocalDate)
       .map { case (day, wfList) => from(day, wfList.map(_.forecast)) }
       .toList
       .sortBy(_.day.toString)
-  }
 
   import Ordering.Float.IeeeOrdering
 

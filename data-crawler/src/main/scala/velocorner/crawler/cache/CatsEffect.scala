@@ -5,7 +5,6 @@ import scalacache.Mode
 
 import scala.util.control.NonFatal
 
-
 // "com.github.cb372" %% "scalacache-cats-effect" conflicts with the current version
 object CatsEffect {
 
@@ -32,8 +31,8 @@ object CatsEffect {
 
     def raiseError[A](t: Throwable): F[A] = af.raiseError(t)
 
-    def handleNonFatal[A](fa: => F[A])(f: Throwable => A): F[A] = af.recover(fa) {
-      case NonFatal(e) => f(e)
+    def handleNonFatal[A](fa: => F[A])(f: Throwable => A): F[A] = af.recover(fa) { case NonFatal(e) =>
+      f(e)
     }
 
     def delay[A](thunk: => A): F[A] = af.delay(thunk)

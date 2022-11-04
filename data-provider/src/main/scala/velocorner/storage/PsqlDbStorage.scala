@@ -32,9 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import mouse.all._
 
 //noinspection TypeAnnotation
-class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLocation: String = "psql/migration")
-    extends Storage[Future]
-    with LazyLogging {
+class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLocation: String = "psql/migration") extends Storage[Future] with LazyLogging {
 
   private val config = new HikariConfig()
   config.setDriverClassName("org.postgresql.Driver")

@@ -7,13 +7,7 @@ import velocorner.model.DailyProgress
 import velocorner.storage.Storage
 import velocorner.util.{JsonIo, Metrics}
 
-object ActivitiesFromFileToStorageApp
-    extends App
-    with AggregateActivities
-    with Metrics
-    with LazyLogging
-    with AwaitSupport
-    with MyLocalConfig {
+object ActivitiesFromFileToStorageApp extends App with AggregateActivities with Metrics with LazyLogging with AwaitSupport with MyLocalConfig {
 
   val list = JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
   logger.info(s"found ${list.size} activities")

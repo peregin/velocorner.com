@@ -7,9 +7,8 @@ import velocorner.util.Metrics
 
 class StartupModule extends AbstractModule {
 
-  override def configure(): Unit = {
+  override def configure(): Unit =
     bind(classOf[StartupService]).asEagerSingleton
-  }
 }
 
 object StartupService {

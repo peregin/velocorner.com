@@ -23,7 +23,7 @@ object JwtUser {
       avatarUrl = account.avatarUrl
     )
 
-  def fromToken(token: String)(implicit secret: String): JwtUser = {
+  def fromToken(token: String)(implicit secret: String): JwtUser =
     JwtJson.decode(token, secret, Seq(JwtAlgorithm.HS256), JwtOptions(expiration = true)) match {
       case Success(claim) =>
         if (!claim.isValid(issuer)(Clock.systemUTC())) throw new SecurityException("token expired")
@@ -35,7 +35,6 @@ object JwtUser {
         }
       case Failure(exception) => throw exception
     }
-  }
 }
 
 case class JwtUser(id: Long, name: String, location: String, avatarUrl: String) {

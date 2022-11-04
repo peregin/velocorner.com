@@ -11,7 +11,7 @@ import velocorner.util.JsonIo
 object ActivitiesFromStravaToFileApp extends App with AwaitSupport with LazyLogging with MyLocalConfig {
 
   implicit val feed = new StravaActivityFeed(None, SecretConfig.load())
-  //val activities = await(feed.recentClubActivities(Club.Velocorner))
+  // val activities = await(feed.recentClubActivities(Club.Velocorner))
   val activities = awaitOn(StravaActivityFeed.listRecentAthleteActivities)
   logger.info(s"got ${activities.size} athlete activities")
 

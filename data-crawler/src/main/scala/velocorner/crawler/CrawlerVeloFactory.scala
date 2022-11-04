@@ -73,7 +73,8 @@ class CrawlerVeloFactory[F[_]: Async](client: Client[F]) extends Crawler[F] with
         s"/5/search?hashid=54e8e92f3b6055a6b454a8b88d75f76d&query_counter=5&page=1&rpp=30&transformer=&session_id=cf831bcf7ad2d7021bdbb28f61c6fbf0&query=$search"
       )
     )
-    val uri = s"https://eu1-search.doofinder.com/5/search?hashid=54e8e92f3b6055a6b454a8b88d75f76d&query_counter=6&page=1&rpp=30&transformer=&session_id=cf831bcf7ad2d7021bdbb28f61c6fbf0&query=$search"
+    val uri =
+      s"https://eu1-search.doofinder.com/5/search?hashid=54e8e92f3b6055a6b454a8b88d75f76d&query_counter=6&page=1&rpp=30&transformer=&session_id=cf831bcf7ad2d7021bdbb28f61c6fbf0&query=$search"
     val req = Method.GET(Uri.unsafeFromString(uri), headers)
     for {
       res <- client.expect[SearchResponse](req)

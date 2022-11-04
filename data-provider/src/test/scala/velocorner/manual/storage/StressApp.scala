@@ -13,8 +13,9 @@ import scala.util.control.Exception._
 import mouse.all._
 import velocorner.api.strava.Activity
 
-/** Created by levi on 19.11.16.
-  */
+/**
+ * Created by levi on 19.11.16.
+ */
 object StressApp extends App with CloseableResource with LazyLogging with AggregateActivities with MyLocalConfig {
 
   val par = 10

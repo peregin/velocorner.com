@@ -8,8 +8,7 @@ import play.api.mvc._
 import velocorner.ServiceProvider
 import velocorner.model.Account
 
-class WithingsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
-    extends AbstractController(components) {
+class WithingsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents) extends AbstractController(components) {
 
   val clientToken: String = connectivity.secretConfig.getAuthToken(ServiceProvider.Withings)
   val clientSecret: String = connectivity.secretConfig.getAuthSecret(ServiceProvider.Withings)
@@ -45,14 +44,11 @@ class WithingsController @Inject() (val connectivity: ConnectivitySettings, comp
   // FIXME: not implemented yet, re-use
   def loggedIn(implicit request: Request[AnyContent]): Option[Account] = None
 
-  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] = {
+  def sessionTokenPair(implicit request: RequestHeader): Option[RequestToken] =
     for {
       token <- request.session.get("token")
       secret <- request.session.get("secret")
-    } yield {
-      RequestToken(token, secret)
-    }
-  }
+    } yield RequestToken(token, secret)
 
   private def process(request: Request[AnyContent]): Result = {
     val res = request

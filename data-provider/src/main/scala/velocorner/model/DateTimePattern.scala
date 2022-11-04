@@ -2,23 +2,11 @@ package velocorner.model
 
 import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
-import play.api.libs.json.{
-  Format,
-  JodaReads,
-  JodaWrites,
-  JsError,
-  JsNumber,
-  JsPath,
-  JsResult,
-  JsString,
-  JsSuccess,
-  JsValue,
-  JsonValidationError,
-  Reads
-}
+import play.api.libs.json.{Format, JodaReads, JodaWrites, JsError, JsNumber, JsPath, JsResult, JsString, JsSuccess, JsValue, JsonValidationError, Reads}
 
-/** Created by levi on 24/12/15.
-  */
+/**
+ * Created by levi on 24/12/15.
+ */
 object DateTimePattern {
 
   // used UTC, otherwise DST can cause problems reading the time in a different zone.

@@ -5,7 +5,7 @@ import velocorner.storage.{EmbeddedPsqlStorage, MigrateOrient2Psql, OrientDbStor
 
 object MigrateOrient2PsqlApp extends App with AwaitSupport with MyLocalConfig {
 
-  //local2local()
+  // local2local()
   local2embedded()
 
   def local2embedded(): Unit = {
