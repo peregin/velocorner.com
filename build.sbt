@@ -165,10 +165,14 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   releaseCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]", // it is invoked from ci, skip a new trigger
   releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes ++= Seq(
-    "org.scala-lang.modules" %% "scala-java8-compat" % "always"
+    "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always
   ),
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
+  ),
+  dependencyOverrides ++= Seq(
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.11.4",
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.11.4"
   ),
   unusedCodeConfig ~= { c =>
     c.copy(
