@@ -9,8 +9,9 @@ import scala.concurrent.Await
 import scala.language.postfixOps
 import scala.jdk.CollectionConverters._
 
-/** Implementation to connect with Withings REST API
-  */
+/**
+ * Implementation to connect with Withings REST API
+ */
 object WithingsMeasureFeed {
 
   // for getting body measures

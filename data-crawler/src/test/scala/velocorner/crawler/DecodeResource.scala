@@ -19,7 +19,7 @@ trait DecodeResource extends CloseableResource {
       case Right(value) =>
         println("parsing succeeded")
         value.as[T] match {
-          case Left(err) => fail("failed to decode " + err.reason.toString + " on json " + value)
+          case Left(err)          => fail("failed to decode " + err.reason.toString + " on json " + value)
           case Right(suggestions) => suggestions
         }
     }

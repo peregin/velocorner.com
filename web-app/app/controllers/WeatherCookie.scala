@@ -19,7 +19,6 @@ object WeatherCookie {
     Cookie(name, encoded, maxAge = cookieAgeDuration.toSeconds.toInt.some)
   }
 
-  def retrieve(implicit request: Request[AnyContent]): String = {
+  def retrieve(implicit request: Request[AnyContent]): String =
     request.cookies.get(name).map(c => Base64.decodeBase64(c.value)).map(new String(_)).getOrElse("")
-  }
 }

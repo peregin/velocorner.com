@@ -33,17 +33,14 @@ object Counter {
 
 case class Counter(name: String, counter: Long)
 
-/** Created by levi on 14.11.16.
-  * Improvements to do:
-  * - use new query API from OrientDB 3.0 ?
-  * - use compound index for athlete.id and activity type
-  * - use monad stack M[_] : Monad
-  */
-class OrientDbStorage(url: Option[String], dbPassword: String)
-    extends Storage[Future]
-    with CloseableResource
-    with Metrics
-    with LazyLogging {
+/**
+ * Created by levi on 14.11.16.
+ * Improvements to do:
+ * - use new query API from OrientDB 3.0 ?
+ * - use compound index for athlete.id and activity type
+ * - use monad stack M[_] : Monad
+ */
+class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
 
   @volatile var server: Option[OrientDB] = None
   @volatile var pool: Option[ODatabasePool] = None
@@ -56,20 +53,18 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     queryForOption[T](sql)
   }
 
-  override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = {
+  override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] =
     queryFor[Activity](
       s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max"
     )
-  }
 
   override def activitiesTitles(athleteId: Long, max: Int): Future[Iterable[String]] = ???
 
   // insert all activities, new ones are added, previous ones are overridden
-  override def storeActivity(activities: Iterable[Activity]): Future[Unit] = {
+  override def storeActivity(activities: Iterable[Activity]): Future[Unit] =
     activities.toList
       .traverse(a => upsert(a, ACTIVITY_CLASS, s"SELECT FROM $ACTIVITY_CLASS WHERE id = :id", Map("id" -> a.id)))
       .void
-  }
 
   override def listActivityTypes(athleteId: Long): Future[Iterable[String]] = Future {
     transact { db =>
@@ -107,7 +102,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     )
 
   // to check how much needs to be imported from the feed
-  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] = {
+  override def listRecentActivities(athleteId: Long, limit: Int): Future[Iterable[Activity]] =
     queryFor[Activity](
       s"SELECT FROM $ACTIVITY_CLASS WHERE athlete.id = :id ORDER BY start_date DESC LIMIT :limit",
       Map(
@@ -115,7 +110,6 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         "limit" -> limit
       )
     )
-  }
 
   override def listTopActivities(athleteId: Long, actionType: ActionType.Entry, activityType: String, limit: Int): Future[Iterable[Activity]] = ???
 
@@ -126,9 +120,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
   // accounts
   override def getAccountStorage: AccountStorage = accountStorage
   private lazy val accountStorage = new AccountStorage {
-    override def store(account: Account): Future[Unit] = {
+    override def store(account: Account): Future[Unit] =
       upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
-    }
     override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id.toString)
   }
 
@@ -149,10 +142,9 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
       upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
     }
 
-    override def getAttribute(key: String, `type`: String): Future[Option[String]] = {
+    override def getAttribute(key: String, `type`: String): Future[Option[String]] =
       queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type AND key = :key", Map("type" -> `type`, "key" -> key))
         .map(_.map(_.value))
-    }
   }
 
   override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
@@ -343,7 +335,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
     logger.info("database has been closed...")
   }
 
-  def transact[T](body: ODatabaseDocument => T): T = {
+  def transact[T](body: ODatabaseDocument => T): T =
     pool
       .map { dbPool =>
         val session = dbPool.acquire()
@@ -355,7 +347,6 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
         }
       }
       .getOrElse(throw new IllegalStateException("database is closed"))
-  }
 
   // asynch
   def queryFor[T](sql: String, args: Map[String, Any] = Map.empty)(implicit fjs: Reads[T]): Future[Seq[T]] = transact { db =>
@@ -373,12 +364,11 @@ class OrientDbStorage(url: Option[String], dbPassword: String)
               true
             }
 
-            override def end(): Unit = {
+            override def end(): Unit =
               // might be called twice in case of failure
               if (!promise.isCompleted) {
                 promise.success(accuResults.toSeq)
               }
-            }
 
             override def getResult: AnyRef = accuResults
           }

@@ -11,12 +11,13 @@ trait OriginChecker {
 
   def allowedHosts: Seq[String]
 
-  /** Checks that the WebSocket comes from the same origin.  This is necessary to protect
-    * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
-    *
-    * See https://tools.ietf.org/html/rfc6455#section-1.3 and
-    * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
-    */
+  /**
+   * Checks that the WebSocket comes from the same origin.  This is necessary to protect
+   * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
+   *
+   * See https://tools.ietf.org/html/rfc6455#section-1.3 and
+   * http://blog.dewhurstsecurity.com/2013/08/30/security-testing-html5-websockets.html
+   */
   def sameOriginCheck(implicit rh: RequestHeader): Boolean = {
     // The Origin header is the domain the request originates from.
     // https://tools.ietf.org/html/rfc6454#section-7
@@ -36,15 +37,15 @@ trait OriginChecker {
     }
   }
 
-  /** Returns true if the value of the Origin header contains an acceptable value.
-    */
-  private def originMatches(origin: String): Boolean = {
+  /**
+   * Returns true if the value of the Origin header contains an acceptable value.
+   */
+  private def originMatches(origin: String): Boolean =
     try {
       val url = new URI(origin)
       allowedHosts.exists(_.equalsIgnoreCase(url.getHost))
     } catch {
       case e: Exception => false
     }
-  }
 
 }

@@ -1,7 +1,7 @@
 package model
 
 import org.joda.time.format.DateTimeFormat
-import velocorner.api.{Progress, chart}
+import velocorner.api.{chart, Progress}
 import velocorner.api.chart.{DailyPoint, DailySeries}
 import velocorner.api.weather.WeatherForecast
 import velocorner.model.{Units, YearlyProgress}
@@ -16,9 +16,10 @@ object highcharts {
   def toElevationSeries(items: Iterable[YearlyProgress], unit: Units.Entry): List[DailySeries] =
     toSeries(items, _.to(unit).elevation)
 
-  private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] = {
-    items.map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList))
-  }.toList // must be a list because of the swagger spec generator
+  private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] =
+    items.map(yp =>
+      chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList)
+    ).toList // must be a list because of the swagger spec generator
 
   implicit class PimpWeatherForecast(self: WeatherForecast) {
     val dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -42,7 +43,7 @@ object highcharts {
   }
 
   def toMeteoGramXml(items: List[WeatherForecast]): Elem = {
-    val location = { items.headOption.map(_.location).getOrElse("n/a") }
+    val location = items.headOption.map(_.location).getOrElse("n/a")
     val (city, country) = location.lastIndexOf(',') match {
       case -1 => (location, "n/a")
       case ix => (location.substring(0, ix).trim, location.substring(ix + 1).trim)

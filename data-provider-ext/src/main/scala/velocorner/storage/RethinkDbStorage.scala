@@ -19,13 +19,14 @@ import scala.language.implicitConversions
 // for kestrel combinator and unsafeTap
 import mouse.all._
 
-/** Created by levi on 14/09/16.
-  *
-  * From Data Explorer:
-  * <code>
-  *   r.db('velocorner').table('activity');
-  * </code>
-  */
+/**
+ * Created by levi on 14/09/16.
+ *
+ * From Data Explorer:
+ * <code>
+ *   r.db('velocorner').table('activity');
+ * </code>
+ */
 class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   private lazy val client = RethinkDB.r
@@ -48,7 +49,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def listActivityYears(athleteId: Long, activityType: String): M[Iterable[Int]] = Monad[M].pure(Iterable.empty[Int])
 
-  //Cursor[java.util.HashMap[String, String]]
+  // Cursor[java.util.HashMap[String, String]]
   override def listAllActivities(athleteId: Long, activityType: String): M[Iterable[Activity]] = Monad[M].pure {
     val result: Result[java.util.HashMap[String, String]] = client
       .table(ACTIVITY_TABLE)
@@ -94,9 +95,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def activitiesTitles(athleteId: Long, max: Int): M[Iterable[String]] = Monad[M].pure(Iterable.empty)
 
-  private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] = {
+  private def result2Activity(result: List[java.util.HashMap[String, String]]): Iterable[Activity] =
     result.map(JSONObject.toJSONString).map(JsonIo.read[Activity])
-  }
 
   private def upsert[T](jsText: T, table: String): M[Unit] = Monad[M].pure {
     val json = client.json(jsText)
