@@ -20,15 +20,6 @@ const Instagram = () => {
 const Social = () => {
     return <div className="col-md-4 md-margin-bottom-40">
         <div className="headline"><h2 className="heading-sm">Contact Us</h2></div>
-        <ul className="social-icons">
-            <li className="VC_social_icon"><a href="https://www.instagram.com/peregin" data-original-title="Instagram" className="rounded-x social_instagram">Instagram</a><small>INSTAGRAM</small></li>
-            <li className="VC_social_icon"><a href="https://github.com/peregin/velocorner.com" data-original-title="Github" className="rounded-x social_github">GitHub</a><small>GITHUB</small></li>
-            <li className="VC_social_icon"><a href="https://www.strava.com/clubs/velocorner" data-original-title="Strava" className="rounded-x social_strava">Strava</a><small>STRAVA</small></li>
-            <li className="VC_social_icon"><a href="https://www.youtube.com/channel/UCekBQAfLHviXTvB1kVjzBZQ" data-original-title="Youtube" className="rounded-x social_youtube">Youtube</a><small>YOUTUBE</small></li>
-            <li className="VC_social_icon"><a href="https://twitter.com/velocorner_com" data-original-title="Twitter" className="rounded-x social_twitter">Twitter</a><small>TWITTER</small></li>
-            <li className="VC_social_icon"><a href="mailto:velocorner.com@@gmail.com" data-original-title="Email" className="rounded-x social_email">velocorner.com@@gmail.com</a><small>EMAIL</small></li>
-            <li className="VC_social_icon"><a href="https://www.facebook.com/101313662146829" data-original-title="Facebook" className="rounded-x social_facebook">Facebook</a><small>FACEBOOK</small></li>
-        </ul>
         <HStack spacing='10px'>
             <Logo image={instagram} name='Instagram' link='https://www.instagram.com/peregin'/>
             <Logo image={github} name='GitHub' link='https://github.com/peregin/velocorner.com'/>
