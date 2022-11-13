@@ -281,6 +281,36 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     DockerPlugin
   )
 
+lazy val exchangeRateService = (project in file("exchange-rate-service") withId "exchange-rate-service")
+  .settings(
+    buildSettings,
+    name := "exchange-rate-service",
+    description := "provides up to the FX rates",
+    libraryDependencies ++= catsEffect
+      ++ http4s
+      ++ circe
+      ++ squants
+      ++ scalacache
+      ++ Seq(
+      "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
+    ),
+    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
+    buildInfoPackage := "velocorner.exchangerate.build",
+    maintainer := DockerBuild.maintainer,
+    Docker / packageName := "velocorner.exchangerate",
+    Docker / dockerExposedPorts := Seq(9012),
+    dockerBaseImage := DockerBuild.baseImage,
+    dockerUsername := Some("peregin"),
+    Docker / version := "latest",
+    // implicit0, withFilter, final map
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
+  )
+  .enablePlugins(
+    BuildInfoPlugin,
+    JavaAppPackaging,
+    DockerPlugin
+  )
+
 // module for various analytics supporting the generic stack
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
   .settings(
@@ -394,6 +424,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
     crawlerService,
+    exchangeRateService,
     dataProvider,
     dataProviderExtension,
     dataSearchElastic,
