@@ -3,7 +3,7 @@ package velocorner.api
 import enumeratum.EnumEntry.LowerCamelcase
 import enumeratum.{Enum, EnumEntry}
 import play.api.libs.json.{Format, Json, Reads, Writes}
-import velocorner.brand.NameNormalizer._
+import velocorner.model.brand.NameNormalizer._
 
 //noinspection TypeAnnotation
 package object brand {

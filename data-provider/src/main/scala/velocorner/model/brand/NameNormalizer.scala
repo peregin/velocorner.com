@@ -1,4 +1,4 @@
-package velocorner.brand
+package velocorner.model.brand
 
 object NameNormalizer {
 

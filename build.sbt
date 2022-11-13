@@ -250,11 +250,11 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
-lazy val dataCrawler = (project in file("data-crawler") withId "data-crawler")
+lazy val crawlerService = (project in file("crawler-service") withId "crawler-service")
   .settings(
     buildSettings,
-    name := "data-crawler",
-    description := "crawler to feed up to date data",
+    name := "crawler-service",
+    description := "product crawler with an up-to-date data feed",
     libraryDependencies ++= catsEffect
       ++ http4s
       ++ circe
@@ -393,7 +393,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
-    dataCrawler,
+    crawlerService,
     dataProvider,
     dataProviderExtension,
     dataSearchElastic,
