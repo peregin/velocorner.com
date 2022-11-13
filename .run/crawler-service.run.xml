@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="crawler-service" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="velocorner.crawler.Main" />
-    <module name="data-crawler" />
+    <module name="crawler-service" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
       <option name="credential" />
