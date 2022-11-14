@@ -20,6 +20,9 @@ object SearchBrandsManual extends IOApp.Simple with BrandsSupport with MyLocalCo
 
         count <- Sync[IO].fromFuture(IO(feed.countBrands()))
         _ <- info(s"count: $count")
+
+        version <- Sync[IO].fromFuture(IO(feed.version()))
+        _ <- info(s"version: $version")
       } yield ()
     }
     _ <- info("done ...")

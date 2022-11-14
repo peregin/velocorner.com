@@ -382,7 +382,6 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
       Seq(
-        "elasticVersion" -> Dependencies.elasticVersion,
         "playVersion" -> play.core.PlayVersion.current,
         "catsVersion" -> Dependencies.catsVersion,
         "dockerBaseImage" -> DockerBuild.baseImage

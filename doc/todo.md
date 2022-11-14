@@ -1,6 +1,5 @@
 # ToDo
 - add toppreise, and check other aggregators
-- show zinc search version (endpoint with same name), instead of elastic
 - badge for new, available, sales, lead times
 - suggestions when searching products
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
@@ -33,6 +32,7 @@
 - implement JWT between Frontend and Backend
 
 # Done
+- show zinc search version (endpoint with same name), instead of elastic
 - add and collect events for search
 - show the time spent in search
 - top 10 longest rides, top 10 most elevations 

@@ -9,6 +9,7 @@ import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
+import velocorner.search.BrandSearch
 
 import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,14 +21,19 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
     with OriginChecker {
 
   val pings = new AtomicLong
+  lazy val brandFeed = new BrandSearch(connectivity.secretConfig)
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
   private val logger = Logger(getClass)
 
   // def mapped to /api/status
-  def status = Action { implicit request =>
-    val statusInfo = StatusInfo.compute(environment.mode, pings.get())
-    Ok(Json.toJson(statusInfo))
+  def status = Action.async { implicit request =>
+    for {
+      zincVersion <- brandFeed.version()
+    } yield {
+      val statusInfo = StatusInfo.compute(environment.mode, pings.get(), zincVersion)
+      Ok(Json.toJson(statusInfo))
+    }
   }
 
   // def mapped to /api/ping/

@@ -100,4 +100,11 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
       }
       .map(_.find(_.name == ixName).map(_.doc_num).getOrElse(0L))
   }
+
+  // ZincSearch version
+  def version(): Future[String] = for {
+    resp <- ws(_.url(s"$baseUrl/version")).get()
+    text = resp.body[String]
+    json = Json.parse(text)
+  } yield (json \ "version").as[String]
 }
