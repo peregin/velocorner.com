@@ -18,48 +18,42 @@ trait MoneyContextProvider[F[_]] {
 
 object RefreshingMoneyContextProvider {
 
-  def apply[F[_]: Sync: Clock](expiry: Duration = 1.hour): MoneyContextProvider[F] = new MoneyContextProvider[F] {
+  def apply[F[_]: Sync: Clock](cacheRef: Ref[F, Option[MoneyContext]], lastTsRef: Ref[F, Duration], expiry: Duration = 1.hour): MoneyContextProvider[F] =
+    new MoneyContextProvider[F] {
 
-    val cache = Ref[F].of[Option[MoneyContext]](None)
-    val lastTs = Ref[F].of[Duration](0.hour)
+      override def moneyContext(): F[MoneyContext] = for {
+        maybeMc <- cacheRef.get
+        lastTs <- lastTsRef.get
+        now <- Clock[F].realTime
+        elapsed = now - lastTs
+        _ = println(s"elapsed = $elapsed, instance = $maybeMc, last = $lastTs")
+        mc <- maybeMc match {
+          case _ if elapsed > expiry => createMoneyContext(now)
+          case None => createMoneyContext(now)
+          case Some(m) => m.pure[F]
+        }
+      } yield mc
 
-    override def moneyContext(): F[MoneyContext] = for {
-      cacheRef <- cache
-      lastTsRef <- lastTs
-      maybeMc <- cacheRef.get
-      last <- lastTsRef.get
-      now <- Clock[F].realTime
-      elapsed = now - last
-      _ = println(s"elapsed = $elapsed")
-      mc <- maybeMc match {
-        case _ if elapsed > expiry =>
-          for {
-            m <- createMoneyContext()
-            _ <- cacheRef.set(m.some)
-            _ <- lastTsRef.set(now)
-          } yield m
-        case Some(m) =>
-          m.pure[F]
-      }
-    } yield mc
-
-    private def createMoneyContext(): F[MoneyContext] =
-      {
-        println("creating MoneyContext")
-        defaultMoneyContext
-      }.pure[F]
-  }
+      private def createMoneyContext(now: Duration): F[MoneyContext] = for {
+        m <- defaultMoneyContext.pure[F]
+        _ = println("creating MoneyContext")
+        _ <- cacheRef.set(m.some)
+        _ <- lastTsRef.set(now)
+      } yield m
+    }
 }
 
 object ExchangeRateApp extends IOApp.Simple {
 
-  val rmc = RefreshingMoneyContextProvider[IO](expiry = 10.second)
   override def run: IO[Unit] = for {
+    lastTsRef <- Ref[IO].of[Duration](0.hour)
+    cacheRef <- Ref[IO].of[Option[MoneyContext]](none)
+    rmc = RefreshingMoneyContextProvider[IO](cacheRef = cacheRef, lastTsRef = lastTsRef, expiry = 2.second)
     _ <- rmc.moneyContext()
     _ <- IO.sleep(1.second)
     _ <- IO.println("test")
     _ <- rmc.moneyContext()
-    _ <- IO.sleep(1.second)
+    _ <- IO.sleep(2.second)
     _ <- rmc.moneyContext()
   } yield ()
 }
