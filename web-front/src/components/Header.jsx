@@ -58,6 +58,7 @@ class Header extends Component {
                         <nav>
                             <ul>
                                 <li><Link to="/" className={this.props.page === "main" ? 'current' : ''}>Home</Link></li>
+                                <li><Link to="/best" className={this.props.page === "best" ? 'current' : ''}>Best prices</Link></li>
                                 <li><Link to="/about" className={this.props.page === "about" ? 'current' : ''}>About2</Link></li>
                             </ul>
                         </nav>

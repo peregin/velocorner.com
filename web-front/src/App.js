@@ -6,6 +6,7 @@ import {
 import { ChakraProvider, Progress } from '@chakra-ui/react'
 
 import Home from "./pages/Home";
+import Best from "./pages/Best";
 import About from "./pages/About";
 
 import Header from './components/Header';
@@ -44,6 +45,7 @@ class App extends Component {
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/best" element={<Best />} />
             </Routes>
 
             <Footer />
