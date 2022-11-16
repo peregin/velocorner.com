@@ -29,7 +29,10 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   // def mapped to /api/status
   def status = Action.async { implicit request =>
     for {
-      zincVersion <- brandFeed.version()
+      zincVersion <- brandFeed.version().recover{ case err =>
+        logger.error("unable to retrieve ZincSearch version", err)
+        "n/a"
+      }
     } yield {
       val statusInfo = StatusInfo.compute(environment.mode, pings.get(), zincVersion)
       Ok(Json.toJson(statusInfo))
