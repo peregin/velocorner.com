@@ -60,7 +60,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion %
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-  "org.codehaus.janino" % "janino" % "3.1.8", // conditional logback processing
+  "org.codehaus.janino" % "janino" % "3.1.9", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
@@ -292,8 +292,8 @@ lazy val exchangeRateService = (project in file("exchange-rate-service") withId 
       ++ squants
       ++ scalacache
       ++ Seq(
-      "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
-    ),
+        "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
+      ),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.exchangerate.build",
     maintainer := DockerBuild.maintainer,
