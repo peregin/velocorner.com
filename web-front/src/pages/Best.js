@@ -69,16 +69,6 @@ const Best = () => {
         <Text color='gray'>{elapsed}</Text>
 
         <SimpleGrid columns={4} spacing={10}>
-          <ProductCard 
-            productName='Modern home in city center in the heart of historic Los Angeles'
-            productUrl='https://www.velofactory.ch/GripShift-SRAM-XX1-Eagle-12-speed-black'
-            brandName='ORBEA'
-            formattedPrice='12 USD' 
-            imageUrl='https://bit.ly/2Z4KKcF'
-            imageAlt='Rear view of modern home with pool'
-            reviewStars={4}
-            isNew={true}
-          />
           {results.map(res => {
             //console.info('res=' + JSON.stringify(res.price))
             return <ProductCard 
