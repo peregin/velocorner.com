@@ -19,7 +19,7 @@ class Home extends Component {
     });
   }
 
-  handleClick() {
+  handleClick(ev) {
     console.log("LOGGING IN");
     ApiClient.test();
   }
@@ -32,7 +32,7 @@ class Home extends Component {
         <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
         <Progress hasStripe value={this.state.memoryUsage} />
 
-        <Button onClick="handleClick">Test JWT</Button>
+        <Button onClick={this.handleClick}>Test JWT</Button>
         <Divider m="10" />
         <Text>
           Commit Hash: <Tag colorScheme="teal">42</Tag>
