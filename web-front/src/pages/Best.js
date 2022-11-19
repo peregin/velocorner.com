@@ -5,7 +5,7 @@ class Best extends Component {
     render() {
         return (
           <div>
-            <h2>Best prices</h2>
+            <h1>Best prices! 🎉</h1>
           </div>
         );
     }
