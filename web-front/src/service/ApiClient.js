@@ -1,6 +1,6 @@
 const apiHost = process.env.API_HOST || 'http://localhost:9001'
 
-function getStatus(cb) {
+function getStatus() {
   const requestOptions = {
     method: 'GET',
     accept: 'application/json',
@@ -9,7 +9,17 @@ function getStatus(cb) {
   return fetch(apiHost + '/api/status', requestOptions)
     .then(checkStatus)
     .then(r => r.json())
-    .then(cb)
+}
+
+function search(term) {
+  const requestOptions = {
+    method: 'GET',
+    accept: 'application/json',
+    cache: 'no-cache'
+  }
+  return fetch(apiHost + '/api/products/search?query=' + term, requestOptions)
+    .then(checkStatus)
+    .then(r => r.json())
 }
 
 async function test() {
@@ -55,7 +65,8 @@ function checkStatus(response) {
 }
 
 const ApiClient = {
-  getStatus: getStatus,
+  status: getStatus,
+  search: search,
   login: login,
   test: test,
 }
