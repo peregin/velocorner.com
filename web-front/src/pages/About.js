@@ -1,14 +1,13 @@
-import React, {Component} from 'react';
+import { Heading } from "@chakra-ui/react";
+import React from "react";
 
-class About extends Component {
+const About = () => {
 
-    render() {
-        return (
-          <div>
-            <h2>About</h2>
-          </div>
-        );
-    }
+  return (
+    <div>
+      <Heading>About</Heading>
+    </div>
+  )
 }
 
 export default About;

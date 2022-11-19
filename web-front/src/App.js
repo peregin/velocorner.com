@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   BrowserRouter, Route, Routes,
 } from 'react-router-dom';
@@ -14,23 +14,21 @@ import Footer from './components/Footer'
 
 import './App.css'
 
-class App extends Component {
+const App = () => {
 
-  render() {
-    return (
-      <ChakraProvider>
-        <BrowserRouter>
+  return (
+    <ChakraProvider>
+      <BrowserRouter>
 
-            <Routes>
-              <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
-              <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
-              <Route path="/best" element={<Best />} />
-            </Routes>
+          <Routes>
+            <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
+            <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
+            <Route path="/best" element={<Best />} />
+          </Routes>
 
-        </BrowserRouter>
-      </ChakraProvider>
-    )
-  }
+      </BrowserRouter>
+    </ChakraProvider>
+  )
 }
 
 export default App;

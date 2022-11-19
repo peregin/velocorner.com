@@ -1,45 +1,43 @@
-import React, { Component } from "react";
-import ApiClient from "../service/ApiClient";
+import React, { useState, useEffect } from "react"
+import ApiClient from "../service/ApiClient"
 
-import { Button, Heading, Text, Tag, Divider } from "@chakra-ui/react";
-import { Progress } from "@chakra-ui/react";
+import { Button, Heading, Text, Tag, Divider } from "@chakra-ui/react"
+import { Progress } from "@chakra-ui/react"
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { memoryUsage: 50 };
+const Home = () => {
+
+  const [memoryUsage, setMemoryUsage] = useState(50)
+
+  useEffect(() => {
+    const fetchData = async () => {
+        await ApiClient.getStatus((summary) => {
+            console.log(summary);
+            setMemoryUsage(summary.memoryUsedPercentile)
+        })
+    }
+    fetchData()
+  })
+
+  const handleClick = (ev) => {
+    console.log("LOGGING IN")
+    ApiClient.test()
   }
 
-  async componentDidMount() {
-    ApiClient.getStatus((summary) => {
-      console.log(summary);
-      this.setState({
-        memoryUsage: summary.memoryUsedPercentile,
-      });
-    });
-  }
-
-  handleClick(ev) {
-    console.log("LOGGING IN");
-    ApiClient.test();
-  }
-
-  render() {
     return (
-      <div>
+        <div>
         <Heading>Home</Heading>
 
-        <h1>Welcome to Velocorner, memory usage {this.state.memoryUsage}%</h1>
-        <Progress hasStripe value={this.state.memoryUsage} />
+        <h1>Welcome to Velocorner, memory usage {memoryUsage}%</h1>
+        <Progress hasStripe value={memoryUsage} />
 
-        <Button onClick={this.handleClick}>Test JWT</Button>
+        <Button onClick={handleClick}>Test JWT</Button>
         <Divider m="10" />
         <Text>
-          Commit Hash: <Tag colorScheme="teal">42</Tag>
+            Commit Hash: <Tag colorScheme="teal">42</Tag>
         </Text>
-      </div>
-    );
-  }
+        </div>
+    )
+
 }
 
 export default Home;
