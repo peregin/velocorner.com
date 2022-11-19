@@ -1,13 +1,16 @@
 import { React, useState, useEffect } from "react";
-import { Flex, Heading, Input, IconButton, Box, Text, Progress, SimpleGrid, Image, Badge } from "@chakra-ui/react";
-import { SearchIcon, StarIcon } from "@chakra-ui/icons";
+import { Flex, Heading, Input, IconButton, Box, Text, Progress, SimpleGrid } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import ApiClient from "../service/ApiClient";
+import ProductCard from "../components/ProductCard";
 
 const Best = () => {
 
   const [input, setInput] = useState('')
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
+  const [elapsed, setElapsed] = useState('')
+  const [searching, setSearching] = useState(false)
   useEffect(() => {
     fetchData()
   }, [query])
@@ -16,7 +19,19 @@ const Best = () => {
     if (query.trim === '') {
       return
     }
+    let startTime = new Date().getTime();
+
+    setSearching(true)
     let results = await ApiClient.search(query)
+    setSearching(false)
+
+    let elapsedTime = new Date().getTime() - startTime
+    let took = (elapsedTime / 1000).toFixed(2)
+    if (results.length > 0)
+      setElapsed(results.length+' results in '+took+' seconds')
+    else
+      setElapsed('')
+
     console.info(results.length + ' results')
     setResults(results)
   }
@@ -31,73 +46,6 @@ const Best = () => {
   const handleSearch = (ev) => {
     console.info('click searching for ' + input + '...')
     setQuery(input)
-  }
-
-  const ProductCard = () => {
-    const property = {
-      imageUrl: 'https://bit.ly/2Z4KKcF',
-      imageAlt: 'Rear view of modern home with pool',
-      beds: 3,
-      baths: 2,
-      title: 'Modern home in city center in the heart of historic Los Angeles',
-      formattedPrice: '$1,900.00',
-      reviewCount: 34,
-      rating: 4,
-    }
-    return (
-      <Box maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
-        <Image src={property.imageUrl} alt={property.imageAlt} />
-  
-        <Box p='6'>
-          <Box display='flex' alignItems='baseline'>
-            <Badge borderRadius='full' px='2' colorScheme='teal'>
-              New
-            </Badge>
-            <Box
-              color='gray.500'
-              fontWeight='semibold'
-              letterSpacing='wide'
-              fontSize='xs'
-              textTransform='uppercase'
-              ml='2'
-            >
-              {property.beds} beds &bull; {property.baths} baths
-            </Box>
-          </Box>
-  
-          <Box
-            mt='1'
-            fontWeight='semibold'
-            as='h4'
-            lineHeight='tight'
-            noOfLines={1}
-          >
-            {property.title}
-          </Box>
-  
-          <Box>
-            {property.formattedPrice}
-            <Box as='span' color='gray.600' fontSize='sm'>
-              / wk
-            </Box>
-          </Box>
-  
-          <Box display='flex' mt='2' alignItems='center'>
-            {Array(5)
-              .fill('')
-              .map((_, i) => (
-                <StarIcon
-                  key={i}
-                  color={i < property.rating ? 'teal.500' : 'gray.300'}
-                />
-              ))}
-            <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-              {property.reviewCount} reviews
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    )
   }
 
   return (
@@ -117,12 +65,33 @@ const Best = () => {
           </Flex>
         </Box>
 
-        <Progress hasStripe value={50} w='75%'/>
-        <Text color='gray'>5 RESULTS IN 8.70 SECONDS</Text>
+        <Progress hasStripe isIndeterminate w='75%' visibility={searching ? 'visible' : 'hidden'}/>
+        <Text color='gray'>{elapsed}</Text>
 
         <SimpleGrid columns={4} spacing={10}>
-          <ProductCard/>
-          <ProductCard/>
+          <ProductCard 
+            productName='Modern home in city center in the heart of historic Los Angeles'
+            productUrl='https://www.velofactory.ch/GripShift-SRAM-XX1-Eagle-12-speed-black'
+            brandName='ORBEA'
+            formattedPrice='12 USD' 
+            imageUrl='https://bit.ly/2Z4KKcF'
+            imageAlt='Rear view of modern home with pool'
+            reviewStars={4}
+            isNew={true}
+          />
+          {results.map(res => {
+            //console.info('res=' + JSON.stringify(res.price))
+            return <ProductCard 
+              productName={res.name}
+              productUrl={res.productUrl}
+              brandName={res.brand.name}
+              formattedPrice={res.price.value + ' ' + res.price.currency}
+              imageUrl={res.imageUrl}
+              imageAlt={res.name}
+              reviewStars={res.reviewStars}
+              isNew={res.isNew}
+            />
+          })}
         </SimpleGrid>
 
       </Flex>
