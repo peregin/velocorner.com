@@ -1,4 +1,7 @@
-const apiHost = process.env.API_HOST || 'http://localhost:9001'
+
+const apiHost = process.env.API_HOST || 'https://velocorner.com' // doesn't work!!!
+console.info('api host: ' + apiHost)
+console.info('env: ' + JSON.stringify(process.env))
 
 function getStatus() {
   const requestOptions = {
