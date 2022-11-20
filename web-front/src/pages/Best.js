@@ -69,9 +69,10 @@ const Best = () => {
         <Text color='gray'>{elapsed}</Text>
 
         <SimpleGrid columns={4} spacing={10}>
-          {results.map(res => {
-            //console.info('res=' + JSON.stringify(res.price))
+          {results.map( (res, ix) => {
+            //console.info('res=' + JSON.stringify(res.price) + ', ix=' + ix)
             return <ProductCard 
+              key={ix}
               productName={res.name}
               productUrl={res.productUrl}
               brandName={res.brand.name}
