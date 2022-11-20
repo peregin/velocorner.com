@@ -22,7 +22,7 @@ const Best = () => {
     let startTime = new Date().getTime();
 
     setSearching(true)
-    let results = await ApiClient.search(query)
+    let results = await ApiClient.search(query) // todo: .catch(error...)
     setSearching(false)
 
     let elapsedTime = new Date().getTime() - startTime
@@ -55,7 +55,7 @@ const Best = () => {
           brands and items 🎉
         </Heading>
 
-        <Box w="75%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' p='20'>
+        <Box w="100%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' p='20'>
         <Text m='5' fontSize='1.2em'>Search for the best price on your favorite brands, components, bicycles and accessories:</Text>
           <Flex>
             <Input value={input} onChange={(ev) => setInput(ev.target.value)} onKeyDown={handleEnter} placeholder='Type in your query...'/>
