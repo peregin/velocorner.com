@@ -1,6 +1,5 @@
 package velocorner.crawler
 
-import org.checkerframework.checker.units.qual.s
 import velocorner.api.Money
 
 import scala.util.{Failure, Success, Try}
@@ -11,10 +10,12 @@ object PriceParser {
 
   /**
    * patterns:
-   * |54.29€
-   * |1,629.08€
+   * 54.29€
+   * 1,629.08€
+   * 1'010.70 CHF
    */
-  def parse(amountCcy: String): Money = amountCcy.replace(",", "") match {
+  def parse(amountCcy: String): Money = amountCcy
+    .replace(",", "").replace("'", "") match {
     case pricePattern(amount, currency) =>
       Try(Money(BigDecimal(amount), normalizeCurrency(currency))) match {
         case Success(value) => value

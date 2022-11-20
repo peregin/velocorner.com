@@ -6,12 +6,12 @@ import velocorner.api.Money
 
 class PriceParserTest extends AnyFlatSpec with should.Matchers {
 
-  // 54.29€
   "price parser" should "extract" in {
     PriceParser.parse("54.29€") shouldBe Money(54.29, "EUR")
     PriceParser.parse("1,629.08€") shouldBe Money(1629.08, "EUR")
     PriceParser.parse("88USD") shouldBe Money(88, "USD")
     PriceParser.parse("88 USD") shouldBe Money(88, "USD")
+    PriceParser.parse("1'010.70 CHF") shouldBe Money(1010.7, "CHF")
 
     a[IllegalArgumentException] shouldBe thrownBy(CrawlerBikeComponents.extractPrice("€"))
   }
