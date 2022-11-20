@@ -22,7 +22,7 @@ const ProductCard = ({productName, productUrl, brandName, formattedPrice, imageU
             {brandName}
           </Box>
         </Box>
-        <Box mt='1' fontWeight='semibold' as='h4' lineHeight='tight' noOfLines={1}>
+        <Box mt='1' color='gray.500' fontWeight='semibold' as='h4' lineHeight='tight' noOfLines={1}>
           {productName}
         </Box>
 
