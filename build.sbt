@@ -80,7 +80,7 @@ def catsEffect = Seq(
 )
 
 def catsEffectTest = Seq(
-  "org.typelevel" %% "cats-effect-testing-scalatest" % "1.4.0"
+  "org.typelevel" %% "cats-effect-testing-scalatest" % Dependencies.catsEffectTestVersion
 )
 
 def zio = Seq(
