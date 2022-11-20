@@ -1,49 +1,13 @@
 @(context: PageContext)(implicit assets: AssetsFinder)
 @common.main(context) {
 
-<!--<iframe src="https://dev.velocorner.com/#/best" width="100%"></iframe>-->
+<!-- include best product search page from react app -->
+<!--http://localhost:3000/#/best or https://dev.velocorner.com/#/best -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.2/iframeResizer.js"></script>
 <iframe id="productsFrame" src="http://localhost:3000/#/best" style="width:1px; min-width:100%; border-width: 0px;" allowtransparency="true"></iframe>
 <script>
   iFrameResize({ log: false }, '#productsFrame')
 </script>
 
-<!-- Best price and product search input -->
-<h2 xmlns="http://www.w3.org/1999/html">Find the best price for bikes, components, accessories, clothing, brands and items</h2>
-<div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-    <p>
-        Search for the best price on your favorite brands, components, bicycles and accessories:
-    </p>
-    <!--  Search input form -->
-    <div class="input-group col-md-12 col-xs-12" style="float: left; margin: 10px;">
-        <input id="search_best" name="search_best" type="text" class="form-control" placeholder="Search for best components ...">
-        <span class="input-group-btn">
-            <button id="search_button_best" name="search_button_best" class="btn-u" type="button"><i class="fa fa-search"></i></button>
-        </span>
-    </div>
-    <p>
-        &nbsp;
-    </p>
-</div>
-
-<div id="search-progress" class="progress progress-striped active">
-    <div id="search-progress-bar" class="progress-bar progress-bar-warning"
-         role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
-        50% Searching...
-    </div>
-</div>
-
-<div class="container s-results margin-bottom-50">
-    <span id="results-number" class="results-number" style="display:'none';">0 results</span>
-</div>
-
-<!--=== Product Search Results ===-->
-<div id="best-result" class="row illustration-v2">
-    <!--- Search results are populated here -->
-</div>
-<!--=== End of product search result ===-->
-
 }
 <!-- end of common main section -->
-
-<script type="text/javascript" src="@assets.path("javascripts/best.js")"></script>
