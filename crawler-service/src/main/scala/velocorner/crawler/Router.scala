@@ -16,7 +16,7 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
   private val cache = new InMemoryCache[F, List[ProductDetails]]()
 
   private def search(term: String): F[List[ProductDetails]] = for {
-    _ <- Logger[F].info(s"searching for $term...")
+    _ <- Logger[F].info(s"searching for [$term]...")
     suggestions <- crawlers
       .parTraverse { c =>
         c.products(term, 5).handleErrorWith { e =>
@@ -30,10 +30,15 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
   val routes: HttpRoutes[F] = HttpRoutes
     .of[F] {
       case GET -> Root / "search" / term =>
-        for {
-          suggestions <- cache.cacheF(term, search(term))
-          res <- Ok(suggestions)
-        } yield res
+        term.trim match {
+          case searchTerm if searchTerm.isEmpty =>
+            BadRequest("empty search term")
+          case searchTerm =>
+            for {
+              suggestions <- cache.cacheF(searchTerm, search(term))
+              res <- Ok(suggestions)
+            } yield res
+        }
 
       case GET -> Root / "supported" =>
         for {

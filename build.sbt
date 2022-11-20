@@ -67,7 +67,7 @@ def elastic4s = Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-core" % Dependencies.elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % Dependencies.elasticVersion,
   "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % Dependencies.elasticVersion % "test"
+  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % Dependencies.elasticVersion % Test
 )
 
 def cats = Seq(
@@ -77,6 +77,10 @@ def cats = Seq(
 
 def catsEffect = Seq(
   "org.typelevel" %% "cats-effect" % Dependencies.catsEffectVersion withSources () withJavadoc ()
+)
+
+def catsEffectTest = Seq(
+  "org.typelevel" %% "cats-effect-testing-scalatest" % "1.4.0"
 )
 
 def zio = Seq(
@@ -208,8 +212,8 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       ++ apacheCommons
       ++ cats
       ++ squants
-      ++ zio.map(_ % "test")
-      ++ catsEffect.map(_ % "test")
+      ++ zio.map(_ % Test)
+      ++ catsEffect.map(_ % Test)
   )
 
 lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")
@@ -225,7 +229,7 @@ lazy val dataProviderExtension = (project in file("data-provider-ext") withId "d
     ) ++ logging
       ++ Seq(mongoClient, orientDbClient) ++ rethinkClient
       ++ cats
-      ++ zio.map(_ % "test")
+      ++ zio.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -236,8 +240,8 @@ lazy val dataSearchElastic = (project in file("data-search-elastic") withId "dat
     name := "data-search-elastic",
     libraryDependencies ++=
       elastic4s
-        ++ catsEffect.map(_ % "test")
-        ++ fs2.map(_ % "test")
+        ++ catsEffect.map(_ % Test)
+        ++ fs2.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -246,7 +250,7 @@ lazy val dataSearch = (project in file("data-search") withId "data-search")
     buildSettings,
     name := "data-search",
     description := "search with zinc lightweight engine",
-    libraryDependencies ++= catsEffect.map(_ % "test")
+    libraryDependencies ++= catsEffect.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -262,7 +266,8 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
       ++ Seq(
         "org.typelevel" %% "log4cats-slf4j" % "2.5.0",
         "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
-      ),
+      )
+      ++ catsEffectTest.map(_ % Test),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.crawler.build",
     maintainer := DockerBuild.maintainer,
