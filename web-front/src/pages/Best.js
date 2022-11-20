@@ -50,7 +50,7 @@ const Best = () => {
 
   return (
       <Flex align="center" gap="10" direction="column" margin={10}>
-        <Heading as='h2'>
+        <Heading as='h4' size='md'>
           Find the best price for bikes, components, accessories, clothing,
           brands and items 🎉
         </Heading>
