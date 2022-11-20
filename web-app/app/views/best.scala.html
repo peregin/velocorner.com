@@ -2,7 +2,11 @@
 @common.main(context) {
 
 <!--<iframe src="https://dev.velocorner.com/#/best" width="100%"></iframe>-->
-<!--<iframe src="http://localhost:3000/#/best" width="100%"></iframe>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.2/iframeResizer.js"></script>
+<iframe id="productsFrame" src="http://localhost:3000/#/best" style="width:1px; min-width:100%; border-width: 0px;" allowtransparency="true"></iframe>
+<script>
+  iFrameResize({ log: false }, '#productsFrame')
+</script>
 
 <!-- Best price and product search input -->
 <h2 xmlns="http://www.w3.org/1999/html">Find the best price for bikes, components, accessories, clothing, brands and items</h2>

@@ -50,7 +50,7 @@ const Best = () => {
 
   return (
       <Flex align="center" gap="10" direction="column" margin={10}>
-        <Heading>
+        <Heading as='h2'>
           Find the best price for bikes, components, accessories, clothing,
           brands and items 🎉
         </Heading>
@@ -65,7 +65,7 @@ const Best = () => {
           </Flex>
         </Box>
 
-        <Progress hasStripe isIndeterminate w='75%' visibility={searching ? 'visible' : 'hidden'}/>
+        <Progress w='100%' hasStripe isIndeterminate visibility={searching ? 'visible' : 'hidden'}/>
         <Text color='gray'>{elapsed}</Text>
 
         <SimpleGrid columns={4} spacing={10}>
