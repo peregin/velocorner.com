@@ -6,7 +6,7 @@ const ProductCard = ({productName, productUrl, brandName, formattedPrice, imageU
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <LinkOverlay href={productUrl}>
-        <Image src={imageUrl} alt={imageAlt}/>
+        <Image src={imageUrl} alt={imageAlt} maxHeight='240px'/>
       </LinkOverlay>
 
       <Box p='6'>
