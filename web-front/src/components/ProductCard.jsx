@@ -1,8 +1,8 @@
 import { React } from "react";
-import { Box, LinkBox, LinkOverlay, Image, Badge } from "@chakra-ui/react";
+import { Box, LinkBox, LinkOverlay, Image, Badge, Flex, Spacer } from "@chakra-ui/react";
 import { StarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
-const ProductCard = ({productName, productUrl, brandName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew}) => {
+const ProductCard = ({productName, productUrl, brandName, marketName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew}) => {
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <LinkOverlay href={productUrl}>
@@ -28,14 +28,18 @@ const ProductCard = ({productName, productUrl, brandName, formattedPrice, imageU
 
         <Box fontWeight='bold'>{formattedPrice}</Box>
 
-        <Box display='flex' mt='2' alignItems='center'>
-          {Array(5).fill('').map((_, i) => (
-              <StarIcon
-                key={i}
-                color={i < reviewStars ? 'teal.500' : 'gray.300'}
-              />
-          ))}
-        </Box>
+        <Flex mt='2' dir='row'>
+          <Box alignItems='center'>
+            {Array(5).fill('').map((_, i) => (
+                <StarIcon
+                  key={i}
+                  color={i < reviewStars ? 'teal.500' : 'gray.300'}
+                />
+            ))}
+          </Box>
+          <Spacer />
+          <Box alignContent='right' color='green.600' fontWeight='semibold'>{marketName}</Box>
+        </Flex>
       </Box>
     </LinkBox>
   )
