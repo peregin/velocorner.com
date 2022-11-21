@@ -1,4 +1,5 @@
 # ToDo
+- add market to the product card
 - add toppreise, and check other aggregators
 - badge for new, available, sales, lead times
 - suggestions when searching products
