@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/react'
-import React, { Component } from 'react'
+import React from 'react'
 import Logo from './Logo'
 import instagram from 'super-tiny-icons/images/svg/instagram.svg'
 import github from 'super-tiny-icons/images/svg/github.svg'
@@ -46,30 +46,28 @@ const Copyright = () => {
     </div>
 }
 
-class Footer extends Component {
-    render() {
-        return (
-            <footer role="banner">
+const Footer = () => {
+    return (
+        <footer role="banner">
 
-                <section>
-                    <div id="footer-v2" className="footer-v2">
-                        <div className="footer">
-                            <div className="container">
-                                <div className="row">
-                                    <Instagram />
-                                    <Social />
-                                </div>
+            <section>
+                <div id="footer-v2" className="footer-v2">
+                    <div className="footer">
+                        <div className="container">
+                            <div className="row">
+                                <Instagram />
+                                <Social />
                             </div>
                         </div>
-
-                        <Copyright />
-
                     </div>
-                </section>
 
-            </footer>
-        )
-    }
+                    <Copyright />
+
+                </div>
+            </section>
+
+        </footer>
+    )
 }
 
 export default Footer;
