@@ -37,9 +37,9 @@ const ProductCard = ({productName, productUrl, brandName, marketName, formattedP
                 />
             ))}
           </Box>
-          <Spacer />
-          <Box alignContent='right' color='green.600' fontWeight='semibold' fontSize='xs'>{marketName}</Box>
         </Flex>
+        <Box alignContent='right' color='green.600' fontWeight='semibold' fontSize='xs'>{marketName}</Box>
+
       </Box>
     </LinkBox>
   )

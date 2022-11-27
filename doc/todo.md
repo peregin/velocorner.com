@@ -1,10 +1,8 @@
 # ToDo
-- add market to the product card
 - add toppreise, and check other aggregators
 - badge for new, available, sales, lead times
 - suggestions when searching products
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
-- add progress bar when searching for prices
 - add throttling
 - restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
@@ -18,7 +16,6 @@
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
 - compass rose - wind direction
 - marketing campaign FB
-- intercom/zendesk (or alternative) for features
 - show consecutive sport days
 - add last activity details in the profile (and similar rides)
 - add monthly - current month (next to yearly) achievements
@@ -33,6 +30,8 @@
 - implement JWT between Frontend and Backend
 
 # Done
+- add progress bar when searching for prices
+- add market to the product card
 - show zinc search version (endpoint with same name), instead of elastic
 - add and collect events for search
 - show the time spent in search
