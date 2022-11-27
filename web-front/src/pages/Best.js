@@ -51,13 +51,13 @@ const Best = () => {
   }
 
   return (
-      <Flex align="center" gap="10" direction="column" margin={10}>
+      <Flex align="center" gap="5" direction="column" margin={10}>
         <Heading as='h4' size='md' noOfLines={1}>
           Find the best price for bikes, components, accessories, clothing,
           brands and items 🎉
         </Heading>
 
-        <Box w="100%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' p='20'>
+        <Box w="100%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' pl='20' pr='20' pb='5'>
         <Text m='5' fontSize='1.2em'>Search for the best price on your favorite brands, components, bicycles and accessories:</Text>
           <Flex>
             <Input value={input} onChange={(ev) => setInput(ev.target.value)} onKeyDown={handleEnter} placeholder='Type in your query...'/>
@@ -65,8 +65,11 @@ const Best = () => {
           </Flex>
         </Box>
 
+        
         <Progress w='100%' hasStripe isIndeterminate visibility={searching ? 'visible' : 'hidden'}/>
-        <Text color='gray'>{elapsed}</Text>
+        {results.length > 0 && <Text color='gray'>{elapsed}</Text>}
+
+        {results.length == 0 && <SupportedMarkets defIx={Math.floor(Math.random() * 5)}/>}
 
         <SimpleGrid columns={4} spacing={10}>
           {results.map( (res, ix) => {
@@ -85,8 +88,6 @@ const Best = () => {
             />
           })}
         </SimpleGrid>
-
-        <SupportedMarkets defIx={Math.floor(Math.random() * 5)}/>
 
       </Flex>
     )
