@@ -1,0 +1,27 @@
+curl 'https://www.amazon.com/s?i=sporting-intl-ship&k=elite%20suito-t%20trainer&ref=nb_sb_noss&url=search-alias%3Dsporting-intl-ship' \
+  -H 'authority: www.amazon.com' \
+  -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+  -H 'accept-language: en-US,en;q=0.9,de;q=0.8,hu;q=0.7,ro;q=0.6' \
+  -H 'cache-control: no-cache' \
+  -H 'cookie: aws-ubid-main=978-8532212-3785218; aws-session-id=322-1266314-5354336; aws-session-id-time=1656394826l; aws-analysis-id=322-1266314-5354336; session-id=131-7855604-5696137; session-id-time=2082787201l; sp-cdn="L5Z9:CH"; ubid-main=132-9605075-0205651; aws-target-data=%7B%22support%22%3A%221%22%7D; aws-target-visitor-id=1656168982750-975522.37_0; regStatus=registered; i18n-prefs=USD; lc-main=en_US; AMCV_7742037254C95E840A4C98A6%40AdobeOrg=1585540135%7CMCIDTS%7C19309%7CMCMID%7C68354769804459851413944460032072613080%7CMCAAMLH-1668877695%7C6%7CMCAAMB-1668877695%7CRKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7CMCOPTOUT-1668280095s%7CNONE%7CMCAID%7CNONE%7CvVersion%7C4.4.0; aws-userInfo-signed=eyJ0eXAiOiJKV1MiLCJrZXlSZWdpb24iOiJ1cy1lYXN0LTEiLCJhbGciOiJFUzM4NCIsImtpZCI6ImFmY2M3ZGEzLWQyNWMtNGNmMC04ZTdkLWEzOGMyOTlhNTUxNSJ9.eyJzdWIiOiIiLCJzaWduaW5UeXBlIjoiUFVCTElDIiwiaXNzIjoiaHR0cDpcL1wvc2lnbmluLmF3cy5hbWF6b24uY29tXC9zaWduaW4iLCJrZXliYXNlIjoiUjFKOUREeWM0MjhrRGdWVzJtMzl5MENCY1dQUU9cLzZWcTRnZUxteU8rV0k9IiwiYXJuIjoiYXJuOmF3czppYW06OjQ3MTUxMzYwODY0NDpyb290IiwidXNlcm5hbWUiOiJwZXJlZ2luIn0.BMwdYacGR2fryzo8nQu4fBKGP1ELhBL3j9Q54R1lgH5bOgxFUMNFEKdCOHp0ko2oj0ljJAcPMGCst0ZtZBxJZnQHZxBwWgrkXZESigxuvHlo87DTat71dL415jgmlC9M; aws-userInfo=%7B%22arn%22%3A%22arn%3Aaws%3Aiam%3A%3A471513608644%3Aroot%22%2C%22alias%22%3A%22%22%2C%22username%22%3A%22peregin%22%2C%22keybase%22%3A%22R1J9DDyc428kDgVW2m39y0CBcWPQO%2F6Vq4geLmyO%2BWI%5Cu003d%22%2C%22issuer%22%3A%22http%3A%2F%2Fsignin.aws.amazon.com%2Fsignin%22%2C%22signinType%22%3A%22PUBLIC%22%7D; awsc-search-rs-ia=1; skin=noskin; session-token=efctmIdDL8+sguTGOon9rn25rwcyF76weY/lDjl1+tDfGuL8iAYs5L7QHuxGnBMka6h5y6xbf2Eez+UkDZGMA1Sl4r4dGCNyEbsRi3mXHyx3Yw683ihpEH43HBtFmXCmRqRGrVH/9PkpfDLq2aaf09XT6C89lbRjc50uXnqmdIY03pmFzRR8o1rRk7mxzDaiR7Tq/9/CIwJFCj4yMedsnDOCOqa8CFYCJEFMRgxzQA8=; csm-hit=tb:28JVKMJ8T3KT0XV50FZV+s-368CQVQ0BNZN81RN5J3A|1669578241306&adb:adblk_no&t:1669578241306' \
+  -H 'device-memory: 8' \
+  -H 'downlink: 10' \
+  -H 'dpr: 2' \
+  -H 'ect: 4g' \
+  -H 'pragma: no-cache' \
+  -H 'referer: https://www.amazon.com/s?k=elite+suito-t+trainer&i=sporting-intl-ship&crid=3PXCB0DXY6TMU&sprefix=elite+suito-t+trainer%2Csporting-intl-ship%2C511&ref=nb_sb_noss_1' \
+  -H 'rtt: 100' \
+  -H 'sec-ch-device-memory: 8' \
+  -H 'sec-ch-dpr: 2' \
+  -H 'sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'sec-ch-viewport-width: 725' \
+  -H 'sec-fetch-dest: document' \
+  -H 'sec-fetch-mode: navigate' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'sec-fetch-user: ?1' \
+  -H 'upgrade-insecure-requests: 1' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36' \
+  -H 'viewport-width: 725' \
+  --compressed
