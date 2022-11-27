@@ -1,4 +1,6 @@
 # ToDo
+- add image and label showing available marketplaces
+- add amazon
 - add toppreise, and check other aggregators
 - badge for new, available, sales, lead times
 - suggestions when searching products

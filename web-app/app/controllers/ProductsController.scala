@@ -34,4 +34,12 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
         } yield Ok(JsonIo.write(products))
       }
     }
+
+  // route mapped to /api/products/markets
+  def markets(): Action[AnyContent] =
+    Action.async {
+      for {
+        products <- feed.supported()
+      } yield Ok(JsonIo.write(products))
+    }
 }

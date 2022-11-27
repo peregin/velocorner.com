@@ -557,6 +557,22 @@ GET     /api/brands/search                                 controllers.BrandsCon
 GET     /api/products/suggest                              controllers.ProductsController.suggest(query: String)
 
 ###
+#  summary: List of supported markerplaces
+#  tags:
+#    - brand
+#  responses:
+#    200:
+#      description: Returns a list of marketplaces
+#      content:
+#        application/json:
+#          schema:
+#            type: array
+#            items:
+#               $ref: '#/components/schemas/velocorner.api.brand.Marketplace'
+###
+GET     /api/products/markets                              controllers.BrandsController.markets()
+
+###
 #  summary: Lookup for a products based on the search parameter
 #  tags:
 #    - product
