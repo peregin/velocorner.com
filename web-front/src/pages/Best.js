@@ -3,6 +3,7 @@ import { Flex, Heading, Input, IconButton, Box, Text, Progress, SimpleGrid } fro
 import { SearchIcon } from "@chakra-ui/icons";
 import ApiClient from "../service/ApiClient";
 import ProductCard from "../components/ProductCard";
+import SupportedMarkets from "../components/SupportedMarkets";
 
 const Best = () => {
 
@@ -11,6 +12,7 @@ const Best = () => {
   const [results, setResults] = useState([])
   const [elapsed, setElapsed] = useState('')
   const [searching, setSearching] = useState(false)
+
   useEffect(() => {
     fetchData()
   }, [query])
@@ -59,9 +61,7 @@ const Best = () => {
         <Text m='5' fontSize='1.2em'>Search for the best price on your favorite brands, components, bicycles and accessories:</Text>
           <Flex>
             <Input value={input} onChange={(ev) => setInput(ev.target.value)} onKeyDown={handleEnter} placeholder='Type in your query...'/>
-            <IconButton colorScheme="green" aria-label="Search components" icon={<SearchIcon onClick={handleSearch} />}
-
-            />
+            <IconButton colorScheme="green" aria-label="Search components" icon={<SearchIcon onClick={handleSearch} />}/>
           </Flex>
         </Box>
 
@@ -85,6 +85,8 @@ const Best = () => {
             />
           })}
         </SimpleGrid>
+
+        <SupportedMarkets defIx={Math.floor(Math.random() * 5)}/>
 
       </Flex>
     )

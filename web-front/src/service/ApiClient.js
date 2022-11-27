@@ -3,7 +3,7 @@ const apiHost = process.env.API_HOST || 'https://velocorner.com' // doesn't work
 console.info('api host: ' + apiHost)
 console.info('env: ' + JSON.stringify(process.env))
 
-function getStatus() {
+function status() {
   const requestOptions = {
     method: 'GET',
     accept: 'application/json',
@@ -25,22 +25,14 @@ function search(term) {
     .then(r => r.json())
 }
 
-async function test() {
-  //let url = 'https://www.strava.com/api/v3/oauth/authorize?client_id=4486&redirect_uri=http%3A%2F%2Flocalhost%3A9001%2Fauthorize%2Fstrava&response_type=code&approval_prompt=auto&scope=read%2Cactivity%3Aread'
-  //let resp = window.location = url
-  // const requestOptions = {
-  //   method: 'POST',
-  //   accept: "application/json",
-  //   redirect: 'follow',
-  //   credential: 'include',
-  //   headers: {
-  //     'Content-Type': 'application/x-www-form-urlencoded'
-  //   },
-  //   mode: 'no-cors'
-  //}
-  //let resp = await fetch(url, requestOptions)
-  //  .then(res => console.log(`LOGIN response[${res}]`))
-  //  .catch(console.error);
+function markets() {
+  const requestOptions = {
+    method: 'GET',
+    accept: 'application/json'
+  }
+  return fetch(apiHost + '/api/products/markets', requestOptions)
+    .then(checkStatus)
+    .then(r => r.json())
 }
 
 function login() {
@@ -68,9 +60,9 @@ function checkStatus(response) {
 }
 
 const ApiClient = {
-  status: getStatus,
+  status: status,
   search: search,
+  markets: markets,
   login: login,
-  test: test,
 }
 export default ApiClient;
