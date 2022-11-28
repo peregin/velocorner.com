@@ -14,6 +14,7 @@ import velocorner.api.brand.{Marketplace, ProductDetails}
 
 import java.net.URLEncoder
 import scala.jdk.CollectionConverters._
+import scala.util.Try
 
 object CrawlerAmazon {
 
@@ -21,38 +22,36 @@ object CrawlerAmazon {
 
   def scrape(content: String, limit: Int): List[ProductDetails] = {
     val dom = Jsoup.parse(content)
-    val grids = dom.select("div[class=s-main-slot s-result-list s-search-results sg-row]").asScala.take(limit)
-    println(grids)
-    grids.map { g =>
-      val aaa = g.attr("data-component-type")
-      println(s"aaaa=$aaa")
-      val desc = g.select("li[class=description] > a")
-      val productUrl = baseUrl + desc.attr("href")
-      val name = desc.select("h2").text()
-      val imageUrl = g.select("div[class=product_image1 placeholder] > a > img").attr("src")
-      // has text in range: £419.99&nbsp;-&nbsp;£505.99
-      // or in a span element a single price £287.00
-      val price = Option(g.select("li[class=fromamt] > span").text().trim)
-        .filter(_.nonEmpty)
-        .getOrElse(g.select("li[class=fromamt]").text().trim)
-        .split("-")
-        .headOption
-        .getOrElse("")
-        .trim // take the first from the range if any
+    val grids = dom.select("div[class=s-main-slot s-result-list s-search-results sg-row]")
+      .select("div[data-component-type=s-search-result]")
+      .asScala.take(limit * 2) // not all prices are set
+    grids.flatMap { g =>
+      val nameElement = g.select("div[class=a-section a-spacing-none a-spacing-top-micro s-title-instructions-style] > h2 > a")
+      val productUrl = baseUrl + nameElement.attr("href")
+      val name = nameElement.select("span").text()
+
+      val reviewText = g.select("div[class=a-section a-spacing-none a-spacing-top-micro] > div > span").text().takeWhile(_ != ' ')
+      val review = Try(java.lang.Double.parseDouble(reviewText)).getOrElse(0d)
+
+      val imageUrl = g.select("img[class=s-image]").attr("src")
+
+      val maybePriceText = g.select("span[class=a-offscreen]").asScala.headOption.map(_.text().trim)
+      maybePriceText.map(priceText =>
       ProductDetails(
         market = Amazon,
         brand = none,
         name = name,
         description = none,
-        price = Money(10, "USD"), // extractPrice(price),
+        price = extractPrice(priceText),
         imageUrl = imageUrl,
         productUrl = productUrl,
-        reviewStars = 0,
+        reviewStars = review,
         isNew = false,
         onSales = false,
         onStock = true
       )
-    }.toList
+      )
+    }.toList.take(limit)
   }
 
   // sometimes currency symbols are in front

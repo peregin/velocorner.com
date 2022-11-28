@@ -54,4 +54,10 @@ class MarketplaceTest extends AnyFlatSpec with should.Matchers with DecodeResour
       onStock = true
     )
   }
+
+  "amazon page response" should "be converted" in {
+    val page = load("/amazon/search.html")
+    val products = CrawlerAmazon.scrape(page, 5)
+    products should have size 5
+  }
 }
