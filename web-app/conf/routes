@@ -575,7 +575,7 @@ GET     /api/products/search                               controllers.ProductsC
 ###
 #  summary: List of supported markerplaces
 #  tags:
-#    - brand
+#    - product
 #  responses:
 #    200:
 #      description: Returns a list of marketplaces
