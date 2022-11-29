@@ -3,6 +3,7 @@ package velocorner.crawler
 import cats.effect.{IO, IOApp, Resource}
 import cats.implicits._
 import com.comcast.ip4s.IpLiteralSyntax
+import fs2.io.net.tls.TLSContext
 import org.http4s.HttpApp
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
@@ -19,8 +20,9 @@ object Main extends IOApp.Simple {
   override def run: IO[Unit] = {
     val server: Resource[IO, Server] = for {
       implicit0(logger: Logger[IO]) <- Resource.eval(Slf4jLogger.create[IO])
-      defaultServer = EmberServerBuilder.default[IO]
-      client <- EmberClientBuilder.default[IO].build
+
+      tlsContext <- TLSContext.Builder.forAsync[IO].insecureResource
+      client <- EmberClientBuilder.default[IO].withTLSContext(tlsContext).build
       crawlers = List(
         new CrawlerBikeComponents[IO](client),
         new CrawlerGalaxus[IO](client),
@@ -32,7 +34,9 @@ object Main extends IOApp.Simple {
       )
       _ <- info(s"possible marketplaces: ${Marketplace.values.map(_.name).mkString("\n", "\n", "\n")} ...")
       _ <- info(s"using crawlers: ${crawlers.map(_.market().name).mkString("\n", "\n", "\n")} ...")
+
       router = new Router[IO](crawlers)
+      defaultServer = EmberServerBuilder.default[IO]
       server <- defaultServer
         .withHost(ip"0.0.0.0")
         .withPort(port"9011")
