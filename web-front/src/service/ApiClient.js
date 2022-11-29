@@ -1,7 +1,6 @@
-
-const apiHost = process.env.API_HOST || 'https://velocorner.com' // doesn't work!!!
+// react inject variables starting with REACT_APP_ to client side
+const apiHost = process.env.API_HOST || process.env.REACT_APP_API_HOST || 'https://velocorner.com'
 console.info('api host: ' + apiHost)
-console.info('env: ' + JSON.stringify(process.env))
 
 function status() {
   const requestOptions = {
