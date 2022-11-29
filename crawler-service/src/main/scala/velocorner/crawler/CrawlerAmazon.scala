@@ -22,36 +22,43 @@ object CrawlerAmazon {
 
   def scrape(content: String, limit: Int): List[ProductDetails] = {
     val dom = Jsoup.parse(content)
-    val grids = dom.select("div[class=s-main-slot s-result-list s-search-results sg-row]")
+    val grids = dom
+      .select("div[class=s-main-slot s-result-list s-search-results sg-row]")
       .select("div[data-component-type=s-search-result]")
-      .asScala.take(limit * 2) // not all prices are set
-    grids.flatMap { g =>
-      val nameElement = g.select("div[class=a-section a-spacing-none a-spacing-top-micro s-title-instructions-style] > h2 > a")
-      val productUrl = baseUrl + nameElement.attr("href")
-      val name = nameElement.select("span").text()
+      .asScala
+      .take(limit * 2) // not all prices are set
+    grids
+      .flatMap { g =>
+        val nameElement = g.select("div[class=a-section a-spacing-none a-spacing-top-micro s-title-instructions-style] > h2 > a")
+        val productUrl = baseUrl + nameElement.attr("href")
+        val maybeName = Option(nameElement.select("span").text()).filter(_.trim.nonEmpty)
 
-      val reviewText = g.select("div[class=a-section a-spacing-none a-spacing-top-micro] > div > span").text().takeWhile(_ != ' ')
-      val review = Try(java.lang.Double.parseDouble(reviewText)).getOrElse(0d)
+        val reviewText = g.select("div[class=a-section a-spacing-none a-spacing-top-micro] > div > span").text().takeWhile(_ != ' ')
+        val review = Try(java.lang.Double.parseDouble(reviewText)).getOrElse(0d)
 
-      val imageUrl = g.select("img[class=s-image]").attr("src")
+        val imageUrl = g.select("img[class=s-image]").attr("src")
 
-      val maybePriceText = g.select("span[class=a-offscreen]").asScala.headOption.map(_.text().trim)
-      maybePriceText.map(priceText =>
-      ProductDetails(
-        market = Amazon,
-        brand = none,
-        name = name,
-        description = none,
-        price = extractPrice(priceText),
-        imageUrl = imageUrl,
-        productUrl = productUrl,
-        reviewStars = review,
-        isNew = false,
-        onSales = false,
-        onStock = true
-      )
-      )
-    }.toList.take(limit)
+        val maybePriceText = g.select("span[class=a-offscreen]").asScala.headOption.map(_.text().trim)
+        (maybePriceText, maybeName) match {
+          case (Some(priceText), Some(name)) =>
+            ProductDetails(
+              market = Amazon,
+              brand = none,
+              name = name,
+              description = none,
+              price = extractPrice(priceText),
+              imageUrl = imageUrl,
+              productUrl = productUrl,
+              reviewStars = review,
+              isNew = false,
+              onSales = false,
+              onStock = true
+            ).some
+          case _ => none
+        }
+      }
+      .toList
+      .take(limit)
   }
 
   // sometimes currency symbols are in front
