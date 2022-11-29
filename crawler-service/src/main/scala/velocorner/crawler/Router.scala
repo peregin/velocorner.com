@@ -20,7 +20,7 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
     suggestions <- crawlers
       .parTraverse { c =>
         c.products(term, 5).handleErrorWith { e =>
-          Logger[F].error(e)("unable to crawl") *> List.empty[ProductDetails].pure[F]
+          Logger[F].error(e)(s"unable to crawl ${c.market().name}") *> List.empty[ProductDetails].pure[F]
         }
       }
       .map(_.flatten)
