@@ -2,43 +2,31 @@
 const apiHost = process.env.API_HOST || process.env.REACT_APP_API_HOST || 'https://velocorner.com'
 console.info('api host: ' + apiHost)
 
+const requestOptions = {
+  method: 'GET',
+  accept: 'application/json',
+  cache: 'no-cache'
+}
+
 function status() {
-  const requestOptions = {
-    method: 'GET',
-    accept: 'application/json',
-    cache: 'no-cache'
-  }
   return fetch(apiHost + '/api/status', requestOptions)
     .then(checkStatus)
     .then(r => r.json())
 }
 
 function search(term) {
-  const requestOptions = {
-    method: 'GET',
-    accept: 'application/json',
-    cache: 'no-cache'
-  }
   return fetch(apiHost + '/api/products/search?query=' + term, requestOptions)
     .then(checkStatus)
     .then(r => r.json())
 }
 
 function markets() {
-  const requestOptions = {
-    method: 'GET',
-    accept: 'application/json'
-  }
   return fetch(apiHost + '/api/products/markets', requestOptions)
     .then(checkStatus)
     .then(r => r.json())
 }
 
 function login() {
-  const requestOptions = {
-    method: 'GET',
-    accept: "application/json"
-  }
   return fetch('/api/login/strava', requestOptions)
     .then(checkStatus)
     .then(r => r.text())

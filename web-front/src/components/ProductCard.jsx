@@ -1,5 +1,5 @@
 import { React } from "react";
-import { Box, LinkBox, LinkOverlay, Image, Badge, Flex, Spacer } from "@chakra-ui/react";
+import { Box, LinkBox, LinkOverlay, Image, Badge, Flex } from "@chakra-ui/react";
 import { StarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
 const ProductCard = ({productName, productUrl, brandName, marketName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew}) => {

@@ -75,7 +75,7 @@ const Best = () => {
               key={ix}
               productName={res.name}
               productUrl={res.productUrl}
-              brandName={res.brand.name}
+              brandName={res.brand?.name}
               marketName={res.market.name}
               formattedPrice={res.price.value + ' ' + res.price.currency}
               imageUrl={res.imageUrl}
