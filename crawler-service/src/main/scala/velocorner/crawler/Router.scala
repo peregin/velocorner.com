@@ -1,10 +1,11 @@
 package velocorner.crawler
 
 import cats.Parallel
+import cats.effect.implicits.concurrentParTraverseOps
 import cats.effect.kernel.Async
 import cats.implicits._
-import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.HttpRoutes
+import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
 import velocorner.api.brand.ProductDetails
@@ -18,7 +19,7 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
   private def search(term: String): F[List[ProductDetails]] = for {
     _ <- Logger[F].info(s"searching for [$term]...")
     suggestions <- crawlers
-      .parTraverse { c =>
+      .parTraverseN(4) { c =>
         c.products(term, 5).handleErrorWith { e =>
           Logger[F].error(e)(s"unable to crawl ${c.market().name}") *> List.empty[ProductDetails].pure[F]
         }
