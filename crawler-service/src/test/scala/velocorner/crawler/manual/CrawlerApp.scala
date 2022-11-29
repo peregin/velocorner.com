@@ -13,14 +13,14 @@ object CrawlerApp extends IOApp.Simple {
     client <- EmberClientBuilder.default[IO].withTLSContext(tlsContext).build
     // new CrawlerGalaxus[IO](client)
     // CrawlerBikeComponents[IO](client)
-    //crawler = new CrawlerChainReactionCycles[IO](client)
+    crawler = new CrawlerChainReactionCycles[IO](client)
     // new CrawlerBikeImport[IO](client)
     // new CrawlerBikester[IO](client)
-    crawler = new CrawlerAmazon[IO](client)
+    //crawler = new CrawlerAmazon[IO](client)
 
     // elite suito-t trainer
     // Garmin Edge 830
-    res <- Resource.eval(crawler.products("SRAM XX1", 10))
+    res <- Resource.eval(crawler.products("SRAM xx1", 10))
   } yield res).use { res =>
     val clean = res.map(p => p.copy(market = p.market.copy(url = "", logoUrl = ""), description = none))
     IO.println(s"search result = ${clean.mkString("\n", "\n", "\n")}")
