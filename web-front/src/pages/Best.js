@@ -51,14 +51,14 @@ const Best = () => {
   }
 
   return (
-      <Flex align="center" gap="5" direction="column" margin={10}>
-        <Heading as='h4' size='md' noOfLines={1}>
+      <Flex align="center" gap="5" direction="column" margin={[5, 10]}>
+        <Heading as='h4' size={['sm', 'md']}>
           Find the best price for bikes, components, accessories, clothing,
           brands and items 🎉
         </Heading>
 
-        <Box w="100%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' pl='20' pr='20' pb='5'>
-        <Text m='5' fontSize='1.2em'>Search for the best price on your favorite brands, components, bicycles and accessories:</Text>
+        <Box w="100%" border='1px' borderColor='lightgray' borderLeft='2px' borderLeftColor='green' pl={[2, 20]} pr={[2, 20]} pb={[2, 5]}>
+        <Text m='5' fontSize={['sm', '1.2em']}>Search for the best price on your favorite brands, components, bicycles and accessories:</Text>
           <Flex>
             <Input value={input} onChange={(ev) => setInput(ev.target.value)} onKeyDown={handleEnter} placeholder='Type in your query...'/>
             <IconButton colorScheme="green" aria-label="Search components" icon={<SearchIcon onClick={handleSearch} />}/>
@@ -68,9 +68,8 @@ const Best = () => {
         <Progress w='100%' hasStripe isIndeterminate visibility={searching ? 'visible' : 'hidden'}/>
         {results.length > 0 && <Text color='gray'>{elapsed}</Text>}
 
-        <SimpleGrid columns={4} spacing={10}>
+        <SimpleGrid columns={{sm: 2, md: 4}} spacing={[2, 10]}>
           {results.map( (res, ix) => {
-            //console.info('res=' + JSON.stringify(res.price) + ', ix=' + ix)
             return <ProductCard 
               key={ix}
               productName={res.name}
