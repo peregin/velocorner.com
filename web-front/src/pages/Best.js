@@ -65,11 +65,8 @@ const Best = () => {
           </Flex>
         </Box>
 
-        
         <Progress w='100%' hasStripe isIndeterminate visibility={searching ? 'visible' : 'hidden'}/>
         {results.length > 0 && <Text color='gray'>{elapsed}</Text>}
-
-        {results.length == 0 && <SupportedMarkets defIx={Math.floor(Math.random() * 5)}/>}
 
         <SimpleGrid columns={4} spacing={10}>
           {results.map( (res, ix) => {
@@ -89,6 +86,7 @@ const Best = () => {
           })}
         </SimpleGrid>
 
+        <SupportedMarkets defIx={Math.floor(Math.random() * 5)}/>
       </Flex>
     )
 }
