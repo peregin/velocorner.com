@@ -18,7 +18,7 @@
     "clean": "rm -Rf node_modules/ build/",
     "version": "echo $npm_package_version",
     "start": "react-scripts --openssl-legacy-provider start",
-    "remote": "REACT_APP_API_HOST=http://velocorner.com react-scripts start",
+    "proxy": "REACT_APP_API_HOST=http://localhost:8080 react-scripts start",
     "local": "REACT_APP_API_HOST=http://localhost:9001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

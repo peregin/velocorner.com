@@ -10,7 +10,7 @@ package object brand {
 
   object Marketplace extends Enum[Marketplace] with LowerCamelcase {
 
-    // part of crawling
+    // blocked as crawler on AWS, works locally
     object Amazon
         extends Marketplace(
           "Amazon",
@@ -18,6 +18,7 @@ package object brand {
           "https://amazon-blogs-brightspot-lower.s3.amazonaws.com/about/00/92/0260aab44ee8a2faeafde18ee1da/amazon-logo-inverse.svg"
         )
 
+    // part of crawling
     object Bike24
         extends Marketplace(
           "Bike24",
