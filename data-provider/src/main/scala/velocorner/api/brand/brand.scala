@@ -18,7 +18,7 @@ package object brand {
           "https://amazon-blogs-brightspot-lower.s3.amazonaws.com/about/00/92/0260aab44ee8a2faeafde18ee1da/amazon-logo-inverse.svg"
         )
 
-    // part of crawling
+    // pending - part of crawling
     object Bike24
         extends Marketplace(
           "Bike24",

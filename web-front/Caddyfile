@@ -1,5 +1,8 @@
 local.velocorner.com {
 	tls ./.certs/_wildcard.velocorner.com.pem ./.certs/_wildcard.velocorner.com-key.pem
+  log {
+    format json
+  }
 	reverse_proxy https://velocorner.com {
 		header_up Host {host}
 		header_up Origin https://velocorner.com
