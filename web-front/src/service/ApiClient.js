@@ -5,7 +5,8 @@ console.info('api host: ' + apiHost)
 const requestOptionsGet = {
   method: 'GET',
   accept: 'application/json',
-  cache: 'no-cache'
+  cache: 'no-cache',
+  mode: 'cors'
 }
 
 function status() {
