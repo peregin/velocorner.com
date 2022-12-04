@@ -14,8 +14,14 @@ Retrieves the version of the package.
 
 ### `Local` environment
 ```shell script
-# run from local connecting to remote backend
-npm run remote
+# run from local connecting to remote backend (setup first)
+# /etc/hosts 127.0.0.1 local.velocorner.com
+# brew install mkcert
+# mkcert -install
+# mkdir ./.certs && cd ./.certs
+# mkcert "*.velocorner.com"
+# caddy run --config Caddyfile
+npm run proxy
 # or connecting to localhost:9001
 npm run local
 ```
