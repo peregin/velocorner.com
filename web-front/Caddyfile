@@ -1,0 +1,23 @@
+# brew install mkcert
+# mkcert -install
+# mkdir ./.certs && cd ./.certs
+# mkcert "*.velocorner.com"
+# caddy run --config Caddyfile
+
+local.velocorner.com {
+  tls ./.certs/_wildcard.velocorner.com.pem ./.certs/_wildcard.velocorner.com-key.pem
+	reverse_proxy https://velocorner.com {
+		header_up Host {host}
+		header_up Origin {header.origin}
+		header_up X-Real-IP {remote}
+		header_up X-Forwarded-Host {host}
+		header_up X-Forwarded-Server {host}
+		header_up X-Forwarded-Port {port}
+		header_up X-Forwarded-For {remote}
+    header_up X-Forwarded-Proto {scheme}
+		header_down Access-Control-Allow-Origin {header.origin}
+		header_down Access-Control-Allow-Credentials true
+		header_down Access-Control-Allow-Methods GET,POST,PUT,DELETE,OPTIONS
+		header_down Access-Control-Allow-Headers Origin,X-Requested-With,Content-Type,Accept,Authorization,User-Agent
+	}
+}

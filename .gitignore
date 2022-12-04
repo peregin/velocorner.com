@@ -51,6 +51,7 @@ yarn-error.log*
 node_modules
 package-lock.json
 .pnp
+*/.certs
 # testing
 coverage
 # misc

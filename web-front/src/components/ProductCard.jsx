@@ -2,7 +2,7 @@ import { React } from "react";
 import { Box, LinkBox, LinkOverlay, Image, Badge, Flex } from "@chakra-ui/react";
 import { StarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
-const ProductCard = ({productName, productUrl, brandName, marketName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew}) => {
+const ProductCard = ({productName, productUrl, brandName, marketName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew, onSales}) => {
   return (
     <LinkBox maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <LinkOverlay href={productUrl}>
@@ -11,12 +11,8 @@ const ProductCard = ({productName, productUrl, brandName, marketName, formattedP
 
       <Box p='6'>
         <Box display='flex' alignItems='baseline'>
-          <Badge borderRadius='full' px='2' colorScheme='teal' visibility={isNew ? 'visible' : 'visible'}>
-            New
-          </Badge>
-          <Badge borderRadius='full' px='2' colorScheme='orange'>
-            SALE
-          </Badge>
+          {isNew && <Badge borderRadius='full' px='2' colorScheme='teal'>New</Badge>}
+          {onSales && <Badge borderRadius='full' px='2' colorScheme='orange'>SALE</Badge>}
           <CheckCircleIcon color='green' px='2px'/>
           <Box color='gray.500' fontWeight='semibold' letterSpacing='wide' fontSize='xs' textTransform='uppercase' ml='2'>
             {brandName}

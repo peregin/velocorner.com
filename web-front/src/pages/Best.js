@@ -115,6 +115,7 @@ const Best = () => {
               imageAlt={res.name}
               reviewStars={res.reviewStars}
               isNew={res.isNew}
+              onSales={res.onSales}
             />
           );
         })}
