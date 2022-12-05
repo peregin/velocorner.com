@@ -2,6 +2,7 @@ package velocorner.crawler
 
 import cats.effect.{Async, IO}
 import cats.implicits._
+import fs2.text
 import io.circe.Codec
 import io.circe.generic.semiauto.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
@@ -9,7 +10,7 @@ import org.http4s.client._
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.client.middleware.GZip
 import org.http4s.headers.`Content-Type`
-import org.http4s.{Header, Headers, MediaType, Method, Uri, UrlForm}
+import org.http4s.{Header, Headers, HttpVersion, MediaType, Method, Uri, UrlForm}
 import org.typelevel.ci.CIString
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
@@ -180,8 +181,9 @@ class CrawlerBike24[F[_]: Async](client: Client[F]) extends Crawler[F] with Http
    */
   override def products(searchTerm: String, limit: Int): F[List[ProductDetails]] = {
     val term = URLEncoder.encode(searchTerm, "UTF-8")
-    val payload = """{"requests":[{"indexName":"production_SEARCH_INDEX_EN","params":"clickAnalytics=true&enablePersonalization=false&facets=%5B%5D&getRankingInfo=true&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&highlightPreTag=%3Cais-highlight-0000000000%3E&query=SRAM%20xx1&tagFilters=&userToken=41d43441-6a77-4c3e-83d3-2561ee38e36e"},{"indexName":"production_BRAND_INDEX","params":"clickAnalytics=true&enablePersonalization=false&facets=%5B%5D&getRankingInfo=true&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&highlightPreTag=%3Cais-highlight-0000000000%3E&query=SRAM%20xx1&tagFilters=&userToken=41d43441-6a77-4c3e-83d3-2561ee38e36e"}]}""".stripMargin
-    val uri = Uri.unsafeFromString("""https://search.bike24.com/1/indexes/*/queries?x-algolia-agent=Algolia""")
+    val payload =
+      """{"requests":[{"indexName":"production_SEARCH_INDEX_EN","params":"clickAnalytics=true&enablePersonalization=false&facets=%5B%5D&getRankingInfo=true&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&highlightPreTag=%3Cais-highlight-0000000000%3E&query=SRAM%20xx1&tagFilters=&userToken=41d43441-6a77-4c3e-83d3-2561ee38e36e"},{"indexName":"production_BRAND_INDEX","params":"clickAnalytics=true&enablePersonalization=false&facets=%5B%5D&getRankingInfo=true&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&highlightPreTag=%3Cais-highlight-0000000000%3E&query=SRAM%20xx1&tagFilters=&userToken=41d43441-6a77-4c3e-83d3-2561ee38e36e"}]}""".stripMargin
+    val uri = Uri.unsafeFromString("https://search.bike24.com/1/indexes/*/queries?x-algolia-agent=Algolia")
     val headers: Headers = Headers(
       Header.Raw(CIString("Host"), "search.bike24.com"),
       Header.Raw(CIString("Origin"), "https://www.bike24.com"),
@@ -190,18 +192,31 @@ class CrawlerBike24[F[_]: Async](client: Client[F]) extends Crawler[F] with Http
       Header.Raw(CIString("Accept-Language"), "en-US,en;q=0.9,de;q=0.8"),
       Header.Raw(CIString("Accept-Encoding"), "gzip, deflate, br"),
       Header.Raw(CIString("Cache-Control"), "no-cache"),
-      Header.Raw(CIString("User-Agent"), "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"),
+      Header.Raw(CIString("Connection"), "keep-alive"),
+      Header.Raw(CIString("Content-Type"), "application/json"),
+      Header
+        .Raw(CIString("User-Agent"), "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"),
       Header.Raw(CIString("x-algolia-api-key"), "KEY"),
-      Header.Raw(CIString("x-algolia-application-id"), "ID"),
+      Header.Raw(CIString("x-algolia-application-id"), "ID")
     )
-    val request = Method.POST(uri, headers).withEmptyBody//.withContentType(`Content-Type`(MediaType.application.`x-www-form-urlencoded`))
+    val request = Method
+      .POST(payload, uri, headers)
+      .withEmptyBody
+      //.withHttpVersion(HttpVersion.`HTTP/2`) // .withContentType(`Content-Type`(MediaType.application.`x-www-form-urlencoded`))
     println(request.asCurl(_ => false))
-    //val gzipClient = GZip()(client)
+    val gzipClient = GZip()(client)
     for {
-      res <- client.expect[String](request).attemptTap{
-        case Left(err) => logger.info(err.toString)
-        case Right(_) => logger.info("got content")
+      res <- gzipClient.run(request).use { rep =>
+        for {
+          message <- rep.body.through(text.utf8.decode).compile.string
+          _ = println(message)
+          _ = println(rep.status)
+        } yield 42
       }
+//      res <- client.expect[String](request).attemptTap{
+//        case Left(err) => logger.info(err.toString)
+//        case Right(_) => logger.info("got content")
+//      }
       _ = println(res)
     } yield List.empty[ProductDetails]
   }
