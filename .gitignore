@@ -12,7 +12,7 @@ checksums.txt
 .cache
 .idea/*
 !.idea/runConfigurations/
-*/.idea/*
+**/.idea/*
 .idea_modules/*
 .bloop
 .metals
