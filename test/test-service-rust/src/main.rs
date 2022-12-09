@@ -1,8 +1,9 @@
 use std::sync::mpsc;
 use std::thread;
-use actix_web::client;
+use awc::Client;
 
-fn main() {
+#[actix_web::main]
+async fn main() {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
@@ -12,14 +13,11 @@ fn main() {
 
     let received = rx.recv().unwrap();
     println!("Got: {}", received);
-
-    client::get("http://www.rust-lang.org")   // <- Create request builder
-        .header("User-Agent", "Actix-web")
-        .finish().unwrap()
+    let client = Client::default();
+    let res = client.get("http://www.rust-lang.org")   // <- Create request builder
+        .insert_header(("User-Agent", "Actix-web"))
         .send()                               // <- Send http request
-        .map_err(|_| ())
-        .and_then(|response| {                // <- server http response
-            println!("Response: {:?}", response);
-            Ok(())
-        });
+        .await;
+
+    println!("res = {:?}", res);
 }

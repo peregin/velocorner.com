@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
+awc = { version = "3.0.0", features = [ "openssl" ] }
