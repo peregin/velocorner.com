@@ -31,5 +31,5 @@ async fn main() {
     //let mut payload = reply.unwrap();
     println!("status={:?}, ratelimit-remaining={:?}", reply.status(), reply.headers().get("x-ratelimit-remaining"));
     let json = reply.json::<Response>().await.unwrap();
-    println!("json = {:?}", json);
+    println!("json = {:#?}", json);
 }
