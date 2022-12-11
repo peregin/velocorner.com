@@ -1,4 +1,5 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.11_9-centos-slim
+# it is a Debian distribution (Debian GNU/Linux 10 (buster) with java 17, sbt 1.5.0, node 16, docker
+FROM circleci/openjdk:17-buster-node-browsers
 
 LABEL maintainer="velocorner.com@gmail.com"
 
@@ -8,25 +9,14 @@ ENV SBT_OPTS="-Dfile.encoding=UTF-8"
 ENV SBT_HOME="/opt/sbt"
 ENV SBT_VERSION="1.8.0"
 
-# install sbt
-RUN mkdir $SBT_HOME
+USER root
+# install sbt (remove old 1.5)
+RUN rm -rf $SBT_HOME && \
+  mkdir $SBT_HOME
 RUN \
   curl -fsL --silent "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" > $SBT_HOME/sbt.tgz && \
   tar zxf $SBT_HOME/sbt.tgz -C $SBT_HOME && \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
-
-# setup nodejs
-RUN curl -fsSL https://rpm.nodesource.com/setup_17.x | bash -
-
-# install utilities, git, docker, etc
-RUN yum install -y git
-RUN yum install -y yum-utils device-mapper-persistent-data lvm2
-RUN yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-RUN yum install -y docker-ce sudo nodejs
-RUN yum clean all
-
-RUN adduser --uid 1500 -c GECOS circleci
-RUN usermod -aG docker,wheel circleci
 
 USER circleci
 WORKDIR /home/circleci/test
