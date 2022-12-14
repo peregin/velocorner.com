@@ -9,3 +9,4 @@ edition = "2021"
 actix-web = "4"
 awc = { version = "3.0.0", features = [ "openssl" ] }
 serde = { version = "1.0.149", features = ["derive"] }
+chrono = "0.4.23"
