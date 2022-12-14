@@ -1,6 +1,7 @@
 use actix_web::{web, App, HttpRequest, HttpServer, Responder};
 use awc::Client;
 use chrono::{DateTime, Utc};
+use qstring::QString;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default};
 
@@ -10,10 +11,13 @@ struct ExchangeRate {
     rates: HashMap<String, f32>,
 }
 
-async fn live() -> ExchangeRate {
+async fn live(base: String) -> ExchangeRate {
     let client = Client::default();
     let mut reply = client
-        .get("https://api.exchangerate.host/latest?base=CHF")
+        .get(format!(
+            "https://api.exchangerate.host/latest?base={}",
+            base
+        ))
         .insert_header(("User-Agent", "actix-web"))
         .insert_header(("Content-Type", "application/json"))
         .send()
@@ -21,24 +25,25 @@ async fn live() -> ExchangeRate {
         .unwrap();
 
     //let mut payload = reply.unwrap();
-    println!(
-        "status={:?}, ratelimit-remaining={:?}",
-        reply.status(),
+    dbg!(
+        "ratelimit-remaining={:?}",
         reply.headers().get("x-ratelimit-remaining")
     );
-    let json = reply.json::<ExchangeRate>().await.unwrap();
-    println!("json = {:#?}", json);
-    json
+    reply.json::<ExchangeRate>().await.unwrap()
 }
 
 async fn welcome(_: HttpRequest) -> impl Responder {
     let now: DateTime<Utc> = Utc::now();
-    format!("Welcome to exchange rate service, {now}")
+    format!("Welcome to <b>exchange rate service</b>, <i>{now}</i>")
+        .customize()
+        .insert_header(("content-type", "text/html; charset=utf-8"))
 }
 
 async fn rates(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("World");
-    format!("Hello {}!", &name)
+    let qs = QString::from(req.query_string());
+    let currency = qs.get("base").unwrap_or("CHF");
+    let rates = live(String::from(currency)).await;
+    web::Json(rates)
 }
 
 #[actix_web::main]
