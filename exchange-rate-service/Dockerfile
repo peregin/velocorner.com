@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder
 ####################################################################################################
-FROM rust:latest AS builder
+FROM rust:1.61 AS builder
 
 RUN update-ca-certificates
 
@@ -29,7 +29,11 @@ RUN cargo build --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM gcr.io/distroless/cc
+FROM debian:buster-slim
+
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y libssl1.1 libssl-dev openssl
 
 # Import from builder.
 COPY --from=builder /etc/passwd /etc/passwd
@@ -38,9 +42,9 @@ COPY --from=builder /etc/group /etc/group
 WORKDIR /rates
 
 # Copy our build
-COPY --from=builder /rates/target/release/rates ./
+COPY --from=builder /rates/target/release/exchange-rate-service ./
 
 # Use an unprivileged user.
 USER rates:rates
 
-CMD ["/rates/rates"]
+CMD ["/rates/exchange-rate-service"]
