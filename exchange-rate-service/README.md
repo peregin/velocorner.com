@@ -9,7 +9,8 @@ cargo update --dry-run
 
 ## Docker
 ```shell
-docker build -t velocorner.exchange-rate .
-docker run --rm -it -p 9012:9012 velocorner.exchange-rate
+docker build -t peregin/velocorner.rates .
+docker run --rm -it -p 9012:9012 peregin/velocorner.rates
+docker push peregin/velocorner.rates:latest
 ```
 

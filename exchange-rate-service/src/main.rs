@@ -3,7 +3,7 @@ use awc::Client;
 use chrono::{DateTime, Utc};
 use qstring::QString;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, default::Default};
+use std::{collections::HashMap, default::Default, env};
 use log::info;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,7 +35,10 @@ async fn live(base: String) -> ExchangeRate {
 
 async fn welcome(_: HttpRequest) -> impl Responder {
     let now: DateTime<Utc> = Utc::now();
-    format!("Welcome to <b>exchange rate service</b>, <i>{now}</i>")
+    format!(r#"
+    Welcome to <b>exchange rate service</b>, <i>{}</i><br/>
+    OS type is <i>{} {}</i>
+    "#, now, env::consts::OS, env::consts::ARCH)
         .customize()
         .insert_header(("content-type", "text/html; charset=utf-8"))
 }
@@ -57,7 +60,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(welcome))
             .route("/rates", web::get().to(rates))
     })
-    .bind("127.0.0.1:9012")?
+    .bind("0.0.0.0:9012")?
     .run()
     .await
 }
