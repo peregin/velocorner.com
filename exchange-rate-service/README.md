@@ -9,7 +9,7 @@ cargo update --dry-run
 
 ## Docker
 ```shell
-docker build -t exchange-rate .
-docker run --rm -it -p 8080:8080 exchange-rate
+docker build -t velocorner.exchange-rate .
+docker run --rm -it -p 9012:9012 velocorner.exchange-rate
 ```
 

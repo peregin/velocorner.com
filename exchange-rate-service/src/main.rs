@@ -4,6 +4,7 @@ use chrono::{DateTime, Utc};
 use qstring::QString;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default};
+use log::info;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ExchangeRate {
@@ -48,12 +49,15 @@ async fn rates(req: HttpRequest) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init();
+    info!("starting exchange service...");
+
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(welcome))
             .route("/rates", web::get().to(rates))
     })
-    .bind(("localhost", 8080))?
+    .bind("127.0.0.1:9012")?
     .run()
     .await
 }

@@ -11,3 +11,5 @@ awc = { version = "3.0.0", features = [ "openssl" ] }
 serde = { version = "1.0.149", features = ["derive"] }
 chrono = "0.4.23"
 qstring = "0.7.2"
+log = "0.4.0"
+env_logger = "0.9.0"

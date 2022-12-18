@@ -47,4 +47,7 @@ COPY --from=builder /rates/target/release/exchange-rate-service ./
 # Use an unprivileged user.
 USER rates:rates
 
+# enable logging with env_logger
+ENV RUST_LOG=trace
+
 CMD ["/rates/exchange-rate-service"]
