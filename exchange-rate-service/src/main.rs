@@ -25,7 +25,6 @@ async fn live(base: String) -> ExchangeRate {
         .await
         .unwrap();
 
-    //let mut payload = reply.unwrap();
     dbg!(
         "ratelimit-remaining={:?}",
         reply.headers().get("x-ratelimit-remaining")
@@ -46,21 +45,22 @@ async fn welcome(_: HttpRequest) -> impl Responder {
 async fn rates(req: HttpRequest) -> impl Responder {
     let qs = QString::from(req.query_string());
     let currency = qs.get("base").unwrap_or("CHF");
-    let rates = live(String::from(currency)).await;
+    let rates = live(currency.to_string()).await;
     web::Json(rates)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
-    info!("starting exchange service...");
+    let port = option_env!("SERVICE_PORT").unwrap_or("9013");
+    info!("starting exchange service on port {port} ...");
 
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(welcome))
             .route("/rates", web::get().to(rates))
     })
-    .bind("0.0.0.0:9012")?
-    .run()
-    .await
+        .bind(format!("0.0.0.0:{port}"))?
+        .run()
+        .await
 }
