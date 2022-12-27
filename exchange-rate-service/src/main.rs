@@ -5,6 +5,9 @@ use qstring::QString;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default, env};
 use log::info;
+use lru::LruCache;
+use std::num::NonZeroUsize;
+use std::sync::Mutex;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ExchangeRate {
@@ -42,10 +45,22 @@ async fn welcome(_: HttpRequest) -> impl Responder {
         .insert_header(("content-type", "text/html; charset=utf-8"))
 }
 
-async fn rates(req: HttpRequest) -> impl Responder {
+async fn rates(req: HttpRequest, data: web::Data<Mutex<LruCache<String, ExchangeRate>>>) -> impl Responder {
     let qs = QString::from(req.query_string());
     let currency = qs.get("base").unwrap_or("CHF");
-    let rates = live(currency.to_string()).await;
+
+    let mut cache = data.lock().unwrap();
+    let maybeRates = cache.get(currency);
+    let rates = match maybeRates {
+        Some(rates) => rates,
+        None => {
+            let rates1 = live(currency.to_string()).await;
+            cache.put(currency.to_string(), rates1);
+            &rates1
+        }
+    };
+
+    //let rates = live(currency.to_string()).await;
     web::Json(rates)
 }
 
@@ -54,6 +69,10 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     let port = option_env!("SERVICE_PORT").unwrap_or("9013");
     info!("starting exchange service on port {port} ...");
+
+    let cache: LruCache<String, ExchangeRate> = LruCache::new(NonZeroUsize::new(10).unwrap());
+    let safeCache = Mutex::new(cache);
+    let webCache = web::Data::new(safeCache);
 
     HttpServer::new(|| {
         App::new()
