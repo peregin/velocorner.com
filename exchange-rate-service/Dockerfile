@@ -3,8 +3,6 @@
 ####################################################################################################
 FROM rust:1.65 AS builder
 
-RUN update-ca-certificates
-
 # Create appuser
 ENV USER=rates
 ENV UID=10001
@@ -33,7 +31,8 @@ FROM debian:buster-slim
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y libssl1.1 libssl-dev openssl
+    apt-get install -y libssl1.1 libssl-dev openssl ca-certificates && \
+    update-ca-certificates
 
 # Import from builder.
 COPY --from=builder /etc/passwd /etc/passwd
