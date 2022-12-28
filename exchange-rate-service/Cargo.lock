@@ -644,7 +644,6 @@ dependencies = [
  "chrono",
  "env_logger",
  "log",
- "qstring",
  "serde",
  "time 0.3.17",
 ]
@@ -1163,15 +1162,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57a8eca9f9c4ffde41714334dee777596264c7825420f521abc92b5b5deb63a5"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "qstring"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d464fae65fff2680baf48019211ce37aaec0c78e9264c84a3e484717f965104e"
-dependencies = [
- "percent-encoding",
 ]
 
 [[package]]

@@ -7,15 +7,12 @@ description = "exchange rate service for FX and crypto"
 homepage = "https://velocorner.com"
 keywords = ["exchange", "rates", "fx", "crypto"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 actix-web = "4"
 awc = { version = "3.0.0", features = [ "openssl" ] }
 serde = { version = "1.0.149", features = ["derive"] }
 chrono = "0.4.23"
 time = "0.3.17"
-qstring = "0.7.2"
 log = "0.4.0"
 env_logger = "0.9.0"
 cached = "0.41.0"

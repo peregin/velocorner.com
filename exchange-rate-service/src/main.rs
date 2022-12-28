@@ -1,11 +1,11 @@
+use actix_web::get;
 use actix_web::{web, App, HttpRequest, HttpServer, Responder};
 use awc::Client;
+use cached::proc_macro::cached;
 use chrono::{DateTime, Utc};
-use qstring::QString;
+use log::info;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default, env};
-use log::info;
-use cached::proc_macro::cached;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct ExchangeRate {
@@ -14,7 +14,7 @@ struct ExchangeRate {
 }
 
 #[cached(time = 3600)]
-async fn live(base: String) -> ExchangeRate {
+async fn rates_of(base: String) -> ExchangeRate {
     let client = Client::default();
     let mut reply = client
         .get(format!(
@@ -28,7 +28,8 @@ async fn live(base: String) -> ExchangeRate {
         .unwrap();
 
     dbg!(
-        "ratelimit-remaining={:?}",
+        "base={:?}, ratelimit-remaining={:?}",
+        base,
         reply.headers().get("x-ratelimit-remaining")
     );
     reply.json::<ExchangeRate>().await.unwrap()
@@ -36,18 +37,23 @@ async fn live(base: String) -> ExchangeRate {
 
 async fn welcome(_: HttpRequest) -> impl Responder {
     let now: DateTime<Utc> = Utc::now();
-    format!(r#"
+    format!(
+        r#"
     Welcome to <b>exchange rate service</b>, <i>{}</i><br/>
     OS type is <i>{} {}</i>
-    "#, now, env::consts::OS, env::consts::ARCH)
-        .customize()
-        .insert_header(("content-type", "text/html; charset=utf-8"))
+    "#,
+        now,
+        env::consts::OS,
+        env::consts::ARCH
+    )
+    .customize()
+    .insert_header(("content-type", "text/html; charset=utf-8"))
 }
 
-async fn rates(req: HttpRequest) -> impl Responder {
-    let qs = QString::from(req.query_string());
-    let currency = qs.get("base").unwrap_or("CHF");
-    let rates = live(currency.to_string()).await;
+#[get("/rates/{base}")]
+async fn rates(info: web::Path<String>) -> impl Responder {
+    let currency = &info.to_uppercase();
+    let rates = rates_of(String::from(currency)).await;
     web::Json(rates)
 }
 
@@ -57,11 +63,7 @@ async fn main() -> std::io::Result<()> {
     let port = option_env!("SERVICE_PORT").unwrap_or("9012");
     info!("starting exchange service on port {port} ...");
 
-    HttpServer::new(|| {
-        App::new()
-            .route("/", web::get().to(welcome))
-            .route("/rates", web::get().to(rates))
-    })
+    HttpServer::new(|| App::new().route("/", web::get().to(welcome)).service(rates))
         .bind(format!("0.0.0.0:{port}"))?
         .run()
         .await
