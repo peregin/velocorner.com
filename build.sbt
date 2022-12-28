@@ -212,7 +212,6 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       ++ apacheCommons
       ++ cats
       ++ squants
-      ++ zio.map(_ % Test)
       ++ catsEffect.map(_ % Test)
   )
 
@@ -284,23 +283,6 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     BuildInfoPlugin,
     JavaAppPackaging,
     DockerPlugin
-  )
-
-lazy val exchangeRateClient = (project in file("exchange-rate-client") withId "exchange-rate-client")
-  .settings(
-    buildSettings,
-    name := "exchange-rate-client",
-    description := "client library to provides up to the FX rates",
-    libraryDependencies ++= catsEffect
-      ++ http4s
-      ++ circe
-      ++ squants
-      ++ scalacache
-      ++ Seq(
-        "org.typelevel" %% "log4cats-slf4j" % "2.5.0"
-      ),
-    // implicit0, withFilter, final map
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
   )
 
 // module for various analytics supporting the generic stack
@@ -415,7 +397,6 @@ lazy val webApp = (project in file("web-app") withId "web-app")
 lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
     crawlerService,
-    exchangeRateClient,
     dataProvider,
     dataProviderExtension,
     dataSearchElastic,

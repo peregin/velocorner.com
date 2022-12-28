@@ -2,7 +2,7 @@ package controllers
 
 import mouse.all.booleanSyntaxMouse
 import controllers.util.WebMetrics
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.feed.{ProductCrawlerFeed, ProductFeed}
 import velocorner.util.JsonIo
@@ -22,7 +22,7 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
   def suggest(query: String): Action[AnyContent] =
     Action { _ =>
       logger.info(s"suggest products for $query")
-      Ok(Json.obj("suggestions" -> Json.arr()))
+      Ok(Json.obj("suggestions" -> Json.arr(JsString("not implemented yet..."))))
     }
 
   // route mapped to /api/products/search

@@ -1,17 +1,18 @@
 package velocorner.manual.storage
 
+import cats.effect.{IO, IOApp}
 import velocorner.manual.MyLocalConfig
 import velocorner.util.FlywaySupport
-import zio.{Scope, ZIO, ZIOAppArgs}
 
-object AchievementsFromStorageApp extends zio.ZIOAppDefault with FlywaySupport with MyLocalConfig {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
-    for {
-      storage <- ZIO.attempt(localPsqlDb)
-      _ <- ZIO.attempt(storage.initialize())
-      maxAchievement <- ZIO.fromFuture(global => storage.getAchievementStorage.maxAverageHeartRate(9463742, "Ride").recover { case _ => None }(global))
-      _ <- zio.Console.printLine(s"max achievement ${maxAchievement.mkString}")
-      _ <- ZIO.attempt(storage.destroy())
-    } yield ()
+object AchievementsFromStorageApp extends IOApp.Simple with FlywaySupport with MyLocalConfig {
+
+  override def run: IO[Unit] = for {
+    storage <- IO(localPsqlDb)
+    _ <- IO.delay(storage.initialize())
+    maxAchievement <- IO.fromFuture(IO(storage.getAchievementStorage.maxAverageHeartRate(9463742, "Ride").recover { case _ => None }))
+    _ <- IO.println(s"max achievement ${maxAchievement.mkString}")
+    _ <- IO.delay(storage.destroy())
+  } yield ()
 }

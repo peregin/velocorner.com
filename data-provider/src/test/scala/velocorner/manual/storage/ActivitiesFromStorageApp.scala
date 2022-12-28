@@ -1,18 +1,17 @@
 package velocorner.manual.storage
 
+import cats.effect.{IO, IOApp}
 import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.model.DailyProgress
 import velocorner.storage.Storage
-import zio.{Scope, ZIO, ZIOAppArgs}
 
-object ActivitiesFromStorageApp extends zio.ZIOAppDefault with AggregateActivities with MyLocalConfig {
+object ActivitiesFromStorageApp extends IOApp.Simple with AggregateActivities with MyLocalConfig {
 
-  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
-    for {
-      storage <- ZIO.attempt(Storage.create("or"))
-      _ <- ZIO.attempt(storage.initialize())
-      progress <- ZIO.fromFuture(_ => storage.listAllActivities(432909, "Ride")).map(DailyProgress.from)
-      _ <- ZIO.succeed(printAllProgress(progress))
-      _ <- ZIO.attempt(storage.destroy())
-    } yield ()
+  override def run: IO[Unit] = for {
+    storage <- IO(Storage.create("or"))
+    _ <- IO.delay(storage.initialize())
+    progress <- IO.fromFuture(IO(storage.listAllActivities(432909, "Ride"))).map(DailyProgress.from)
+    _ <- IO.delay(printAllProgress(progress))
+    _ <- IO.delay(storage.destroy())
+  } yield ()
 }

@@ -457,16 +457,24 @@ GET     /api/weather/current/:location                     controllers.WeatherCo
 #  summary: Suggests a list of locations based on the query parameter
 #  tags:
 #    - weather
+#  parameters:
+#    - in: path
+#      name: query
+#      required: true
+#      schema:
+#        type: string
+#      example: Zur
+#      description: partial location name
 #  responses:
 #    200:
-#      description: Returns a list of activities
+#      description: Returns a list of matching locations
 #      content:
 #        application/json:
 #          schema:
 #            type: array
 #            items: string
 ###
-GET     /api/weather/suggest                               controllers.WeatherController.suggest(query: String)
+GET     /api/weather/suggest/:query                        controllers.WeatherController.suggest(query: String)
 
 ###
 #  summary: Retrieves the geo position (lat, long) based on the location
@@ -512,6 +520,14 @@ GET     /api/location/ip                                   controllers.LocationC
 #  summary: Suggests a list of brands based on the query parameter
 #  tags:
 #    - brand
+#  parameters:
+#    - in: path
+#      name: query
+#      required: true
+#      schema:
+#        type: string
+#      example: Shimano
+#      description: search term
 #  responses:
 #    200:
 #      description: Returns a list of brands
@@ -522,12 +538,20 @@ GET     /api/location/ip                                   controllers.LocationC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/suggest                                controllers.BrandsController.suggest(query: String)
+GET     /api/brands/suggest/:query                         controllers.BrandsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a list of brands based on the search parameter
 #  tags:
 #    - brand
+#  parameters:
+#    - in: path
+#      name: query
+#      required: true
+#      schema:
+#        type: string
+#      example: Shimano break pads
+#      description: search term
 #  responses:
 #    200:
 #      description: Returns a list of brands
@@ -538,12 +562,20 @@ GET     /api/brands/suggest                                controllers.BrandsCon
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/search                                 controllers.BrandsController.search(query: String)
+GET     /api/brands/search/:query                          controllers.BrandsController.search(query: String)
 
 ###
 #  summary: Suggests a list of product names based on the query parameter
 #  tags:
 #    - product
+#  parameters:
+#    - in: path
+#      name: query
+#      required: true
+#      schema:
+#        type: string
+#      example: SRAM XX1
+#      description: search term
 #  responses:
 #    200:
 #      description: Returns a list of product names
@@ -554,12 +586,20 @@ GET     /api/brands/search                                 controllers.BrandsCon
 #            items:
 #               string
 ###
-GET     /api/products/suggest                              controllers.ProductsController.suggest(query: String)
+GET     /api/products/suggest/:query                       controllers.ProductsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a products based on the search parameter
 #  tags:
 #    - product
+#  parameters:
+#    - in: path
+#      name: query
+#      required: true
+#      schema:
+#        type: string
+#      example: SRAM XX1
+#      description: search term
 #  responses:
 #    200:
 #      description: Returns a list of product details with prices
@@ -570,7 +610,7 @@ GET     /api/products/suggest                              controllers.ProductsC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.ProductDetails'
 ###
-GET     /api/products/search                               controllers.ProductsController.search(query: String)
+GET     /api/products/search/:query                        controllers.ProductsController.search(query: String)
 
 ###
 #  summary: List of supported markerplaces
@@ -587,6 +627,35 @@ GET     /api/products/search                               controllers.ProductsC
 #               $ref: '#/components/schemas/velocorner.api.brand.Marketplace'
 ###
 GET     /api/products/markets                              controllers.ProductsController.markets()
+
+###
+#  summary: Exchange rates
+#  tags:
+#    - rates
+#  parameters:
+#    - in: path
+#      name: base
+#      required: true
+#      schema:
+#        type: string
+#      example: CHF
+#      description: base currency for conversion
+#    - in: path
+#      name: counter
+#      required: true
+#      schema:
+#        type: string
+#      example: EUR
+#      description: counter currency for conversion
+#  responses:
+#    200:
+#      description: conversion rate
+#      content:
+#        application/json:
+#          schema:
+#            type: number
+###
+GET     /api/rates/:base/:counter                          controllers.RatesController.rates(base: String, counter: String)
 
 # DOC
 ### NoDocs ###

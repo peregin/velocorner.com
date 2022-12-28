@@ -1,17 +1,16 @@
 package velocorner.manual.storage
 
+import cats.effect.{IO, IOApp}
 import velocorner.manual.MyLocalConfig
 import velocorner.util.FlywaySupport
-import zio.{Scope, ZIO, ZIOAppArgs}
 
-object AccountFromStorageApp extends zio.ZIOAppDefault with FlywaySupport with MyLocalConfig {
+object AccountFromStorageApp extends IOApp.Simple with FlywaySupport with MyLocalConfig {
 
-  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
-    for {
-      storage <- ZIO.attempt(localPsqlDb)
-      _ <- ZIO.succeed(storage.initialize())
-      account <- ZIO.fromFuture(_ => storage.getAccountStorage.getAccount(432909))
-      _ <- zio.Console.printLine(s"ACCOUNT ${account.toString}")
-      _ <- ZIO.attempt(storage.destroy())
-    } yield ()
+  override def run: IO[Unit] = for {
+    storage <- IO(localPsqlDb)
+    _ <- IO.delay(storage.initialize())
+    account <- IO.fromFuture(IO(storage.getAccountStorage.getAccount(432909)))
+    _ <- IO.println(s"ACCOUNT ${account.toString}")
+    _ <- IO.delay(storage.destroy())
+  } yield ()
 }

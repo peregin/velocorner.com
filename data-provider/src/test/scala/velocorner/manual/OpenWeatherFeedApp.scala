@@ -1,28 +1,23 @@
 package velocorner.manual
 
+import cats.effect.{IO, IOApp}
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.feed.{HttpFeed, OpenWeatherFeed}
-import zio.{Scope, ZIO, ZIOAppArgs}
 
-object OpenWeatherFeedApp extends zio.ZIOAppDefault with LazyLogging with MyLocalConfig {
+object OpenWeatherFeedApp extends IOApp.Simple with LazyLogging with MyLocalConfig {
 
-  def run: ZIO[ZIOAppArgs with Scope, Throwable, Unit] =
-    for {
-      config <- ZIO.succeed(SecretConfig.load())
-      _ <- ZIO.acquireReleaseWith(ZIO.attempt(new OpenWeatherFeed(config))) { feed =>
-        ZIO.succeed {
-          feed.close()
-          HttpFeed.shutdown()
-        }
-      } { feed =>
-        for {
-          forecast <- ZIO.fromFuture(_ => feed.forecast("Zurich,CH"))
-          _ <- zio.Console.printLine(s"current forecast is $forecast")
-          _ <- zio.Console.printLine(s"${forecast.points.size} items")
-          weather <- ZIO.fromFuture(_ => feed.current("Adliswil,CH"))
-          _ <- zio.Console.printLine(s"current weather is $weather")
-        } yield ()
-      }
-    } yield ()
+  override def run: IO[Unit] = for {
+    config <- IO.delay(SecretConfig.load())
+    _ <- IO.bracketFull(_ => IO.delay(new OpenWeatherFeed(config)))(feed => for {
+      forecast <- IO.fromFuture(IO(feed.forecast("Zurich,CH")))
+      _ <- IO.println(s"current forecast is $forecast")
+      _ <- IO.println(s"${forecast.points.size} items")
+      weather <- IO.fromFuture(IO(feed.current("Adliswil,CH")))
+      _ <- IO.println(s"current weather is $weather")
+    } yield ())((feed, _) => IO.delay{
+      feed.close()
+      HttpFeed.shutdown()
+    })
+  } yield ()
 }
