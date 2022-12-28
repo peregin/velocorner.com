@@ -28,5 +28,7 @@ Troubleshoot
 ```shell
 cargo clean
 cargo tree
+cargo fix
+cargo build --release
 ```
 
