@@ -1,5 +1,5 @@
 use actix_web::get;
-use actix_web::{web, App, HttpRequest, HttpServer, Responder};
+use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use awc::Client;
 use cached::proc_macro::cached;
 use chrono::{DateTime, Utc};
@@ -52,9 +52,21 @@ async fn welcome(_: HttpRequest) -> impl Responder {
 
 #[get("/rates/{base}")]
 async fn rates(info: web::Path<String>) -> impl Responder {
-    let currency = &info.to_uppercase();
-    let rates = rates_of(String::from(currency)).await;
-    web::Json(rates)
+    let base = info.into_inner().to_uppercase();
+    let exchanges = rates_of(String::from(base)).await;
+    web::Json(exchanges)
+}
+
+#[get("/rates/{base}/{counter}")]
+async fn rate(info: web::Path<(String, String)>) -> HttpResponse {
+    let info = info.into_inner();
+    let base = info.0.to_uppercase();
+    let counter = info.1.to_uppercase();
+    let exchanges = rates_of(String::from(base)).await;
+    match exchanges.rates.get(&counter) {
+        Some(fx) => HttpResponse::Ok().json(fx),
+        None => HttpResponse::NotFound().finish(),
+    }
 }
 
 #[actix_web::main]
@@ -63,8 +75,13 @@ async fn main() -> std::io::Result<()> {
     let port = option_env!("SERVICE_PORT").unwrap_or("9012");
     info!("starting exchange service on port {port} ...");
 
-    HttpServer::new(|| App::new().route("/", web::get().to(welcome)).service(rates))
-        .bind(format!("0.0.0.0:{port}"))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(welcome))
+            .service(rate)
+            .service(rates)
+    })
+    .bind(format!("0.0.0.0:{port}"))?
+    .run()
+    .await
 }
