@@ -6,9 +6,8 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default, env};
 use log::info;
 use cached::proc_macro::cached;
-use cached::SizedCache;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct ExchangeRate {
     base: String,
     rates: HashMap<String, f32>,
@@ -55,7 +54,7 @@ async fn rates(req: HttpRequest) -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
-    let port = option_env!("SERVICE_PORT").unwrap_or("9013");
+    let port = option_env!("SERVICE_PORT").unwrap_or("9012");
     info!("starting exchange service on port {port} ...");
 
     HttpServer::new(|| {
