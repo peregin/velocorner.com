@@ -15,6 +15,8 @@ object CountryUtils {
   lazy val country2Code: Map[String, String] = readCountries()
   // CH -> Bern
   lazy val code2Capital: Map[String, String] = readCapitals()
+  // CH -> CHF
+  lazy val code2Currency: Map[String, String] = readCurrencies()
 
   def readCountries(): Map[String, String] = {
     val countries = JsonIo.readReadFromResource[List[CountryIso]]("/countries.json")
@@ -24,14 +26,16 @@ object CountryUtils {
   def readCapitals(): Map[String, String] =
     JsonIo.readReadFromResource[Map[String, String]]("/capitals.json")
 
+  def readCurrencies(): Map[String, String] =
+    JsonIo.readReadFromResource[Map[String, String]]("/currencies.json")
+
   // converts location as Zurich,CH
   def iso(location: String): String = {
     val ix = location.indexWhere(_ == ',')
-    val isoLocation = if (ix > -1) {
+    if (ix > -1) {
       val country = location.substring(ix + 1).trim.toLowerCase
       country2Code.get(country).map(iso => s"${location.substring(0, ix).trim},$iso").getOrElse(location.trim)
     } else location.trim
-    isoLocation
   }
 
   // some suggestions are similar, see:
@@ -44,7 +48,6 @@ object CountryUtils {
   // ----------------
   // normalized it to Adliswil,CH
   def normalize(locations: Iterable[String]): Iterable[String] = {
-    // "adliswil" -> List("adliswil, ch")
     val place2Locations = locations
       .map { l =>
         l.lastIndexOf(',') match {

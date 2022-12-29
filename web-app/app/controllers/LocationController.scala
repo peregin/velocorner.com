@@ -2,7 +2,7 @@ package controllers
 
 import cats.data.OptionT
 import cats.instances.future.catsStdInstancesForFuture
-import controllers.util.WebMetrics
+import controllers.util.{RemoteIp, WebMetrics}
 import play.api.{Environment, Mode}
 
 import javax.inject.Inject
@@ -18,6 +18,7 @@ class LocationController @Inject() (
     environment: Environment,
     components: ControllerComponents
 ) extends AbstractController(components)
+    with RemoteIp
     with WebMetrics {
 
   // retrieves geo position for the given location
@@ -35,13 +36,8 @@ class LocationController @Inject() (
   // main use case is to show weather forecast and wind direction when opening for the first time the landing page.
   // route mapped to /api/location/ip
   def ip(): Action[AnyContent] = Action.async {
-    timedRequest[AnyContent](s"query location for ip") { implicit request =>
-      val remoteAddress = request.headers.get("X-Forwarded-For").getOrElse(request.remoteAddress) match {
-        case "0:0:0:0:0:0:0:1" if environment.mode == Mode.Dev => "85.1.45.35"
-        case "0:0:0:0:0:0:0:1"                                 => "127.0.0.1"
-        case other                                             => other
-      }
-      logger.debug(s"searching for $remoteAddress")
+    timedRequest[AnyContent]("query location (iso2 country code and capital) for ip") { implicit request =>
+      val remoteAddress = detectIp(request, environment)
       val result = for {
         countryCode2 <- OptionT(connectivity.getStorage.getLocationStorage.getCountry(remoteAddress))
         capital <- OptionT(Future(CountryUtils.code2Capital.get(countryCode2)))
