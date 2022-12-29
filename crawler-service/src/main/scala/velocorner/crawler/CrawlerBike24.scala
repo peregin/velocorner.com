@@ -71,7 +71,7 @@ object CrawlerBike24 {
         onSales = p.isOffer.getOrElse(false),
         onStock = p.isBuyable.getOrElse(true)
       )
-    }
+    }.sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
   }
   object SuggestResponse {
     implicit val codec: Codec[SuggestResponse] = deriveCodec

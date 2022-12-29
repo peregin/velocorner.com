@@ -55,6 +55,12 @@ class MarketplaceTest extends AnyFlatSpec with should.Matchers with DecodeResour
     )
   }
 
+  "velofactory api response" should "be converted without price and stock availability" in {
+    val items = assert[CrawlerVeloFactory.SearchResponse]("/velofactory/search_no_price.json").toApi()
+    items.size shouldBe 29 // has a brand item type filtered out
+    items.map(_.onStock).take(13).distinct should contain theSameElementsAs List(true) // ordered by 'in stock' first
+  }
+
   "amazon page response" should "be converted" in {
     val page = load("/amazon/search.html")
     val products = CrawlerAmazon.scrape(page, 5)

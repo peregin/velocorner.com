@@ -2,7 +2,7 @@ package controllers
 
 import mouse.all.booleanSyntaxMouse
 import controllers.util.WebMetrics
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.feed.{ProductCrawlerFeed, ProductFeed}
 import velocorner.util.JsonIo
@@ -29,9 +29,11 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
   def search(query: String): Action[AnyContent] =
     Action.async {
       timedRequest[AnyContent](s"search products for [$query]") { _ =>
-        for {
-          products <- query.trim.nonEmpty.fold(feed.search(query), Future.successful(Nil))
-        } yield Ok(JsonIo.write(products))
+        if (query.isBlank) Future(Ok(JsArray()))
+        else
+          for {
+            products <- feed.search(query.trim)
+          } yield Ok(JsonIo.write(products))
       }
     }
 

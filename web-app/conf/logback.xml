@@ -29,7 +29,8 @@
 
     <logger name="play.shaded.ahc.org" level="INFO"/>
     <logger name="play.shaded.ahc.io" level="INFO"/>
-    <logger name="play.core.cookie.encoding" level="INFO"/>
+    <logger name="play.shaded.ahc.org.asynchttpclient.netty.channel" level="WARN"/>
+    <logger name="play.core.cookie.encoding" level="WARN"/>
     <logger name="com.orientechnologies" level="WARN"/>
     <logger name="com.google.inject" level="INFO"/>
     <logger name="com.sun.xml" level="INFO"/>

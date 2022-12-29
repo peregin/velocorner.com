@@ -2,13 +2,12 @@ package velocorner.crawler
 
 import cats.effect.Async
 import cats.implicits._
-import io.circe.Codec
+import io.circe.{Codec, Decoder}
 import io.circe.generic.semiauto.deriveCodec
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.{Header, Headers, Method, Uri}
-import org.http4s.implicits.http4sLiteralsSyntax
 import org.typelevel.ci.CIString
 import velocorner.api.Money
 import velocorner.api.brand.{Brand, Marketplace, ProductDetails}
@@ -26,7 +25,8 @@ object CrawlerVeloFactory {
       best_price: Option[Double],
       price: Double,
       image_link: String,
-      link: String
+      link: String,
+      availability: String
   )
 
   object VeloFactoryProduct {
@@ -46,13 +46,36 @@ object CrawlerVeloFactory {
         reviewStars = 0,
         isNew = false,
         onSales = false,
-        onStock = true
+        onStock = p.availability.equalsIgnoreCase("in stock")
       )
-    }
+    }.sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
   }
 
   object SearchResponse {
-    implicit val codec: Codec[SearchResponse] = deriveCodec
+    implicit val codec: Decoder[SearchResponse] = Decoder[SearchResponse] { res =>
+      for {
+        // filter "type" : "product" only, otherwise brands and other types will appear in the list
+        productsOnly <- res.downField("results").focus match {
+          case None => Right(Nil)
+          case Some(results) =>
+            results.asArray match {
+              case None => Right(Nil)
+              case Some(resultsJson) =>
+                Right(
+                  resultsJson
+                    .filter(json => (json \\ "type").exists(_.asString.exists(_.equalsIgnoreCase("product"))))
+                    .map(productJson =>
+                      productJson.as[VeloFactoryProduct] match {
+                        case Left(failure) => throw new IllegalArgumentException(s"unable to decode $productJson,\nbecause: ${failure.message}")
+                        case Right(p)      => p
+                      }
+                    )
+                    .toList
+                )
+            }
+        }
+      } yield SearchResponse(productsOnly)
+    }
   }
 }
 
