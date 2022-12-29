@@ -62,11 +62,8 @@ docker run -i -d --rm --name velocorner -p 9000:9000 -v /Users/levi/Downloads/ve
 ```shell script
 # /etc/rsyslog.d/95-papertrail.conf
 # sudo systemctl restart rsyslog.service
-if $programname == "systemd" and ($msg contains "Starting Session" or $msg contains "Started Session" or $msg contains "session closed" or $msg contains "session opened" or $msg contains "Created slice" or $msg contains "Starting user" or $msg contains "Starting User Slice of" or $msg contains "Startup" or $msg contains "Removed session" or $msg contains "New session" or $msg contains "Removed slice User Slice of" or $msg contains "Stopping User Slice of" or $msg contains "dwc_otg_handle_mode_mismatch_intr") then stop
-if $programname == "systemd-logind" and ($msg contains "Starting Session" or $msg contains "Started Session" or $msg contains "session closed" or $msg contains "session opened" or $msg contains "Created slice" or $msg contains "Starting user-" or $msg contains "Starting User Slice of" or $msg contains "Removed session"  or $msg contains "New session" or $msg contains "Removed slice User Slice of" or $msg contains "Stopping User Slice of") then stop
-if $programname == "dhclient" and ($msg contains "DHCP" or $msg contains "renewal") then stop
-if $programname == "dockerd" then stop
-if $programname == "sshd" then stop
+if not ($programname contains "velocorner") then stop
+*.*          @logs.papertrailapp.com:11477
 ```
 
 ## Images
