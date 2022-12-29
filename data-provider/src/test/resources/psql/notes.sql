@@ -64,15 +64,15 @@ select jsonb_pretty(data) from activity order by data->>'start_date' desc limit 
 
 select * from forecast f;
 
-select * from "location" l ;
+select * from "location" l;
 
-select * from weather w ;
+select * from weather w;
 
 select * from "attribute" a order by key, type;
 
-select count(*) from forecast f ;
+select count(*) from forecast f;
 
-select count(*) from weather w ;
+select count(*) from weather w;
 
 select jsonb_pretty(data) from forecast
 where location = 'Adliswil,CH'

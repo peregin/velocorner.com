@@ -458,7 +458,7 @@ GET     /api/weather/current/:location                     controllers.WeatherCo
 #  tags:
 #    - weather
 #  parameters:
-#    - in: path
+#    - in: query
 #      name: query
 #      required: true
 #      schema:
@@ -474,7 +474,7 @@ GET     /api/weather/current/:location                     controllers.WeatherCo
 #            type: array
 #            items: string
 ###
-GET     /api/weather/suggest/:query                        controllers.WeatherController.suggest(query: String)
+GET     /api/weather/suggest                               controllers.WeatherController.suggest(query: String)
 
 ###
 #  summary: Retrieves the geo position (lat, long) based on the location
@@ -521,12 +521,12 @@ GET     /api/location/ip                                   controllers.LocationC
 #  tags:
 #    - brand
 #  parameters:
-#    - in: path
+#    - in: query
 #      name: query
 #      required: true
 #      schema:
 #        type: string
-#      example: Shimano
+#      example: Shima
 #      description: search term
 #  responses:
 #    200:
@@ -538,14 +538,14 @@ GET     /api/location/ip                                   controllers.LocationC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/suggest/:query                         controllers.BrandsController.suggest(query: String)
+GET     /api/brands/suggest                                controllers.BrandsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a list of brands based on the search parameter
 #  tags:
 #    - brand
 #  parameters:
-#    - in: path
+#    - in: query
 #      name: query
 #      required: true
 #      schema:
@@ -562,14 +562,14 @@ GET     /api/brands/suggest/:query                         controllers.BrandsCon
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
 ###
-GET     /api/brands/search/:query                          controllers.BrandsController.search(query: String)
+GET     /api/brands/search                                 controllers.BrandsController.search(query: String)
 
 ###
 #  summary: Suggests a list of product names based on the query parameter
 #  tags:
 #    - product
 #  parameters:
-#    - in: path
+#    - in: query
 #      name: query
 #      required: true
 #      schema:
@@ -586,14 +586,14 @@ GET     /api/brands/search/:query                          controllers.BrandsCon
 #            items:
 #               string
 ###
-GET     /api/products/suggest/:query                       controllers.ProductsController.suggest(query: String)
+GET     /api/products/suggest                              controllers.ProductsController.suggest(query: String)
 
 ###
 #  summary: Lookup for a products based on the search parameter
 #  tags:
 #    - product
 #  parameters:
-#    - in: path
+#    - in: query
 #      name: query
 #      required: true
 #      schema:
@@ -610,7 +610,7 @@ GET     /api/products/suggest/:query                       controllers.ProductsC
 #            items:
 #               $ref: '#/components/schemas/velocorner.api.brand.ProductDetails'
 ###
-GET     /api/products/search/:query                        controllers.ProductsController.search(query: String)
+GET     /api/products/search                               controllers.ProductsController.search(query: String)
 
 ###
 #  summary: List of supported markerplaces

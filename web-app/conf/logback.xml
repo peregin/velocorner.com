@@ -27,7 +27,9 @@
         </if>
     </root>
 
-    <logger name="play.shaded.ahc" level="INFO"/>
+    <logger name="play.shaded.ahc.org" level="INFO"/>
+    <logger name="play.shaded.ahc.io" level="INFO"/>
+    <logger name="play.core.cookie.encoding" level="INFO"/>
     <logger name="com.orientechnologies" level="WARN"/>
     <logger name="com.google.inject" level="INFO"/>
     <logger name="com.sun.xml" level="INFO"/>

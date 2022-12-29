@@ -28,7 +28,7 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
   // route mapped to /api/products/search
   def search(query: String): Action[AnyContent] =
     Action.async {
-      timedRequest[AnyContent](s"search products for [$query]") { implicit request =>
+      timedRequest[AnyContent](s"search products for [$query]") { _ =>
         for {
           products <- query.trim.nonEmpty.fold(feed.search(query), Future.successful(Nil))
         } yield Ok(JsonIo.write(products))

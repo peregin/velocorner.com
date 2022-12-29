@@ -159,7 +159,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // route mapped to /api/weather/suggest
   def suggest(query: String): Action[AnyContent] =
     Action.async {
-      timedRequest[AnyContent](s"suggest location for $query") { implicit request =>
+      timedRequest[AnyContent](s"suggest location for $query") { _ =>
         logger.debug(s"suggesting for $query")
         val storage = connectivity.getStorage
         val suggestionsF = storage match {
