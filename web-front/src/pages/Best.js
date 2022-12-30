@@ -22,27 +22,28 @@ const Best = () => {
   const [searching, setSearching] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (query.trim === "") {
-      return;
+    if (query.trim() === "") {
+      console.info("searching for empty term....");
+    } else {
+      let startTime = new Date().getTime();
+
+      setSearching(true);
+      console.info("searching for [" + query + "]...");
+      let results = await ApiClient.search(query); // todo: .catch(error...)
+      window.analytics.track('Best', {
+        term: query
+      });
+      setSearching(false);
+
+      let elapsedTime = new Date().getTime() - startTime;
+      let took = (elapsedTime / 1000).toFixed(2);
+      if (results.length > 0)
+        setElapsed(results.length + " results in " + took + " seconds");
+      else setElapsed("");
+
+      console.info(results.length + " results");
+      setResults(results);
     }
-    let startTime = new Date().getTime();
-
-    setSearching(true);
-    console.info("searching for [" + query + "]...");
-    let results = await ApiClient.search(query); // todo: .catch(error...)
-    window.analytics.track('Best', {
-      term: query
-    });
-    setSearching(false);
-
-    let elapsedTime = new Date().getTime() - startTime;
-    let took = (elapsedTime / 1000).toFixed(2);
-    if (results.length > 0)
-      setElapsed(results.length + " results in " + took + " seconds");
-    else setElapsed("");
-
-    console.info(results.length + " results");
-    setResults(results);
   }, [query]);
 
   useEffect(() => {
