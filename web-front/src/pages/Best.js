@@ -28,6 +28,7 @@ const Best = () => {
     let startTime = new Date().getTime();
 
     setSearching(true);
+    console.info("searching for [" + query + "]...");
     let results = await ApiClient.search(query); // todo: .catch(error...)
     window.analytics.track('Best', {
       term: query
