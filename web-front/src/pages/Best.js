@@ -29,6 +29,9 @@ const Best = () => {
 
     setSearching(true);
     let results = await ApiClient.search(query); // todo: .catch(error...)
+    window.analytics.track('Best', {
+      term: query
+    });
     setSearching(false);
 
     let elapsedTime = new Date().getTime() - startTime;
