@@ -1,4 +1,4 @@
-package velocorner.predict
+package velocorner.smile
 
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.api.strava.Activity

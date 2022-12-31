@@ -285,21 +285,12 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     DockerPlugin
   )
 
-// module for various analytics supporting the generic stack
+// module for various analytics supporting the generic stack with different ML libraries
 lazy val dataAnalytics = (project in file("data-analytics") withId "data-analytics")
   .settings(
     buildSettings,
     name := "data-analytics",
-    libraryDependencies ++= smile ++ logging
-  )
-  .dependsOn(dataProvider % "compile->compile; test->test")
-
-// module dedicated for analytics with Spark, with a special Scala version
-lazy val dataAnalyticsSpark = (project in file("data-analytics-spark") withId "data-analytics-spark")
-  .settings(
-    buildSettings,
-    name := "data-analytics-spark",
-    libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda)
+    libraryDependencies ++= spark ++ logging ++ Seq(playJsonJoda) ++ smile
   )
   .dependsOn(dataProvider % "compile->compile; test->test")
 
@@ -402,7 +393,6 @@ lazy val root = (project in file(".") withId "velocorner")
     dataSearchElastic,
     dataSearch,
     dataAnalytics,
-    dataAnalyticsSpark,
     webApp,
     testServiceJava,
     testServiceScala

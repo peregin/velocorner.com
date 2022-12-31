@@ -7,8 +7,8 @@ import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.SparkSession
 import org.joda.time.DateTime
-import velocorner.api.strava.Activity
 import velocorner.spark.LocalSpark
+import velocorner.api.strava.Activity
 import velocorner.util.{JsonIo, Metrics}
 
 object PredictActivities extends App with LocalSpark[String] with Logging with Metrics {
