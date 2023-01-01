@@ -91,7 +91,7 @@ class WebController @Inject() (
     Ok(views.html.admin(getPageContext("Admin")))
   }
 
-  def sitemap() = Action { implicit request =>
+  def sitemap = Action { _ =>
     val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
     val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
     val xml =

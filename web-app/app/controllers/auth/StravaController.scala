@@ -71,7 +71,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     logger.info(s"authorize ${form.data}")
 
     def formSuccess(v: (String, String)): Future[Result] = {
-      val (code, state) = v
+      val (code, _) = v
       for {
         accessTokenResponse <- authenticator.retrieveAccessToken(code)
         oauthResult <- loggedIn(request) match {

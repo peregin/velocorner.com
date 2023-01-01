@@ -20,7 +20,7 @@ GET     /about                                             controllers.WebContro
 ### NoDocs ###
 GET     /admin                                             controllers.WebController.admin
 ### NoDocs ###
-GET     /sitemap.xml                                       controllers.WebController.sitemap()
+GET     /sitemap.xml                                       controllers.WebController.sitemap
 
 # STRAVA AUTH
 ### NoDocs ###
