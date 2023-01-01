@@ -23,6 +23,7 @@ const App = () => {
           <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
           <Route exact path="/best" element={<Best />} />
           <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
+          <Route path="/oauth/strava" element={<div><Header /><About /><Footer /></div>} />
         </Routes>
       </HashRouter>
     </ChakraProvider>

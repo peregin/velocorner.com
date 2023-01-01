@@ -17,8 +17,8 @@ const Home = () => {
   };
 
   const handleClick = (ev) => {
-    console.log("LOGGING IN");
-    ApiClient.test();
+    console.log("LOGGING IN...");
+    ApiClient.login();
   };
 
   return (
@@ -28,7 +28,8 @@ const Home = () => {
       <h1>Welcome to Velocorner, memory usage {memoryUsage}%</h1>
       <Progress hasStripe value={memoryUsage} />
 
-      <Button onClick={handleClick}>Test JWT</Button>
+      <Button onClick={handleClick}>Test JWT Login</Button>
+
       <Divider m="10" />
       <Text>
         Commit Hash: <Tag colorScheme="teal">42</Tag>

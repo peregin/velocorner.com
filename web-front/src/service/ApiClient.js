@@ -28,10 +28,10 @@ function markets() {
 }
 
 function login() {
-  return fetch('/api/login/strava', requestOptionsGet)
-    .then(checkStatus)
-    .then(r => r.text())
-    .then(a => console.log(`LOGIN response[${a}]`))
+  let callback = encodeURI('http://localhost:3000/oauth/strava');
+  let scope = encodeURI('read,activity:read,profile:read_all');
+  let url = 'https://www.strava.com/api/v3/oauth/authorize?client_id=4486&redirect_uri='+callback+'&response_type=code&approval_prompt=auto&scope='+scope;
+  window.location = url;
 }
 
 
