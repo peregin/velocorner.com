@@ -48,7 +48,7 @@ const Logo = ({ image, name, link, rotation = 90, timing = 200 }) => {
     return (
         <Link href={link} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <Tooltip label={name}>
-                <Image src={image} boxSize='40px' boxShadow='md' borderRadius='full' alt={name} style={style} />
+                <Image src={image} boxSize={{ base: '30px', md: '40px', lg: '40px' }} boxShadow='md' borderRadius='full' alt={name} style={style} />
             </Tooltip>
         </Link>
     )
