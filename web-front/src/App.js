@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  HashRouter, Route, Routes,
+  BrowserRouter, Route, Routes,
 } from 'react-router-dom';
 
 import { ChakraProvider } from '@chakra-ui/react'
@@ -18,14 +18,14 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
           <Route exact path="/best" element={<Best />} />
           <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
           <Route path="/oauth/strava" element={<div><Header /><About /><Footer /></div>} />
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </ChakraProvider>
   )
 }
