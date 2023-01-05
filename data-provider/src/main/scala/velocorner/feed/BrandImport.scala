@@ -21,7 +21,7 @@ object BrandImport extends LazyLogging {
   val home = sys.props.get("user.home").getOrElse("/Users/levi")
   val dir = s"$home/Downloads/velo/velocorner/brands"
 
-  val imageTypes = Set("jpg", "jpeg", "png", "gif")
+  private val imageTypes = Set("jpg", "jpeg", "png", "gif")
 
   type CsvRow = Array[String]
   case class Csv(header: CsvRow, rows: List[CsvRow])
