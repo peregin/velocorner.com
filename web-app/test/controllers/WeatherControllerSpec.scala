@@ -81,5 +81,12 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
       val result = controller.current("").apply(FakeRequest())
       Helpers.status(result) mustBe Status.BAD_REQUEST
     }
+
+    "test cookie encoding/decoding" in {
+      val cookie = WeatherCookie.create("a location")
+      cookie.value mustBe "YSBsb2NhdGlvbg=="
+      val location = WeatherCookie.retrieve(FakeRequest().withCookies(cookie))
+      location mustBe "a location"
+    }
   }
 }

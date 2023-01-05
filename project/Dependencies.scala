@@ -2,13 +2,13 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.10"
 
-  val flywayVersion = "9.10.2"
+  val flywayVersion = "9.11.0"
   val catsVersion = "2.9.0"
   val catsEffectVersion = "3.4.4"
   val mouseVersion = "1.2.1"
   val fs2Version = "3.4.0"
   val zioVersion = "2.0.5"
-  val http4s = "0.23.16"
+  val http4s = "0.23.17"
   val finatraVersion = "21.2.0"
   val argonautVersion = "6.3.8"
   val playWsVersion = "2.1.10" // standalone version
