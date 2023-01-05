@@ -47,7 +47,6 @@ val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % Depe
 val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % Dependencies.playWsVersion
 
 val apacheCommons = Seq(
-  "commons-io" % "commons-io" % "2.11.0",
   "org.apache.commons" % "commons-csv" % "1.9.0"
 )
 
