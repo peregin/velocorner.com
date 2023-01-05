@@ -21,7 +21,7 @@ object InfoService extends HttpServer {
 
     get("/hash") { _: Request =>
       val gitHash = test.service.scala.build.BuildInfo.gitHash
-      val reply = Json.obj(("hash" -> jString(gitHash)))
+      val reply = Json.obj("hash" -> jString(gitHash))
       response.ok.json(reply.spaces2)
     }
   }

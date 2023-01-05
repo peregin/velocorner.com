@@ -24,7 +24,7 @@ sudo docker exec -it $DB_ID console.sh "connect remote:localhost/velocorner root
 ```
 ### Psql
 Test are using an embedded psql instance `otj-pg-embedded` from opentable.
-If for any reason stops working (new Mac OS) then reinstall the missing libraries with `brew install postgresql`.
+If for any reason stops working (new macOS) then reinstall the missing libraries with `brew install postgresql`.
 #### Import
 ```shell script
 import_psql.sh <filename>

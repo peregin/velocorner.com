@@ -24,7 +24,7 @@ class LocationController @Inject() (
   // retrieves geo position for the given location
   // route mapped to /api/location/geo/:location
   def geo(location: String): Action[AnyContent] = Action.async {
-    timedRequest[AnyContent](s"query geo location for $location") { implicit request =>
+    timedRequest[AnyContent](s"query geo location for $location") { _ =>
       // convert city[,country] to city[,isoCountry]
       val isoLocation = CountryUtils.iso(location)
       val maybeGeoPosition = OptionT(connectivity.getStorage.getLocationStorage.getPosition(isoLocation))

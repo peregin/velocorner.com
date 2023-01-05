@@ -25,9 +25,9 @@ object CatsEffect {
 
     def pure[A](a: A): F[A] = af.pure(a)
 
-    def flatMap[A, B](fa: F[A])(f: (A) => F[B]): F[B] = af.flatMap(fa)(f)
+    def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B] = af.flatMap(fa)(f)
 
-    def map[A, B](fa: F[A])(f: (A) => B): F[B] = af.map(fa)(f)
+    def map[A, B](fa: F[A])(f: A => B): F[B] = af.map(fa)(f)
 
     def raiseError[A](t: Throwable): F[A] = af.raiseError(t)
 

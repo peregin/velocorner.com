@@ -27,10 +27,11 @@ import mouse.all._
  *   r.db('velocorner').table('activity');
  * </code>
  */
+//noinspection NotImplementedCode
 class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   private lazy val client = RethinkDB.r
-  @volatile var maybeConn: Option[Connection] = None
+  @volatile private var maybeConn: Option[Connection] = None
 
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): M[Unit] = Monad[M].pure(

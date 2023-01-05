@@ -52,7 +52,7 @@
 - word clouds (for activity titles, descriptions)
 - distribution heatmap, show the range instead of a single value
 - improve landing page when not logged in: demonstrate what the site could do for you
-  * detect rough location and show the weather and wind information for logged out users (when is not in the cookie)
+  * detect rough location and show the weather and wind information for logged-out users (when is not in the cookie)
   * show stats with sample data (heatmap, ytd)
 - add years tab to the profile ytd
 - units of measurement (attached to the user account)

@@ -31,7 +31,7 @@ object StatusInfo {
     val memoryUsedPercentile = ((memoryUsed.toDouble * 100) / memoryTotal).toInt
     val javaVersion = s"${sys.props.get("java.runtime.name").getOrElse("n/a")} ${sys.props.get("java.runtime.version").getOrElse("n/a")}"
     val osVersion = s"${sys.props.get("os.name").getOrElse("n/a")} ${sys.props.get("os.version").getOrElse("n/a")}"
-    val hostOsVersion = s"${sys.env.get("HOST_OS_VERSION").getOrElse(osVersion)}" // injected by docker compose
+    val hostOsVersion = s"${sys.env.getOrElse("HOST_OS_VERSION", osVersion)}" // injected by docker compose
     new StatusInfo(
       applicationMode = applicationMode.toString,
       buildTime = velocorner.build.BuildInfo.buildTime,

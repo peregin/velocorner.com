@@ -51,7 +51,7 @@ object ScalafmtExtensionPlugin extends AutoPlugin {
     val fieldMethodHandle = lookup.unreflectGetter(field)
     val instance = fieldMethodHandle.invokeWithArguments()
     val methods = clazz.getDeclaredMethods.filter(_.getName == methodName)
-    log.debug(s"${methods.size} methods with name $methodName")
+    log.debug(s"${methods.length} methods with name $methodName")
     val method = methods.find(_.getParameterCount == args.length).get // for method overloading
     log.debug(s"parameters ${method.getParameterTypes.mkString(",")}")
     method.setAccessible(true)

@@ -25,7 +25,7 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
 
   lazy val brandFeed = new BrandSearch(connectivity.secretConfig)
   lazy val productFeed = new ProductCrawlerFeed(connectivity.secretConfig)
-  lazy val adminStorage = connectivity.getStorage.getAdminStorage
+  private lazy val adminStorage = connectivity.getStorage.getAdminStorage
 
   // def mapped to /api/admin/status
   def status: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>

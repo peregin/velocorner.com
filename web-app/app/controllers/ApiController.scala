@@ -27,7 +27,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   private val logger = Logger(getClass)
 
   // def mapped to /api/status
-  def status = Action.async { implicit request =>
+  def status = Action.async { _ =>
     for {
       zincVersion <- brandFeed.version().recover{ case err =>
         logger.error("unable to retrieve ZincSearch version", err)

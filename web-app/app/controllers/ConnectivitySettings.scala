@@ -30,7 +30,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def getWeatherFeed = new OpenWeatherFeed(secretConfig)
 
-  def getElasticUrl(): String = secretConfig.getElasticSearchUrl
+  def getElasticUrl: String = secretConfig.getElasticSearchUrl
 
   def disconnect(): Unit = {
     logger.info("releasing storage connections...")

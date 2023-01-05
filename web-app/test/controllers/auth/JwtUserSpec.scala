@@ -1,4 +1,4 @@
-package controllers.auth;
+package controllers.auth
 
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatest.matchers.must.Matchers

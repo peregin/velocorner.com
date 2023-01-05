@@ -28,7 +28,7 @@ trait OriginChecker {
         true
 
       case Some(badOrigin) =>
-        logger.error(s"originCheck: rejecting request because Origin header value ${badOrigin} is not in the same origin")
+        logger.error(s"originCheck: rejecting request because Origin header value $badOrigin is not in the same origin")
         false
 
       case None =>

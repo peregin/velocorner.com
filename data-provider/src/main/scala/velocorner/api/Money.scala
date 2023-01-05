@@ -12,5 +12,5 @@ object Money {
 case class Money(value: BigDecimal, currency: String) {
 
   def toSquants(implicit mc: MoneyContext): squants.market.Money =
-    squants.market.Money(value, ExchangeRatesFeed.supported.get(currency).getOrElse(throw NoSuchCurrencyException(currency, mc)))
+    squants.market.Money(value, ExchangeRatesFeed.supported.getOrElse(currency, throw NoSuchCurrencyException(currency, mc)))
 }

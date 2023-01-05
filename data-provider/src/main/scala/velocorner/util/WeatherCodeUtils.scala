@@ -44,12 +44,10 @@ object WeatherCodeUtils extends LazyLogging {
       .toSeq
 
     // log errors
-    entries.foreach {
-      _ match {
-        case Failure(e) => logger.error("failed to parse line", e)
-        case _          =>
-      }
-    }
+    entries.foreach(_ match {
+      case Failure(e) => logger.error("failed to parse line", e)
+      case _ =>
+    })
 
     entries
       .flatMap(_.toOption)

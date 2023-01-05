@@ -23,6 +23,7 @@ import scala.language.implicitConversions
  * Created by levi on 28/09/16.
  * Access layer to the MongoDb.
  */
+//noinspection NotImplementedCode
 class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   lazy private val client = MongoClient()

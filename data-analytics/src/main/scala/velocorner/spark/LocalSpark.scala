@@ -5,7 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 trait LocalSpark[T] extends Logging {
 
-  val scConf = new SparkConf()
+  private val scConf = new SparkConf()
     .setAppName(sparkAppName)
     .setMaster("local[*]") // set the master to local
     .set("spark.driver.bindAddress", "localhost")
