@@ -70,6 +70,10 @@
                                 <div class="VC_padding8">Scala Version</div>
                             </li>
                             <li class="list-group-item">
+                                <span id="status-sbt-version" class="badge badge-sea rounded-2x">X</span>
+                                <div class="VC_padding8">SBT Version</div>
+                            </li>
+                            <li class="list-group-item">
                                 <span id="status-cats-version" class="badge badge-blue rounded-2x">X</span>
                                 <div class="VC_padding8">Cats Version</div>
                             </li>
@@ -142,6 +146,7 @@
                 $('#status-docker-image').html(data.dockerBaseImage)
                 $('#status-java-version').html(data.javaVersion)
                 $('#status-scala-version').html(data.scalaVersion)
+                $('#status-sbt-version').html(data.sbtVersion)
                 $('#status-cats-version').html(data.catsVersion)
                 $('#status-zinc-version').html(data.zincVersion)
                 $('#status-play-version').html(data.playVersion)
