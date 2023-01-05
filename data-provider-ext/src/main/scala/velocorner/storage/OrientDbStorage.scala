@@ -40,10 +40,11 @@ case class Counter(name: String, counter: Long)
  * - use compound index for athlete.id and activity type
  * - use monad stack M[_] : Monad
  */
+//noinspection NotImplementedCode
 class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[Future] with CloseableResource with Metrics with LazyLogging {
 
-  @volatile var server: Option[OrientDB] = None
-  @volatile var pool: Option[ODatabasePool] = None
+  @volatile private var server: Option[OrientDB] = None
+  @volatile private var pool: Option[ODatabasePool] = None
   private val dbUser = url.map(_ => "root").getOrElse("admin")
   private val dbUrl = url.map("remote:" + _).getOrElse("memory:")
   private val dbType = url.map(_ => ODatabaseType.PLOCAL).getOrElse(ODatabaseType.MEMORY)
@@ -136,7 +137,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
   override def getWeatherStorage: WeatherStorage = ???
 
   // attributes
-  lazy val attributeStorage = new AttributeStorage[Future] {
+  private lazy val attributeStorage = new AttributeStorage[Future] {
     override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
       val attr = KeyValue(key, `type`, value)
       upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
@@ -335,7 +336,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
     logger.info("database has been closed...")
   }
 
-  def transact[T](body: ODatabaseDocument => T): T =
+  private def transact[T](body: ODatabaseDocument => T): T =
     pool
       .map { dbPool =>
         val session = dbPool.acquire()
@@ -418,7 +419,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
 
 object OrientDbStorage {
 
-  val DATABASE_NAME = "velocorner"
+  private val DATABASE_NAME = "velocorner"
 
   val ACTIVITY_CLASS = "Activity"
   val ACCOUNT_CLASS = "Account"
