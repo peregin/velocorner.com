@@ -23,7 +23,7 @@ object PredictActivities extends App with LocalSpark[String] with Logging with M
     log.info("connecting to a data source...")
 
     val activities = timed("read json from gzip") {
-      JsonIo.readFromGzipResource[List[Activity]]("/data/strava/activities.json.gz")
+      JsonIo.readFromGzipResource[List[Activity]]("/data/432909.json.gz")
     }
     log.info(s"got ${activities.size} activities")
     val data2015 = activities.filter(_.start_date.getYear == 2015)
