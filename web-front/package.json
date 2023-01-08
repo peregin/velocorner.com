@@ -12,6 +12,7 @@
     "react-scripts": "5.0.1",
     "serve": "^14.1.2",
     "super-tiny-icons": "^0.4.0",
+    "@tasoskakour/react-use-oauth2": "1.0.14",
     "typescript": "^4.9.4"
   },
   "scripts": {
@@ -19,7 +20,7 @@
     "version": "echo $npm_package_version",
     "start": "react-scripts --openssl-legacy-provider start",
     "proxy": "REACT_APP_API_HOST=https://local.velocorner.com react-scripts start",
-    "local": "REACT_APP_API_HOST=http://localhost:9001 react-scripts start",
+    "local": "GENERATE_SOURCEMAP=false REACT_APP_API_HOST=http://localhost:9001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

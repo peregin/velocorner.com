@@ -28,6 +28,10 @@ GET     /login/strava                                      controllers.auth.Stra
 ### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
+GET     /fe/oauth/strava                                   controllers.auth.StravaController.feAuthorize
+### NoDocs ###
+POST    /api/token/strava                                  controllers.auth.StravaController.token
+### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout
 
 # WITHINGS AUTH
@@ -37,7 +41,7 @@ GET     /login/withings                                    controllers.auth.With
 GET     /authorize/withings                                controllers.auth.WithingsController.authorize
 
 ### NoDocs ###
-GET     /ws                                                controllers.ApiController.ws
+GET     /api/ws                                            controllers.ApiController.ws
 
 ### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status

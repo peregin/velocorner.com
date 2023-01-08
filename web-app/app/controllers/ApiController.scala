@@ -63,7 +63,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   }
 
   // WebSocket to update the client
-  // try with https://www.websocket.org/echo.html => ws://localhost:9000/ws
+  // try with https://www.websocket.org/echo.html => ws://localhost:9000/api/ws
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] {
     case rh if sameOriginCheck(rh) =>
       logger.info(s"ws with request header: $rh")

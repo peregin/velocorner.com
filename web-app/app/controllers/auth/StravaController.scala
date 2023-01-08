@@ -88,6 +88,17 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     result.map(_.removingFromSession(OAuth2StateKey))
   }
 
+  // needed temporarily to double redirect FE OAuth2 call because of the HashRouter
+  def feAuthorize = Action { implicit request =>
+    Redirect("http://localhost:3000/#/oauth/strava", request.queryString)
+  }
+
+  // bound to /api/token/strava
+  // called by FE to after from the Strava callback to exchange the access code with access and refresh tokens
+  def token = Action { implicit request =>
+    Ok
+  }
+
   def logout = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove

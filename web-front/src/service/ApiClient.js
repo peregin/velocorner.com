@@ -9,6 +9,14 @@ const requestOptionsGet = {
   mode: 'cors'
 }
 
+const stravaClientId = '4486';
+let callback = encodeURI('http://localhost:9001/fe/oauth/strava');
+let scope = encodeURI('read,activity:read,profile:read_all');
+let responseType = 'code';
+const stravaBaseAuthUrl = 'https://www.strava.com/api/v3/oauth/authorize'
+// approval_prompt=auto !
+const stravaAuthUrl = `${stravaBaseAuthUrl}&client_id=${stravaClientId}&redirect_uri=${callback}&response_type=${responseType}&scope=${scope}`;
+
 function status() {
   return fetch(apiHost + '/api/status', requestOptionsGet)
     .then(checkStatus)
@@ -28,10 +36,7 @@ function markets() {
 }
 
 function login() {
-  let callback = encodeURI('http://localhost:3000/oauth/strava');
-  let scope = encodeURI('read,activity:read,profile:read_all');
-  let url = 'https://www.strava.com/api/v3/oauth/authorize?client_id=4486&redirect_uri='+callback+'&response_type=code&approval_prompt=auto&scope='+scope;
-  window.location = url;
+  window.location = stravaAuthUrl;
 }
 
 
@@ -43,7 +48,7 @@ function checkStatus(response) {
   const error = new Error(`HTTP Error ${response}`);
   error.status = response.statusText;
   error.response = response;
-  
+
   throw error;
 }
 
@@ -52,5 +57,7 @@ const ApiClient = {
   search: search,
   markets: markets,
   login: login,
+  stravaClientId: stravaClientId,
+  stravaBaseAuthUrl: stravaBaseAuthUrl
 }
 export default ApiClient;

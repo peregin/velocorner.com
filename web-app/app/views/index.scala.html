@@ -178,7 +178,7 @@
         if (window.location.protocol === 'https:') {
             proto = 'wss:'
         }
-        websocket = new WebSocket(proto + '//' + window.location.host + '/ws');
+        websocket = new WebSocket(proto + '//' + window.location.host + '/api/ws');
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };
