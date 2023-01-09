@@ -2,8 +2,14 @@
 // copied from https://github.com/tasoskakour/react-use-oauth2/blob/master/src/components/OAuthPopup.tsx
 
 import { useEffect } from 'react';
-import { OAUTH_RESPONSE, OAUTH_STATE_KEY } from '@tasoskakour/react-use-oauth2/dist/cjs/constants';
-import { queryToObject } from '@tasoskakour/react-use-oauth2/dist/cjs/tools';
+
+const OAUTH_STATE_KEY = 'react-use-oauth2-state-key';
+const OAUTH_RESPONSE = 'react-use-oauth2-response';
+
+const queryToObject = (query: string) => {
+	const parameters = new URLSearchParams(query);
+	return Object.fromEntries(parameters.entries());
+};
 
 const checkState = (receivedState: string) => {
 	const state = sessionStorage.getItem(OAUTH_STATE_KEY);
@@ -17,7 +23,7 @@ type Props = {
 const OAuth2Popup = (props: Props) => {
 	const {
 		Component = (
-			<div style={ margin: '12px' } data-testid='popup-loading'>
+			<div style={{ margin: '12px' }} data-testid='popup-loading'>
 				Loading...
 			</div>
 		),

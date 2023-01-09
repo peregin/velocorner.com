@@ -6,6 +6,7 @@ import {
 
 import { ChakraProvider } from '@chakra-ui/react'
 //import { OAuthPopup } from '@tasoskakour/react-use-oauth2'
+import OAuth2Popup from './components/OAuth2Popup.jsx'
 
 import Home from "./pages/Home"
 import Best from "./pages/Best"
@@ -13,7 +14,7 @@ import About from "./pages/About"
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import OAuthPopup from './components/OAuthPopup'
+
 
 import './App.css'
 
@@ -26,7 +27,7 @@ const App = () => {
           <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
           <Route exact path="/best" element={<Best />} />
           <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
-          <Route exact path="/oauth/strava" element={<OAuthPopup />} />
+          <Route exact path="/oauth/strava" element={<OAuth2Popup />} />
         </Routes>
       </HashRouter>
     </ChakraProvider>
