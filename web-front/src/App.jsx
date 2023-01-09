@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 
 import { ChakraProvider } from '@chakra-ui/react'
-import { OAuthPopup } from '@tasoskakour/react-use-oauth2'
+//import { OAuthPopup } from '@tasoskakour/react-use-oauth2'
 
 import Home from "./pages/Home"
 import Best from "./pages/Best"
@@ -13,6 +13,7 @@ import About from "./pages/About"
 
 import Header from './components/Header'
 import Footer from './components/Footer'
+import OAuthPopup from './components/OAuthPopup'
 
 import './App.css'
 

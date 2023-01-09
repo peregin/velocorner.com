@@ -18,7 +18,7 @@ const Home = () => {
     exchangeCodeForTokenServerURL: "http://localhost:9001/api/token/strava",
     exchangeCodeForTokenMethod: "POST",
     onSuccess: (payload) => console.log("Success", payload),
-    onError: (error_) => console.log("Error", error_)
+    onError: (error_) => console.error("Error", error_)
   });
 
   useEffect(() => {

@@ -3,8 +3,9 @@ package controllers.auth
 import java.util.UUID
 import java.util.concurrent.Executors
 import cats.implicits._
+import com.typesafe.scalalogging.LazyLogging
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{ec, OAuth2StateKey}
+import controllers.auth.StravaController.{OAuth2StateKey, ec}
 
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
@@ -36,7 +37,8 @@ object StravaController {
 
 class StravaController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
     extends AbstractController(components)
-    with AuthChecker {
+    with AuthChecker
+    with LazyLogging {
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
@@ -88,14 +90,18 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     result.map(_.removingFromSession(OAuth2StateKey))
   }
 
+  // bound to /fe/oauth/strava
   // needed temporarily to double redirect FE OAuth2 call because of the HashRouter
-  def feAuthorize = Action { implicit request =>
-    Redirect("http://localhost:3000/#/oauth/strava", request.queryString)
+  def feAuthorize: Action[AnyContent] = Action { implicit request =>
+    val params = request.queryString
+    logger.info(s"redirect to FE with $params")
+    Redirect("http://localhost:3000/#/oauth/strava", params)
   }
 
   // bound to /api/token/strava
   // called by FE to after from the Strava callback to exchange the access code with access and refresh tokens
-  def token = Action { implicit request =>
+  def token: Action[AnyContent] = Action { implicit request =>
+    logger.info(s"requesting token ${request.queryString}")
     Ok
   }
 

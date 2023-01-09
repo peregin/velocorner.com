@@ -379,7 +379,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
   )
-  .disablePlugins(PlayLogback)
+  .enablePlugins(PlayLogback)
   .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
 
 // top level aggregate
