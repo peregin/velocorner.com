@@ -33,6 +33,8 @@ const OAuth2Popup = (props) => {
 		};
 		const state = payload?.state;
 		const error = payload?.error;
+		//alert(`state=${state}, payload=${JSON.stringify(payload)}, search=${window.location.hash}`);
+		//debugger
 
 		if (!window.opener) {
 			throw new Error('No window opener');

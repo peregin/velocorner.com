@@ -23,7 +23,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   const fetchData = async () => {
     let summary = await ApiClient.status();
