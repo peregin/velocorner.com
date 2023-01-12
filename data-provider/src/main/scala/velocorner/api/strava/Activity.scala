@@ -8,6 +8,7 @@ import velocorner.model.strava.Athlete
 
 /**
  * Represents an Activity from the Strava feed and storage layer:
+ * <code>
  *
  * [
  *  {
@@ -74,6 +75,8 @@ import velocorner.model.strava.Athlete
  *    "suffer_score": null
  *  }
  * ]
+ *
+ * </code>
  */
 
 object Activity {

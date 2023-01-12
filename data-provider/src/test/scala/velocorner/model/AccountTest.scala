@@ -5,10 +5,7 @@ import cats.implicits._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-/**
- * Created by levi on 01/12/15.
- */
-class AccountSpec extends AnyWordSpec with Matchers with AccountFixtures {
+class AccountTest extends AnyWordSpec with Matchers with AccountFixtures {
 
   "model" should {
 
@@ -40,6 +37,15 @@ class AccountSpec extends AnyWordSpec with Matchers with AccountFixtures {
       val ref = JsonIo.read[Account](json)
       ref.role === Role.Admin.some
       ref.unit === Units.Metric.some
+    }
+
+    "query status" in {
+      account.isAdmin() mustBe false
+      account.isImperial() mustBe true
+
+      val root = account.copy(role = Role.Admin.some, unit = Units.Metric.some)
+      root.isAdmin() mustBe true
+      root.isImperial() mustBe false
     }
   }
 }

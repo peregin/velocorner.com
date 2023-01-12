@@ -86,8 +86,8 @@ case class Account(
     stravaAccess: Option[OAuth2Access]
 ) {
 
-  def isAdmin(): Boolean = role.exists(_ == Role.Admin)
+  def isAdmin(): Boolean = role.contains(Role.Admin)
 
   def units(): Units.Entry = unit.getOrElse(Units.Metric)
-  def isImperial(): Boolean = unit.exists(_ == Units.Imperial)
+  def isImperial(): Boolean = unit.contains(Units.Imperial)
 }

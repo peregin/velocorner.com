@@ -12,14 +12,13 @@ import scala.util.{Failure, Try}
  *
  * # Group 5xx: Rain
  * # ID	Meaning	                    Icon BootstrapIcon
- * 500	light rain	                  10d icon-weather-008
- * 501	moderate rain	                10d icon-weather-007
+ * 500	light rain	                10d icon-weather-008
+ * 501	moderate rain	            10d icon-weather-007
  */
-object WeatherCodeUtils extends LazyLogging {
+object WeatherCodeUtils extends LazyLogging with CloseableResource {
 
-  lazy val code2Model = fromResources()
-
-  val clearSkyCode = 800
+  private lazy val code2Model = fromResources()
+  private val clearSkyCode = 800
 
   /**
    * Based on the measures for a given day return a weather code which can be napped to an icon.
@@ -34,19 +33,19 @@ object WeatherCodeUtils extends LazyLogging {
   }
 
   def fromResources(): Map[Int, WeatherCode] = {
-    val entries = Source
-      .fromURL(getClass.getResource("/weather_codes.txt"))
-      .getLines()
-      .map(_.trim)
-      .filter(_.nonEmpty)
-      .filter(!_.startsWith("#"))
-      .map(line => Try(parse(line)))
-      .toSeq
+    val entries = withCloseable(Source.fromURL(getClass.getResource("/weather_codes.txt"))) {
+      _.getLines()
+        .map(_.trim)
+        .filter(_.nonEmpty)
+        .filter(!_.startsWith("#"))
+        .map(line => Try(parse(line)))
+        .toSeq
+    }
 
     // log errors
     entries.foreach(_ match {
       case Failure(e) => logger.error("failed to parse line", e)
-      case _ =>
+      case _          =>
     })
 
     entries

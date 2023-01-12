@@ -20,7 +20,7 @@ const Home = () => {
     onSuccess: (payload) => console.log("Success", payload),
     onError: (error_) => console.error("Error", error_)
   });
-  const isLoggedIn = Boolean(data?.access_token);
+  //const isLoggedIn = Boolean(data?.access_token);
 
   useEffect(() => {
     fetchData();
@@ -52,6 +52,7 @@ const Home = () => {
       </Text>
 
       {loading && <Text>Loading...</Text>}
+      {error && <Text>Error... {error}</Text>}
       <Text>{JSON.stringify(data)}</Text>
     </div>
   );

@@ -9,7 +9,7 @@ else
     -e "xpack.security.enabled=false" \
     -e "discovery.type=single-node" \
     -e "ES_JAVA_OPTS=-Xms256m -Xmx512m" \
-    -v $HOME/Downloads/velo/velocorner/elasticsearch/data:/usr/share/elasticsearch/data \
+    -v "$HOME"/Downloads/velo/velocorner/elasticsearch/data:/usr/share/elasticsearch/data \
     elasticsearch:7.17.0
   echo "$CONTAINER_REPO has been started ..."
 fi

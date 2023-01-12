@@ -8,6 +8,10 @@ import velocorner.model.brand.NameNormalizer._
 //noinspection TypeAnnotation
 package object brand {
 
+  sealed case class Marketplace(name: String, url: String, logoUrl: String) extends EnumEntry {
+    def toId: String = name.normalize()
+  }
+
   object Marketplace extends Enum[Marketplace] with LowerCamelcase {
 
     // blocked as crawler on AWS, works locally
@@ -105,9 +109,6 @@ package object brand {
     implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
 
     val values = findValues
-  }
-  sealed case class Marketplace(name: String, url: String, logoUrl: String) extends EnumEntry {
-    def toId: String = name.normalize()
   }
 
   object Brand {

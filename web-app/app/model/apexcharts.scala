@@ -56,8 +56,8 @@ object apexcharts {
 
   def toDistanceHeatmap(items: Iterable[Activity], activityType: String, unit: Units.Entry): List[HeatmapSeries] = {
     val (ranges, converter) = (activityType, unit) match {
-      case ("Ride", Units.Metric)   => (metricRideDistanceRange, identity[Long](_))
-      case (_, Units.Metric)        => (metricDistanceRange, identity[Long](_))
+      case ("Ride", Units.Metric)   => (metricRideDistanceRange, identity[Long] _)
+      case (_, Units.Metric)        => (metricDistanceRange, identity[Long] _)
       case ("Ride", Units.Imperial) => (imperialRideDistanceRange, (d: Long) => Kilometers(d).toInternationalMiles.toLong)
       case (_, Units.Imperial)      => (imperialDistanceRange, (d: Long) => Kilometers(d).toInternationalMiles.toLong)
     }
@@ -66,7 +66,7 @@ object apexcharts {
 
   def toElevationHeatmap(items: Iterable[Activity], unit: Units.Entry): List[HeatmapSeries] = {
     val (ranges, converter) = unit match {
-      case Units.Metric => (metricElevationRange, identity[Long](_))
+      case Units.Metric => (metricElevationRange, identity[Long] _)
       case _            => (imperialElevationRange, (d: Long) => Meters(d).toFeet.toLong)
     }
     toYearlyHeatmap(items, (a: Activity) => converter(a.total_elevation_gain.toLong), ranges)
