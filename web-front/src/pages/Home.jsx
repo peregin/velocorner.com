@@ -20,6 +20,7 @@ const Home = () => {
     onSuccess: (payload) => console.log("Success", payload),
     onError: (error_) => console.error("Error", error_)
   });
+  const isLoggedIn = Boolean(data?.access_token);
 
   useEffect(() => {
     fetchData();
@@ -33,7 +34,6 @@ const Home = () => {
 
   const handleClick = (ev) => {
     console.log("LOGGING IN...");
-    //ApiClient.login();
     getAuth()
   };
 
@@ -50,6 +50,9 @@ const Home = () => {
       <Text>
         Commit Hash: <Tag colorScheme="teal">42</Tag>
       </Text>
+
+      {loading && <Text>Loading...</Text>}
+      <Text>{JSON.stringify(data)}</Text>
     </div>
   );
 };

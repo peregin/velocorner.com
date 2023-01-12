@@ -28,12 +28,12 @@ const OAuth2Popup = (props) => {
 	// On mount
 	useEffect(() => {
 		const payload = {
-			...queryToObject(window.location.search.split('?')[1]),
+			...queryToObject(window.location.href.split('?')[1]),
 			...queryToObject(window.location.hash.split('#')[1]),
 		};
 		const state = payload?.state;
 		const error = payload?.error;
-		//alert(`state=${state}, payload=${JSON.stringify(payload)}, search=${window.location.hash}`);
+		//alert(`state=${state}\n\nstate2=${JSON.stringify(queryToObject(window.location.href.split('?')[1])['state'])}`);
 		//debugger
 
 		if (!window.opener) {

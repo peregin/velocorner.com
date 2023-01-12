@@ -1,5 +1,7 @@
 package controllers.auth
 
+import cats.data.OptionT
+
 import java.util.UUID
 import java.util.concurrent.Executors
 import cats.implicits._
@@ -15,6 +17,7 @@ import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.feed.OAuth2._
+import velocorner.util.JsonIo
 
 import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
@@ -100,9 +103,13 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   // bound to /api/token/strava
   // called by FE to after from the Strava callback to exchange the access code with access and refresh tokens
-  def token: Action[AnyContent] = Action { implicit request =>
-    logger.info(s"requesting token ${request.queryString}")
-    Ok
+  def feToken: Action[AnyContent] = Action.async { implicit request =>
+    (for {
+      code <- OptionT(Future.successful(request.getQueryString("code")))
+      _ = logger.info(s"requesting token $code")
+      resp <- OptionT.liftF(authenticator.retrieveAccessToken(code))
+      athlete <- OptionT.liftF(login(resp, none))
+    } yield Ok(JsonIo.write(athlete))).getOrElse(BadRequest)
   }
 
   def logout = Action { implicit request =>
@@ -117,16 +124,13 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // API distinguishes between provider and consumer users
   // the provider user is the Strava Athlete here
   // consumer user is the account
-  def retrieveProviderUser(token: AccessToken)(implicit ctx: ExecutionContext): Future[ProviderUser] = {
+  def retrieveProviderUser(token: AccessToken): Future[ProviderUser] = {
     logger.info(s"retrieve provider user for $token")
     val feed = connectivity.getStravaFeed(token)
     feed.getAthlete <| (_.onComplete(_ => feed.close()))
   }
 
-  def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser)(implicit
-      request: RequestHeader,
-      ctx: ExecutionContext
-  ): Future[Result] = {
+  def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser): Future[Result] = {
     logger.info(s"oauth LINK succeeded with token[${resp.accessToken}] and user[${consumerUser.athleteId}]")
     for {
       _ <- login(resp, consumerUser.some)
@@ -134,7 +138,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   }
 
   // matches the provider and consumer users
-  def onOAuthLoginSucceeded(resp: OAuth2TokenResponse)(implicit request: RequestHeader, ctx: ExecutionContext): Future[Result] = {
+  def onOAuthLoginSucceeded(resp: OAuth2TokenResponse): Future[Result] = {
     logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
     for {
       athlete <- login(resp, none)
@@ -146,7 +150,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // same functionality when the account is linked with a given consumerUser or logged in to an existing mapping
   // consumerUser - when empty means a new login
   // consumerUser - when present links the login with the given account
-  private def login(resp: OAuth2TokenResponse, consumerUser: Option[ConsumerUser])(implicit ctx: ExecutionContext): Future[ProviderUser] =
+  private def login(resp: OAuth2TokenResponse, consumerUser: Option[ConsumerUser]): Future[ProviderUser] =
     for {
       // retrieve the provider user has more details than the user got at authentication
       athlete <- retrieveProviderUser(resp.accessToken)
