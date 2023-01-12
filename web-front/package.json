@@ -6,13 +6,13 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.0.15",
     "@chakra-ui/react": "^2.4.6",
+    "@tasoskakour/react-use-oauth2": "1.0.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",
     "serve": "^14.1.2",
     "super-tiny-icons": "^0.4.0",
-    "@tasoskakour/react-use-oauth2": "1.0.14",
     "typescript": "^4.9.4"
   },
   "scripts": {
@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^18.0.26",
     "git-revision-webpack-plugin": "^5.0.0",
     "webpack": "^5.75.0"
   }

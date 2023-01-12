@@ -1,22 +1,26 @@
 // workaround to support HashRouter
 // copied from https://github.com/tasoskakour/react-use-oauth2/blob/master/src/components/OAuthPopup.tsx
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const OAUTH_STATE_KEY = 'react-use-oauth2-state-key';
 const OAUTH_RESPONSE = 'react-use-oauth2-response';
 
-const queryToObject = (query) => {
+const queryToObject = (query: string) => {
 	const parameters = new URLSearchParams(query);
 	return Object.fromEntries(parameters.entries());
 };
 
-const checkState = (receivedState) => {
+const checkState = (receivedState: string) => {
 	const state = sessionStorage.getItem(OAUTH_STATE_KEY);
 	return state === receivedState;
 };
 
-const OAuth2Popup = (props) => {
+type Props = {
+	Component?: React.ReactElement;
+};
+
+const OAuth2Popup = (props: Props) => {
 	const {
 		Component = (
 			<div style={{ margin: '12px' }} data-testid='popup-loading'>
