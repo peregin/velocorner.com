@@ -77,7 +77,7 @@ object Account {
  */
 case class Account(
     athleteId: Long,
-    displayName: String, // first name
+    displayName: String, // first name (or last name)
     displayLocation: String, // city, country
     avatarUrl: String,
     lastUpdate: Option[DateTime],

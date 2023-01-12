@@ -7,17 +7,17 @@ import java.util.concurrent.Executors
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{OAuth2StateKey, ec}
+import controllers.auth.StravaController.{ec, OAuth2StateKey}
 
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.feed.OAuth2._
-import velocorner.util.JsonIo
 
 import scala.concurrent.{ExecutionContext, Future}
 // for kestrel combinator
@@ -46,7 +46,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
   // called from FE web-app ONLY
-  def login(scope: String) = timed("LOGIN") {
+  def login(scope: String): Action[AnyContent] = timed("LOGIN") {
     Action { implicit request =>
       logger.info(s"LOGIN($scope)")
       loggedIn(request) match {
@@ -66,11 +66,11 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   }
 
   // callback from OAuth2
-  def authorize = Action.async { implicit request =>
+  def authorize: Action[AnyContent] = Action.async { implicit request =>
     val form = Form(
       tuple(
         "code" -> nonEmptyText,
-        "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).exists(_ == s))
+        "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).contains(s))
       )
     ).bindFromRequest()
     logger.info(s"authorize ${form.data}")
@@ -109,10 +109,12 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       _ = logger.info(s"requesting token $code")
       resp <- OptionT.liftF(authenticator.retrieveAccessToken(code))
       athlete <- OptionT.liftF(login(resp, none))
-    } yield Ok(JsonIo.write(athlete))).getOrElse(BadRequest)
+      jwt = JwtUser.toJwtUser(athlete)
+      token = jwt.toToken(connectivity.secretConfig.getJwtSecret)
+    } yield Ok(Json.obj("access_token" -> JsString(token)))).getOrElse(BadRequest)
   }
 
-  def logout = Action { implicit request =>
+  def logout: Action[AnyContent] = Action { implicit request =>
     logger.info("logout")
     tokenAccessor.extract(request) foreach idContainer.remove
     val result = Redirect(controllers.routes.WebController.index)

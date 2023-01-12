@@ -20,7 +20,7 @@ const Home = () => {
     onSuccess: (payload) => console.log("Success", payload),
     onError: (error_) => console.error("Error", error_)
   });
-  //const isLoggedIn = Boolean(data?.access_token);
+  const isLoggedIn = Boolean(data?.access_token);
 
   useEffect(() => {
     fetchData();
@@ -32,7 +32,7 @@ const Home = () => {
     setMemoryUsage(summary.memoryUsedPercentile);
   };
 
-  const handleClick = (ev) => {
+  const handleClick = (_ev) => {
     console.log("LOGGING IN...");
     getAuth()
   };
@@ -53,7 +53,7 @@ const Home = () => {
 
       {loading && <Text>Loading...</Text>}
       {error && <Text>Error... {error}</Text>}
-      <Text>{JSON.stringify(data)}</Text>
+      {isLoggedIn && <Text>{JSON.stringify(data)}</Text>}
     </div>
   );
 };

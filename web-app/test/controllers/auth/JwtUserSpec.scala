@@ -12,12 +12,7 @@ class JwtUserSpec extends AnyWordSpec with Matchers with LazyLogging with Accoun
   "JWT user" should {
 
     "encode raw data" in {
-      val user = JwtUser(
-        id = 1L,
-        name = "Rider",
-        location = "Veloland",
-        avatarUrl = "avatarUrl"
-      )
+      val user = JwtUser(id = 1L)
       val token = user.toToken
       info(s"jwt token is: $token")
       val claim = JwtUser.fromToken(token)

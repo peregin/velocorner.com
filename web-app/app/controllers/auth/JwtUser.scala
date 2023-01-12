@@ -5,6 +5,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import pdi.jwt.{JwtAlgorithm, JwtJson, JwtOptions}
 import play.api.libs.json._
 import velocorner.model.Account
+import velocorner.model.strava.Athlete
 
 import java.time.Clock
 import scala.util.{Failure, Success}
@@ -15,13 +16,8 @@ object JwtUser {
 
   val issuer = "velocorner"
 
-  def toJwtUser(account: Account) =
-    JwtUser(
-      id = account.athleteId,
-      name = account.displayName,
-      location = account.displayLocation,
-      avatarUrl = account.avatarUrl
-    )
+  def toJwtUser(account: Account): JwtUser = JwtUser(id = account.athleteId)
+  def toJwtUser(athlete: Athlete): JwtUser = JwtUser(id = athlete.id)
 
   def fromToken(token: String)(implicit secret: String): JwtUser =
     JwtJson.decode(token, secret, Seq(JwtAlgorithm.HS256), JwtOptions(expiration = true)) match {
@@ -37,7 +33,7 @@ object JwtUser {
     }
 }
 
-case class JwtUser(id: Long, name: String, location: String, avatarUrl: String) {
+case class JwtUser(id: Long) {
 
   def toToken(implicit secret: String): String = {
     val now = DateTime.now(DateTimeZone.UTC)
