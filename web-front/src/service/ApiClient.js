@@ -9,9 +9,6 @@ const requestOptionsGet = {
   mode: 'cors'
 }
 
-const stravaClientId = '4486';
-const stravaBaseAuthUrl = 'https://www.strava.com/api/v3/oauth/authorize'
-
 function status() {
   return fetch(apiHost + '/api/status', requestOptionsGet)
     .then(checkStatus)
@@ -45,8 +42,6 @@ function checkStatus(response) {
 const ApiClient = {
   status: status,
   search: search,
-  markets: markets,
-  stravaClientId: stravaClientId,
-  stravaBaseAuthUrl: stravaBaseAuthUrl
+  markets: markets
 }
 export default ApiClient;

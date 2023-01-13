@@ -2,22 +2,26 @@ import React, { useState, useEffect } from "react";
 import ApiClient from "../service/ApiClient";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
-import { Button, Heading, Text, Tag, Divider } from "@chakra-ui/react";
+import { Button, Heading, Text, Tag, Divider, Image } from "@chakra-ui/react";
 import { Progress } from "@chakra-ui/react";
+import strava from 'super-tiny-icons/images/svg/strava.svg'
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(50);
 
   const { data, loading, error, getAuth } = useOAuth2({
-    authorizeUrl: ApiClient.stravaBaseAuthUrl,
-    clientId: ApiClient.stravaClientId,
+    authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
+    clientId: '4486',
     redirectUri: 'http://localhost:9001/fe/oauth/strava', //`${document.location.origin}/oauth/strava`,
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
     extraQueryParameters: 'approval_prompt=auto',
     exchangeCodeForTokenServerURL: "http://localhost:9001/api/token/strava",
     exchangeCodeForTokenMethod: "POST",
-    onSuccess: (payload) => console.log("Success", payload),
+    onSuccess: (payload) => {
+      console.log("Success", payload);
+      localStorage.setItem('access_token', payload?.access_token);
+    },
     onError: (error_) => console.error("Error", error_)
   });
   const isLoggedIn = Boolean(data?.access_token);
@@ -32,8 +36,7 @@ const Home = () => {
     setMemoryUsage(summary.memoryUsedPercentile);
   };
 
-  const handleClick = (_ev) => {
-    console.log("LOGGING IN...");
+  const handleConnect = (_ev) => {
     getAuth()
   };
 
@@ -44,7 +47,9 @@ const Home = () => {
       <h1>Welcome to Velocorner, memory usage {memoryUsage}%</h1>
       <Progress hasStripe value={memoryUsage} />
 
-      <Button onClick={handleClick}>Test JWT Login</Button>
+      <Button onClick={handleConnect}>Test JWT Login</Button>
+      <Image src={strava} boxSize={{ base: '30px', md: '40px', lg: '40px' }}/>
+      <Button onClick={handleConnect} icon={strava} colorScheme='orange' variant='solid'>Connect</Button>
 
       <Divider m="10" />
       <Text>
