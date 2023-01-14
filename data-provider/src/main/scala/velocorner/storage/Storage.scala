@@ -41,7 +41,7 @@ trait Storage[M[_]] {
 
   // search and analytics
   def suggestActivities(snippet: String, athleteId: Long, max: Int): M[Iterable[Activity]]
-  def activitiesTitles(athleteId: Long, max: Int): M[Iterable[String]]
+  def activityTitles(athleteId: Long, max: Int): M[Iterable[String]]
 
   // accounts
   def getAccountStorage: AccountStorage

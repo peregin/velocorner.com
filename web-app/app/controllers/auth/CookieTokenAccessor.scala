@@ -17,9 +17,7 @@ class CookieTokenAccessor(
     result.withCookies(c)
   }
 
-  def extract(request: RequestHeader): Option[AuthenticityToken] =
-    request.cookies.get(cookieName).map(_.value)
+  def extract(request: RequestHeader): Option[AuthenticityToken] = request.cookies.get(cookieName).map(_.value)
 
-  def delete(result: Result)(implicit request: RequestHeader): Result =
-    result.discardingCookies(DiscardingCookie(cookieName))
+  def delete(result: Result): Result = result.discardingCookies(DiscardingCookie(cookieName))
 }

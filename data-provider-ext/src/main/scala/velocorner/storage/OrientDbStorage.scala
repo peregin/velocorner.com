@@ -59,7 +59,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
       s"SELECT FROM $ACTIVITY_CLASS WHERE type = 'Ride' AND athlete.id = $athleteId AND name.toLowerCase() like '%${snippet.toLowerCase}%' ORDER BY start_date DESC LIMIT $max"
     )
 
-  override def activitiesTitles(athleteId: Long, max: Int): Future[Iterable[String]] = ???
+  override def activityTitles(athleteId: Long, max: Int): Future[Iterable[String]] = ???
 
   // insert all activities, new ones are added, previous ones are overridden
   override def storeActivity(activities: Iterable[Activity]): Future[Unit] =

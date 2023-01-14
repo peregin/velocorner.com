@@ -1,29 +1,32 @@
 // react inject variables starting with REACT_APP_ to client side
-const apiHost = process.env.API_HOST || process.env.REACT_APP_API_HOST || 'https://velocorner.com'
-console.info('api host: ' + apiHost)
+const apiHost = process.env.API_HOST || process.env.REACT_APP_API_HOST || 'https://velocorner.com';
+console.info('api host: ' + apiHost);
 
-const requestOptionsGet = {
+function status() { return get('/api/status'); }
+
+function search(term) { return get(`/api/products/search?query=${term}`); }
+
+function markets() { return get('/api/products/markets'); }
+
+function wordcloud() { return get('/api/activities/wordcloud'); }
+
+
+const getOptions = {
   method: 'GET',
   accept: 'application/json',
   cache: 'no-cache',
   mode: 'cors'
 }
 
-function status() {
-  return fetch(apiHost + '/api/status', requestOptionsGet)
-    .then(checkStatus)
-    .then(r => r.json())
-}
-
-function search(term) {
-  return fetch(apiHost + '/api/products/search?query=' + term, requestOptionsGet)
-    .then(checkStatus)
-    .then(r => r.json())
-}
-
-function markets() {
-  return fetch(apiHost + '/api/products/markets', requestOptionsGet)
-    .then(checkStatus)
+function get(path) {
+  let token = localStorage.getItem('access_token');
+  let options = token ? { ...getOptions, ...{
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  }} : getOptions;
+  return fetch(apiHost + path, options)
+    .then(checkStatus) // todo: .catch(error...)
     .then(r => r.json())
 }
 
@@ -42,6 +45,7 @@ function checkStatus(response) {
 const ApiClient = {
   status: status,
   search: search,
-  markets: markets
+  markets: markets,
+  wordcloud: wordcloud
 }
 export default ApiClient;

@@ -28,7 +28,7 @@ class PsqlDbStorageTest
   @volatile var psqlEmbedded: EmbeddedPostgres = _
   @volatile var psqlStorage: PsqlDbStorage = _
 
-  val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
+  private val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
   // will generate fixtures as well
   "activity storage" should behave like activityFragments(psqlStorage, activityFixtures)
@@ -66,7 +66,7 @@ class PsqlDbStorageTest
   }
 
   it should "list activity titles" in {
-    awaitOn(psqlStorage.activitiesTitles(432909, 3)) must contain theSameElementsAs Seq(
+    awaitOn(psqlStorage.activityTitles(432909, 3)) must contain theSameElementsAs Seq(
       "Stallikon Ride",
       "Morning Ride",
       "Stallikon Ride"

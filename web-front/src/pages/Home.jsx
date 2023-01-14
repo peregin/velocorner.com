@@ -9,6 +9,9 @@ import strava from 'super-tiny-icons/images/svg/strava.svg'
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(50);
+  // just for testing
+  const [wordCloud, setWordCloud] = useState([]);
+
 
   const { data, loading, error, getAuth } = useOAuth2({
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
@@ -25,7 +28,6 @@ const Home = () => {
     },
     onError: (error_) => console.error("Error", error_)
   });
-  const isLoggedIn = Boolean(data?.access_token);
 
   useEffect(() => {
     fetchData();
@@ -35,11 +37,13 @@ const Home = () => {
     let summary = await ApiClient.status();
     console.log(summary);
     setMemoryUsage(summary.memoryUsedPercentile);
+
+    let wc = await ApiClient.wordcloud();
+    console.log(wc.length);
+    setWordCloud(wc);
   };
 
-  const handleConnect = (_ev) => {
-    getAuth()
-  };
+  const handleConnect = (_ev) => getAuth();
 
   return (
     <div>
@@ -49,7 +53,7 @@ const Home = () => {
       <Progress hasStripe value={memoryUsage} />
 
       <Button onClick={handleConnect}>Test JWT Login</Button>
-      <Image src={strava} boxSize={{ base: '30px', md: '40px', lg: '40px' }}/>
+      <Image src={strava} boxSize={{ base: '30px', md: '40px', lg: '40px' }} />
       <Button onClick={handleConnect} icon={strava} colorScheme='orange' variant='solid'>Connect</Button>
       <IconButton
         colorScheme='teal'
@@ -63,9 +67,14 @@ const Home = () => {
         Commit Hash: <Tag colorScheme="teal">42</Tag>
       </Text>
 
+      <Divider m="10" />
+      <Text>WordCloud (ltoken is [{data?.access_token.substring(0, 10)}...]):</Text>
       {loading && <Text>Loading...</Text>}
       {error && <Text>Error... {error}</Text>}
-      {isLoggedIn && <Text>{JSON.stringify(data)}</Text>}
+
+      <Text>
+        {wordCloud.length}
+      </Text>
     </div>
   );
 };

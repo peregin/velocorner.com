@@ -84,7 +84,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def suggestActivities(snippet: String, athleteId: Long, max: Int): Future[Iterable[Activity]] = Future(Iterable.empty)
 
-  override def activitiesTitles(athleteId: Long, max: Int): Future[Iterable[String]] = Future(Iterable.empty)
+  override def activityTitles(athleteId: Long, max: Int): Future[Iterable[String]] = Future(Iterable.empty)
 
   private def upsert(json: String, id: String, collName: String, idName: String = "id"): Future[Unit] = {
     val coll = db.getCollection(collName)

@@ -178,7 +178,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
          |""".stripMargin.query[Activity].to[List].transactToFuture
   }
 
-  override def activitiesTitles(athleteId: Long, max: Int): Future[Iterable[String]] =
+  override def activityTitles(athleteId: Long, max: Int): Future[Iterable[String]] =
     sql"""select data->>'name' from activity
          |where athlete_id = $athleteId
          |order by data->>'start_date' desc

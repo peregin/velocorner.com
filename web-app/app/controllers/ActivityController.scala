@@ -282,7 +282,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val storage = connectivity.getStorage
       val wordsTF = for {
         account <- OptionT(Future(loggedIn))
-        words <- OptionT.liftF(storage.activitiesTitles(account.athleteId, 400))
+        words <- OptionT.liftF(storage.activityTitles(account.athleteId, 400))
         series = words
           .map(_.replace("#commutemarker.com", ""))
           .map(_.trim.toLowerCase)

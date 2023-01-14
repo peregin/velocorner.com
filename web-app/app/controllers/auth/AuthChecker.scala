@@ -1,6 +1,8 @@
 package controllers.auth
 
 import StravaController.{ec, Id, ResultUpdater, User}
+import cats.data.OptionT
+import cats.implicits.catsSyntaxOptionId
 import controllers.ConnectivitySettings
 import controllers.auth.AuthChecker.{OAuth2AttrKey, OAuth2CookieKey}
 import play.api.cache.SyncCacheApi
@@ -13,10 +15,12 @@ import scala.language.postfixOps
 import controllers.util.WebMetrics
 import play.api.libs.typedmap.TypedKey
 
+import scala.util.Try
+
 object AuthChecker {
 
-  val OAuth2CookieKey = "velocorner.oauth2.id"
-  val OAuth2AttrKey = TypedKey[Account]
+  private val OAuth2CookieKey = "velocorner.oauth2.id"
+  private val OAuth2AttrKey = TypedKey[Account]
 }
 
 // supports authentication based on:
@@ -38,15 +42,11 @@ trait AuthChecker extends WebMetrics {
   // auth conf
   lazy val tokenAccessor = new CookieTokenAccessor(
     cookieName = OAuth2CookieKey,
-    cookieSecureOption = false,
-    cookieHttpOnlyOption = true,
-    cookieDomainOption = None,
-    cookiePathOption = "/",
     cookieMaxAge = Some(sessionTimeoutInSeconds)
   )
 
   // auth conf
-  def resolveUser(id: Long)(implicit context: ExecutionContext): Future[Option[Account]] = {
+  private def resolveUser(id: Long): Future[Option[Account]] = {
     logger.info(s"resolving user[$id]")
     connectivity.getStorage.getAccountStorage.getAccount(id)
   }
@@ -57,7 +57,7 @@ trait AuthChecker extends WebMetrics {
     override def parser: BodyParser[B] = p
 
     override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
-      implicit val r = request
+      implicit val r: Request[A] = request
       val maybeUserF = restoreUser.recover { case _ => None -> identity[Result] _ }
       maybeUserF.flatMap { case (maybeUser, cookieUpdater) =>
         val richReq = maybeUser.map(u => request.addAttr(OAuth2AttrKey, u)).getOrElse(request)
@@ -76,14 +76,26 @@ trait AuthChecker extends WebMetrics {
 
   def loggedIn(implicit request: Request[_]): Option[Account] = request.attrs.get[Account](OAuth2AttrKey)
 
-  private def restoreUser(implicit request: RequestHeader, context: ExecutionContext): Future[(Option[User], ResultUpdater)] =
+  // restore user from authorization bearer token or cookie
+  private def restoreUser(implicit request: RequestHeader): Future[(Option[User], ResultUpdater)] = {
+    def fromCookie(): OptionT[Future, (Long, ResultUpdater)] = for {
+      token <- OptionT(Future.successful(tokenAccessor.extract(request)))
+      userId <- OptionT(idContainer.get(token))
+      _ <- OptionT.liftF(idContainer.prolongTimeout(token, sessionTimeoutInSeconds))
+    } yield (userId, tokenAccessor.put(token) _)
+
+    def fromBearer(): OptionT[Future, (Long, ResultUpdater)] = OptionT(Future.successful(for {
+      token <- request.headers.get("Authorization").map(_.trim.stripPrefix("Bearer "))
+      user <- Try(JwtUser.fromToken(token)(connectivity.secretConfig.getJwtSecret)).toOption
+    } yield (user.id, identity _)))
+
+    val maybeUserIdT = fromBearer() orElse fromCookie()
     (for {
-      token <- tokenAccessor.extract(request)
-    } yield for {
-      Some(userId) <- idContainer.get(token)
-      Some(user) <- resolveUser(userId)
-      _ <- idContainer.prolongTimeout(token, sessionTimeoutInSeconds)
-    } yield Option(user) -> tokenAccessor.put(token) _) getOrElse {
-      Future.successful(Option.empty -> identity)
+      (userId, resultUpdater) <- maybeUserIdT
+      user <- OptionT(resolveUser(userId))
+    } yield (user, resultUpdater)).value.map {
+      case Some((user, updater)) => (user.some, updater)
+      case _                     => Option.empty -> identity
     }
+  }
 }
