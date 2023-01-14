@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import ApiClient from "../service/ApiClient";
+import ConnectWithStravaIcon from "../icons/ConnectWithStrava";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
-import { Button, Heading, Text, Tag, Divider, Image } from "@chakra-ui/react";
+import { Button, Heading, Text, Tag, Divider, Image, IconButton } from "@chakra-ui/react";
 import { Progress } from "@chakra-ui/react";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 
@@ -50,6 +51,12 @@ const Home = () => {
       <Button onClick={handleConnect}>Test JWT Login</Button>
       <Image src={strava} boxSize={{ base: '30px', md: '40px', lg: '40px' }}/>
       <Button onClick={handleConnect} icon={strava} colorScheme='orange' variant='solid'>Connect</Button>
+      <IconButton
+        colorScheme='teal'
+        aria-label='Call Segun'
+        size='lg'
+        icon={<ConnectWithStravaIcon />}
+      />
 
       <Divider m="10" />
       <Text>
