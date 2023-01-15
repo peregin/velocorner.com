@@ -13,7 +13,7 @@ import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{Json, JsString}
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
@@ -33,7 +33,7 @@ object StravaController {
   // verifies the code between the session and submitted form
   val OAuth2StateKey = "velocorner.oauth2.state"
 
-  implicit val ec = ExecutionContext.fromExecutor(
+  implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(
     Executors.newFixedThreadPool(5, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true)))
   )
 }
@@ -46,9 +46,9 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
   // called from FE web-app ONLY
-  def login(scope: String): Action[AnyContent] = timed("LOGIN") {
+  def login(): Action[AnyContent] = timed("LOGIN") {
     Action { implicit request =>
-      logger.info(s"LOGIN($scope)")
+      logger.info(s"LOGIN started...")
       loggedIn(request) match {
         case Some(_) =>
           // already logged in
@@ -56,9 +56,9 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
         case None =>
           // authorize
           // - state is use to validate redirect from the OAuth provider with a unique identifier
-          // - scope is the host from FE
+          val host = request.host
           val state = UUID.randomUUID().toString
-          Redirect(authenticator.getAuthorizationUrl(scope, state)).withSession(
+          Redirect(authenticator.getAuthorizationUrl(host, state)).withSession(
             request.session + (OAuth2StateKey -> state)
           )
       }
@@ -97,8 +97,9 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // needed temporarily to double redirect FE OAuth2 call because of the HashRouter
   def feAuthorize: Action[AnyContent] = Action { implicit request =>
     val params = request.queryString
-    logger.info(s"redirect to FE with $params")
-    Redirect("http://localhost:3000/#/oauth/strava", params)
+    logger.info(s"redirect on (${request.host}) to FE with $params")
+    val host = if (request.host.contains("localhost")) "http://localhost:3000" else "https://dev.velocorner.com"
+    Redirect(host + "/#/oauth/strava", params)
   }
 
   // bound to /api/token/strava

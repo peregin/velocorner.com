@@ -24,7 +24,7 @@ GET     /sitemap.xml                                       controllers.WebContro
 
 # STRAVA AUTH
 ### NoDocs ###
-GET     /login/strava                                      controllers.auth.StravaController.login(scope: String)
+GET     /login/strava                                      controllers.auth.StravaController.login()
 ### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###

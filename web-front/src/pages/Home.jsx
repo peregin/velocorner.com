@@ -16,11 +16,11 @@ const Home = () => {
   const { data, loading, error, getAuth } = useOAuth2({
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
     clientId: '4486',
-    redirectUri: 'http://localhost:9001/fe/oauth/strava', //`${document.location.origin}/oauth/strava`,
+    redirectUri: `${ApiClient.apiHost}/fe/oauth/strava`, //`${document.location.origin}/oauth/strava`,
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
     extraQueryParameters: 'approval_prompt=auto',
-    exchangeCodeForTokenServerURL: "http://localhost:9001/api/token/strava",
+    exchangeCodeForTokenServerURL: `${ApiClient.apiHost}/api/token/strava`,
     exchangeCodeForTokenMethod: "POST",
     onSuccess: (payload) => {
       console.log("Success", payload);

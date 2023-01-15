@@ -43,6 +43,7 @@ function checkStatus(response) {
 }
 
 const ApiClient = {
+  apiHost: apiHost,
   status: status,
   search: search,
   markets: markets,
