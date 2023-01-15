@@ -28,6 +28,9 @@ npm run local
 
 ### Update dependencies
 ```shell script
+# check audit report
+npm audit
+# check dependencies
 npm outdated
 npm update --save
 ```
