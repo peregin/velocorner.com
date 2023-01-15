@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ApiClient from "../service/ApiClient";
-import ConnectWithStravaIcon from "../icons/ConnectWithStrava";
+import ConnectWithStravaIcon from "../icons/ConnectWithStrava.tsx";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
 import { Button, Heading, Text, Tag, Divider, Image, IconButton } from "@chakra-ui/react";
