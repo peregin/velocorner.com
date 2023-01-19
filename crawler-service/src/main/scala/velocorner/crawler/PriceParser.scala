@@ -15,7 +15,8 @@ object PriceParser {
    * 1'010.70 CHF
    */
   def parse(amountCcy: String): Money = amountCcy
-    .replace(",", "").replace("'", "") match {
+    .replace(",", "")
+    .replace("'", "") match {
     case pricePattern(amount, currency) =>
       Try(Money(BigDecimal(amount), normalizeCurrency(currency))) match {
         case Success(value) => value

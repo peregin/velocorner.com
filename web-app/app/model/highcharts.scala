@@ -17,9 +17,9 @@ object highcharts {
     toSeries(items, _.to(unit).elevation)
 
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] =
-    items.map(yp =>
-      chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList)
-    ).toList // must be a list because of the swagger spec generator
+    items
+      .map(yp => chart.DailySeries(yp.year.toString, yp.progress.map(p => DailyPoint(p.day, fun(p.progress))).toList))
+      .toList // must be a list because of the swagger spec generator
 
   implicit class PimpWeatherForecast(self: WeatherForecast) {
     val dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")

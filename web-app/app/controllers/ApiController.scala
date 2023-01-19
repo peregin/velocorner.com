@@ -29,7 +29,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   // def mapped to /api/status
   def status = Action.async { _ =>
     for {
-      zincVersion <- brandFeed.version().recover{ case err =>
+      zincVersion <- brandFeed.version().recover { case err =>
         logger.error("unable to retrieve ZincSearch version", err)
         "n/a"
       }

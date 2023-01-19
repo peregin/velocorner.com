@@ -57,21 +57,23 @@ object CrawlerBike24 {
   }
 
   case class SuggestResponse(term: String, suggestions: Suggest) {
-    def toApi(): List[ProductDetails] = suggestions.products.map { p =>
-      ProductDetails(
-        market = Bike24,
-        brand = Brand(name = p.manufacturer, logoUrl = none).some,
-        name = p.name,
-        description = p.description.some,
-        price = extractPrice(p.price),
-        imageUrl = baseUrl + p.imageMedium.path,
-        productUrl = baseUrl + p.link,
-        reviewStars = p.reviewStars.getOrElse(0),
-        isNew = p.isNew.getOrElse(false),
-        onSales = p.isOffer.getOrElse(false),
-        onStock = p.isBuyable.getOrElse(true)
-      )
-    }.sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
+    def toApi(): List[ProductDetails] = suggestions.products
+      .map { p =>
+        ProductDetails(
+          market = Bike24,
+          brand = Brand(name = p.manufacturer, logoUrl = none).some,
+          name = p.name,
+          description = p.description.some,
+          price = extractPrice(p.price),
+          imageUrl = baseUrl + p.imageMedium.path,
+          productUrl = baseUrl + p.link,
+          reviewStars = p.reviewStars.getOrElse(0),
+          isNew = p.isNew.getOrElse(false),
+          onSales = p.isOffer.getOrElse(false),
+          onStock = p.isBuyable.getOrElse(true)
+        )
+      }
+      .sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
   }
   object SuggestResponse {
     implicit val codec: Codec[SuggestResponse] = deriveCodec
@@ -202,7 +204,7 @@ class CrawlerBike24[F[_]: Async](client: Client[F]) extends Crawler[F] with Http
     val request = Method
       .POST(payload, uri, headers)
       .withEmptyBody
-      //.withHttpVersion(HttpVersion.`HTTP/2`) // .withContentType(`Content-Type`(MediaType.application.`x-www-form-urlencoded`))
+    // .withHttpVersion(HttpVersion.`HTTP/2`) // .withContentType(`Content-Type`(MediaType.application.`x-www-form-urlencoded`))
     println(request.asCurl(_ => false))
     val gzipClient = GZip()(client)
     for {

@@ -13,7 +13,7 @@ import javax.inject.Inject
 import play.api.cache.SyncCacheApi
 import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
-import play.api.libs.json.{Json, JsString}
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
 import velocorner.model.Account
 import velocorner.model.strava.Gear
