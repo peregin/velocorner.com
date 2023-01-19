@@ -34,21 +34,23 @@ object CrawlerVeloFactory {
   }
 
   case class SearchResponse(results: List[VeloFactoryProduct]) {
-    def toApi(): List[ProductDetails] = results.map { p =>
-      ProductDetails(
-        market = VeloFactory,
-        brand = Brand(name = p.brand, logoUrl = none).some,
-        name = p.title,
-        description = p.description,
-        price = Money(BigDecimal(p.best_price.getOrElse(p.price)), "CHF"),
-        imageUrl = p.image_link,
-        productUrl = p.link,
-        reviewStars = 0,
-        isNew = false,
-        onSales = false,
-        onStock = p.availability.equalsIgnoreCase("in stock")
-      )
-    }.sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
+    def toApi(): List[ProductDetails] = results
+      .map { p =>
+        ProductDetails(
+          market = VeloFactory,
+          brand = Brand(name = p.brand, logoUrl = none).some,
+          name = p.title,
+          description = p.description,
+          price = Money(BigDecimal(p.best_price.getOrElse(p.price)), "CHF"),
+          imageUrl = p.image_link,
+          productUrl = p.link,
+          reviewStars = 0,
+          isNew = false,
+          onSales = false,
+          onStock = p.availability.equalsIgnoreCase("in stock")
+        )
+      }
+      .sortBy(_.onStock)(Ordering[Boolean].reverse) // products on stock are ranked first
   }
 
   object SearchResponse {

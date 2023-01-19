@@ -45,7 +45,7 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, envi
             baseCcy = ExchangeRatesFeed.supported.getOrElse(detectedCcy, USD)
             mc <- ratesFeed.moneyContext()
             // convert prices into the base currency
-            productsInBaseCcy = products.map{pd =>
+            productsInBaseCcy = products.map { pd =>
               val price = pd.price.toSquants(mc).to(baseCcy)(mc).setScale(2, RoundingMode.HALF_EVEN)
               pd.copy(price = velocorner.api.Money.fromSquants(baseCcy.apply(price)))
             }

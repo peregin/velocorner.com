@@ -11,5 +11,4 @@ object PredictSmileApp extends App with LazyLogging with Metrics {
   val activities = timed("read compressed activities")(JsonIo.readFromGzipResource[List[Activity]]("/data/432909.json.gz"))
   logger.info(s"loaded ${activities.size} activities")
 
-
 }

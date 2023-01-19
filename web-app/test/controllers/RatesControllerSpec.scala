@@ -18,10 +18,16 @@ class RatesControllerSpec extends PlaySpec with StubControllerComponentsFactory 
     val settingsMock = mock[ConnectivitySettings]
     val controller = new RatesController(settingsMock, stubControllerComponents()) {
       override lazy val feed: RatesFeed = new RatesFeed {
-        override def moneyContext(): Future[MoneyContext] = Future(MoneyContext(CHF, Set(USD, HUF), Seq(
-          CurrencyExchangeRate(CHF(1), HUF(400)),
-          CurrencyExchangeRate(CHF(1), USD(1.5))
-        )))
+        override def moneyContext(): Future[MoneyContext] = Future(
+          MoneyContext(
+            CHF,
+            Set(USD, HUF),
+            Seq(
+              CurrencyExchangeRate(CHF(1), HUF(400)),
+              CurrencyExchangeRate(CHF(1), USD(1.5))
+            )
+          )
+        )
       }
     }
 

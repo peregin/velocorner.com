@@ -20,36 +20,39 @@ object CrawlerChainReactionCycles {
   def scrape(content: String, limit: Int): List[ProductDetails] = {
     val dom = Jsoup.parse(content)
     val grids = dom.select("div[class=products_details_container]").asScala.take(limit * 2)
-    grids.flatMap { g =>
-      val desc = g.select("li[class=description] > a")
-      val productUrl = baseUrl + desc.attr("href")
-      val maybeName = Option(desc.select("h2").text()).filter(_.trim.nonEmpty)
-      val imageUrl = g.select("div[class=product_image1 placeholder] > a > img").attr("src")
-      // has text in range: £419.99&nbsp;-&nbsp;£505.99
-      // or in a span element a single price £287.00
-      val price = Option(g.select("li[class=fromamt] > span").text().trim)
-        .filter(_.nonEmpty)
-        .getOrElse(g.select("li[class=fromamt]").text().trim)
-        .split("-")
-        .headOption
-        .getOrElse("")
-        .trim // take the first from the range if any
-      maybeName.map(name =>
-        ProductDetails(
-          market = ChainReactionCycles,
-          brand = none,
-          name = name,
-          description = none,
-          price = extractPrice(price),
-          imageUrl = imageUrl,
-          productUrl = productUrl,
-          reviewStars = 0,
-          isNew = false,
-          onSales = false,
-          onStock = true
+    grids
+      .flatMap { g =>
+        val desc = g.select("li[class=description] > a")
+        val productUrl = baseUrl + desc.attr("href")
+        val maybeName = Option(desc.select("h2").text()).filter(_.trim.nonEmpty)
+        val imageUrl = g.select("div[class=product_image1 placeholder] > a > img").attr("src")
+        // has text in range: £419.99&nbsp;-&nbsp;£505.99
+        // or in a span element a single price £287.00
+        val price = Option(g.select("li[class=fromamt] > span").text().trim)
+          .filter(_.nonEmpty)
+          .getOrElse(g.select("li[class=fromamt]").text().trim)
+          .split("-")
+          .headOption
+          .getOrElse("")
+          .trim // take the first from the range if any
+        maybeName.map(name =>
+          ProductDetails(
+            market = ChainReactionCycles,
+            brand = none,
+            name = name,
+            description = none,
+            price = extractPrice(price),
+            imageUrl = imageUrl,
+            productUrl = productUrl,
+            reviewStars = 0,
+            isNew = false,
+            onSales = false,
+            onStock = true
+          )
         )
-      )
-    }.toList.take(limit)
+      }
+      .toList
+      .take(limit)
   }
 
   // sometimes currency symbols are in front

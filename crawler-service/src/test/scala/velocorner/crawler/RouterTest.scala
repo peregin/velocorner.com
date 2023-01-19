@@ -22,7 +22,7 @@ class RouterTest extends AsyncFlatSpec with AsyncIOSpec with should.Matchers {
     (for {
       rsp <- new Router[IO](Nil).routes.orNotFound.run(GET(uri"/search/SRAM"))
       res <- rsp.as[List[ProductDetails]]
-    } yield res).asserting{ res =>
+    } yield res).asserting { res =>
       res shouldBe empty
     }
   }
