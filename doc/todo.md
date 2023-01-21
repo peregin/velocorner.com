@@ -1,10 +1,12 @@
 # ToDo
-- add image and label showing available marketplaces
+- update About and Github readme with the tech stack details
+- user service in Java/SpringBoot
+- weather service in Kotlin
+- health service in Go
 - add toppreise, and check other aggregators
-- badge for new, available, sales, lead times
 - suggestions when searching products
-- https://exchangerate.host/#/ to spot prices, and align prices in the output
 - add throttling
+- marketing campaign FB/G
 - restart service for changed images only - or publish image from ci conditionally - orb filter
 - caching: add for forecast - generates way too many entries - and remove existing entries
 - show last ride and similar ones (+/-15% distance, elevation)
@@ -16,7 +18,6 @@
 - add QR code to the About page 
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
 - compass rose - wind direction
-- marketing campaign FB
 - show consecutive sport days
 - add last activity details in the profile (and similar rides)
 - add monthly - current month (next to yearly) achievements
@@ -26,12 +27,16 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- gears and usage YTD - added to OAuth2
-- return JWT after login
-- implement JWT between Frontend and Backend
+- move FE completely to React
 
 # Done
-- add amazon
+- https://exchangerate.host/#/ to spot prices, and align prices in the output
+- badge for new, available, sales, lead times
+- add image and label showing available marketplaces
+- return JWT after login
+- implement JWT between Frontend and Backend
+- gears and usage YTD - added to OAuth2
+- add Amazon crawling
 - add progress bar when searching for prices
 - add market to the product card
 - show zinc search version (endpoint with same name), instead of elastic

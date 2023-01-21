@@ -16,7 +16,7 @@ object Dependencies {
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.5"
   val doobieVersion = "1.0.0-RC2"
-  val orientDbVersion = "3.2.14"
+  val orientDbVersion = "3.2.15"
   val mongoDbVersion = "4.8.2"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.5.2"
@@ -30,7 +30,7 @@ object Dependencies {
   val mockitoVersion = "5.0.0"
   val catsEffectTestVersion = "1.5.0"
 
-  val springVersion = "3.0.1" // java world
+  val springVersion = "3.0.2" // java world
 }
 
 object DockerBuild {

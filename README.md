@@ -12,7 +12,11 @@ The web application provides metrics for cycling and running (or for other kind 
 The statistics page compares yearly aggregated data, such as distance, hours ridden, elevation gained and shows year to 
 date series as well.
 The yearly data is presented as a heatmap, so it is easy to compare the efforts for a given period of the year.
-The data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
+Athletes' data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
+It helps you find the best component prices via the product aggregator page.
+
+# Tech Stack
+Building the cycling platform also 
 
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
