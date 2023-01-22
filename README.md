@@ -30,9 +30,9 @@ Services are communicating via `http` with each other, exploring various languag
 - user-service - with `Java` and `Spring Boot`
 - weather-service - with `Kotlin`
 
+___
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
-Also using this project to experiment with technologies.
 
 ## CI/CD Flow
 
