@@ -15,8 +15,20 @@ The yearly data is presented as a heatmap, so it is easy to compare the efforts 
 Athletes' data feed is collected via the [Strava API](https://developers.strava.com/docs/reference/).
 It helps you find the best component prices via the product aggregator page.
 
-# Tech Stack
-Building the cycling platform also 
+## Tech Stack
+Building the cycling platform provides a good opportunity to experiment and learn new technologies or languages in a 
+"live" environment.
+The infrastructure is built following the "Infra as code" principle, the FE is written in `React`, web gateway in `Scala`
+with the `Play Framework` exposing the contract with Swagger.
+Services are communicating via `http` with each other, exploring various languages and technologies:
+- web-app with `Scala` and `Play Framework`
+- web-front with `React`
+- crawler-service with `Scala`, `http4s`, `cats-effect`, `circe`
+- exchange-rate-service with `Rust`
+- data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
+- data-search - with `zinc-search` a lightweight replacement for elasticsearch
+- user-service - with `Java` and `Spring Boot`
+- weather-service - with `Kotlin`
 
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
