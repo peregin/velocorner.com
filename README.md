@@ -21,14 +21,15 @@ Building the cycling platform provides a good opportunity to experiment and lear
 The infrastructure is built following the "Infra as code" principle, the FE is written in `React`, web gateway in `Scala`
 with the `Play Framework` exposing the contract with Swagger.
 Services are communicating via `http` with each other, exploring various languages and technologies:
-- web-app with `Scala` and `Play Framework`
+- web-app with `Scala` and `Play Framework`, `ZIO`
 - web-front with `React`
-- crawler-service with `Scala`, `http4s`, `cats-effect`, `circe`
+- crawler-service with `Scala`, `http4s`, `cats-effect`, `circe` (Typelevel stack)
 - exchange-rate-service with `Rust`
 - data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
 - data-search - with `zinc-search` a lightweight replacement for elasticsearch
 - user-service - with `Java` and `Spring Boot`
 - weather-service - with `Kotlin`
+- health-check-service - with `Go`
 
 ___
 ![logo](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/logo50.png "logo")

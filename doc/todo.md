@@ -1,7 +1,5 @@
 # ToDo
-- update About and Github readme with the tech stack details
 - user service in Java/SpringBoot
-- weather service in Kotlin
 - health service in Go
 - add toppreise, and check other aggregators
 - suggestions when searching products
@@ -28,8 +26,10 @@
 
 # InProgress
 - move FE completely to React
+- weather service in Kotlin
 
 # Done
+- update About and Github readme with the tech stack details
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
 - badge for new, available, sales, lead times
 - add image and label showing available marketplaces
