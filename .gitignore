@@ -60,3 +60,5 @@ coverage
 .env.test.local
 .env.production.local
 .ipynb_checkpoints/
+**/gradlew*
+**/gradle/*
