@@ -12,7 +12,7 @@ object Dependencies {
   val finatraVersion = "21.2.0"
   val argonautVersion = "6.3.8"
   val playWsVersion = "2.1.10" // standalone version
-  val playJsonVersion = "2.9.3"
+  val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.5"
   val doobieVersion = "1.0.0-RC2"
