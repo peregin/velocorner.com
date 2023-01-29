@@ -302,6 +302,7 @@ lazy val testServiceJava = (project in file("test/test-service-java") withId "te
       "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
       "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
       "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
+      "org.springframework.boot" % "spring-boot-starter-actuator" % Dependencies.springVersion,
       "javax.servlet" % "javax.servlet-api" % "4.0.1",
       scalaTest
     ) ++ cats,

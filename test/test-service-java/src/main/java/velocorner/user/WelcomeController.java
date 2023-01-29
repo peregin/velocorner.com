@@ -1,10 +1,10 @@
-package velocorner.info;
+package velocorner.user;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class InfoController {
+public class WelcomeController {
 
     @RequestMapping("/")
     public String index() {
