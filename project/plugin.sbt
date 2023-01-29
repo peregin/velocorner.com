@@ -14,7 +14,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.11.0")
 // Gerolf's release plugin
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 // Generate swagger doc from the routes
-addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.10.5-PLAY2.8")
+addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.11.0")
 // Report the licenses used in the project
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 // Show the hash of the current version
