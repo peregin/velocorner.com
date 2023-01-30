@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /admin
-Disallow: /api
-Disallow: /assets/unify
-Sitemap: https://velocorner.com/sitemap.xml
