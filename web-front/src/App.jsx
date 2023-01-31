@@ -16,6 +16,7 @@ import Footer from './components/Footer'
 
 
 import './App.css'
+import Ping from './components/Ping';
 
 const App = () => {
 
@@ -27,6 +28,7 @@ const App = () => {
           <Route exact path="/best" element={<Best />} />
           <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
           <Route exact path="/oauth/strava" element={<OAuth2Popup />} />
+          <Route exact path="/health" element={<Ping />} />
         </Routes>
       </HashRouter>
     </ChakraProvider>

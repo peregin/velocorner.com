@@ -17,12 +17,12 @@ const checkState = (receivedState: string) => {
 };
 
 type Props = {
-	Component?: React.ReactElement;
+	OAuthComponent?: React.ReactElement;
 };
 
 const OAuth2Popup = (props: Props) => {
 	const {
-		Component = (
+		OAuthComponent = (
 			<div style={{ margin: '12px' }} data-testid='popup-loading'>
 				Loading...
 			</div>
@@ -62,7 +62,7 @@ const OAuth2Popup = (props: Props) => {
 		}
 	}, []);
 
-	return Component;
+	return OAuthComponent;
 };
 
 export default OAuth2Popup;

@@ -2,9 +2,9 @@ import { React, useEffect, useState } from "react";
 import { LinkBox, LinkOverlay, Text, Image } from "@chakra-ui/react";
 import ApiClient from "../service/ApiClient";
 
-const SupportedMarkets = ({ defIx = 1, timing = 5000 }) => {
+const SupportedMarkets = ({ defaultIx = 1, timing = 5000 }) => {
   const [data, setData] = useState([]);
-  const [ix, setIx] = useState(defIx);
+  const [ix, setIx] = useState(defaultIx);
 
   useEffect(() => {
     ApiClient.markets().then((markets) => {
