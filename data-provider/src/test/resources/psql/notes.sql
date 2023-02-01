@@ -92,6 +92,7 @@ select * from gear;
 
 select jsonb_pretty(data) from activity a where a.athlete_id = 432909 order by a."data"->>'start_date' desc;
 
+select count(*) from account a;
 
 
 
