@@ -14,7 +14,7 @@ fun main() {
         }
         routing {
             welcomeRoutes()
-            userRouting()
+            weatherRoutes()
         }
     }.start(wait = true)
 }
