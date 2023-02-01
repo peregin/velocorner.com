@@ -3,11 +3,12 @@ package velocorner.weather
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import velocorner.weather.model.Weather
 
-fun Route.userRouting() {
-    route("users") {
+fun Route.weatherRoutes() {
+    route("current") {
         get {
-            call.respond(listOf(User(1)))
+            call.respond(listOf(Weather(1)))
         }
     }
 }
