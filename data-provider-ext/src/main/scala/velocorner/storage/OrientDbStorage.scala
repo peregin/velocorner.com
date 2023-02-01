@@ -134,7 +134,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
-  override def getWeatherStorage: WeatherStorage = ???
+  override def getWeatherStorage: WeatherStorage[Future] = ???
 
   // attributes
   private lazy val attributeStorage = new AttributeStorage[Future] {

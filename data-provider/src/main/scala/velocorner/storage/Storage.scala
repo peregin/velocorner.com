@@ -11,6 +11,20 @@ import scala.concurrent.Future
 import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
+trait WeatherStorage[M[_]] {
+  // weather - location is <city[,countryISO2letter]>
+  // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
+  def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
+
+  def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
+
+  def suggestLocations(snippet: String): M[Iterable[String]]
+
+  def getRecentWeather(location: String): M[Option[CurrentWeather]]
+
+  def storeRecentWeather(weather: CurrentWeather): M[Unit]
+}
+
 trait AttributeStorage[M[_]] {
 
   // mapped to updated time
@@ -57,18 +71,9 @@ trait Storage[M[_]] {
     def getGear(id: String): M[Option[Gear]]
   }
 
-  def getWeatherStorage: WeatherStorage
-  trait WeatherStorage {
-    // weather - location is <city[,countryISO2letter]>
-    // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
-    def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
-    def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
-    def suggestLocations(snippet: String): M[Iterable[String]]
-    def getRecentWeather(location: String): M[Option[CurrentWeather]]
-    def storeRecentWeather(weather: CurrentWeather): M[Unit]
-  }
+  def getWeatherStorage: WeatherStorage[M]
 
-  // key value pairs - generic attribute storage
+  // key value pairs - generic attribute storage, used by weather controller for managing timestamps
   def getAttributeStorage: AttributeStorage[M]
 
   // various achievements

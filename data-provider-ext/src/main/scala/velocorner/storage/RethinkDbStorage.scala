@@ -133,7 +133,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   }
 
   // weather
-  override def getWeatherStorage: WeatherStorage = ???
+  override def getWeatherStorage: WeatherStorage[M] = ???
 
   // attributes
   override def getAttributeStorage: AttributeStorage[M] = ???

@@ -12,7 +12,7 @@ import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
 import velocorner.api.weather.{CurrentWeather, DailyWeather, WeatherForecast}
 import velocorner.model.DateTimePattern
 import velocorner.model.weather.{ForecastResponse, WeatherResponse}
-import velocorner.storage.{AttributeStorage, Storage}
+import velocorner.storage.{AttributeStorage, Storage, WeatherStorage}
 import velocorner.util.JsonIo
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
     val settingsMock = mock[ConnectivitySettings]
     val storageMock = mock[Storage[Future]]
     val attributeStorage = mock[AttributeStorage[Future]]
-    val weatherStorage = mock[storageMock.WeatherStorage]
+    val weatherStorage = mock[WeatherStorage[Future]]
 
     when(settingsMock.getStorage).thenReturn(storageMock)
     when(storageMock.getAttributeStorage).thenReturn(attributeStorage)

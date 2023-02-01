@@ -123,7 +123,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   }
 
   // weather
-  override def getWeatherStorage: WeatherStorage = ???
+  override def getWeatherStorage: WeatherStorage[Future] = ???
 
   // attributes
   override def getAttributeStorage: AttributeStorage[Future] = ???

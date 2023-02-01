@@ -223,9 +223,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
            |""".stripMargin.query[Gear].option.transactToFuture
   }
 
-  override def getWeatherStorage: WeatherStorage = weatherStorage
+  override def getWeatherStorage: WeatherStorage[Future] = weatherStorage
 
-  private lazy val weatherStorage = new WeatherStorage {
+  private lazy val weatherStorage = new WeatherStorage[Future] {
     override def listRecentForecast(
         location: String,
         limit: Int
