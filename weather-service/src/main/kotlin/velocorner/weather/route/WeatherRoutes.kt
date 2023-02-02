@@ -1,4 +1,4 @@
-package velocorner.weather
+package velocorner.weather.route
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
