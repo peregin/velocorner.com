@@ -28,4 +28,4 @@ addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
 // refactoring and linting
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.4")
 // detect unused code - unusedCode
-addSbtPlugin("com.github.xuwei-k" % "unused-code-plugin" % "0.2.0")
+addSbtPlugin("com.github.xuwei-k" % "unused-code-plugin" % "0.3.0")
