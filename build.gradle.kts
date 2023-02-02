@@ -7,8 +7,9 @@ version = "1.0.0-SNAPSHOT"
 
 plugins {
     application
-    kotlin("jvm") version "1.8.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("name.remal.check-updates") version "1.5.0"
 }
 
 application {
