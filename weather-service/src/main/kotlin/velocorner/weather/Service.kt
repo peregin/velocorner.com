@@ -15,12 +15,13 @@ fun main() {
         val config = ConfigFactory.load()
         val apiKey = config.getString("weather.application.id")
         log.info("OpenWeatherApi key is [${apiKey.takeLast(4).padStart(apiKey.length, 'X')}]")
+
         install(ContentNegotiation) {
             json()
         }
         routing {
             welcomeRoutes()
-            weatherRoutes()
+            weatherRoutes(apiKey)
         }
     }.start(wait = true)
 }
