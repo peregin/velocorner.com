@@ -8,9 +8,12 @@ import velocorner.weather.service.Controller
 
 fun Route.weatherRoutes(apiKey: String) {
     val controller = Controller(apiKey)
-    route("current") {
-        get {
+    route("weather") {
+        get("current") {
             call.respond(listOf(Weather(1)))
+        }
+        get("forecast") {
+            call.respond(listOf(Weather(2)))
         }
     }
 }
