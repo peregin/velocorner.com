@@ -5,6 +5,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 import velocorner.weather.route.*
@@ -19,6 +20,8 @@ fun main() {
         install(ContentNegotiation) {
             json()
         }
+        install(CallLogging)
+
         routing {
             welcomeRoutes()
             weatherRoutes(apiKey)
