@@ -5,7 +5,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import velocorner.weather.model.WeatherCurrentResponse
+import velocorner.weather.model.CurrentWeatherResponse
 
 class OpenWeatherFeed(val apiKey: String, val client: HttpClient) {
 
@@ -14,13 +14,13 @@ class OpenWeatherFeed(val apiKey: String, val client: HttpClient) {
         ignoreUnknownKeys = true
     }
 
-    suspend fun current(location: String): WeatherCurrentResponse? {
+    suspend fun current(location: String): CurrentWeatherResponse? {
         val response = client.get("$baseUrl/weather") {
             parameter("q", location)
             parameter("appid", apiKey)
             parameter("units", "metric")
             parameter("lang", "en")
         }
-        return json.decodeFromString<WeatherCurrentResponse>(response.bodyAsText())
+        return json.decodeFromString<CurrentWeatherResponse>(response.bodyAsText())
     }
 }
