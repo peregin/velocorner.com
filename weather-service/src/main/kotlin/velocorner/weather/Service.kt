@@ -2,6 +2,7 @@ package velocorner.weather
 
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.*
+import io.ktor.client.engine.java.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -18,7 +19,7 @@ fun main() {
         val config = ConfigFactory.load()
         val apiKey = config.getString("weather.application.id")
         log.info("OpenWeatherApi key is [${apiKey.takeLast(4).padStart(apiKey.length, 'X')}]")
-        val client = HttpClient()
+        val client = HttpClient(Java)
         val feed = OpenWeatherFeed(apiKey, client)
 
         install(ContentNegotiation) {
