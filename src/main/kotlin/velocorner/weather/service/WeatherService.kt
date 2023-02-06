@@ -9,5 +9,8 @@ class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 15.mi
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 
-    suspend fun current(location: String): String? = feed.current(location)
+    suspend fun current(location: String): String? {
+        val reply = feed.current(location)
+        return reply.toString()
+    }
 }
