@@ -95,5 +95,16 @@ select jsonb_pretty(data) from activity a where a.athlete_id = 432909 order by a
 select count(*) from account a;
 
 
+-- VirtualRide
+-- Hike
+-- Surfing
+-- Run
+-- EBikeRide
+-- Snowshoe
+-- Ride
+-- Snowboard
+select distinct(a."type") from activity a where a.athlete_id = 481340;
+
+
 
 
