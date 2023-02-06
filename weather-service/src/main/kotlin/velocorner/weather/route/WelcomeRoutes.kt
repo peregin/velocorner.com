@@ -15,8 +15,8 @@ fun Route.welcomeRoutes() {
             body {
                 h1 { +"Welcome @ $now" }
                 ul {
-                    li { a("weather/current/Zurich,%20Switzerland") { +"current weather for Zürich, Switzerland 🇨🇭" } }
-                    li { a("weather/forecast/Zurich,%20Switzerland") { +"5 days forecast ☀️ in 🇨🇭" } }
+                    li { a("weather/current/Zurich,CH") { +"current weather for Zürich, Switzerland 🇨🇭" } }
+                    li { a("weather/forecast/Zurich,CH") { +"5 days forecast ☀️ in 🇨🇭" } }
                 }
             }
         }

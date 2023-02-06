@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import velocorner.weather.service.OpenWeatherFeed
 import velocorner.weather.service.WeatherService
 
+// location is in format: city[,isoCountry 2 letter code]
 fun Route.weatherRoutes(feed: OpenWeatherFeed) {
     val service = WeatherService(feed)
     route("weather") {
@@ -26,7 +27,7 @@ fun Route.weatherRoutes(feed: OpenWeatherFeed) {
                 "Missing location",
                 status = HttpStatusCode.BadRequest
             )
-            call.respond(HttpStatusCode.NotImplemented, "coming soon") //listOf(Weather(1)))
+            call.respond(HttpStatusCode.NotImplemented, "coming soon")
         }
     }
 }
