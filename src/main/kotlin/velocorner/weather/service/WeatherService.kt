@@ -3,6 +3,7 @@ package velocorner.weather.service
 import org.slf4j.LoggerFactory
 import velocorner.weather.model.CurrentWeather
 import velocorner.weather.model.CurrentWeatherResponse
+import velocorner.weather.util.WeatherCodeUtil
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import kotlin.time.Duration
@@ -18,15 +19,15 @@ class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 15.mi
         return convert(location, reply)
     }
 
-    fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? = reply?.weather?.let { wd ->
-        reply?.coord?.let { co ->
-            reply?.sys?.let { sy ->
-                reply?.main?.let { ma ->
-                    reply?.coord?.let { co ->
+    fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
+        return reply?.weather?.let { wd ->
+            reply.sys?.let { sy ->
+                reply.main?.let { ma ->
+                    reply.coord?.let { co ->
                         CurrentWeather(
                             location = location,
                             timestamp = OffsetDateTime.now(ZoneId.of("UTC")),
-                            bootstrapIcon = "TODO",
+                            bootstrapIcon = WeatherCodeUtil.bootstrapIcon(wd[0].id),
                             current = wd[0],
                             info = ma,
                             sunriseSunset = sy,

@@ -1,0 +1,79 @@
+# Weather condition codes
+# Icon is the image provided by openweathermap
+# BootstrapIcon is the weather font provided by Bootstrap
+
+# Group 2xx: Thunderstorm
+# ID	Meaning	                    Icon BootstrapIcon
+200	thunderstorm with light rain	11d icon-weather-005
+201	thunderstorm with rain	        11d icon-weather-005
+202	thunderstorm with heavy rain	11d icon-weather-005
+210	light thunderstorm	            11d icon-weather-033
+211	thunderstorm	                11d icon-weather-033
+212	heavy thunderstorm	            11d icon-weather-033
+221	ragged thunderstorm	            11d icon-weather-033
+230	thunderstorm with light drizzle	11d icon-weather-006
+231	thunderstorm with drizzle	    11d icon-weather-006
+232	thunderstorm with heavy drizzle	11d icon-weather-006
+
+# Group 3xx: Drizzle
+# ID	Meaning	                    Icon BootstrapIcon
+300	light intensity drizzle	        09d icon-weather-004
+301	drizzle	                        09d icon-weather-004
+302	heavy intensity drizzle	        09d icon-weather-004
+310	light intensity drizzle rain	09d icon-weather-004
+311	drizzle rain	                09d icon-weather-004
+312	heavy intensity drizzle rain	09d icon-weather-004
+313	shower rain and drizzle	        09d icon-weather-004
+314	heavy shower rain and drizzle	09d icon-weather-004
+321	shower drizzle	                09d icon-weather-004
+
+
+# Group 5xx: Rain
+# ID	Meaning	                    Icon BootstrapIcon
+500	light rain	                    10d icon-weather-008
+501	moderate rain	                10d icon-weather-007
+502	heavy intensity rain	        10d icon-weather-031
+503	very heavy rain	                10d icon-weather-031
+504	extreme rain	                10d icon-weather-031
+511	freezing rain	                13d icon-weather-031
+520	light intensity shower rain	    09d icon-weather-007
+521	shower rain	                    09d icon-weather-007
+522	heavy intensity shower rain	    09d icon-weather-031
+531	ragged shower rain	            09d icon-weather-031
+
+# Group 6xx: Snow
+# ID	Meaning	Icon BootstrapIcon
+600	light snow	                    13d icon-weather-056
+601	snow	                        13d icon-weather-051
+602	heavy snow	                    13d icon-weather-051
+611	sleet	                        13d icon-weather-038
+612	shower sleet	                13d icon-weather-038
+615	light rain and snow	            13d icon-weather-051
+616	rain and snow	                13d icon-weather-051
+620	light shower snow	            13d icon-weather-056
+621	shower snow	                    13d icon-weather-038
+622	heavy shower snow	            13d icon-weather-051
+
+# Group 7xx: Atmosphere
+# ID	Meaning	                    Icon BootstrapIcon
+701	mist	                        50d icon-weather-043
+711	smoke	                        50d icon-weather-043
+721	haze	                        50d icon-weather-043
+731	sand, dust whirls	            50d icon-weather-043
+741	fog	                            50d icon-weather-043
+751	sand	                        50d icon-weather-043
+761	dust	                        50d icon-weather-043
+762	volcanic ash	                50d icon-weather-043
+771	squalls	                        50d icon-weather-043
+781	tornado	                        50d icon-weather-043
+
+# Group 800: Clear
+# ID	Meaning	                    Icon BootstrapIcon
+800	clear sky	                    01d icon-weather-023
+
+# Group 80x: Clouds
+# ID	Meaning	                    Icon BootstrapIcon
+801	few clouds	                    02d icon-weather-001
+802	scattered clouds	            03d icon-weather-003
+803	broken clouds	                04d icon-weather-022
+804	overcast clouds	                04d icon-weather-022
