@@ -3,7 +3,7 @@ package velocorner.weather.util
 import kotlin.test.*
 import kotlin.test.Test
 
-class WeatherCodeUtilTest {
+internal class WeatherCodeUtilTest {
     @Test fun weatherCodeMappings() {
         val map = WeatherCodeUtil.fromResources()
         assertEquals(54, map.size)
