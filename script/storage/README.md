@@ -10,6 +10,9 @@ docker push peregin/velocorner.postgres-12:latest
 ```shell
 docker exec -it velo_repo /bin/bash
 psql --username velocorner velocorner
-create database location;
+CREATE database location;
 GRANT ALL PRIVILEGES ON DATABASE location to velocorner;
+
+# show all databases
+SELECT datname FROM pg_database WHERE datistemplate = false;
 ```
