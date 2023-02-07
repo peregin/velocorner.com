@@ -58,7 +58,7 @@
         // meteogram
         $.ajax({
             dataType: 'xml',
-            url: "/api/weather/forecast/" + place + "?mode=xml",
+            url: "/api/weather/forecast/" + place,
             success: function (xml) {
                 $('#weather-progress').css("visibility","hidden");
                 $('#weather-container').css('display', 'block');

@@ -89,17 +89,11 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
         )
       } yield wf
 
-      // generate json or xml content
-      type transform2Content = List[WeatherForecast] => String
-      val contentGenerator: transform2Content = request.getQueryString("mode") match {
-        case Some("xml") => wt => highcharts.toMeteoGramXml(wt).toString()
-        case _           => wt => JsonIo.write(DailyWeather.list(wt))
-      }
-
+      // generate xml content for Meteogram from Highcharts
       resultET
         .map(_.sortBy(_.timestamp))
-        .map(contentGenerator)
-        .map(Ok(_).withCookies(WeatherCookie.create(location)))
+        .map(wt => highcharts.toMeteoGramXml(wt).toString())
+        .map(Ok(_).withCookies(WeatherCookie.create(location)).as("application/xml"))
         .merge
     }
   }

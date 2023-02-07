@@ -406,20 +406,12 @@ GET     /api/activities/:id                                controllers.ActivityC
 #        type: string
 #      example: Zurich, Switzerland
 #      description: City and country of the forecast, comma separated
-#    - in: query
-#      name: mode
-#      schema:
-#        type: string
-#        enum: [json, xml]
-#        example: json
-#      description: Formats the content type optimized for meteogram widget if set to xml
 #  responses:
 #    200:
 #      description: Weather forecast for the next 5 days
 #      content:
-#        application/json:
-#          schema:
-#            $ref: '#/components/schemas/velocorner.api.weather.DailyWeather'
+#        application/xml:
+#          wrapped: true
 #    400:
 #      description: Bad request
 #    404:
