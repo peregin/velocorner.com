@@ -10,7 +10,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 // it uses data from the cache/storage if was queried within the `refreshTimeout`
-class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 15.minutes) {
+class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 30.minutes) {
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -26,7 +26,7 @@ class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 15.mi
                     reply.coord?.let { co ->
                         CurrentWeather(
                             location = location,
-                            timestamp = OffsetDateTime.now(ZoneId.of("UTC")),
+                            timestamp = reply.dt ?: OffsetDateTime.now(ZoneId.of("UTC")),
                             bootstrapIcon = WeatherCodeUtil.bootstrapIcon(wd[0].id),
                             current = wd[0],
                             info = ma,
