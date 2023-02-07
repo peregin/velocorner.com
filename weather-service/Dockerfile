@@ -1,7 +1,7 @@
 FROM gradle:7-jdk17 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle jar --no-daemon
+RUN gradle buildFatJar --no-daemon
 
 FROM eclipse-temurin:17-jdk-alpine
 EXPOSE 9015:9015

@@ -97,6 +97,20 @@ jobs:
           name: deploy exchange-rate service
           command: cd exchange-rate-service && ./deploy.sh
 
+  deploy_weather-backend:
+    executor: ci-deploy-executor
+    steps:
+      - attach_workspace:
+          at: .
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: dockerhub login
+          command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
+      - run:
+          name: deploy weather service
+          command: cd weather-service && ./deploy.sh
+
   deploy_web-frontend:
     executor: ci-deploy-executor
     steps:
@@ -147,6 +161,12 @@ workflows:
             branches:
               only: /master.*/
       - deploy_rates-backend:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master.*/
+      - deploy_weather-backend:
           requires:
             - build
           filters:
