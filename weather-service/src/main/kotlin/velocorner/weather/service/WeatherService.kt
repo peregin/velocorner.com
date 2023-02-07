@@ -19,7 +19,7 @@ class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 15.mi
         return convert(location, reply)
     }
 
-    fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
+    private fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
         return reply?.weather?.let { wd ->
             reply.sys?.let { sy ->
                 reply.main?.let { ma ->
