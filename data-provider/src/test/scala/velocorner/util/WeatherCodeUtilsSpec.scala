@@ -2,7 +2,6 @@ package velocorner.util
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import velocorner.model.weather.WeatherCode
 
 class WeatherCodeUtilsSpec extends AnyWordSpec with Matchers {
 

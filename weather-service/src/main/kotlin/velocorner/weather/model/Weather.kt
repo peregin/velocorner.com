@@ -68,7 +68,7 @@ import java.time.ZoneOffset
 
 @Serializable
 data class WeatherDescription(
-    val id: Long, // 800 - weather condition code
+    val id: Int, // 800 - weather condition code
     val main: String, // "Clear"
     val description: String, // "clear sky"
     val icon: String // weather icon 04d

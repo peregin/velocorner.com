@@ -1,7 +1,6 @@
 package velocorner.util
 
 import com.typesafe.scalalogging.LazyLogging
-import velocorner.model.weather.WeatherCode
 
 import scala.io.Source
 import scala.util.{Failure, Try}
@@ -14,6 +13,8 @@ import scala.util.{Failure, Try}
  * 500	light rain	                10d icon-weather-008
  * 501	moderate rain	            10d icon-weather-007
  */
+case class WeatherCode(code: Int, meaning: String, bootstrapIcon: String)
+
 object WeatherCodeUtils extends LazyLogging with CloseableResource {
 
   private lazy val code2Model = fromResources()
