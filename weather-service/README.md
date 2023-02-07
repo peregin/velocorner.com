@@ -8,4 +8,9 @@ Provides 5 days forecast, current weather conditions and suggestions for locatio
 Useful commands and plugins
 ```shell
 ./gradlew checkUpdates
+
+# docker
+./gradlew buildImage
+./gradlew publishImageToLocalRegistry
+./gradlew publishImage
 ```
