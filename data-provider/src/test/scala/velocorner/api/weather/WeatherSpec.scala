@@ -9,7 +9,7 @@ import cats.implicits._
 
 class WeatherSpec extends AnyWordSpec with Matchers {
 
-  val forecast = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json")
+  private val forecast = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json")
 
   "openweathermap.org response" should {
 
@@ -38,15 +38,6 @@ class WeatherSpec extends AnyWordSpec with Matchers {
       val json = JsonIo.write(storageEntry)
       val entity = JsonIo.read[WeatherForecast](json)
       entity === storageEntry
-    }
-  }
-
-  "list of entries" should {
-
-    "be grouped by day" in {
-      val entries = forecast.points.map(w => WeatherForecast("Zurich,CH", w.dt, w))
-      val dailyForecast = DailyWeather.list(entries)
-      dailyForecast must have size 5
     }
   }
 }

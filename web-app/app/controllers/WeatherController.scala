@@ -11,7 +11,7 @@ import org.joda.time.{DateTime, Duration}
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.api.GeoPosition
-import velocorner.api.weather.{CurrentWeather, DailyWeather, WeatherForecast}
+import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 import velocorner.model._
 import velocorner.storage.{AttributeStorage, PsqlDbStorage}
 import velocorner.util.CountryUtils.normalize

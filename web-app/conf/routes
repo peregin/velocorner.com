@@ -411,7 +411,8 @@ GET     /api/activities/:id                                controllers.ActivityC
 #      description: Weather forecast for the next 5 days
 #      content:
 #        application/xml:
-#          wrapped: true
+#          schema:
+#            type: string
 #    400:
 #      description: Bad request
 #    404:
