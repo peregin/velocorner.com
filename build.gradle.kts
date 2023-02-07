@@ -59,8 +59,8 @@ ktor {
 
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.dockerHub(
-                appName = provider { "ktor-app" },
-                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+                appName = provider { "velocorner.weather" },
+                username = provider { "peregin" },
                 password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
             )
         )
