@@ -21,7 +21,7 @@ object WeatherCodeUtils extends LazyLogging with CloseableResource {
   private val clearSkyCode = 800
 
   /**
-   * Based on the measures for a given day return a weather code which can be napped to an icon.
+   * Based on the measures for a given day return a weather code which can be mapped to an icon.
    * @param pointsForThisDay measures for a given day
    */
   def dailyWeatherCode(pointsForThisDay: Iterable[Weather]): Int = {
