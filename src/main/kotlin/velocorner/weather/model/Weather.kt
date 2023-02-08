@@ -182,3 +182,12 @@ data class ForecastWeatherResponse(
     val list: List<Weather>? = null,
     val city: City? = null
 )
+
+// response of the service API and persisted in the caching layer (converted from ForecastWeatherResponse)
+@Serializable
+data class ForecastWeather(
+    val location: String, // city[, country iso 2 letters]
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val timestamp: OffsetDateTime,
+    val forecast: Weather
+)
