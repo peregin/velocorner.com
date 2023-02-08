@@ -10,21 +10,20 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
+import velocorner.weather.repo.DatabaseFactory
 import velocorner.weather.route.*
 import velocorner.weather.service.OpenWeatherFeed
 import java.io.File
 
 fun main() {
     embeddedServer(Netty, port = 9015, host = "0.0.0.0") {
-        log.info("loading config...")
         val configPath = System.getenv("CONFIG_FILE")
         log.info("config_file=$configPath")
         val config = ConfigFactory.parseFile(File(configPath))
-        val apiKey = config.getString("weather.application.id")
-        log.info("OpenWeatherApi key is [${apiKey.takeLast(4).padStart(apiKey.length, 'X')}]")
 
         val client = HttpClient(Java)
-        val feed = OpenWeatherFeed(apiKey, client)
+        val feed = OpenWeatherFeed(config, client)
+        DatabaseFactory.init(config)
 
         install(ContentNegotiation) {
             json()

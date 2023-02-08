@@ -105,6 +105,10 @@ select count(*) from account a;
 -- Snowboard
 select distinct(a."type") from activity a where a.athlete_id = 481340;
 
+select "location" from location order by "location" asc;
+
+select distinct(location) as loc from forecast f order by loc asc;
+
 
 
 

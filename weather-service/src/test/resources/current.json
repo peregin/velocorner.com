@@ -1,0 +1,43 @@
+{
+  "coord": {
+    "lon": 8.5246,
+    "lat": 47.31
+  },
+  "weather": [
+    {
+      "id": 803,
+      "main": "Clouds",
+      "description": "broken clouds",
+      "icon": "04d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 12.21,
+    "feels_like": 11,
+    "temp_min": 10,
+    "temp_max": 14,
+    "pressure": 1010,
+    "humidity": 58
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 7.72,
+    "deg": 290
+  },
+  "clouds": {
+    "all": 75
+  },
+  "dt": 1618160455,
+  "sys": {
+    "type": 1,
+    "id": 6932,
+    "country": "CH",
+    "sunrise": 1618116294,
+    "sunset": 1618164510
+  },
+  "timezone": 7200,
+  "id": 2661861,
+  "name": "Adliswil",
+  "cod": 200
+}
