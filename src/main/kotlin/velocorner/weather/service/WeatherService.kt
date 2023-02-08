@@ -3,6 +3,7 @@ package velocorner.weather.service
 import org.slf4j.LoggerFactory
 import velocorner.weather.model.CurrentWeather
 import velocorner.weather.model.CurrentWeatherResponse
+import velocorner.weather.model.ForecastWeatherResponse
 import velocorner.weather.util.WeatherCodeUtil
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -17,6 +18,10 @@ class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 30.mi
     suspend fun current(location: String): CurrentWeather? {
         val reply = feed.current(location)
         return convert(location, reply)
+    }
+
+    suspend fun forecast(location: String): ForecastWeatherResponse? {
+        return feed.forecast(location)
     }
 
     private fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
