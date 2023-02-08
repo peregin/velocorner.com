@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.minutes
 // it uses data from the cache/storage if was queried within the `refreshTimeout`
 class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 30.minutes) {
 
-    val logger = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     suspend fun current(location: String): CurrentWeather? {
         val reply = feed.current(location)
