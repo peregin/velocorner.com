@@ -7,7 +7,6 @@ create table forecast(
 
 create table weather(
     location varchar not null,
-    update_time timestamptz not null default now(),
     data jsonb not null,
     primary key(location)
 );

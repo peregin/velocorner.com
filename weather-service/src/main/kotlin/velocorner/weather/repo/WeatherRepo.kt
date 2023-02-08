@@ -20,41 +20,65 @@ interface WeatherRepo {
     suspend fun storeCurrent(weather: CurrentWeather)
 }
 
-object CurrentEntries : Table("weather") {
-    val location = varchar("location", 256)
-    val updateTime = datetime("update_time")
+object CurrentWeatherTable : Table("weather") {
+    val location = varchar("location", 64)
     val data = json<CurrentWeather>("data", Json)
 
     override val primaryKey = PrimaryKey(location)
 }
 
+object ForecastWeatherTable : Table("forecast") {
+    val location = varchar("location", 64)
+    val updateTime = datetime("update_time")
+    val data = json<ForecastWeather>("data", Json)
+
+    override val primaryKey = PrimaryKey(location, updateTime)
+}
+
 class WeatherRepoImpl : WeatherRepo {
 
     override suspend fun listForecast(location: String, limit: Int): List<ForecastWeather> = transact {
-        TODO("not yet")
+        ForecastWeatherTable
+            .select { ForecastWeatherTable.location eq location }
+            .orderBy(Pair(ForecastWeatherTable.updateTime, SortOrder.DESC))
+            .limit(limit)
+            .map { it[ForecastWeatherTable.data] }
     }
 
-    override suspend fun storeForecast(forecast: List<ForecastWeather>) {
-        TODO("Not yet implemented")
+    override suspend fun storeForecast(forecast: List<ForecastWeather>) = transact {
+        forecast.forEach { w ->
+            val count = ForecastWeatherTable.insertIgnore {
+                it[location] = w.location
+                it[updateTime] = w.timestamp.toLocalDateTime().toKotlinLocalDateTime()
+                it[data] = w
+            }.insertedCount
+            if (count == 0) {
+                ForecastWeatherTable.update({
+                    (ForecastWeatherTable.location eq w.location) and
+                            (ForecastWeatherTable.updateTime eq w.timestamp.toLocalDateTime().toKotlinLocalDateTime())
+                }) {
+                    it[updateTime] = w.timestamp.toLocalDateTime().toKotlinLocalDateTime()
+                    it[data] = w
+                }
+            }
+        }
     }
 
     override suspend fun getCurrent(location: String): CurrentWeather? = transact {
-        CurrentEntries
-            .select { CurrentEntries.location eq location }
-            .map { it[CurrentEntries.data] }
+        CurrentWeatherTable
+            .select { CurrentWeatherTable.location eq location }
+            .map { it[CurrentWeatherTable.data] }
             .singleOrNull()
     }
 
     override suspend fun storeCurrent(weather: CurrentWeather) {
         transact {
-            val count = CurrentEntries.insertIgnore {
+            val count = CurrentWeatherTable.insertIgnore {
                 it[location] = weather.location
-                it[updateTime] = weather.timestamp.toLocalDateTime().toKotlinLocalDateTime()
                 it[data] = weather
             }.insertedCount
             if (count == 0) {
-                CurrentEntries.update({ CurrentEntries.location eq weather.location }) {
-                    it[updateTime] = weather.timestamp.toLocalDateTime().toKotlinLocalDateTime()
+                CurrentWeatherTable.update({ CurrentWeatherTable.location eq weather.location }) {
                     it[data] = weather
                 }
             }
