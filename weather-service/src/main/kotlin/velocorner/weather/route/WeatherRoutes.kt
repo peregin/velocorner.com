@@ -27,7 +27,11 @@ fun Route.weatherRoutes(feed: OpenWeatherFeed) {
                 "Missing location",
                 status = HttpStatusCode.BadRequest
             )
-            call.respond(HttpStatusCode.NotImplemented, "coming soon")
+            val forecast = service.forecast(location) ?: return@get call.respondText(
+                "Unknown location $location",
+                status = HttpStatusCode.NotFound
+            )
+            call.respond(forecast)
         }
     }
 }

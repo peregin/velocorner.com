@@ -109,7 +109,48 @@ data class SunriseSunsetInfo(
 @Serializable
 data class Coord(val lon: Double, val lat: Double)
 
-// response expected from OpenWeather API
+@Serializable
+data class SnowDescription(
+    val `3h`: Double? // volume
+)
+
+@Serializable
+data class RainDescription(
+    val `3h`: Double? // mm
+)
+
+@Serializable
+data class CloudDescription(
+    val all: Int // %
+)
+
+@Serializable
+data class WindDescription(
+    val speed: Double, // m/s
+    val deg: Double // degrees
+)
+
+@Serializable
+data class City(
+    val id: Long,
+    val name: String, // plain name, such as Zurich, Budapest
+    val country: String // ISO code 2 letter
+)
+
+// one of the entry points, the response contains a list of Weather structures, also stored in database
+@Serializable
+data class Weather(
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val dt: OffsetDateTime,
+    val main: WeatherInfo,
+    val weather: List<WeatherDescription>,
+    val snow: SnowDescription?,
+    val rain: RainDescription?,
+    val clouds: CloudDescription,
+    val wind: WindDescription
+)
+
+// response expected from OpenWeatherMap API
 @Serializable
 data class CurrentWeatherResponse(
     val cod: Int,
@@ -124,12 +165,20 @@ data class CurrentWeatherResponse(
 // response of the service API and persisted in the caching layer (converted from CurrentWeatherResponse)
 @Serializable
 data class CurrentWeather(
-   val location: String, // city[, country iso 2 letters]
-   @Serializable(with = OffsetDateTimeSerializer::class)
-   val timestamp: OffsetDateTime,
-   val bootstrapIcon: String, // bootstrap icon derived from the current weather code
-   val current: WeatherDescription,
-   val info: WeatherInfo,
-   val sunriseSunset: SunriseSunsetInfo,
-   val coord: Coord
+    val location: String, // city[, country iso 2 letters]
+    @Serializable(with = OffsetDateTimeSerializer::class)
+    val timestamp: OffsetDateTime,
+    val bootstrapIcon: String, // bootstrap icon derived from the current weather code
+    val current: WeatherDescription,
+    val info: WeatherInfo,
+    val sunriseSunset: SunriseSunsetInfo,
+    val coord: Coord
+)
+
+// response expected from OpenWeatherMap API
+@Serializable
+data class ForecastWeatherResponse(
+    val cod: String,
+    val list: List<Weather>?,
+    val city: City?
 )
