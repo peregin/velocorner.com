@@ -5,20 +5,38 @@ import velocorner.weather.model.CurrentWeather
 import velocorner.weather.model.CurrentWeatherResponse
 import velocorner.weather.model.ForecastWeather
 import velocorner.weather.model.ForecastWeatherResponse
+import velocorner.weather.repo.WeatherRepo
 import velocorner.weather.util.WeatherCodeUtil
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 // it uses data from the cache/storage if was queried within the `refreshTimeout`
-class WeatherService(val feed: OpenWeatherFeed, refreshTimeout: Duration = 30.minutes) {
+class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refreshTimeout: Duration = 30.minutes) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    fun clock(): OffsetDateTime = OffsetDateTime.now(ZoneId.of("UTC"))
+
     suspend fun current(location: String): CurrentWeather? {
-        val reply = feed.current(location)
-        return convert(location, reply)
+        val entry = repo.getCurrent(location)
+        val reply =
+            entry?.takeIf {
+                val diffInSeconds = (clock().toEpochSecond() - it.timestamp.toEpochSecond())
+                    .seconds
+                    .compareTo(refreshTimeout)
+                diffInSeconds > 0
+            }.also {
+                logger.debug("retrieving cached data for [$location]")
+            } ?: feed.current(location).let { re ->
+                convert(location, re).also{
+                    logger.info("retrieving fresh data for [$location]")
+                    it?.let { repo.storeCurrent(it) }
+                }
+            }
+        return reply
     }
 
     suspend fun forecast(location: String): List<ForecastWeather>? {
