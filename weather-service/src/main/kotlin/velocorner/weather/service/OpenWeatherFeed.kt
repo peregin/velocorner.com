@@ -10,17 +10,15 @@ import org.slf4j.LoggerFactory
 import velocorner.weather.model.CurrentWeatherResponse
 import velocorner.weather.model.ForecastWeatherResponse
 
-class OpenWeatherFeed(val config: Config, val client: HttpClient) {
+class OpenWeatherFeed(config: Config, val client: HttpClient) {
 
     private val baseUrl = "https://api.openweathermap.org/data/2.5"
     private val json = Json {
         ignoreUnknownKeys = true
     }
     private val logger = LoggerFactory.getLogger(this.javaClass)
-    private val apiKey: String by lazy {
-        config
-            .getString("weather.application.id")
-            .also { logger.info("OpenWeatherMap key is [${apiKey.takeLast(4).padStart(apiKey.length, 'X')}]") }
+    private val apiKey = config.getString("weather.application.id").also {
+        logger.info("OpenWeatherMap key is [${it.takeLast(4).padStart(it.length, 'X')}]")
     }
 
     suspend fun current(location: String): CurrentWeatherResponse? =
