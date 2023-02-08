@@ -15,20 +15,19 @@ class OpenWeatherFeed(val apiKey: String, val client: HttpClient) {
         ignoreUnknownKeys = true
     }
 
-    suspend fun current(location: String): CurrentWeatherResponse? {
-        val response = get("weather", location)
-        return json.decodeFromString<CurrentWeatherResponse>(response.bodyAsText())
-    }
+    suspend fun current(location: String): CurrentWeatherResponse? =
+        get<CurrentWeatherResponse>("weather", location)
 
-    suspend fun forecast(location: String): ForecastWeatherResponse? {
-        val response = get("forecast", location)
-        return json.decodeFromString<ForecastWeatherResponse>(response.bodyAsText())
-    }
+    suspend fun forecast(location: String): ForecastWeatherResponse? =
+        get<ForecastWeatherResponse>("forecast", location)
 
-    internal suspend fun get(path: String, location: String): HttpResponse = client.get("$baseUrl/$path") {
-        parameter("q", location)
-        parameter("appid", apiKey)
-        parameter("units", "metric")
-        parameter("lang", "en")
+    internal suspend inline fun <reified T> get(path: String, location: String): T? {
+        val response = client.get("$baseUrl/$path") {
+            parameter("q", location)
+            parameter("appid", apiKey)
+            parameter("units", "metric")
+            parameter("lang", "en")
+        }
+        return runCatching { json.decodeFromString<T>(response.bodyAsText()) }.getOrNull()
     }
 }
