@@ -111,12 +111,12 @@ data class Coord(val lon: Double, val lat: Double)
 
 @Serializable
 data class SnowDescription(
-    val `3h`: Double? // volume
+    val `3h`: Double? = null // volume
 )
 
 @Serializable
 data class RainDescription(
-    val `3h`: Double? // mm
+    val `3h`: Double? = null // mm
 )
 
 @Serializable
@@ -144,8 +144,8 @@ data class Weather(
     val dt: OffsetDateTime,
     val main: WeatherInfo,
     val weather: List<WeatherDescription>,
-    val snow: SnowDescription?,
-    val rain: RainDescription?,
+    val snow: SnowDescription? = null, // default value needed to signal optionality
+    val rain: RainDescription? = null,
     val clouds: CloudDescription,
     val wind: WindDescription
 )
@@ -154,12 +154,12 @@ data class Weather(
 @Serializable
 data class CurrentWeatherResponse(
     val cod: Int,
-    val weather: List<WeatherDescription>?,
-    val main: WeatherInfo?,
-    val sys: SunriseSunsetInfo?,
-    val coord: Coord?,
+    val weather: List<WeatherDescription>? = null,
+    val main: WeatherInfo? = null,
+    val sys: SunriseSunsetInfo? = null,
+    val coord: Coord? = null,
     @Serializable(with = OffsetDateTimeSerializer::class)
-    val dt: OffsetDateTime?
+    val dt: OffsetDateTime? = null
 )
 
 // response of the service API and persisted in the caching layer (converted from CurrentWeatherResponse)
@@ -179,6 +179,6 @@ data class CurrentWeather(
 @Serializable
 data class ForecastWeatherResponse(
     val cod: String,
-    val list: List<Weather>?,
-    val city: City?
+    val list: List<Weather>? = null,
+    val city: City? = null
 )
