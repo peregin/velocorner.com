@@ -23,11 +23,14 @@ class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refre
     suspend fun current(location: String): CurrentWeather? {
         val entry = repo.getCurrent(location)
         val reply =
-            entry?.takeIf {
-                val diffInSeconds = (clock().toEpochSecond() - it.timestamp.toEpochSecond())
+            entry?.takeUnless {
+                val now = clock()
+                val last = it.timestamp
+                logger.debug("checking cache $now - $last")
+                val cacheHit = (now.toEpochSecond() - last.toEpochSecond())
                     .seconds
                     .compareTo(refreshTimeout)
-                diffInSeconds > 0
+                cacheHit > 0
             }.also {
                 logger.debug("retrieving cached data for [$location]")
             } ?: feed.current(location).let { re ->
