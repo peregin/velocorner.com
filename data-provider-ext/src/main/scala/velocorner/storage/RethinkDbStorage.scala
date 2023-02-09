@@ -118,8 +118,8 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   }
 
   // accounts
-  override def getAccountStorage: AccountStorage = accountStorage
-  private lazy val accountStorage = new AccountStorage {
+  override def getAccountStorage: AccountStorage[M] = accountStorage
+  private lazy val accountStorage = new AccountStorage[M] {
     override def store(account: Account): M[Unit] = upsert(JsonIo.write(account), ACCOUNT_TABLE)
     override def getAccount(id: Long): M[Option[Account]] =
       Monad[M].map(getJsonById(id.toString, ACCOUNT_TABLE))(_.map(JsonIo.read[Account]))
@@ -143,7 +143,7 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def getAdminStorage: AdminStorage = ???
 
-  override def getLocationStorage: LocationStorage = ???
+  override def getLocationStorage: LocationStorage[M] = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

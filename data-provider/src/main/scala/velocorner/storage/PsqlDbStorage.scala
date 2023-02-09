@@ -194,9 +194,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
     sql"""select data from activity where id = $id
          |""".stripMargin.query[Activity].option.transactToFuture
 
-  override def getAccountStorage: AccountStorage = accountStorage
+  override def getAccountStorage: AccountStorage[Future] = accountStorage
 
-  private lazy val accountStorage = new AccountStorage {
+  private lazy val accountStorage = new AccountStorage[Future] {
     override def store(a: Account): Future[Unit] =
       sql"""insert into account (athlete_id, data)
            |values(${a.athleteId}, $a) on conflict(athlete_id)
@@ -367,8 +367,8 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
 
   }
 
-  override def getLocationStorage: LocationStorage = locationStorage
-  private lazy val locationStorage = new LocationStorage {
+  override def getLocationStorage: LocationStorage[Future] = locationStorage
+  private lazy val locationStorage = new LocationStorage[Future] {
     override def store(
         location: String,
         position: GeoPosition

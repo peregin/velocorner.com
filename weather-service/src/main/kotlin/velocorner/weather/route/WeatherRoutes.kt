@@ -25,7 +25,8 @@ fun Route.weatherRoutes(service: WeatherService) {
                 "Missing location",
                 status = HttpStatusCode.BadRequest
             )
-            val forecast = service.forecast(location) ?: return@get call.respondText(
+            val forecast = service.forecast(location)
+            if (forecast.isEmpty()) return@get call.respondText(
                 "Unknown location $location",
                 status = HttpStatusCode.NotFound
             )

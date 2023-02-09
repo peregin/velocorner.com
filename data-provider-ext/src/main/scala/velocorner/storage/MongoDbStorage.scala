@@ -107,8 +107,8 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   }
 
   // accounts
-  override def getAccountStorage: AccountStorage = accountStorage
-  private lazy val accountStorage = new AccountStorage {
+  override def getAccountStorage: AccountStorage[Future] = accountStorage
+  private lazy val accountStorage = new AccountStorage[Future] {
     override def store(account: Account): Future[Unit] =
       upsert(JsonIo.write(account), account.athleteId.toString, ACCOUNT_TABLE, "athleteId")
     override def getAccount(id: Long): Future[Option[Account]] =
@@ -133,7 +133,7 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def getAdminStorage: AdminStorage = ???
 
-  override def getLocationStorage: LocationStorage = ???
+  override def getLocationStorage: LocationStorage[Future] = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

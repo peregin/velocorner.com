@@ -119,8 +119,8 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
   override def getActivity(id: Long): Future[Option[Activity]] = lookup[Activity](ACTIVITY_CLASS, "id", id.toString)
 
   // accounts
-  override def getAccountStorage: AccountStorage = accountStorage
-  private lazy val accountStorage = new AccountStorage {
+  override def getAccountStorage: AccountStorage[Future] = accountStorage
+  private lazy val accountStorage = new AccountStorage[Future] {
     override def store(account: Account): Future[Unit] =
       upsert(account, ACCOUNT_CLASS, s"SELECT FROM $ACCOUNT_CLASS WHERE athleteId = :id", Map("id" -> account.athleteId))
     override def getAccount(id: Long): Future[Option[Account]] = lookup[Account](ACCOUNT_CLASS, "athleteId", id.toString)
@@ -266,7 +266,7 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
 
   override def getAdminStorage: AdminStorage = ???
 
-  override def getLocationStorage: LocationStorage = ???
+  override def getLocationStorage: LocationStorage[Future] = ???
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

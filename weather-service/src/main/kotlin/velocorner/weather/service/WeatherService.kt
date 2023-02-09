@@ -26,25 +26,44 @@ class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refre
             entry?.takeUnless {
                 val now = clock()
                 val last = it.timestamp
-                logger.debug("checking cache $now - $last")
+                logger.debug("checking current weather cache $now - $last")
                 val cacheHit = (now.toEpochSecond() - last.toEpochSecond())
                     .seconds
                     .compareTo(refreshTimeout)
                 cacheHit > 0
             }.also {
-                logger.debug("retrieving cached data for [$location]")
+                logger.debug("retrieving cached data for current [$location]")
             } ?: feed.current(location).let { re ->
-                convert(location, re).also{
-                    logger.info("retrieving fresh data for [$location]")
+                convert(location, re).also {
+                    logger.info("retrieving and store fresh data for current [$location]")
                     it?.let { repo.storeCurrent(it) }
                 }
             }
         return reply
     }
 
-    suspend fun forecast(location: String): List<ForecastWeather>? {
-        val reply = feed.forecast(location)
-        return reply?.let { convert(location, it) }
+    suspend fun forecast(location: String): List<ForecastWeather> {
+        val entries = repo.listForecast(location)
+        val last = entries.map { it.timestamp }.maxOrNull()?.takeUnless {
+            val now = clock()
+            logger.debug("checking forecast weather cache $now - $it")
+            val cacheHit = (now.toEpochSecond() - it.toEpochSecond())
+                .seconds
+                .compareTo(refreshTimeout)
+            cacheHit > 0
+        }
+
+        val reply = last?.let { entries }.also {
+            logger.debug("retrieving cached data for forecast [$location]")
+        } ?: run {
+            feed.forecast(location).let { re ->
+                convert(location, re).also {
+                    logger.info("retrieving and store fresh data for forecast [$location]")
+                    repo.storeForecast(it)
+                }
+            }
+        }
+        return reply
     }
 
     private fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
@@ -67,8 +86,8 @@ class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refre
         }
     }
 
-    private fun convert(location: String, reply: ForecastWeatherResponse): List<ForecastWeather> {
-        return reply.list?.map {
+    private fun convert(location: String, reply: ForecastWeatherResponse?): List<ForecastWeather> {
+        return reply?.list?.map {
             ForecastWeather(
                 location = location,
                 timestamp = it.dt,

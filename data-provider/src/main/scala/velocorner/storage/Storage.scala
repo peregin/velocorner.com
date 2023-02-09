@@ -11,6 +11,12 @@ import scala.concurrent.Future
 import org.joda.time.DateTime
 import velocorner.api.strava.Activity
 
+trait AccountStorage[M[_]] {
+  def store(account: Account): M[Unit]
+
+  def getAccount(id: Long): M[Option[Account]]
+}
+
 trait WeatherStorage[M[_]] {
   // weather - location is <city[,countryISO2letter]>
   // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
@@ -33,6 +39,14 @@ trait AttributeStorage[M[_]] {
 
   def storeAttribute(key: String, `type`: String, value: String): M[Unit]
   def getAttribute(key: String, `type`: String): M[Option[String]]
+}
+
+trait LocationStorage[M[_]] {
+  def store(location: String, position: GeoPosition): M[Unit]
+
+  def getPosition(location: String): M[Option[GeoPosition]]
+
+  def getCountry(ip: String): M[Option[String]]
 }
 
 trait Storage[M[_]] {
@@ -58,11 +72,7 @@ trait Storage[M[_]] {
   def activityTitles(athleteId: Long, max: Int): M[Iterable[String]]
 
   // accounts
-  def getAccountStorage: AccountStorage
-  trait AccountStorage {
-    def store(account: Account): M[Unit]
-    def getAccount(id: Long): M[Option[Account]]
-  }
+  def getAccountStorage: AccountStorage[M]
 
   // gears
   def getGearStorage: GearStorage
@@ -90,12 +100,7 @@ trait Storage[M[_]] {
     def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
   }
 
-  def getLocationStorage: LocationStorage
-  trait LocationStorage {
-    def store(location: String, position: GeoPosition): M[Unit]
-    def getPosition(location: String): M[Option[GeoPosition]]
-    def getCountry(ip: String): M[Option[String]]
-  }
+  def getLocationStorage: LocationStorage[M]
 
   def getAdminStorage: AdminStorage
   trait AdminStorage {
