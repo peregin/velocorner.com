@@ -14,6 +14,8 @@ import org.joda.time.DateTime
 import velocorner.ServiceProvider
 import velocorner.build.BuildInfo
 
+import scala.xml.Elem
+
 /**
  * Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
  */
@@ -94,7 +96,7 @@ class WebController @Inject() (
   def sitemap = Action { _ =>
     val buildTime = java.time.LocalDate.parse(BuildInfo.buildTime, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
     val lastmod = buildTime.format(java.time.format.DateTimeFormatter.ISO_DATE)
-    val xml =
+    val xml: Elem =
       <urlset
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

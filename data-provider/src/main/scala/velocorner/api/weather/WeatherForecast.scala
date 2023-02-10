@@ -4,6 +4,7 @@ import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json}
 import velocorner.model.DateTimePattern
 
+// TODO: cleanup
 /**
  * The structure from the storage layer, also exposed to the REST API.
  */

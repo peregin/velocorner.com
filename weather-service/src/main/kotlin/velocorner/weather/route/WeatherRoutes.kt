@@ -1,10 +1,13 @@
 package velocorner.weather.route
 
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Xml
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import velocorner.weather.model.ForecastWeather
 import velocorner.weather.service.WeatherService
+import velocorner.weather.util.toMeteoGramXml
 
 // location is in format: city[,isoCountry 2 letter code]
 fun Route.weatherRoutes(service: WeatherService) {
@@ -30,7 +33,7 @@ fun Route.weatherRoutes(service: WeatherService) {
                 "Unknown location $location",
                 status = HttpStatusCode.NotFound
             )
-            call.respond(forecast)
+            call.respondText(toMeteoGramXml(forecast), contentType = Xml, status = HttpStatusCode.OK)
         }
     }
 }

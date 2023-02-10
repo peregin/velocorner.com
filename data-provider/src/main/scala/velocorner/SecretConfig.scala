@@ -63,4 +63,5 @@ case class SecretConfig(config: Config) {
 
   def getCrawlerUrl: String = config.getString("crawler.url")
   def getRatesUrl: String = config.getString("rates.url")
+  def getWeatherUrl: String = config.getString("weather.url")
 }

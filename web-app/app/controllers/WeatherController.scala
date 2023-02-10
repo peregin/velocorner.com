@@ -12,6 +12,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.api.GeoPosition
 import velocorner.api.weather.{CurrentWeather, WeatherForecast}
+import velocorner.feed.{CurrentWeatherFeed, WeatherFeed}
 import velocorner.model._
 import velocorner.storage.{AttributeStorage, PsqlDbStorage}
 import velocorner.util.CountryUtils.normalize
@@ -25,6 +26,8 @@ import scala.language.implicitConversions
 class WeatherController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
     with WebMetrics {
+
+  lazy val weatherFeed: WeatherFeed = new CurrentWeatherFeed(connectivity.secretConfig)
 
   // keeps the weather data so much time in the cache
   val refreshTimeoutInMinutes = 15
@@ -66,33 +69,17 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // retrieves the weather forecast for a given place
   // route mapped to /api/weather/forecast/:location
   def forecast(location: String): Action[AnyContent] = Action.async {
-    timedRequest[AnyContent](s"query weather forecast for $location") { implicit request =>
-      val weatherStorage = connectivity.getStorage.getWeatherStorage
-      val attributeStorage = connectivity.getStorage.getAttributeStorage // for storing the last update
+    timedRequest[AnyContent](s"query weather forecast for $location") { _ =>
       val resultET = for {
         loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
-        wf <- EitherT.right[Status](
-          retrieveCacheOrService[List[WeatherForecast], Future](
-            loc,
-            attributeStorage.forecastTsKey,
-            attributeStorage,
-            place =>
-              for {
-                entries <- connectivity.getWeatherFeed
-                  .forecast(place)
-                  .map(res => res.points.map(w => WeatherForecast(place, w.dt, w)))
-                _ = logger.info(s"querying latest weather forecast for $place")
-                _ <- weatherStorage.storeRecentForecast(entries)
-              } yield entries,
-            place => weatherStorage.listRecentForecast(place).map(_.toList)
-          )
-        )
-      } yield wf
+        // convert city[,country] to city[,isoCountry]
+        isoLocation = CountryUtils.iso(loc)
+        _ = logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
+        // generate xml content for Meteogram from Highcharts
+        forecast <- EitherT.right[Status](weatherFeed.forecast(isoLocation))
+      } yield forecast
 
-      // generate xml content for Meteogram from Highcharts
       resultET
-        .map(_.sortBy(_.timestamp))
-        .map(wt => highcharts.toMeteoGramXml(wt).toString())
         .map(Ok(_).withCookies(WeatherCookie.create(location)).as("application/xml"))
         .merge
     }
