@@ -43,8 +43,8 @@ class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refre
     }
 
     suspend fun forecast(location: String): List<ForecastWeather> {
-        val entries = repo.listForecast(location)
-        val last = entries.map { it.timestamp }.maxOrNull()?.takeUnless {
+        val entries = repo.listForecast(location) // takes 40 entries, latest is now
+        val last = entries.map { it.timestamp }.minOrNull()?.takeUnless {
             val now = clock()
             logger.debug("checking forecast weather cache $now - $it")
             val cacheHit = (now.toEpochSecond() - it.toEpochSecond())
