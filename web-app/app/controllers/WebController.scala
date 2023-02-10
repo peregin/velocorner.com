@@ -123,7 +123,7 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
     <priority>0.5</priority>
   </url>
 </urlset>
-    Ok(xml.toString())
+    Ok(xml.toString()).as("application/xml")
   }
 
   private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {

@@ -19,6 +19,6 @@ class CurrentWeatherFeed(override val config: SecretConfig) extends HttpFeed wit
   lazy val baseUrl = config.getWeatherUrl
 
   override def forecast(location: String): Future[String] =
-    ws(_.url(s"$baseUrl/weather/forecast/${URLEncoder.encode(location, "UTF-8")}").get())
+    ws(_.url(s"$baseUrl/weather/forecast/$location").get())
       .map(_.body)
 }

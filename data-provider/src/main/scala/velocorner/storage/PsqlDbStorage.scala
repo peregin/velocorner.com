@@ -369,6 +369,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
 
   override def getLocationStorage: LocationStorage[Future] = locationStorage
   private lazy val locationStorage = new LocationStorage[Future] {
+
     override def store(
         location: String,
         position: GeoPosition
@@ -392,6 +393,13 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         .query[String]
         .option
         .transactToFuture
+
+    override def suggestLocations(snippet: String): Future[Iterable[String]] = {
+      val searchPattern = "%" + snippet.toLowerCase + "%"
+      sql"""select distinct location from forecast
+           |where lower(location) like $searchPattern
+           |""".stripMargin.query[String].to[List].transactToFuture
+    }
   }
 
   override def initialize(): Unit = {

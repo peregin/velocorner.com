@@ -32,6 +32,8 @@ class CountryUtilsSpec extends AnyWordSpec with Matchers {
       CountryUtils.iso("Zurich, Switzerland") shouldBe "Zurich,CH"
       CountryUtils.iso("Zurich, Helvetica") shouldBe "Zurich, Helvetica"
       CountryUtils.iso("Budapest, Hungary") shouldBe "Budapest,HU"
+      CountryUtils.iso("budapest, hungary") shouldBe "budapest,HU"
+      CountryUtils.iso("finale ligure, Italy") shouldBe "finale ligure,IT"
     }
 
     "normalize list of locations" in {

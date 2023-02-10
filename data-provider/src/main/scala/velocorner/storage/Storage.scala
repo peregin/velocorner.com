@@ -47,6 +47,8 @@ trait LocationStorage[M[_]] {
   def getPosition(location: String): M[Option[GeoPosition]]
 
   def getCountry(ip: String): M[Option[String]]
+
+  def suggestLocations(snippet: String): M[Iterable[String]]
 }
 
 trait Storage[M[_]] {
