@@ -135,6 +135,18 @@ class PsqlDbStorageTest
     awaitOn(locationStorage.getCountry("188.156.14.255")) mustBe Some("HU")
   }
 
+  it should "lookup locations from geo positions" in {
+    lazy val locationStorage = psqlStorage.getLocationStorage
+    awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
+    awaitOn(locationStorage.store("Adliswil, CH", GeoPosition(8.52, 47.31)))
+    awaitOn(locationStorage.store("Budapest, HU", GeoPosition(8.52, 47.31)))
+    awaitOn(locationStorage.suggestLocations("Bud")) must contain theSameElementsAs List("budapest, hu")
+    awaitOn(locationStorage.suggestLocations("ch")) must contain theSameElementsAs List(
+      "zurich,ch",
+      "adliswil, ch"
+    )
+  }
+
   override def beforeAll(): Unit =
     try {
       val maybeCircleci = sys.env.get("CIRCLECI")

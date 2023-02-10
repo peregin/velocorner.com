@@ -395,9 +395,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         .transactToFuture
 
     override def suggestLocations(snippet: String): Future[Iterable[String]] = {
-      val searchPattern = "%" + snippet.toLowerCase + "%"
-      sql"""select distinct location from forecast
-           |where lower(location) like $searchPattern
+      val searchPattern = "%" + snippet + "%"
+      sql"""select distinct location from location
+           |where location ilike $searchPattern
            |""".stripMargin.query[String].to[List].transactToFuture
     }
   }
