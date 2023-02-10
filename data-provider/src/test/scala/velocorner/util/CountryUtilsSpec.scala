@@ -36,6 +36,15 @@ class CountryUtilsSpec extends AnyWordSpec with Matchers {
       CountryUtils.iso("finale ligure, Italy") shouldBe "finale ligure,IT"
     }
 
+    "beautify lowercase locations" in {
+      CountryUtils.beautify("Zurich, CH") shouldBe "Zurich, CH"
+      CountryUtils.beautify("adliswil, ch") shouldBe "Adliswil, CH"
+      CountryUtils.beautify("adliswil, best") shouldBe "Adliswil, Best"
+      CountryUtils.beautify("abu dhabi, ae") shouldBe "Abu Dhabi, AE"
+      CountryUtils.beautify("buenos aires, ar") shouldBe "Buenos Aires, AR"
+      CountryUtils.beautify("budapest") shouldBe "Budapest"
+    }
+
     "normalize list of locations" in {
       val locations = List(
         "adliswil, ch",

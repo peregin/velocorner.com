@@ -453,7 +453,7 @@ GET     /api/weather/current/:location                     controllers.WeatherCo
 ###
 #  summary: Suggests a list of locations based on the query parameter
 #  tags:
-#    - weather
+#    - location
 #  parameters:
 #    - in: query
 #      name: query
@@ -471,7 +471,8 @@ GET     /api/weather/current/:location                     controllers.WeatherCo
 #            type: array
 #            items: string
 ###
-GET     /api/weather/suggest                               controllers.WeatherController.suggest(query: String)
+GET     /api/location/suggest                              controllers.LocationController.suggest(query: String)
+
 
 ###
 #  summary: Retrieves the geo position (lat, long) based on the location

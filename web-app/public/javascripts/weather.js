@@ -14,7 +14,7 @@
             }
         });
         weatherField.autocomplete({
-            serviceUrl: '/api/weather/suggest',
+            serviceUrl: '/api/location/suggest',
             onSelect: function (suggestion) {
                 console.log('selected location: ' + suggestion.value);
                 triggerForecast(true);

@@ -1,5 +1,6 @@
 package velocorner.util
 
+import cats.implicits.{catsSyntaxOptionId, none}
 import velocorner.model.CountryIso
 
 /**
@@ -12,7 +13,7 @@ import velocorner.model.CountryIso
 object CountryUtils {
 
   // Switzerland -> CH
-  lazy val country2Code: Map[String, String] = readCountries()
+  lazy val country2Code: Map[String, String] = readCountries() // lowercase name -> ISO code2
   // CH -> Bern
   lazy val code2Capital: Map[String, String] = readCapitals()
   // CH -> CHF
@@ -36,6 +37,24 @@ object CountryUtils {
       val country = location.substring(ix + 1).trim.toLowerCase
       country2Code.get(country).map(iso => s"${location.substring(0, ix).trim},$iso").getOrElse(location.trim)
     } else location.trim
+  }
+
+  // used to read the locations table, where everything is lowercase
+  // converts to a format that is presented in the weather location widget:
+  // adliswil, ch -> Adliswil, CH
+  // abu dhabi, ae -> Abu Dhabi, AE
+  // buenos aires, ar -> Buenos Aires, AR
+  // budapest -> Budapest
+  def beautify(location: String): String = {
+    val (city, maybeCode) = location.lastIndexOf(',') match {
+      case -1 => (location, none)
+      case ix => (location.substring(0, ix).trim, location.substring(ix + 1).trim.some)
+    }
+    city.split(" ").map(_.trim.capitalize).mkString(" ") + (maybeCode match {
+      case None => ""
+      case Some(code) if code.length == 2 => s", ${code.toUpperCase}"
+      case Some(name) => s", ${name.capitalize}"
+    })
   }
 
   // some suggestions are similar, see:

@@ -5,10 +5,8 @@ import cats.implicits._
 import cats.data.{EitherT, OptionT}
 import cats.instances.future.catsStdInstancesForFuture
 import controllers.util.WebMetrics
-import model.highcharts
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, Duration}
-import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import velocorner.api.GeoPosition
 import velocorner.api.weather.{CurrentWeather, WeatherForecast}
@@ -135,28 +133,4 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
         .merge
     }
   }
-
-  // suggestions for weather locations, workaround until elastic access, use the storage directly
-  // route mapped to /api/weather/suggest
-  def suggest(query: String): Action[AnyContent] =
-    Action.async {
-      timedRequest[AnyContent](s"suggest location for $query") { _ =>
-        logger.debug(s"suggesting for $query")
-        val storage = connectivity.getStorage
-        val suggestionsF = storage match {
-          case psqlDb: PsqlDbStorage => psqlDb.getWeatherStorage.suggestLocations(query)
-          case other =>
-            logger.warn(s"$other is not supporting location suggestions")
-            Future(Iterable.empty)
-        }
-
-        suggestionsF
-          .map { suggestions =>
-            val normalized = normalize(suggestions)
-            logger.debug(s"found ${suggestions.size} suggested locations, normalized to ${normalized.size} ...")
-            normalized
-          }
-          .map(jsonSuggestions => Ok(Json.obj("suggestions" -> jsonSuggestions)))
-      }
-    }
 }
