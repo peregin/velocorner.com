@@ -46,7 +46,7 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/weather/current/:location
   def current(location: String): Action[AnyContent] = Action.async {
-    timedRequest[AnyContent](s"query current weather for $location") { implicit request =>
+    timedRequest[AnyContent](s"query current weather for $location") { _ =>
       // convert city[,country] to city[,isoCountry]
       val resultET = for {
         loc <- EitherT[Future, Status, String](Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
