@@ -88,8 +88,8 @@ object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("WithCustomDefault", PrimitiveKind.LONG)
 
-    override fun serialize(encoder: Encoder, obj: OffsetDateTime) {
-        encoder.encodeLong(obj.toInstant().toEpochMilli() / 1000)
+    override fun serialize(encoder: Encoder, value: OffsetDateTime) {
+        encoder.encodeLong(value.toInstant().toEpochMilli() / 1000)
     }
 
     override fun deserialize(decoder: Decoder): OffsetDateTime {
@@ -184,6 +184,7 @@ data class ForecastWeatherResponse(
 )
 
 // response of the service API and persisted in the caching layer (converted from ForecastWeatherResponse)
+// https://openweathermap.org/forecast5#format
 @Serializable
 data class ForecastWeather(
     val location: String, // city[, country iso 2 letters]
