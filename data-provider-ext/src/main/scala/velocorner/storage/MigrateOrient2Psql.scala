@@ -6,8 +6,7 @@ import doobie.implicits._
 import doobie.util.fragment.Fragment
 import play.api.libs.json.Reads
 import velocorner.api.strava.Activity
-import velocorner.api.weather.WeatherForecast
-import velocorner.model.{Account, KeyValue}
+import velocorner.model.Account
 import velocorner.util.Metrics
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,15 +21,15 @@ class MigrateOrient2Psql(orient: OrientDbStorage, psql: PsqlDbStorage) extends L
     for {
       _ <- migrateTable[Account](OrientDbStorage.ACCOUNT_CLASS, "account", e => e.traverse(psql.getAccountStorage.store).void)
 
-      _ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeRecentForecast(e))
+      //_ <- migrateTable[WeatherForecast](OrientDbStorage.WEATHER_CLASS, "weather", e => psql.getWeatherStorage.storeRecentForecast(e))
 
       // _ <- migrateTable[SunriseSunset](OrientDbStorage.SUN_CLASS, "sun", e => e.traverse(psql.getWeatherStorage.storeRecentWeather).void)
 
-      _ <- migrateTable[KeyValue](
-        OrientDbStorage.ATTRIBUTE_CLASS,
-        "attribute",
-        e => e.traverse(a => psql.getAttributeStorage.storeAttribute(a.key, a.`type`, a.value)).void
-      )
+      //_ <- migrateTable[KeyValue](
+      //  OrientDbStorage.ATTRIBUTE_CLASS,
+      //  "attribute",
+      //  e => e.traverse(a => psql.getAttributeStorage.storeAttribute(a.key, a.`type`, a.value)).void
+      //)
 
       _ <- migrateTable[Activity](OrientDbStorage.ACTIVITY_CLASS, "activity", e => psql.storeActivity(e))
     } yield ()

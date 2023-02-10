@@ -5,7 +5,6 @@ import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.Gear
 import velocorner.api.{Achievement, GeoPosition}
-import velocorner.api.weather.{CurrentWeather, WeatherForecast}
 
 import scala.concurrent.Future
 import org.joda.time.DateTime
@@ -13,42 +12,37 @@ import velocorner.api.strava.Activity
 
 trait AccountStorage[M[_]] {
   def store(account: Account): M[Unit]
-
   def getAccount(id: Long): M[Option[Account]]
-}
-
-trait WeatherStorage[M[_]] {
-  // weather - location is <city[,countryISO2letter]>
-  // limit for 5 day forecast broken down to 3 hours = 8 entries/day and 40 entries/5 days
-  def listRecentForecast(location: String, limit: Int = 40): M[Iterable[WeatherForecast]]
-
-  def storeRecentForecast(forecast: Iterable[WeatherForecast]): M[Unit]
-
-  def suggestLocations(snippet: String): M[Iterable[String]]
-
-  def getRecentWeather(location: String): M[Option[CurrentWeather]]
-
-  def storeRecentWeather(weather: CurrentWeather): M[Unit]
-}
-
-trait AttributeStorage[M[_]] {
-
-  // mapped to updated time
-  val forecastTsKey = "forecast"
-  val weatherTsKey = "weather"
-
-  def storeAttribute(key: String, `type`: String, value: String): M[Unit]
-  def getAttribute(key: String, `type`: String): M[Option[String]]
 }
 
 trait LocationStorage[M[_]] {
   def store(location: String, position: GeoPosition): M[Unit]
-
   def getPosition(location: String): M[Option[GeoPosition]]
-
   def getCountry(ip: String): M[Option[String]]
-
   def suggestLocations(snippet: String): M[Iterable[String]]
+}
+
+trait GearStorage[M[_]] {
+  def store(gear: Gear, `type`: Gear.Entry): M[Unit]
+  def getGear(id: String): M[Option[Gear]]
+}
+
+trait AchievementStorage[M[_]] {
+  def maxAverageSpeed(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxDistance(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxTime(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxElevation(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxAverageHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxAveragePower(athleteId: Long, activity: String): M[Option[Achievement]]
+  def minAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+  def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
+}
+
+trait AdminStorage[M[_]] {
+  def countAccounts: M[Long]
+  def countActivities: M[Long]
+  def countActiveAccounts: M[Long]
 }
 
 trait Storage[M[_]] {
@@ -77,39 +71,14 @@ trait Storage[M[_]] {
   def getAccountStorage: AccountStorage[M]
 
   // gears
-  def getGearStorage: GearStorage
-  trait GearStorage {
-    def store(gear: Gear, `type`: Gear.Entry): M[Unit]
-    def getGear(id: String): M[Option[Gear]]
-  }
-
-  def getWeatherStorage: WeatherStorage[M]
-
-  // key value pairs - generic attribute storage, used by weather controller for managing timestamps
-  def getAttributeStorage: AttributeStorage[M]
+  def getGearStorage: GearStorage[M]
 
   // various achievements
-  def getAchievementStorage: AchievementStorage
-  trait AchievementStorage {
-    def maxAverageSpeed(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxDistance(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxTime(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxElevation(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxAverageHeartRate(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxAveragePower(athleteId: Long, activity: String): M[Option[Achievement]]
-    def minAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
-    def maxAverageTemperature(athleteId: Long, activity: String): M[Option[Achievement]]
-  }
+  def getAchievementStorage: AchievementStorage[M]
 
   def getLocationStorage: LocationStorage[M]
 
-  def getAdminStorage: AdminStorage
-  trait AdminStorage {
-    def countAccounts: M[Long]
-    def countActivities: M[Long]
-    def countActiveAccounts: M[Long]
-  }
+  def getAdminStorage: AdminStorage[M]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize(): Unit

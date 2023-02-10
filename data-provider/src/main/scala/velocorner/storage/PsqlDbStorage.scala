@@ -11,7 +11,6 @@ import doobie.implicits._
 import doobie.implicits.javasql.TimestampMeta
 // needed for sql interpolator when filtering on start date on activity (or DateTime in general)
 import doobie.postgres.implicits._
-import velocorner.api.weather.CurrentWeather
 import velocorner.model.ActionType
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
@@ -19,7 +18,6 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
 import velocorner.api.{Achievement, GeoPosition}
 import velocorner.api.strava.Activity
-import velocorner.api.weather.WeatherForecast
 import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
@@ -69,8 +67,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
 
   private implicit val activityMeta: Meta[Activity] = playJsonMeta[Activity]
   private implicit val accountMeta: Meta[Account] = playJsonMeta[Account]
-  private implicit val forecastMeta: Meta[WeatherForecast] = playJsonMeta[WeatherForecast]
-  private implicit val weatherMeta: Meta[CurrentWeather] = playJsonMeta[CurrentWeather]
   private implicit val gearMeta: Meta[Gear] = playJsonMeta[Gear]
   // doobie/joda/ts
   private implicit val jodaDateTimeMeta: Meta[DateTime] =
@@ -209,9 +205,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   }
 
   // gears
-  override def getGearStorage: GearStorage = gearStorage
+  override def getGearStorage: GearStorage[Future] = gearStorage
 
-  private lazy val gearStorage = new GearStorage {
+  private lazy val gearStorage = new GearStorage[Future] {
     override def store(gear: Gear, gearType: Gear.Entry): Future[Unit] =
       sql"""insert into gear (id, type, data)
            |values(${gear.id}, ${gearType.toString}, $gear) on conflict(id)
@@ -223,78 +219,9 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
            |""".stripMargin.query[Gear].option.transactToFuture
   }
 
-  override def getWeatherStorage: WeatherStorage[Future] = weatherStorage
+  override def getAchievementStorage: AchievementStorage[Future] = achievementStorage
 
-  private lazy val weatherStorage = new WeatherStorage[Future] {
-    override def listRecentForecast(
-        location: String,
-        limit: Int
-    ): Future[Iterable[WeatherForecast]] =
-      sql"""select data from forecast
-           |where location = $location
-           |order by update_time desc
-           |limit $limit
-           |""".stripMargin.query[WeatherForecast].to[List].transactToFuture
-
-    override def storeRecentForecast(
-        forecast: Iterable[WeatherForecast]
-    ): Future[Unit] =
-      forecast
-        .map { a =>
-          sql"""insert into forecast (location, update_time, data)
-             |values(${a.location}, ${a.timestamp}, $a) on conflict(location, update_time)
-             |do update set data = $a
-             |""".stripMargin.update.run.void
-        }
-        .toList
-        .traverse(identity)
-        .void
-        .transactToFuture
-
-    override def suggestLocations(snippet: String): Future[Iterable[String]] = {
-      val searchPattern = "%" + snippet.toLowerCase + "%"
-      sql"""select distinct location from forecast
-           |where lower(location) like $searchPattern
-           |""".stripMargin.query[String].to[List].transactToFuture
-    }
-
-    override def getRecentWeather(location: String): Future[Option[CurrentWeather]] =
-      sql"""select data from weather where location = $location
-           |""".stripMargin.query[CurrentWeather].option.transactToFuture
-
-    override def storeRecentWeather(
-        weather: CurrentWeather
-    ): Future[Unit] =
-      sql"""insert into weather (location, data)
-           |values(${weather.location}, $weather) on conflict(location)
-           |do update set data = $weather
-           |""".stripMargin.update.run.void.transactToFuture
-  }
-
-  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
-
-  private lazy val attributeStorage = new AttributeStorage[Future] {
-    override def storeAttribute(
-        key: String,
-        `type`: String,
-        value: String
-    ): Future[Unit] =
-      sql"""insert into attribute (key, type, value)
-           |values($key, ${`type`}, $value) on conflict(key, type)
-           |do update set value = $value
-           |""".stripMargin.update.run.void.transactToFuture
-
-    override def getAttribute(
-        key: String,
-        `type`: String
-    ): Future[Option[String]] =
-      sql"""select value from attribute where key = $key and type = ${`type`}
-           |""".stripMargin.query[String].option.transactToFuture
-  }
-
-  override def getAchievementStorage: AchievementStorage = achievementStorage
-
-  private lazy val achievementStorage = new AchievementStorage {
+  private lazy val achievementStorage = new AchievementStorage[Future] {
 
     def metricOf(
         field: String,
@@ -349,8 +276,8 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
       metricOf("average_temp", athleteId, activity, _.average_temp.map(_.toDouble))
   }
 
-  override def getAdminStorage: AdminStorage = adminStorage
-  private lazy val adminStorage = new AdminStorage {
+  override def getAdminStorage: AdminStorage[Future] = adminStorage
+  private lazy val adminStorage = new AdminStorage[Future] {
     override def countAccounts: Future[Long] = count("account")
 
     override def countActivities: Future[Long] = count("activity")

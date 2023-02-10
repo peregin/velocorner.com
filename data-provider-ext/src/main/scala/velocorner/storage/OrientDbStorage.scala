@@ -127,31 +127,15 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
   }
 
   // gears
-  override def getGearStorage: GearStorage = gearStorage
-  private lazy val gearStorage = new GearStorage {
+  override def getGearStorage: GearStorage[Future] = gearStorage
+  private lazy val gearStorage = new GearStorage[Future] {
     override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] =
       upsert(gear, GEAR_CLASS, s"SELECT FROM $GEAR_CLASS WHERE id = :id", Map("id" -> gear.id))
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
   }
 
-  override def getWeatherStorage: WeatherStorage[Future] = ???
-
-  // attributes
-  private lazy val attributeStorage = new AttributeStorage[Future] {
-    override def storeAttribute(key: String, `type`: String, value: String): Future[Unit] = {
-      val attr = KeyValue(key, `type`, value)
-      upsert(attr, ATTRIBUTE_CLASS, s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type and key = :key", Map("type" -> `type`, "key" -> key))
-    }
-
-    override def getAttribute(key: String, `type`: String): Future[Option[String]] =
-      queryForOption[KeyValue](s"SELECT FROM $ATTRIBUTE_CLASS WHERE type = :type AND key = :key", Map("type" -> `type`, "key" -> key))
-        .map(_.map(_.value))
-  }
-
-  override def getAttributeStorage: AttributeStorage[Future] = attributeStorage
-
   // various achievements
-  lazy val achievementStorage = new AchievementStorage {
+  lazy val achievementStorage = new AchievementStorage[Future] {
     object ResDoubleRow {
       implicit val doubleRowFormat = Format[ResDoubleRow](Json.reads[ResDoubleRow], Json.writes[ResDoubleRow])
     }
@@ -262,9 +246,9 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
       maxOf(athleteId, activity, "average_temp", _.average_temp.map(_.toDouble))
   }
 
-  override def getAchievementStorage: AchievementStorage = achievementStorage
+  override def getAchievementStorage: AchievementStorage[Future] = achievementStorage
 
-  override def getAdminStorage: AdminStorage = ???
+  override def getAdminStorage: AdminStorage[Future] = ???
 
   override def getLocationStorage: LocationStorage[Future] = ???
 

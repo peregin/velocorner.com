@@ -8,10 +8,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import velocorner.api.GeoPosition
 import velocorner.api.strava.Activity
-import velocorner.api.weather.WeatherForecast
 import velocorner.model.ActionType
 import velocorner.model.strava.Gear
-import velocorner.model.weather.ForecastResponse
 import velocorner.util.{FlywaySupport, JsonIo}
 
 class PsqlDbStorageTest
@@ -20,8 +18,6 @@ class PsqlDbStorageTest
     with Matchers
     with ActivityStorageBehaviour
     with AccountStorageBehaviour
-    with WeatherStorageBehaviour
-    with AttributeStorageBehaviour
     with FlywaySupport
     with LazyLogging {
 
@@ -79,10 +75,6 @@ class PsqlDbStorageTest
 
   "account storage" should behave like accountFragments(psqlStorage)
 
-  "weather storage" should behave like weatherFragments(psqlStorage)
-
-  "attribute storage" should behave like attributeFragments(psqlStorage)
-
   it should "select achievements" in {
     val achievementStorage = psqlStorage.getAchievementStorage
     awaitOn(achievementStorage.maxAverageSpeed(432909, "Ride")).map(_.value) mustBe Some(7.932000160217285d)
@@ -110,16 +102,6 @@ class PsqlDbStorageTest
     awaitOn(gearStorage.getGear("id1")) mustBe Some(gear)
   }
 
-  it should "suggest weather locations" in {
-    lazy val weatherStorage = psqlStorage.getWeatherStorage
-    lazy val fixtures = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json").points
-    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Budapest,HU", e.dt, e))))
-    awaitOn(weatherStorage.storeRecentForecast(fixtures.map(e => WeatherForecast("Zurich,CH", e.dt, e))))
-    awaitOn(weatherStorage.suggestLocations("zur")) must contain theSameElementsAs List("Zurich,CH")
-    awaitOn(weatherStorage.suggestLocations("bud")) must contain theSameElementsAs List("Budapest,HU")
-    awaitOn(weatherStorage.suggestLocations("wien")) mustBe empty
-  }
-
   it should "store and lookup geo positions" in {
     lazy val locationStorage = psqlStorage.getLocationStorage
     awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
@@ -145,6 +127,7 @@ class PsqlDbStorageTest
       "zurich,ch",
       "adliswil, ch"
     )
+    awaitOn(locationStorage.suggestLocations("wien")) mustBe empty
   }
 
   override def beforeAll(): Unit =

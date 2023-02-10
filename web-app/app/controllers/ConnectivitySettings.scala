@@ -1,14 +1,14 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
 import play.Logger
 import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import play.filters.hosts.AllowedHostsConfig
 import velocorner.SecretConfig
-import velocorner.feed.{OpenWeatherFeed, StravaActivityFeed}
+import velocorner.feed.StravaActivityFeed
 import velocorner.storage.Storage
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -22,13 +22,11 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
   storage.initialize()
   logger.info("ready...")
 
-  def getStorage = storage
+  def getStorage: Storage[Future] = storage
 
   def getStravaFeed = new StravaActivityFeed(None, secretConfig)
 
   def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
-
-  def getWeatherFeed = new OpenWeatherFeed(secretConfig)
 
   def getElasticUrl: String = secretConfig.getElasticSearchUrl
 

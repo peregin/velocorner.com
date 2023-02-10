@@ -1,6 +1,6 @@
 package velocorner.storage
 
-import org.scalatest.{BeforeAndAfterAll, Ignore}
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
@@ -11,21 +11,15 @@ class OrientDbStorageTest
     with BeforeAndAfterAll
     with Matchers
     with ActivityStorageBehaviour
-    with AccountStorageBehaviour
-    with WeatherStorageBehaviour
-    with AttributeStorageBehaviour {
+    with AccountStorageBehaviour {
 
   @volatile var orientDbStorage: OrientDbStorage = _
 
-  val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
+  private val activityFixtures = JsonIo.readReadFromResource[List[Activity]]("/data/strava/last30activities.json")
 
   "activity storage" should behave like activityFragments(orientDbStorage, activityFixtures)
 
   "account storage" should behave like accountFragments(orientDbStorage)
-
-  // "weather storage" should behave like weatherFragments(orientDbStorage)
-
-  "attribute storage" should behave like attributeFragments(orientDbStorage)
 
   ignore should "select achievements" in {
     val achievementStorage = orientDbStorage.getAchievementStorage

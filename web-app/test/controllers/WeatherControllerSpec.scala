@@ -9,14 +9,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status
 import play.api.test.{FakeRequest, Helpers, StubControllerComponentsFactory}
-import velocorner.api.weather.{CurrentWeather, WeatherForecast}
+import velocorner.api.weather.CurrentWeather
+import velocorner.api.GeoPosition
 import velocorner.feed.WeatherFeed
 import velocorner.model.DateTimePattern
-import velocorner.model.weather.{ForecastResponse, WeatherResponse}
-import velocorner.storage.{AttributeStorage, Storage, WeatherStorage}
+import velocorner.model.weather.WeatherResponse
+import velocorner.storage.{LocationStorage, Storage}
 import velocorner.util.JsonIo
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -24,40 +24,45 @@ import scala.language.postfixOps
 //noinspection TypeAnnotation
 class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
-  "rest controller for club activity series" should {
+  "rest controller for weather forecast" should {
 
     implicit val timeout = new Timeout(10 seconds)
 
     val nowTxt = "2021-04-17T17:57:56Z"
     val now = DateTime.parse(nowTxt, DateTimeFormat.forPattern(DateTimePattern.longFormat))
-    lazy val forecastFixture = JsonIo.readReadFromResource[ForecastResponse]("/data/weather/forecast.json")
     lazy val weatherFixture = JsonIo.readReadFromResource[WeatherResponse]("/data/weather/current.json")
 
     val settingsMock = mock[ConnectivitySettings]
     val storageMock = mock[Storage[Future]]
-    val attributeStorage = mock[AttributeStorage[Future]]
-    val weatherStorage = mock[WeatherStorage[Future]]
+    val locationStorage = mock[LocationStorage[Future]]
 
     when(settingsMock.getStorage).thenReturn(storageMock)
-    when(storageMock.getAttributeStorage).thenReturn(attributeStorage)
-    when(storageMock.getWeatherStorage).thenReturn(weatherStorage)
-    when(attributeStorage.getAttribute("Zurich", attributeStorage.forecastTsKey)).thenReturn(Future(nowTxt.some))
-    val wf = forecastFixture.points.map(w => WeatherForecast("Zurich", now, w))
-    when(weatherStorage.listRecentForecast("Zurich")).thenReturn(Future(wf))
-    val cw = CurrentWeather(
+    when(storageMock.getLocationStorage).thenReturn(locationStorage)
+    when(
+      locationStorage.store(
+        "Zurich",
+        GeoPosition(
+          latitude = weatherFixture.coord.get.lat,
+          longitude = weatherFixture.coord.get.lon
+        )
+      )
+    )
+      .thenReturn(Future.unit)
+    val currentWeatherFixture = CurrentWeather(
       location = "Zurich",
       timestamp = now,
       bootstrapIcon = "icon",
       current = weatherFixture.weather.get.head,
       info = weatherFixture.main.get,
-      sunriseSunset = weatherFixture.sys.get
+      sunriseSunset = weatherFixture.sys.get,
+      coord = weatherFixture.coord.get
     )
-    when(weatherStorage.getRecentWeather("Zurich")).thenReturn(Future(cw.some))
 
     val controller = new WeatherController(settingsMock, stubControllerComponents()) {
       override def clock(): DateTime = now
-      override lazy val weatherFeed: WeatherFeed = new WeatherFeed {
+      override lazy val weatherFeed: WeatherFeed[Future] = new WeatherFeed[Future] {
         override def forecast(location: String): Future[String] = Future.successful("<weatherdata/>")
+        override def current(location: String): Future[Option[CurrentWeather]] = Future.successful(currentWeatherFixture.some)
       }
     }
 
@@ -77,7 +82,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
       val result = controller.current("Zurich").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val currentWeather = Helpers.contentAsJson(result).as[CurrentWeather]
-      currentWeather mustBe cw
+      currentWeather mustBe currentWeatherFixture
     }
 
     "fail for empty place in current weather" in {
