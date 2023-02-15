@@ -4,13 +4,13 @@ object Dependencies {
 
   val flywayVersion = "9.14.1"
   val catsVersion = "2.9.0"
-  val catsEffectVersion = "3.4.6"
+  val catsEffectVersion = "3.4.7"
   val mouseVersion = "1.2.1"
   val fs2Version = "3.6.1"
-  val zioVersion = "2.0.8"
   val http4s = "0.23.18"
-  val finatraVersion = "21.2.0"
-  val argonautVersion = "6.3.8"
+  val zioVersion = "2.0.9"
+  val finatraVersion = "21.2.0" // in the test service
+  val argonautVersion = "6.3.8" // in the test service
   val playWsVersion = "2.1.10" // standalone version
   val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
