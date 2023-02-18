@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-
-  HashRouter, Route, Routes,
-} from 'react-router-dom';
-
+import { HashRouter, Route, Routes} from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react'
 import OAuth2Popup from './components/OAuth2Popup.tsx'
 
