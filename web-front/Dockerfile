@@ -1,11 +1,11 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
 # create a work directory and copy over our dependency manifest files.
 RUN mkdir /app
 WORKDIR /app
 COPY /src /app/src
 COPY /public /app/public
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["*.json", "*.js", "./"]
 
 # production mode
 RUN npm install --omit=dev
@@ -22,4 +22,4 @@ ENV NODE_ENV production
 EXPOSE 3000
 
 # start app
-CMD ["npx", "serve", "build"]
+CMD ["npx", "serve", "-s", "build"]
