@@ -51,9 +51,9 @@ object CountryUtils {
       case ix => (location.substring(0, ix).trim, location.substring(ix + 1).trim.some)
     }
     city.split(" ").map(_.trim.capitalize).mkString(" ") + (maybeCode match {
-      case None => ""
+      case None                           => ""
       case Some(code) if code.length == 2 => s", ${code.toUpperCase}"
-      case Some(name) => s", ${name.capitalize}"
+      case Some(name)                     => s", ${name.capitalize}"
     })
   }
 
