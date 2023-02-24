@@ -2,9 +2,9 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.10"
 
-  val flywayVersion = "9.15.0"
+  val flywayVersion = "9.15.1"
   val catsVersion = "2.9.0"
-  val catsEffectVersion = "3.4.7"
+  val catsEffectVersion = "3.4.8"
   val mouseVersion = "1.2.1"
   val fs2Version = "3.6.1"
   val http4s = "0.23.18"
@@ -30,7 +30,7 @@ object Dependencies {
   val mockitoVersion = "5.1.1"
   val catsEffectTestVersion = "1.5.0"
 
-  val springVersion = "3.0.2" // java world
+  val springVersion = "3.0.3" // java world
 }
 
 object DockerBuild {
