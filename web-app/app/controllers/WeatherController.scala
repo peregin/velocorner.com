@@ -23,7 +23,6 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
 
   def clock(): DateTime = DateTime.now() // inject time iterator instead
 
-
   // retrieves the weather forecast for a given place
   // route mapped to /api/weather/forecast/:location
   def forecast(location: String): Action[AnyContent] = Action.async {
