@@ -110,8 +110,6 @@ select "location" from location order by "location" asc;
 select distinct(location) as loc from forecast f order by loc asc;
 
 
-SELECT * FROM users;
-
 
 
 
