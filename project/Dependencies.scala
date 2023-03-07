@@ -8,7 +8,7 @@ object Dependencies {
   val mouseVersion = "1.2.1"
   val fs2Version = "3.6.1"
   val http4s = "0.23.18"
-  val zioVersion = "2.0.9"
+  val zioVersion = "2.0.10"
   val finatraVersion = "21.2.0" // in the test service
   val argonautVersion = "6.3.8" // in the test service
   val playWsVersion = "2.1.10" // standalone version
