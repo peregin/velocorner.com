@@ -339,6 +339,8 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       "com.github.jwt-scala" %% "jwt-play-json" % Dependencies.jwtVersion,
       "com.google.inject" % "guice" % "5.1.0", // for Java 11 support,
       "org.sangria-graphql" %% "sangria" % "3.5.2",
+      "org.sangria-graphql" %% "sangria-slowlog" % "2.0.5",
+      "org.sangria-graphql" %% "sangria-play-json" % "2.0.2",
       playTest,
       playTestPlus,
       mockito,
