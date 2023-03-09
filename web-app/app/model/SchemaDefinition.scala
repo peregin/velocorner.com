@@ -9,6 +9,21 @@ import scala.concurrent.Future
 
 /**
  * Defines a GraphQL schema for the current project
+ *
+ * https://studio.apollographql.com/sandbox/explorer
+ *
+ query($droidId: String!) {
+  droid(id: $droidId) {
+    id
+    name
+    friends {
+      id
+      name
+    }
+  }
+}
+ *
+ *
  */
 object SchemaDefinition {
   /**
@@ -111,13 +126,13 @@ object SchemaDefinition {
       Field("hero", Character,
         arguments = EpisodeArg :: Nil,
         deprecationReason = Some("Use `human` or `droid` fields instead"),
-        resolve = (ctx) => ctx.ctx.getHero(ctx.arg(EpisodeArg))),
+        resolve = ctx => ctx.ctx getHero ctx.arg(EpisodeArg)),
       Field("human", OptionType(Human),
         arguments = ID :: Nil,
         resolve = ctx => ctx.ctx.getHuman(ctx arg ID)),
       Field("droid", Droid,
         arguments = ID :: Nil,
-        resolve = Projector((ctx, f) => ctx.ctx.getDroid(ctx arg ID).get))
+        resolve = Projector((ctx, _) => ctx.ctx.getDroid(ctx arg ID).get))
     ))
 
   val StarWarsSchema = Schema(Query)

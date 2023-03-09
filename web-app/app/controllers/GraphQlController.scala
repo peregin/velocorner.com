@@ -3,9 +3,8 @@ package controllers
 import akka.actor.ActorSystem
 import model.CharacterRepo
 import model.models.SchemaDefinition
-import play.api.Configuration
-import play.api.libs.json.{JsObject, Json, JsString}
-import play.api.mvc.{InjectedController, Request}
+import play.api.libs.json.{JsObject, Json, JsString, JsValue}
+import play.api.mvc.{Action, AnyContent, InjectedController, Request, Result}
 import sangria.execution.{ErrorWithResolver, ExceptionHandler, Executor, HandledException, MaxQueryDepthReachedError, QueryAnalysisError, QueryReducer}
 import sangria.execution.deferred.DeferredResolver
 import sangria.parser.{QueryParser, SyntaxError}
@@ -17,14 +16,14 @@ import javax.inject.Inject
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class GraphQlController @Inject() (system: ActorSystem, config: Configuration) extends InjectedController {
+class GraphQlController @Inject() (system: ActorSystem) extends InjectedController {
   import system.dispatcher
 
-  def graphql(query: String, variables: Option[String], operation: Option[String]) = Action.async { request =>
+  def graphql(query: String, variables: Option[String], operation: Option[String]): Action[AnyContent] = Action.async { request =>
     executeQuery(query, variables map parseVariables, operation, isTracingEnabled(request))
   }
 
-  def graphqlBody = Action.async(parse.json) { request =>
+  def graphqlBody: Action[JsValue] = Action.async(parse.json) { request =>
     val query = (request.body \ "query").as[String]
     val operation = (request.body \ "operationName").asOpt[String]
 
@@ -37,10 +36,11 @@ class GraphQlController @Inject() (system: ActorSystem, config: Configuration) e
     executeQuery(query, variables, operation, isTracingEnabled(request))
   }
 
-  private def parseVariables(variables: String) =
-    if (variables.trim == "" || variables.trim == "null") Json.obj() else Json.parse(variables).as[JsObject]
+  private def parseVariables(variables: String): JsObject =
+    if (variables.trim == "" || variables.trim == "null") Json.obj()
+    else Json.parse(variables).as[JsObject]
 
-  private def executeQuery(query: String, variables: Option[JsObject], operation: Option[String], tracing: Boolean) =
+  private def executeQuery(query: String, variables: Option[JsObject], operation: Option[String], tracing: Boolean): Future[Result] =
     QueryParser.parse(query) match {
 
       // query parsed successfully, time to execute it!
