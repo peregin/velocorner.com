@@ -122,6 +122,12 @@ def scalacache = Seq(
   "com.github.cb372" %% "scalacache-guava"
 ).map(_ % Dependencies.scalacacheVersion)
 
+def sangria = Seq(
+  "org.sangria-graphql" %% "sangria" % "3.5.3",
+  "org.sangria-graphql" %% "sangria-slowlog" % "2.0.5",
+  "org.sangria-graphql" %% "sangria-play-json" % "2.0.2",
+)
+
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -338,14 +344,11 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playWsJsonStandalone,
       "com.github.jwt-scala" %% "jwt-play-json" % Dependencies.jwtVersion,
       "com.google.inject" % "guice" % "5.1.0", // for Java 11 support,
-      "org.sangria-graphql" %% "sangria" % "3.5.2",
-      "org.sangria-graphql" %% "sangria-slowlog" % "2.0.5",
-      "org.sangria-graphql" %% "sangria-play-json" % "2.0.2",
       playTest,
       playTestPlus,
       mockito,
       scalaTest
-    ) ++ logging,
+    ) ++ logging ++ sangria,
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
       Seq(
