@@ -67,21 +67,19 @@ class WeatherService(val feed: OpenWeatherFeed, val repo: WeatherRepo, val refre
     }
 
     private fun convert(location: String, reply: CurrentWeatherResponse?): CurrentWeather? {
-        return reply?.weather?.let { wd ->
-            reply.sys?.let { sy ->
-                reply.main?.let { ma ->
-                    reply.coord?.let { co ->
-                        CurrentWeather(
-                            location = location,
-                            timestamp = reply.dt ?: OffsetDateTime.now(ZoneId.of("UTC")),
-                            bootstrapIcon = WeatherCodeUtil.bootstrapIcon(wd[0].id),
-                            current = wd[0],
-                            info = ma,
-                            sunriseSunset = sy,
-                            coord = co
-                        )
-                    }
-                }
+        return reply?.let { r ->
+            with(r) {
+                if (weather != null && sys != null && main != null && coord != null) {
+                    CurrentWeather(
+                        location = location,
+                        timestamp = reply.dt ?: OffsetDateTime.now(ZoneId.of("UTC")),
+                        bootstrapIcon = WeatherCodeUtil.bootstrapIcon(weather[0].id),
+                        current = weather[0],
+                        info = main,
+                        sunriseSunset = sys,
+                        coord = coord
+                    )
+                } else null
             }
         }
     }
