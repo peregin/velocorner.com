@@ -2,6 +2,7 @@ package velocorner.weather.service
 
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.engine.java.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.serialization.decodeFromString
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory
 import velocorner.weather.model.CurrentWeatherResponse
 import velocorner.weather.model.ForecastWeatherResponse
 
-class OpenWeatherFeed(config: Config, val client: HttpClient) {
+class OpenWeatherFeed(config: Config) {
 
     private val baseUrl = "https://api.openweathermap.org/data/2.5"
     private val json = Json {
@@ -28,12 +29,14 @@ class OpenWeatherFeed(config: Config, val client: HttpClient) {
         get<ForecastWeatherResponse>("forecast", location)
 
     internal suspend inline fun <reified T> get(path: String, location: String): T? {
-        val response = client.get("$baseUrl/$path") {
-            parameter("q", location)
-            parameter("appid", apiKey)
-            parameter("units", "metric")
-            parameter("lang", "en")
+        HttpClient(Java).use {
+            val response = it.get("$baseUrl/$path") {
+                parameter("q", location)
+                parameter("appid", apiKey)
+                parameter("units", "metric")
+                parameter("lang", "en")
+            }
+            return runCatching { json.decodeFromString<T>(response.bodyAsText()) }.getOrNull()
         }
-        return runCatching { json.decodeFromString<T>(response.bodyAsText()) }.getOrNull()
     }
 }
