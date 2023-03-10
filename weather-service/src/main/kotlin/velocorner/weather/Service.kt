@@ -1,8 +1,6 @@
 package velocorner.weather
 
 import com.typesafe.config.ConfigFactory
-import io.ktor.client.*
-import io.ktor.client.engine.java.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -23,8 +21,7 @@ fun main() {
         log.info("CONFIG_FILE=$configPath")
         val config = ConfigFactory.parseFile(File(configPath))
 
-        val client = HttpClient(Java)
-        val feed = OpenWeatherFeed(config, client)
+        val feed = OpenWeatherFeed(config)
         DatabaseFactory.init(config)
         val repo = WeatherRepoImpl()
         val service = WeatherService(feed, repo)
