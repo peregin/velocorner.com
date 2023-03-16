@@ -14,7 +14,7 @@ object Dependencies {
   val playWsVersion = "2.1.10" // standalone version
   val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
-  val logbackVersion = "1.4.5"
+  val logbackVersion = "1.4.6"
   val doobieVersion = "1.0.0-RC2"
   val orientDbVersion = "3.2.17"
   val mongoDbVersion = "4.9.0"
