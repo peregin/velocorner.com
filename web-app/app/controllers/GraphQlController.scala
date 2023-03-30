@@ -3,7 +3,7 @@ package controllers
 import akka.actor.ActorSystem
 import model.CharacterRepo
 import model.models.SchemaDefinition
-import play.api.libs.json.{JsObject, Json, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, InjectedController, Request, Result}
 import sangria.execution.{ErrorWithResolver, ExceptionHandler, Executor, HandledException, MaxQueryDepthReachedError, QueryAnalysisError, QueryReducer}
 import sangria.execution.deferred.DeferredResolver
@@ -29,8 +29,8 @@ class GraphQlController @Inject() (system: ActorSystem) extends InjectedControll
 
     val variables = (request.body \ "variables").toOption.flatMap {
       case JsString(vars) => Some(parseVariables(vars))
-      case obj: JsObject => Some(obj)
-      case _ => None
+      case obj: JsObject  => Some(obj)
+      case _              => None
     }
 
     executeQuery(query, variables, operation, isTracingEnabled(request))
@@ -45,28 +45,35 @@ class GraphQlController @Inject() (system: ActorSystem) extends InjectedControll
 
       // query parsed successfully, time to execute it!
       case Success(queryAst) =>
-        Executor.execute(SchemaDefinition.StarWarsSchema, queryAst, new CharacterRepo,
-          operationName = operation,
-          variables = variables getOrElse Json.obj(),
-          deferredResolver = DeferredResolver.fetchers(SchemaDefinition.characters),
-          exceptionHandler = exceptionHandler,
-          queryReducers = List(
-            QueryReducer.rejectMaxDepth[CharacterRepo](15),
-            QueryReducer.rejectComplexQueries[CharacterRepo](4000, (_, _) => TooComplexQueryError)),
-          middleware = if (tracing) SlowLog.apolloTracing :: Nil else Nil)
+        Executor
+          .execute(
+            SchemaDefinition.StarWarsSchema,
+            queryAst,
+            new CharacterRepo,
+            operationName = operation,
+            variables = variables getOrElse Json.obj(),
+            deferredResolver = DeferredResolver.fetchers(SchemaDefinition.characters),
+            exceptionHandler = exceptionHandler,
+            queryReducers =
+              List(QueryReducer.rejectMaxDepth[CharacterRepo](15), QueryReducer.rejectComplexQueries[CharacterRepo](4000, (_, _) => TooComplexQueryError)),
+            middleware = if (tracing) SlowLog.apolloTracing :: Nil else Nil
+          )
           .map(Ok(_))
           .recover {
             case error: QueryAnalysisError => BadRequest(error.resolveError)
-            case error: ErrorWithResolver => InternalServerError(error.resolveError)
+            case error: ErrorWithResolver  => InternalServerError(error.resolveError)
           }
 
       // can't parse GraphQL query, return error
       case Failure(error: SyntaxError) =>
-        Future.successful(BadRequest(Json.obj(
-          "syntaxError" -> error.getMessage,
-          "locations" -> Json.arr(Json.obj(
-            "line" -> error.originalError.position.line,
-            "column" -> error.originalError.position.column)))))
+        Future.successful(
+          BadRequest(
+            Json.obj(
+              "syntaxError" -> error.getMessage,
+              "locations" -> Json.arr(Json.obj("line" -> error.originalError.position.line, "column" -> error.originalError.position.column))
+            )
+          )
+        )
 
       case Failure(error) =>
         throw error
@@ -79,8 +86,8 @@ class GraphQlController @Inject() (system: ActorSystem) extends InjectedControll
   }
 
   lazy val exceptionHandler = ExceptionHandler {
-    case (_, error@TooComplexQueryError) => HandledException(error.getMessage)
-    case (_, error@MaxQueryDepthReachedError(_)) => HandledException(error.getMessage)
+    case (_, error @ TooComplexQueryError)         => HandledException(error.getMessage)
+    case (_, error @ MaxQueryDepthReachedError(_)) => HandledException(error.getMessage)
   }
 
   case object TooComplexQueryError extends Exception("Query is too expensive.")
