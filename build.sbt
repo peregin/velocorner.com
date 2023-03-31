@@ -125,7 +125,7 @@ def scalacache = Seq(
 def sangria = Seq(
   "org.sangria-graphql" %% "sangria" % "3.5.3",
   "org.sangria-graphql" %% "sangria-slowlog" % "2.0.5",
-  "org.sangria-graphql" %% "sangria-play-json" % "2.0.2",
+  "org.sangria-graphql" %% "sangria-play-json" % "2.0.2"
 )
 
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
