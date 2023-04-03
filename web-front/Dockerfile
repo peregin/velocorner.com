@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine as builder
 
 # create a work directory and copy over our dependency manifest files.
 RUN mkdir /app
@@ -15,11 +15,14 @@ RUN npm install --omit=dev
 # build the application
 RUN npm run build
 
-# Set the env to "production"
-ENV NODE_ENV production
+# RUN THE APP
+FROM caddy:2.6.4-alpine
 
 # expose PORT 3000 on our virtual machine so we can run our server
 EXPOSE 3000
 
-# start app
-CMD ["npx", "serve", "-s", "build"]
+#ENV NODE_ENV production
+#CMD ["npx", "serve", "-s", "build"]
+
+COPY --from=builder /app/build /usr/share/caddy/html
+CMD ["caddy", "file-server", "--root", "build", "--listen", ":3000", "--domain", "0.0.0.0"]

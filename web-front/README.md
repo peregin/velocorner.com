@@ -26,6 +26,13 @@ npm run proxy
 npm run local
 ```
 
+### 'Live' environment
+```shell
+caddy file-server --root build --listen :3000
+-- or
+npx serve -s build
+```
+
 ### Update dependencies
 ```shell script
 # check audit report
