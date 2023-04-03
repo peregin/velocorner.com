@@ -1,6 +1,9 @@
 :3000 {
     bind 0.0.0.0
     encode gzip
+    log {
+        output stdout
+    }
     handle /* {
         root * /usr/share/caddy/html
         file_server
