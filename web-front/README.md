@@ -20,7 +20,8 @@ Retrieves the version of the package.
 # mkcert -install
 # mkdir ./.certs && cd ./.certs
 # mkcert "*.velocorner.com"
-# caddy run --config Caddyfile
+caddy run --config Caddyfile
+# then with or without reverse proxy
 npm run proxy
 # or connecting to localhost:9001
 npm run local

@@ -25,4 +25,5 @@ EXPOSE 3000
 #CMD ["npx", "serve", "-s", "build"]
 
 COPY --from=builder /app/build /usr/share/caddy/html
-CMD ["caddy", "file-server", "--root", "build", "--listen", ":3000", "--domain", "0.0.0.0"]
+COPY Caddyfile.live /etc/Caddyfile
+CMD ["caddy", "run", "--config", "/etc/Caddyfile"]
