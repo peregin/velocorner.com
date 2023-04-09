@@ -19,12 +19,12 @@ object CrawlerApp extends IOApp.Simple {
     client = RequestLogger(logHeaders = true, logBody = true)(rawClient)
     //crawler = new CrawlerGalaxus[IO](client)
     //crawler = new CrawlerBikeComponents[IO](client)
-    crawler = new CrawlerChainReactionCycles[IO](client)
+    //crawler = new CrawlerChainReactionCycles[IO](client)
     //crawler = new CrawlerBikeImport[IO](client)
     //crawler = new CrawlerBikester[IO](client)
     //crawler = new CrawlerAmazon[IO](client)
     //crawler = new CrawlerBike24[IO](client)
-    //crawler = new CrawlerVeloFactory[IO](client)
+    crawler = new CrawlerVeloFactory[IO](client)
 
     // elite suito-t trainer
     // Garmin Edge 830

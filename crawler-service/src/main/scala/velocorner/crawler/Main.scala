@@ -29,7 +29,7 @@ object Main extends IOApp.Simple {
         new CrawlerChainReactionCycles[IO](client),
         new CrawlerBikeImport[IO](client),
         new CrawlerBikester[IO](client),
-        new CrawlerVeloFactory[IO](client)
+        // new CrawlerVeloFactory[IO](client)
         // new CrawlerAmazon[IO](client)
         // new CrawlerBike24[IO](client)
       )

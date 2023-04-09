@@ -25,7 +25,7 @@ class Router[F[_]: Async: Parallel: Logger](crawlers: List[Crawler[F]]) extends 
         }
       }
       .map(_.flatten)
-    _ <- Logger[F].info(s"found ${suggestions.size} results in ${suggestions.map(_.market.name).groupMapReduce(identity)(_ => 1)(_ + _)}")
+    _ <- Logger[F].info(s"found ${suggestions.size} results in ${suggestions.groupMapReduce(_.market.name)(_ => 1)(_ + _)}")
   } yield suggestions
 
   val routes: HttpRoutes[F] = HttpRoutes
