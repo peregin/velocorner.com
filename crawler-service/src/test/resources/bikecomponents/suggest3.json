@@ -1,0 +1,260 @@
+{
+  "term": "SRAM xx1",
+  "suggestions": {
+    "trackingParams": {
+      "channel": null,
+      "query": null
+    },
+    "products": [
+      {
+        "availability": null,
+        "basePrice": "",
+        "description": "Upgrade your bike: the Upgrade Kit XX1 Eagle AXS by SRAM\nThe SRAM Eagle XX1 rear derailleur is the heart of the entire AXS system. Cleanly adjusted, the shifting operation are even quieter, more precise and thus ensure even better durability. It has a 10 mm shorter cage for more ground clearance and",
+        "fullId": null,
+        "hasDiscountUntilFlag": false,
+        "hasShippingRestriction": false,
+        "imageFallback": false,
+        "imageId": 269493,
+        "imageMedium": {
+          "path": "\/assets\/p\/i\/320x240\/269493.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/320x240\/269493.webp",
+          "avif": null
+        },
+        "imageSmall": {
+          "path": "\/assets\/p\/i\/160x120\/269493.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/160x120\/269493.webp",
+          "avif": null
+        },
+        "isBuyable": true,
+        "isNew": false,
+        "isOffer": false,
+        "isSoldOut": false,
+        "link": "\/en\/SRAM\/XX1-AXS-1x12-Speed-Upgrade-Kit-p71590\/",
+        "optionId": null,
+        "optionName": null,
+        "percentageDiscount": 0,
+        "preventAddToCart": false,
+        "price": "723.13\u20ac",
+        "priceRaw": 723.1284945,
+        "priceReference": 0,
+        "productId": 71590,
+        "productName": "SRAM XX1 AXS 1x12-Speed Upgrade Kit",
+        "reviewStars": 5,
+        "reviewsCount": 3,
+        "stockQuantity": 159,
+        "strikeThroughPrice": "",
+        "variantId": 113512
+      },
+      {
+        "availability": null,
+        "basePrice": "",
+        "description": "The PC XX1 Eagle 12-speed chain by SRAM is lightweight, quiet and stable\nThe SRAM PC XX1 chain is made for Eagle 12-speed drives and stands out on your mountain bike with a light, durable design and different color options. Hollow pins make the chain light, while Flow Link\u0026trade; technology with smo",
+        "fullId": null,
+        "hasDiscountUntilFlag": false,
+        "hasShippingRestriction": false,
+        "imageFallback": false,
+        "imageId": 338434,
+        "imageMedium": {
+          "path": "\/assets\/p\/i\/320x240\/338434.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/320x240\/338434.webp",
+          "avif": null
+        },
+        "imageSmall": {
+          "path": "\/assets\/p\/i\/160x120\/338434.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/160x120\/338434.webp",
+          "avif": null
+        },
+        "isBuyable": true,
+        "isNew": false,
+        "isOffer": false,
+        "isSoldOut": false,
+        "link": "\/en\/SRAM\/PC-XX1-Eagle-12-Speed-Chain-p49391\/",
+        "optionId": null,
+        "optionName": null,
+        "percentageDiscount": 0,
+        "preventAddToCart": false,
+        "price": " \u003Cspan\u003Efrom\u003C\/span\u003E  58.82\u20ac",
+        "priceRaw": 58.8186318,
+        "priceReference": 0,
+        "productId": 49391,
+        "productName": "SRAM PC XX1 Eagle 12-Speed Chain",
+        "reviewStars": 4.5,
+        "reviewsCount": 14,
+        "stockQuantity": 397,
+        "strikeThroughPrice": "",
+        "variantId": 95287
+      },
+      {
+        "availability": null,
+        "basePrice": "",
+        "description": "The XX1 Eagle AXS 1x12-speed upgrade kit with cassette by SRAM - components for electronic shifting\nThis SRAM upgrade kit of the XX1 Eagle series for 1x12-speed drivetrains offers equipment for electronic shifting and is delivered with a suitable cassette. It consists of an XX1 Eagle AXS rear derail",
+        "fullId": null,
+        "hasDiscountUntilFlag": false,
+        "hasShippingRestriction": false,
+        "imageFallback": false,
+        "imageId": 338286,
+        "imageMedium": {
+          "path": "\/assets\/p\/i\/320x240\/338286.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/320x240\/338286.webp",
+          "avif": null
+        },
+        "imageSmall": {
+          "path": "\/assets\/p\/i\/160x120\/338286.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/160x120\/338286.webp",
+          "avif": null
+        },
+        "isBuyable": true,
+        "isNew": false,
+        "isOffer": false,
+        "isSoldOut": false,
+        "link": "\/en\/SRAM\/XX1-Eagle-AXS-1x12-Speed-Upgrade-Kit-w-Cassette-p78211\/",
+        "optionId": null,
+        "optionName": null,
+        "percentageDiscount": 0,
+        "preventAddToCart": false,
+        "price": " \u003Cspan\u003Efrom\u003C\/span\u003E  1,086.05\u20ac",
+        "priceRaw": 1086.0503541,
+        "priceReference": 0,
+        "productId": 78211,
+        "productName": "SRAM XX1 Eagle AXS 1x12-Speed Upgrade Kit w\/ Cassette",
+        "reviewStars": 5,
+        "reviewsCount": 1,
+        "stockQuantity": 288,
+        "strikeThroughPrice": "",
+        "variantId": 115829
+      },
+      {
+        "availability": null,
+        "basePrice": "",
+        "description": "The XX1 XG-1299 Cassette and XX1 Eagle Chain Set by SRAM for 12-speed is a dream team\nThe SRAM wear set for 12-speed drivetrains consists of the XX1 Eagle XG-1299 cassette and the PC XX1 Eagle and the PC XX1 Eagle chain. You can choose between different colour combinations.\n\nThe SRAM XG-1299 cassett",
+        "fullId": null,
+        "hasDiscountUntilFlag": false,
+        "hasShippingRestriction": false,
+        "imageFallback": false,
+        "imageId": 338298,
+        "imageMedium": {
+          "path": "\/assets\/p\/i\/320x240\/338298.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/320x240\/338298.webp",
+          "avif": null
+        },
+        "imageSmall": {
+          "path": "\/assets\/p\/i\/160x120\/338298.jpg",
+          "mimeType": "image\/jpeg",
+          "webP": "\/assets\/p\/i\/160x120\/338298.webp",
+          "avif": null
+        },
+        "isBuyable": true,
+        "isNew": false,
+        "isOffer": false,
+        "isSoldOut": false,
+        "link": "\/en\/SRAM\/XX1-Eagle-XG-1299-Cassette-PC-XX1-Eagle-Chain-12-speed-Wear-Kit-p78205\/",
+        "optionId": null,
+        "optionName": null,
+        "percentageDiscount": 0,
+        "preventAddToCart": false,
+        "price": "406.36\u20ac",
+        "priceRaw": 406.3638393,
+        "priceReference": 0,
+        "productId": 78205,
+        "productName": "SRAM XX1 Eagle XG-1299 Cassette + PC XX1 Eagle Chain 12-speed Wear Kit",
+        "reviewStars": 5,
+        "reviewsCount": 1,
+        "stockQuantity": 374,
+        "strikeThroughPrice": "",
+        "variantId": 115831
+      }
+    ],
+    "categories": [
+      {
+        "name": "Upgrade Kits",
+        "parents": [
+          {
+            "name": "Components",
+            "url": "\/en\/components\/"
+          },
+          {
+            "name": "Groupsets",
+            "url": "\/en\/components\/groupsets\/"
+          }
+        ],
+        "image": "",
+        "url": "\/en\/components\/groupsets\/upgrade-kits\/"
+      },
+      {
+        "name": "Chains",
+        "parents": [
+          {
+            "name": "Components",
+            "url": "\/en\/components\/"
+          },
+          {
+            "name": "Drivetrain",
+            "url": "\/en\/components\/drivetrain\/"
+          }
+        ],
+        "image": "",
+        "url": "\/en\/components\/drivetrain\/chains\/"
+      },
+      {
+        "name": "Cassettes",
+        "parents": [
+          {
+            "name": "Components",
+            "url": "\/en\/components\/"
+          },
+          {
+            "name": "Drivetrain",
+            "url": "\/en\/components\/drivetrain\/"
+          }
+        ],
+        "image": "",
+        "url": "\/en\/components\/drivetrain\/cassettes\/"
+      },
+      {
+        "name": "Small Parts",
+        "parents": [
+          {
+            "name": "Components",
+            "url": "\/en\/components\/"
+          },
+          {
+            "name": "Shifters \u0026 Derailleurs",
+            "url": "\/en\/components\/shifters-derailleurs\/"
+          }
+        ],
+        "image": "",
+        "url": "\/en\/components\/shifters-derailleurs\/small-parts\/"
+      },
+      {
+        "name": "SRAM",
+        "parents": [
+          {
+            "name": "Tools \u0026 Maintenance",
+            "url": "\/en\/tools-maintenance\/"
+          },
+          {
+            "name": "Spare Parts",
+            "url": "\/en\/tools-maintenance\/spare-parts\/"
+          }
+        ],
+        "image": "",
+        "url": "\/en\/tools-maintenance\/spare-parts\/sram\/"
+      }
+    ],
+    "manufacturers": [
+      {
+        "name": "SRAM",
+        "image": "\/assets\/m\/logo\/s1\/62-d6f7049d386a43dda9187edd17c7a83d444a18c3.png",
+        "url": "\/en\/SRAM\/"
+      }
+    ],
+    "blog_posts": []
+  }
+}

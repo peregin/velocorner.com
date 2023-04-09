@@ -10,8 +10,7 @@ import velocorner.api.brand.Marketplace.VeloFactory
 class MarketplaceTest extends AnyFlatSpec with should.Matchers with DecodeResource {
 
   "bikecomponents api response" should "be converted" in {
-    assert[CrawlerBikeComponents.SuggestResponse]("/bikecomponents/suggest.json").toApi().size shouldBe 4
-    assert[CrawlerBikeComponents.SuggestResponse]("/bikecomponents/suggest2.json").toApi().size shouldBe 4
+    assert[CrawlerBikeComponents.SuggestResponse]("/bikecomponents/suggest3.json").toApi().size shouldBe 4
   }
 
   "galaxus api response" should "be converted" in {

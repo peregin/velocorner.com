@@ -27,12 +27,12 @@ object CrawlerBikeComponents {
   }
 
   case class SuggestProduct(
-      name: String,
+      productName: String,
       price: String,
       description: String,
       imageMedium: SuggestImage,
       link: String,
-      manufacturer: String,
+      //manufacturer: String,
       reviewStars: Option[Double],
       isNew: Option[Boolean],
       isBuyable: Option[Boolean],
@@ -57,8 +57,8 @@ object CrawlerBikeComponents {
       .map { p =>
         ProductDetails(
           market = BikeComponents,
-          brand = Brand(name = p.manufacturer, logoUrl = none).some,
-          name = p.name,
+          brand = none,//Brand(name = p.manufacturer, logoUrl = none).some,
+          name = p.productName,
           description = p.description.some,
           price = extractPrice(p.price),
           imageUrl = baseUrl + p.imageMedium.path,
