@@ -180,23 +180,9 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   dependencyOverrides ++= Seq(
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.11.4",
-    "com.fasterxml.jackson.core" % "jackson-core" % "2.11.4"
-  ),
-  unusedCodeConfig ~= { c =>
-    c.copy(
-      excludeNameRegex = Set(
-        ".*Service"
-      ),
-      excludePath = c.excludePath ++ Set(
-        "glob:some-project/**"
-      ),
-      excludeGitLastCommit = Some(
-        365.days
-      ),
-      excludeMainMethod = false,
-      dialect = unused_code.Dialect.Scala213
-    )
-  }
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.11.4",
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
+  )
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
