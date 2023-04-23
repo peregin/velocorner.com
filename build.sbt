@@ -253,7 +253,7 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
       ++ circe
       ++ scalacache
       ++ Seq(
-        "org.typelevel" %% "log4cats-slf4j" % "2.5.0",
+        "org.typelevel" %% "log4cats-slf4j" % "2.6.0",
         "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
       )
       ++ catsEffectTest.map(_ % Test),
