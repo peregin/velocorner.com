@@ -182,7 +182,9 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.11.4",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.11.4",
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
-  )
+  ),
+  // because of: missing method in the newer ones, this is needed just for the Java 11 support
+  dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice"),
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
