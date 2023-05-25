@@ -184,7 +184,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
-  dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice"),
+  dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
@@ -331,7 +331,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       ehcache,
       playWsJsonStandalone,
       "com.github.jwt-scala" %% "jwt-play-json" % Dependencies.jwtVersion,
-      "com.google.inject" % "guice" % "5.1.0", // for Java 11 support, do not bump!!!
+      "com.google.inject" % "guice" % "7.0.0", // for Java 11 support, do not bump!!!
       playTest,
       playTestPlus,
       mockito,
