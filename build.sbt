@@ -123,7 +123,7 @@ def scalacache = Seq(
 ).map(_ % Dependencies.scalacacheVersion)
 
 def sangria = Seq(
-  "org.sangria-graphql" %% "sangria" % "3.5.3",
+  "org.sangria-graphql" %% "sangria" % "4.0.0",
   "org.sangria-graphql" %% "sangria-slowlog" % "2.0.5",
   "org.sangria-graphql" %% "sangria-play-json" % "2.0.2"
 )
@@ -184,7 +184,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
-  dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice"),
+  dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
 )
 
 lazy val dataProvider = (project in file("data-provider") withId "data-provider")
