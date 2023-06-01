@@ -23,8 +23,9 @@ trait LocationStorage[M[_]] {
 }
 
 trait GearStorage[M[_]] {
-  def store(gear: Gear, `type`: Gear.Entry): M[Unit]
+  def store(gear: Gear, `type`: Gear.Entry, athleteId: Long): M[Unit]
   def getGear(id: String): M[Option[Gear]]
+  def listGears(athleteId: Long): M[Iterable[Gear]]
 }
 
 trait AchievementStorage[M[_]] {

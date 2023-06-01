@@ -208,15 +208,19 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
   override def getGearStorage: GearStorage[Future] = gearStorage
 
   private lazy val gearStorage = new GearStorage[Future] {
-    override def store(gear: Gear, gearType: Gear.Entry): Future[Unit] =
-      sql"""insert into gear (id, type, data)
-           |values(${gear.id}, ${gearType.toString}, $gear) on conflict(id)
-           |do update set data = $gear
+    override def store(gear: Gear, gearType: Gear.Entry, athleteId: Long): Future[Unit] =
+      sql"""insert into gear (id, type, data, athlete_id)
+           |values(${gear.id}, ${gearType.toString}, $gear, $athleteId) on conflict(id)
+           |do update set data = $gear, athlete_id = $athleteId
            |""".stripMargin.update.run.void.transactToFuture
 
     override def getGear(id: String): Future[Option[Gear]] =
       sql"""select data from gear where id = $id
            |""".stripMargin.query[Gear].option.transactToFuture
+
+    override def listGears(athleteId: Long): Future[Iterable[Gear]] =
+      sql"""select data from gear where athlete_id = $athleteId
+           |""".stripMargin.query[Gear].to[List].transactToFuture
   }
 
   override def getAchievementStorage: AchievementStorage[Future] = achievementStorage

@@ -97,9 +97,11 @@ class PsqlDbStorageTest
   it should "store and lookup gears" in {
     lazy val gearStorage = psqlStorage.getGearStorage
     val gear = Gear("id1", "BMC", 12.4f)
-    awaitOn(gearStorage.store(gear, Gear.Bike))
+    awaitOn(gearStorage.store(gear, Gear.Bike, 1))
     awaitOn(gearStorage.getGear("id20")) mustBe empty
     awaitOn(gearStorage.getGear("id1")) mustBe Some(gear)
+    awaitOn(gearStorage.listGears(1)) must contain theSameElementsAs List(gear)
+    awaitOn(gearStorage.listGears(999)) mustBe empty
   }
 
   it should "store and lookup geo positions" in {

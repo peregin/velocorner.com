@@ -118,8 +118,9 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   // gears
   override def getGearStorage: GearStorage[Future] = gearStorage
   private lazy val gearStorage = new GearStorage[Future] {
-    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] = upsert(JsonIo.write(gear), gear.id, GEAR_TABLE)
+    override def store(gear: Gear, `type`: Gear.Entry, athleteId: Long): Future[Unit] = upsert(JsonIo.write(gear), gear.id, GEAR_TABLE)
     override def getGear(id: String): Future[Option[Gear]] = getJsonById(id, GEAR_TABLE).map(_.map(JsonIo.read[Gear]))
+    override def listGears(athleteId: Long): Future[Iterable[Gear]] = Future(Iterable.empty)
   }
 
   // various achievements

@@ -129,9 +129,10 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
   // gears
   override def getGearStorage: GearStorage[Future] = gearStorage
   private lazy val gearStorage = new GearStorage[Future] {
-    override def store(gear: Gear, `type`: Gear.Entry): Future[Unit] =
+    override def store(gear: Gear, `type`: Gear.Entry, athleteId: Long): Future[Unit] =
       upsert(gear, GEAR_CLASS, s"SELECT FROM $GEAR_CLASS WHERE id = :id", Map("id" -> gear.id))
     override def getGear(id: String): Future[Option[Gear]] = lookup[Gear](GEAR_CLASS, "id", id)
+    override def listGears(athleteId: Long): Future[Iterable[Gear]] = ???
   }
 
   // various achievements

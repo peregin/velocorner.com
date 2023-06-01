@@ -109,6 +109,18 @@ select "location" from location order by "location" asc;
 
 select distinct(location) as loc from forecast f order by loc asc;
 
+select g.id, (select a.athlete_id from activity a where (a.data->>'gear_id') like g.id limit 1) from gear g;
+
+select athlete_id from activity a where data->>'gear_id' = 'b5804741';
+
+select * from account;
+
+select count(*) from activity a;
+
+select count(*) from gear;
+
+update gear g set athlete_id = (select a.athlete_id from activity a where (a.data->>'gear_id') like g.id limit 1) where g.athlete_id is null;
+
 
 
 

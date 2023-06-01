@@ -16,28 +16,26 @@ object Account {
   }
 
   implicit val roleFormat = Format[Role.Entry](
-    (json: JsValue) =>
-      json match {
-        case JsString(s) =>
-          s match {
-            case "admin" => JsSuccess(Role.Admin)
-            case _       => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
-          }
-        case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role"))))
-      },
+    {
+      case JsString(s) =>
+        s match {
+          case "admin" => JsSuccess(Role.Admin)
+          case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
+        }
+      case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role"))))
+    },
     (o: Role.Entry) => JsString(o.toString.toLowerCase)
   )
 
   implicit val unitFormat = Format[Units.Entry](
-    (json: JsValue) =>
-      json match {
-        case JsString(s) =>
-          Try(convert(s)) match {
-            case Success(unit) => JsSuccess(unit)
-            case Failure(ex)   => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
-          }
-        case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit"))))
-      },
+    {
+      case JsString(s) =>
+        Try(convert(s)) match {
+          case Success(unit) => JsSuccess(unit)
+          case Failure(ex) => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
+        }
+      case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit"))))
+    },
     (o: Units.Entry) => JsString(o.toString.toLowerCase)
   )
 

@@ -128,8 +128,9 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   // gears
   override def getGearStorage: GearStorage[M] = gearStorage
   private lazy val gearStorage = new GearStorage[M] {
-    def store(gear: Gear, `type`: Gear.Entry): M[Unit] = upsert(JsonIo.write(gear), GEAR_TABLE)
-    def getGear(id: String): M[Option[Gear]] = Monad[M].map(getJsonById(id, GEAR_TABLE))(_.map(JsonIo.read[Gear]))
+    override def store(gear: Gear, `type`: Gear.Entry, athleteId: Long): M[Unit] = upsert(JsonIo.write(gear), GEAR_TABLE)
+    override def getGear(id: String): M[Option[Gear]] = Monad[M].map(getJsonById(id, GEAR_TABLE))(_.map(JsonIo.read[Gear]))
+    override def listGears(athleteId: Long): M[Iterable[Gear]] = ???
   }
 
   // various achievements
