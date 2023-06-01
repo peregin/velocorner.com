@@ -4,7 +4,7 @@
       <env name="CONFIG_FILE" value="$USER_HOME$/Downloads/velo/velocorner/local.conf" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="velocorner.weather.ServiceKt" />
-    <module name="weather-service.main" />
+    <module name="velocorner.weather.weather-service.main" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
