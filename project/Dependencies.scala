@@ -2,7 +2,7 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.11"
 
-  val flywayVersion = "9.19.4"
+  val flywayVersion = "9.20.0"
   val catsVersion = "2.9.0"
   val catsEffectVersion = "3.5.0"
   val mouseVersion = "1.2.1"
@@ -15,12 +15,12 @@ object Dependencies {
   val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.8"
-  val doobieVersion = "1.0.0-RC2"
+  val doobieVersion = "1.0.0-RC4"
   val orientDbVersion = "3.2.19"
   val mongoDbVersion = "4.9.1"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.8.0"
-  val jwtVersion = "9.3.0"
+  val jwtVersion = "9.4.0"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.4.0"
   val circeVersion = "0.14.5"
