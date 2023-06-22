@@ -123,7 +123,7 @@ def scalacache = Seq(
 ).map(_ % Dependencies.scalacacheVersion)
 
 def sangria = Seq(
-  "org.sangria-graphql" %% "sangria" % "4.0.0",
+  "org.sangria-graphql" %% "sangria" % Dependencies.sangriaVersion,
   "org.sangria-graphql" %% "sangria-slowlog" % "3.0.0",
   "org.sangria-graphql" %% "sangria-play-json" % "2.0.2"
 )

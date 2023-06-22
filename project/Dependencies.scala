@@ -12,12 +12,13 @@ object Dependencies {
   val finatraVersion = "21.2.0" // in the test service
   val argonautVersion = "6.3.8" // in the test service
   val playWsVersion = "2.1.10" // standalone version
+  val sangriaVersion = "4.0.1"
   val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.8"
   val doobieVersion = "1.0.0-RC4"
-  val orientDbVersion = "3.2.19"
-  val mongoDbVersion = "4.9.1"
+  val orientDbVersion = "3.2.20"
+  val mongoDbVersion = "4.10.0"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.8.0"
   val jwtVersion = "9.4.0"
