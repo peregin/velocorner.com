@@ -47,7 +47,7 @@ COPY --from=builder /rates/target/release/exchange-rate-service ./
 USER rates:rates
 
 # enable logging with env_logger
-ENV RUST_LOG=debug
+ENV RUST_LOG=info
 
 EXPOSE 9012
 
