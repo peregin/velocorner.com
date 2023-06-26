@@ -22,12 +22,16 @@ rustup run stable rust-analyzer --version
 Connects to exchangerate.host on demand and retrieves the latest conversion rates.
 It uses a one-hour cache. 
 
-Supports two `json` endpoints:
+Supports the following `json` endpoints:
+- /rates/currencies - to retrieve supported currencies 
 - /rates/:base - to retrieve all FX rates for a given base currency 
 - /rates/:base/:counter - to retrieve a specific rate for a given currency pair
 
+The root path `/` retrieves a welcome page in `text/html`.
+
 ## Cargo
 Useful commands
+
 ```shell
 # check for updates
 cargo update --dry-run

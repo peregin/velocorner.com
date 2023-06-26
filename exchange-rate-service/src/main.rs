@@ -7,20 +7,31 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default, env};
 
+// structure for the exchangerate.host response and exposed on rates endpoint as well
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct ExchangeRate {
     base: String,
     rates: HashMap<String, f32>,
 }
 
+// structure for the exchangerate.host response and exposed on currencies endpoint as well
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Currency {
+    description: String,
+    code: String,
+}
+
+// structure for the exchangerate.host response only
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Symbols {
+    symbols: HashMap<String, Currency>,
+}
+
 #[cached(time = 3600)]
 async fn rates_of(base: String) -> ExchangeRate {
     let client = Client::default();
     let mut reply = client
-        .get(format!(
-            "https://api.exchangerate.host/latest?base={}",
-            base
-        ))
+        .get(format!("https://api.exchangerate.host/latest?base={}", base))
         .insert_header(("User-Agent", "actix-web"))
         .insert_header(("Content-Type", "application/json"))
         .send()
@@ -35,6 +46,20 @@ async fn rates_of(base: String) -> ExchangeRate {
     reply.json::<ExchangeRate>().await.unwrap()
 }
 
+#[cached(time = 3600)]
+async fn symbols() -> Symbols {
+    let client = Client::default();
+    let mut reply = client
+        .get("https://api.exchangerate.host/symbols")
+        .insert_header(("User-Agent", "actix-web"))
+        .insert_header(("Content-Type", "application/json"))
+        .send()
+        .await
+        .unwrap();
+    reply.json::<Symbols>().await.unwrap()
+}
+
+// root path, simple welcome message
 async fn welcome(_: HttpRequest) -> impl Responder {
     let now: DateTime<Utc> = Utc::now();
     format!(
@@ -46,8 +71,13 @@ async fn welcome(_: HttpRequest) -> impl Responder {
         env::consts::OS,
         env::consts::ARCH
     )
-    .customize()
-    .insert_header(("content-type", "text/html; charset=utf-8"))
+        .customize()
+        .insert_header(("content-type", "text/html; charset=utf-8"))
+}
+
+#[get("/rates/currencies")]
+async fn currencies() -> impl Responder {
+    web::Json(symbols().await.symbols.values().cloned().collect::<Vec<_>>())
 }
 
 #[get("/rates/{base}")]
@@ -78,10 +108,11 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(welcome))
+            .service(currencies)
             .service(rate)
             .service(rates)
     })
-    .bind(format!("0.0.0.0:{port}"))?
-    .run()
-    .await
+        .bind(format!("0.0.0.0:{port}"))?
+        .run()
+        .await
 }
