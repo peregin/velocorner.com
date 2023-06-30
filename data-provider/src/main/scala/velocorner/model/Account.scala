@@ -20,7 +20,7 @@ object Account {
       case JsString(s) =>
         s match {
           case "admin" => JsSuccess(Role.Admin)
-          case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
+          case _       => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role.format", "admin"))))
         }
       case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.role"))))
     },
@@ -32,7 +32,7 @@ object Account {
       case JsString(s) =>
         Try(convert(s)) match {
           case Success(unit) => JsSuccess(unit)
-          case Failure(ex) => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
+          case Failure(ex)   => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit.format", ex.getMessage))))
         }
       case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.unit"))))
     },
