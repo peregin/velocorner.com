@@ -16,7 +16,9 @@ rustup run stable rust-analyzer --version
 # Learn Rust
 - https://www.rust-lang.org/
 - https://github.com/google/comprehensive-rust
+- https://opensource.googleblog.com/2023/06/rust-fact-vs-fiction-5-insights-from-googles-rust-journey-2022.html
 - https://app.pluralsight.com/library/courses/fundamentals-rust/table-of-contents
+- https://cheats.rs/
 
 # Exchange Rate Service
 Connects to exchangerate.host on demand and retrieves the latest conversion rates.
