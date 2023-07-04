@@ -19,7 +19,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object HttpFeed extends LazyLogging {
 
   implicit val system = ActorSystem.create("ws-feed")
-  val processors = sys.runtime.availableProcessors()
+  private val processors = sys.runtime.availableProcessors()
   logger.info(s"available processors $processors")
   implicit val executors = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
 

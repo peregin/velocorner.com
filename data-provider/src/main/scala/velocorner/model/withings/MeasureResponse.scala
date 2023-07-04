@@ -54,7 +54,7 @@ import velocorner.model.EpochFormatter
  */
 object MeasuresEntry {
 
-  implicit val format = Format[MeasuresEntry](Json.reads[MeasuresEntry], Json.writes[MeasuresEntry])
+  implicit val format: Format[MeasuresEntry] = Format[MeasuresEntry](Json.reads[MeasuresEntry], Json.writes[MeasuresEntry])
 }
 
 case class MeasuresEntry(
@@ -65,8 +65,8 @@ case class MeasuresEntry(
 
 object MeasuresGroup {
 
-  implicit val dateTimeFormat = EpochFormatter.create
-  implicit val format = Format[MeasuresGroup](Json.reads[MeasuresGroup], Json.writes[MeasuresGroup])
+  implicit val dateTimeFormat: Format[DateTime] = EpochFormatter.create
+  implicit val format: Format[MeasuresGroup] = Format[MeasuresGroup](Json.reads[MeasuresGroup], Json.writes[MeasuresGroup])
 }
 
 case class MeasuresGroup(
@@ -79,8 +79,8 @@ case class MeasuresGroup(
 
 object MeasuresBody {
 
-  implicit val dateTimeFormat = EpochFormatter.create
-  implicit val format = Format[MeasuresBody](Json.reads[MeasuresBody], Json.writes[MeasuresBody])
+  implicit val dateTimeFormat: Format[DateTime] = EpochFormatter.create
+  implicit val format: Format[MeasuresBody] = Format[MeasuresBody](Json.reads[MeasuresBody], Json.writes[MeasuresBody])
 }
 
 case class MeasuresBody(
@@ -91,7 +91,7 @@ case class MeasuresBody(
 
 object MeasureResponse {
 
-  implicit val format = Format[MeasureResponse](Json.reads[MeasureResponse], Json.writes[MeasureResponse])
+  implicit val format: Format[MeasureResponse] = Format[MeasureResponse](Json.reads[MeasureResponse], Json.writes[MeasureResponse])
 }
 
 case class MeasureResponse(

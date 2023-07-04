@@ -15,7 +15,7 @@ object Gear {
       JsObject(baseJs.fields :+ ("type" -> typeJs))
     }
   }
-  implicit val gearFormat = Format[Gear](Json.reads[Gear], writes)
+  implicit val gearFormat: Format[Gear] = Format[Gear](Json.reads[Gear], writes)
 }
 
 case class Gear(id: String, name: String, distance: Float)

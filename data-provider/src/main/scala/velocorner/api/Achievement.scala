@@ -5,8 +5,8 @@ import play.api.libs.json.{Format, Json}
 import velocorner.model.DateTimePattern
 
 object Achievement {
-  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
-  implicit val achievementFormat = Format[Achievement](Json.reads[Achievement], Json.writes[Achievement])
+  implicit val dateTimeFormat: Format[DateTime] = DateTimePattern.createLongFormatter
+  implicit val achievementFormat: Format[Achievement] = Format[Achievement](Json.reads[Achievement], Json.writes[Achievement])
 }
 
 case class Achievement(

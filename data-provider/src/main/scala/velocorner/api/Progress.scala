@@ -21,7 +21,7 @@ object Progress {
   val zero = Progress(0, 0, 0d, 0d, 0, 0d, 0d, 0d)
   // implicit val monoidInstance = Monoid.instance[Progress](_ + _, zero)
 
-  implicit val totalFormat = Format[Progress](Json.reads[Progress], Json.writes[Progress])
+  implicit val totalFormat: Format[Progress] = Format[Progress](Json.reads[Progress], Json.writes[Progress])
 }
 
 /**

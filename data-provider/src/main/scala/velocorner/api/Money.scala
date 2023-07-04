@@ -5,7 +5,7 @@ import squants.market.{MoneyContext, NoSuchCurrencyException}
 import velocorner.feed.ExchangeRatesFeed
 
 object Money {
-  implicit val moneyFormat = Format[Money](Json.reads[Money], Json.writes[Money])
+  implicit val moneyFormat: Format[Money] = Format[Money](Json.reads[Money], Json.writes[Money])
 
   def fromSquants(m: squants.market.Money): Money = new Money(m.amount, m.currency.code)
 }

@@ -4,7 +4,7 @@ import play.api.libs.json.{Format, Json}
 import velocorner.api.Money
 
 object ProductDetails {
-  implicit val pdFormat = Format[ProductDetails](Json.reads[ProductDetails], Json.writes[ProductDetails])
+  implicit val pdFormat: Format[ProductDetails] = Format[ProductDetails](Json.reads[ProductDetails], Json.writes[ProductDetails])
 }
 
 case class ProductDetails(

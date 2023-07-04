@@ -106,13 +106,13 @@ package object brand {
           "https://www.wigglestatic.com/images/ui/wiggle-logo/desktop-wiggle_master_rgb_logo.svg"
         )
 
-    implicit val marketplaceFormat = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
+    implicit val marketplaceFormat: Format[Marketplace] = Format[Marketplace](Json.reads[Marketplace], Json.writes[Marketplace])
 
     val values = findValues
   }
 
   object Brand {
-    implicit val brandFormat = Format[Brand](Json.reads[Brand], Json.writes[Brand])
+    implicit val brandFormat: Format[Brand] = Format[Brand](Json.reads[Brand], Json.writes[Brand])
   }
   case class Brand(name: String, logoUrl: Option[String])
 
@@ -121,8 +121,9 @@ package object brand {
 
   // entry point to search for brand, indexed by name
   object MarketplaceBrand {
-    implicit val marketplaceBrandFormat = Format[MarketplaceBrand](Json.reads[MarketplaceBrand], Json.writes[MarketplaceBrand])
-    implicit val listFormat = Format[List[MarketplaceBrand]](Reads.list(marketplaceBrandFormat), Writes.list(marketplaceBrandFormat))
+    implicit val marketplaceBrandFormat: Format[MarketplaceBrand] = Format[MarketplaceBrand](Json.reads[MarketplaceBrand], Json.writes[MarketplaceBrand])
+    implicit val listFormat: Format[List[MarketplaceBrand]] =
+      Format[List[MarketplaceBrand]](Reads.list(marketplaceBrandFormat), Writes.list(marketplaceBrandFormat))
 
     // pairs brands listed on different marketplaces with slightly different names
     def normalize(mb: List[MarketplaceBrand]): List[MarketplaceBrand] = {

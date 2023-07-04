@@ -14,15 +14,15 @@ object DateTimePattern {
 
   val shortFormat = "yyyy-MM-dd"
 
-  def createLongFormatter =
+  def createLongFormatter: Format[DateTime] =
     Format[DateTime](jodaDateReadsUTC(DateTimePattern.longFormat), JodaWrites.jodaDateWrites(DateTimePattern.longFormat))
 
-  def createShortFormatter = Format[LocalDate](
+  def createShortFormatter: Format[LocalDate] = Format[LocalDate](
     JodaReads.jodaLocalDateReads(DateTimePattern.shortFormat),
     JodaWrites.jodaLocalDateWrites(DateTimePattern.shortFormat)
   )
 
-  def jodaDateReadsUTC(pattern: String, corrector: String => String = identity): Reads[DateTime] = new Reads[DateTime] {
+  private def jodaDateReadsUTC(pattern: String, corrector: String => String = identity): Reads[DateTime] = new Reads[DateTime] {
     val df =
       (if (pattern == "") ISODateTimeFormat.dateOptionalTimeParser else DateTimeFormat.forPattern(pattern)).withZone(DateTimeZone.UTC)
 
