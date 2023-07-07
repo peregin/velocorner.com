@@ -1,0 +1,1 @@
+module github.com/pereginm/velocorner.com/statuspage-service
