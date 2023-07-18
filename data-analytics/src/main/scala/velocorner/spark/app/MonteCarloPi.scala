@@ -14,8 +14,8 @@ object MonteCarloPi extends App with LocalSpark[Double] {
 
   override def spark(sc: SparkContext): Double = {
     // If a circle of radius R is inscribed inside a square with side length 2R,
-    // then the area of the circle will be pi*R^2 and the area of the square will be (2R)^2.
-    // So the ratio of the area of the circle to the area of the square will be pi/4.
+    // then the area of the circle will be π*R^2 and the area of the square will be (2R)^2.
+    // So the ratio of the area of the circle to the area of the square will be π/4.
     val count = sc
       .parallelize(1 to samples)
       .map { _ =>
