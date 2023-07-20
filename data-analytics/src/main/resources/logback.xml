@@ -13,6 +13,7 @@
     </root>
     <logger name="org.asynchttpclient" level="INFO"/>
     <logger name="org.apache.hadoop" level="INFO"/>
+    <logger name="org.sparkproject.jetty" level="WARN"/>
     <logger name="play.shaded.ahc.org.asynchttpclient" level="INFO"/>
     <logger name="play.shaded.ahc.io.netty" level="INFO"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
