@@ -5,12 +5,12 @@ import velocorner.spark.LocalSpark
 
 object MonteCarloPi extends App with LocalSpark[Double] {
 
-  val samples = 1000000
+  val samples = 2000000
 
   val pi = runSpark()
   println(s"π ~ $pi")
 
-  override def sparkAppName: String = "Approximate π"
+  override def sparkAppName: String = s"Approximate π ${math.Pi}"
 
   override def spark(sc: SparkContext): Double = {
     // If a circle of radius R is inscribed inside a square with side length 2R,
