@@ -10,9 +10,9 @@ def analyze():
     # plt.title('Activity frequency')
     # sns.set_theme(style="darkgrid")
     df.hist(bins=20, figsize=(10, 8))
-    # sns.countplot(df['type'])
+    # sns.countplot(df['distance'])
 
-    plt.title('Types of activities')
+    # plt.title('Types of activities')
     # plt.figure(figsize=(12, 8))
 
     # sns.pairplot(df, hue='type', diag_kind='hist')
