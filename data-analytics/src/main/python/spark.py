@@ -3,7 +3,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql import Row
 import os
 
-def analyze():
+def analyze() -> None:
     print("analyzing...")
     spark = SparkSession.builder \
         .config("spark.jars", "/Users/levi/Downloads/postgresql-42.2.6.jar") \
