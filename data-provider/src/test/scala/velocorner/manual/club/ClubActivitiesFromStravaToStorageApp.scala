@@ -16,7 +16,7 @@ object ClubActivitiesFromStravaToStorageApp extends App with LazyLogging with Cl
     storage.initialize()
 
     logger.info("retrieving...")
-    val activities = awaitOn(feed.listRecentClubActivities(Club.Velocorner))
+    val activities = awaitOn(feed.listRecentClubActivities(Club.velocornerId))
     logger.info("storing...")
     awaitOn(storage.storeActivity(activities))
     logger.info("done...")

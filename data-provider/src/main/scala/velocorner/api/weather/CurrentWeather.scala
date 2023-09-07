@@ -6,7 +6,7 @@ import velocorner.model.EpochFormatter
 import velocorner.model.weather.SunriseSunsetInfo
 
 object WeatherDescription {
-  implicit val responseFormat = Format[WeatherDescription](Json.reads[WeatherDescription], Json.writes[WeatherDescription])
+  implicit val responseFormat: Format[WeatherDescription] = Format[WeatherDescription](Json.reads[WeatherDescription], Json.writes[WeatherDescription])
 }
 
 case class WeatherDescription(
@@ -17,7 +17,7 @@ case class WeatherDescription(
 )
 
 object WeatherInfo {
-  implicit val responseFormat = Format[WeatherInfo](Json.reads[WeatherInfo], Json.writes[WeatherInfo])
+  implicit val responseFormat: Format[WeatherInfo] = Format[WeatherInfo](Json.reads[WeatherInfo], Json.writes[WeatherInfo])
 }
 
 case class WeatherInfo(
@@ -29,7 +29,7 @@ case class WeatherInfo(
 )
 
 object Coord {
-  implicit val coordFormat = Format[Coord](Json.reads[Coord], Json.writes[Coord])
+  implicit val coordFormat: Format[Coord] = Format[Coord](Json.reads[Coord], Json.writes[Coord])
 }
 
 case class Coord(lon: Double, lat: Double)
@@ -39,8 +39,8 @@ case class Coord(lon: Double, lat: Double)
  */
 object CurrentWeather {
 
-  implicit val dateTimeFormat = EpochFormatter.create
-  implicit val storageFormat = Format[CurrentWeather](Json.reads[CurrentWeather], Json.writes[CurrentWeather])
+  implicit val dateTimeFormat: Format[DateTime] = EpochFormatter.create
+  implicit val storageFormat: Format[CurrentWeather] = Format[CurrentWeather](Json.reads[CurrentWeather], Json.writes[CurrentWeather])
 }
 
 case class CurrentWeather(

@@ -7,5 +7,5 @@ case class CountryIso(name: String, code: String)
 
 object CountryIso {
 
-  implicit val countryFormat = Format[CountryIso](Json.reads[CountryIso], Json.writes[CountryIso])
+  implicit val countryFormat: Format[CountryIso] = Format[CountryIso](Json.reads[CountryIso], Json.writes[CountryIso])
 }

@@ -27,16 +27,16 @@ import play.api.libs.json._
  */
 object Club {
 
-  val Velocorner = 122614
+  val velocornerId = 122614
 
-  val writes = new Writes[Club] {
+  val writes: Writes[Club] = new Writes[Club] {
     override def writes(o: Club): JsValue = {
       val baseJs: JsObject = Json.writes[Club].writes(o).as[JsObject]
       val typeJs: JsString = Writes.StringWrites.writes("Club")
       JsObject(baseJs.fields :+ ("type" -> typeJs))
     }
   }
-  implicit val clubFormat = Format[Club](Json.reads[Club], writes)
+  implicit val clubFormat: Format[Club] = Format[Club](Json.reads[Club], writes)
 }
 
 case class Club(id: Int, memberIds: List[Int])
