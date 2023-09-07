@@ -2,11 +2,11 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.11"
 
-  val flywayVersion = "9.21.2"
+  val flywayVersion = "9.22.0"
   val catsVersion = "2.10.0"
   val catsEffectVersion = "3.5.1"
   val mouseVersion = "1.2.1"
-  val fs2Version = "3.8.0"
+  val fs2Version = "3.9.1"
   val http4s = "0.23.23"
   val zioVersion = "2.0.16"
   val finatraVersion = "21.2.0" // in the test service
@@ -21,7 +21,7 @@ object Dependencies {
   val mongoDbVersion = "4.10.2"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.9.2"
-  val jwtVersion = "9.4.3"
+  val jwtVersion = "9.4.4"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.4.1"
   val circeVersion = "0.14.5"
