@@ -12,7 +12,7 @@ object Dependencies {
   val finatraVersion = "21.2.0" // in the test service
   val argonautVersion = "6.3.8" // in the test service
   val playWsVersion = "2.1.11" // standalone version
-  val sangriaVersion = "4.0.1"
+  val sangriaVersion = "4.0.2"
   val playJsonVersion = "2.9.4"
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.8" // updating will cause conflict
