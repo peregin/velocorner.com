@@ -81,7 +81,7 @@ import velocorner.model.strava.Athlete
 
 object Activity {
 
-  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
+  implicit val dateTimeFormat: Format[DateTime] = DateTimePattern.createLongFormatter
   // generates a PlayJson Format[T] for a case class T with any number of fields
   implicit val encoder: NameEncoder = CamelToSnakeNameEncoder()
   implicit val activityFormat: OFormat[Activity] = Jsonx.formatCaseClass[Activity]
