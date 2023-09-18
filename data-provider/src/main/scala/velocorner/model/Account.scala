@@ -15,7 +15,7 @@ object Account {
     case other      => throw new IllegalArgumentException(s"not a valid unit $other")
   }
 
-  implicit val roleFormat = Format[Role.Entry](
+  implicit val roleFormat: Format[Role.Entry] = Format[Role.Entry](
     {
       case JsString(s) =>
         s match {
@@ -27,7 +27,7 @@ object Account {
     (o: Role.Entry) => JsString(o.toString.toLowerCase)
   )
 
-  implicit val unitFormat = Format[Units.Entry](
+  implicit val unitFormat: Format[Units.Entry] = Format[Units.Entry](
     {
       case JsString(s) =>
         Try(convert(s)) match {
@@ -39,9 +39,9 @@ object Account {
     (o: Units.Entry) => JsString(o.toString.toLowerCase)
   )
 
-  implicit val dateTimeFormat = DateTimePattern.createLongFormatter
+  implicit val dateTimeFormat: Format[DateTime] = DateTimePattern.createLongFormatter
 
-  val writes = new Writes[Account] {
+  val writes: Writes[Account] = new Writes[Account] {
     override def writes(o: Account): JsValue = {
       val baseJs: JsObject = Json.writes[Account].writes(o).as[JsObject]
       val typeJs: JsString = Writes.StringWrites.writes("Account")
@@ -49,7 +49,7 @@ object Account {
     }
   }
 
-  implicit val accountFormat = Format[Account](Json.reads[Account], writes)
+  implicit val accountFormat: Format[Account] = Format[Account](Json.reads[Account], writes)
 
   // extract the user details from provider, e.g. Strava into the consumer one (velocorner.com)
   def from(
