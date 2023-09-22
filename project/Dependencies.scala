@@ -2,7 +2,7 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.12"
 
-  val flywayVersion = "9.22.1"
+  val flywayVersion = "9.22.2"
   val catsVersion = "2.10.0"
   val catsEffectVersion = "3.5.1"
   val mouseVersion = "1.2.1"
