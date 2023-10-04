@@ -2,13 +2,13 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.12"
 
-  val flywayVersion = "9.22.1"
+  val flywayVersion = "9.22.2"
   val catsVersion = "2.10.0"
-  val catsEffectVersion = "3.5.1"
+  val catsEffectVersion = "3.5.2"
   val mouseVersion = "1.2.1"
   val fs2Version = "3.9.2"
   val http4s = "0.23.23"
-  val zioVersion = "2.0.17"
+  val zioVersion = "2.0.18"
   val finatraVersion = "21.2.0" // in the test service
   val argonautVersion = "6.3.8" // in the test service
   val playWsVersion = "2.2.2" // standalone version
@@ -20,7 +20,7 @@ object Dependencies {
   val orientDbVersion = "3.2.22"
   val mongoDbVersion = "4.10.2"
   val rethinkDbVersion = "2.4.4"
-  val elasticVersion = "8.9.2"
+  val elasticVersion = "8.9.3"
   val jwtVersion = "9.4.4"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.5.0"
@@ -31,7 +31,7 @@ object Dependencies {
   val mockitoVersion = "5.5.0"
   val catsEffectTestVersion = "1.5.0"
 
-  val springVersion = "3.1.3" // java world
+  val springVersion = "3.1.4" // java world
 }
 
 object DockerBuild {
