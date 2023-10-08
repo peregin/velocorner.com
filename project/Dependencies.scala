@@ -28,7 +28,7 @@ object Dependencies {
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.16.1"
   val scalaTestVersion = "3.2.17"
-  val mockitoVersion = "5.5.0"
+  val mockitoVersion = "5.6.0"
   val catsEffectTestVersion = "1.5.0"
 
   val springVersion = "3.1.4" // java world
