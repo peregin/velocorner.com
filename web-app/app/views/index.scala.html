@@ -41,6 +41,14 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-4 md-margin-bottom-50">
+                    @widget.ajaxbarchart("ytdTime", "Year To Date Time", "h", "/api/athletes/statistics/ytd/time", 400)
+                </div>
+                <div class="col-md-8 md-margin-bottom-50">
+                    @widget.ajaxsplinechart("yearlyTime", "Yearly Time", "h", 100, "/api/athletes/statistics/yearly/time", 400)
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6 md-margin-bottom-50">
                     @widget.heatmap("distanceHistogram", "Activity Distribution for Distance", "/api/athletes/statistics/histogram/distance", 250)
                 </div>

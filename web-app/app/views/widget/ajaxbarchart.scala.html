@@ -60,7 +60,7 @@ $(function () {
         },
         tooltip: {
             formatter: function() {
-                return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 2) + ' @unit';
+                return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 0) + ' @unit';
             }
         },
         series: []
@@ -85,7 +85,7 @@ $(function () {
                 name: 'Years',
                 dataLabels: {
                     formatter: function() {
-                        return '<b>' + Highcharts.numberFormat(this.y, 2) + '</b> @unit';
+                        return '<b>' + Highcharts.numberFormat(this.y, 0) + '</b> @unit';
                     }
                 },
                 showInLegend: false,

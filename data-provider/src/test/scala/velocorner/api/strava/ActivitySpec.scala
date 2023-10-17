@@ -10,11 +10,13 @@ import velocorner.util.JsonIo
 class ActivitySpec extends AnyWordSpec with Matchers {
 
   "model" should {
-    "use heart rate data" in {
+    "use heart rate data Einsiedeln 2017" in {
       val hr = JsonIo.readReadFromResource[Activity]("/data/strava/activity-hr.json")
+      hr.id mustBe 1199439710
       hr.average_heartrate mustBe Some(159.6f)
       hr.max_heartrate mustBe Some(182.0f)
       hr.gear_id mustBe Some("b1494155")
+      hr.moving_time mustBe 11461 // in seconds = 3:11:01 hours
     }
 
     "read ice skating activities" in {
