@@ -43,8 +43,8 @@ val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
 // for more than 22 parameter case classes
 val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.42.0"
 val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % Dependencies.playJsonVersion
-val playWsAhcStandalone = "com.typesafe.play" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
-val playWsJsonStandalone = "com.typesafe.play" %% "play-ws-standalone-json" % Dependencies.playWsVersion
+val playWsAhcStandalone = "org.playframework" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
+val playWsJsonStandalone = "org.playframework" %% "play-ws-standalone-json" % Dependencies.playWsVersion
 
 val apacheCommons = Seq(
   "org.apache.commons" % "commons-csv" % "1.10.0"
