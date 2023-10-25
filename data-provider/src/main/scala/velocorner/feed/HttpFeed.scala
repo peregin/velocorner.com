@@ -3,7 +3,7 @@ package velocorner.feed
 import java.io.Closeable
 import java.util.concurrent.Executors
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
