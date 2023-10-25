@@ -39,10 +39,10 @@ val psqlDbClient = Seq(
   "com.opentable.components" % "otj-pg-embedded" % "1.0.2" % "test"
 )
 
-val playJson = "com.typesafe.play" %% "play-json" % Dependencies.playJsonVersion
+val playJson = "org.playframework" %% "play-json" % Dependencies.playJsonVersion
 // for more than 22 parameter case classes
 val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.42.0"
-val playJsonJoda = "com.typesafe.play" %% "play-json-joda" % Dependencies.playJsonVersion
+val playJsonJoda = "org.playframework" %% "play-json-joda" % Dependencies.playJsonVersion
 val playWsAhcStandalone = "org.playframework" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
 val playWsJsonStandalone = "org.playframework" %% "play-ws-standalone-json" % Dependencies.playWsVersion
 
