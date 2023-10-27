@@ -13,6 +13,7 @@ import velocorner.util.JsonIo
 import java.util.UUID
 import scala.concurrent.Future
 
+// noinspection TypeAnnotation
 class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
 
   object SearchMeta {

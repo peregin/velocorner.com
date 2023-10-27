@@ -20,8 +20,8 @@ case class SunriseSunsetInfo(
  * https://openweathermap.org/current
  */
 object WeatherResponse {
-  implicit val dateTimeFormat = EpochFormatter.create
-  implicit val responseFormat = Format[WeatherResponse](Json.reads[WeatherResponse], Json.writes[WeatherResponse])
+  implicit val dateTimeFormat: Format[DateTime] = EpochFormatter.create
+  implicit val responseFormat: Format[WeatherResponse] = Format[WeatherResponse](Json.reads[WeatherResponse], Json.writes[WeatherResponse])
 }
 
 /**

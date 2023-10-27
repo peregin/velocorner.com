@@ -12,7 +12,7 @@ import scala.util.{Failure, Success}
 
 object JwtUser {
 
-  implicit val format = Format[JwtUser](Json.reads[JwtUser], Json.writes[JwtUser])
+  implicit val format: Format[JwtUser] = Format[JwtUser](Json.reads[JwtUser], Json.writes[JwtUser])
 
   val issuer = "velocorner"
 

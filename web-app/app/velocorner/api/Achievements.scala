@@ -7,7 +7,7 @@ import squants.thermal.Celsius
 import velocorner.model.Units
 
 object Achievements {
-  implicit val format = Format[Achievements](Json.reads[Achievements], Json.writes[Achievements])
+  implicit val format: Format[Achievements] = Format[Achievements](Json.reads[Achievements], Json.writes[Achievements])
 }
 
 case class Achievements(
