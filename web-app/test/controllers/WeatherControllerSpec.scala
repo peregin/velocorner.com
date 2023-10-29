@@ -1,6 +1,6 @@
 package controllers
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import cats.implicits.catsSyntaxOptionId
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat

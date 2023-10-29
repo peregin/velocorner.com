@@ -8,7 +8,7 @@ import velocorner.storage.Storage
 object ActivitiesFromStravaToStorageApp extends IOApp.Simple with MyLocalConfig {
 
   private val config = SecretConfig.load()
-  private implicit val feed = new StravaActivityFeed(None, config)
+  private implicit val feed: StravaActivityFeed = new StravaActivityFeed(None, config)
 
   override def run: IO[Unit] = for {
     storage <- IO(Storage.create("or"))

@@ -1,6 +1,6 @@
 package controllers
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -18,7 +18,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
   "rest controller for club activity series" should {
 
-    implicit val timeout = new Timeout(10 seconds)
+    implicit val timeout: Timeout = new Timeout(10 seconds)
 
     "return system status" in {
       val settingsMock = mock[ConnectivitySettings]

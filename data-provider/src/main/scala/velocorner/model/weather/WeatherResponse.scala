@@ -6,8 +6,8 @@ import velocorner.api.weather.{Coord, WeatherDescription, WeatherInfo}
 import velocorner.model.EpochFormatter
 
 object SunriseSunsetInfo {
-  implicit val dateTimeFormat = EpochFormatter.create
-  implicit val infoFormat = Format[SunriseSunsetInfo](Json.reads[SunriseSunsetInfo], Json.writes[SunriseSunsetInfo])
+  implicit val dateTimeFormat: Format[DateTime] = EpochFormatter.create
+  implicit val infoFormat: Format[SunriseSunsetInfo] = Format[SunriseSunsetInfo](Json.reads[SunriseSunsetInfo], Json.writes[SunriseSunsetInfo])
 }
 
 case class SunriseSunsetInfo(
