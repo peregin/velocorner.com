@@ -369,7 +369,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   )
   .enablePlugins(
     play.sbt.PlayScala,
-    play.sbt.PlayAkkaHttp2Support,
+    //play.sbt.PlayAkkaHttp2Support,
     BuildInfoPlugin,
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin

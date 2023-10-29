@@ -1,11 +1,11 @@
 package controllers
 
-import akka.NotUsed
-import akka.stream.scaladsl.{Flow, Sink, Source}
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.{Flow, Sink, Source}
 
 import javax.inject.{Inject, Singleton}
 import org.reactivestreams.Subscriber
-import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
+import play.api.libs.json.{JsNumber, JsObject, Json, JsString}
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
@@ -27,7 +27,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   private val logger = Logger(getClass)
 
   // def mapped to /api/status
-  def status = Action.async { _ =>
+  def status: Action[AnyContent] = Action.async { _ =>
     for {
       zincVersion <- brandFeed.version().recover { case err =>
         logger.error("unable to retrieve ZincSearch version", err)
@@ -40,7 +40,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
   }
 
   // def mapped to /api/ping/
-  def ping = Action { implicit request =>
+  def ping: Action[AnyContent] = Action { implicit request =>
     val counter = pings.incrementAndGet()
     val maybePayload = request.contentType match {
       case Some("application/json") => request.body.asJson.map(_.toString)

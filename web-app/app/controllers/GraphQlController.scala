@@ -1,9 +1,9 @@
 package controllers
 
-import akka.actor.ActorSystem
 import model.CharacterRepo
 import model.models.SchemaDefinition
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import org.apache.pekko.actor.ActorSystem
+import play.api.libs.json.{JsObject, Json, JsString, JsValue}
 import play.api.mvc.{Action, AnyContent, InjectedController, Request, Result}
 import sangria.execution.{ErrorWithResolver, ExceptionHandler, Executor, HandledException, MaxQueryDepthReachedError, QueryAnalysisError, QueryReducer}
 import sangria.execution.deferred.DeferredResolver
@@ -79,16 +79,16 @@ class GraphQlController @Inject() (system: ActorSystem) extends InjectedControll
         throw error
     }
 
-  def isTracingEnabled(request: Request[_]) = request.headers.get("X-Apollo-Tracing").isDefined
+  private def isTracingEnabled(request: Request[_]) = request.headers.get("X-Apollo-Tracing").isDefined
 
-  def renderSchema = Action {
+  def renderSchema: Action[AnyContent] = Action {
     Ok(SchemaRenderer.renderSchema(SchemaDefinition.StarWarsSchema))
   }
 
-  lazy val exceptionHandler = ExceptionHandler {
+  private lazy val exceptionHandler = ExceptionHandler {
     case (_, error @ TooComplexQueryError)         => HandledException(error.getMessage)
     case (_, error @ MaxQueryDepthReachedError(_)) => HandledException(error.getMessage)
   }
 
-  case object TooComplexQueryError extends Exception("Query is too expensive.")
+  private case object TooComplexQueryError extends Exception("Query is too expensive.")
 }
