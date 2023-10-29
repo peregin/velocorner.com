@@ -4,7 +4,7 @@ import org.joda.time.LocalDate
 import play.api.libs.json.{Format, Json}
 
 object DailySeries {
-  implicit val seriesFormat = Format[DailySeries](Json.reads[DailySeries], Json.writes[DailySeries])
+  implicit val seriesFormat: Format[DailySeries] = Format[DailySeries](Json.reads[DailySeries], Json.writes[DailySeries])
 }
 
 case class DailySeries(name: String, series: List[DailyPoint]) {

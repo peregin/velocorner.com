@@ -17,22 +17,22 @@ import scala.concurrent.Future
 class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
 
   object SearchMeta {
-    implicit val format = Format[SearchMeta](Json.reads[SearchMeta], Json.writes[SearchMeta])
+    implicit val format: Format[SearchMeta] = Format[SearchMeta](Json.reads[SearchMeta], Json.writes[SearchMeta])
   }
   case class SearchMeta(_id: String, _source: MarketplaceBrand)
   object Hits {
-    implicit val format = Format[Hits](Json.reads[Hits], Json.writes[Hits])
+    implicit val format: Format[Hits] = Format[Hits](Json.reads[Hits], Json.writes[Hits])
   }
   case class Hits(max_score: Double, hits: Option[List[SearchMeta]]) {
     def list(): List[SearchMeta] = hits.getOrElse(Nil)
   }
   object SearchResult {
-    implicit val format = Format[SearchResult](Json.reads[SearchResult], Json.writes[SearchResult])
+    implicit val format: Format[SearchResult] = Format[SearchResult](Json.reads[SearchResult], Json.writes[SearchResult])
   }
   case class SearchResult(hits: Hits, error: Option[String])
 
   object IndexMeta {
-    implicit val format = Format[IndexMeta](Json.reads[IndexMeta], Json.writes[IndexMeta])
+    implicit val format: Format[IndexMeta] = Format[IndexMeta](Json.reads[IndexMeta], Json.writes[IndexMeta])
   }
   case class IndexMeta(name: String, doc_num: Long)
 
