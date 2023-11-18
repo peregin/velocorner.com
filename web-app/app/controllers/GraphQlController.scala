@@ -3,7 +3,7 @@ package controllers
 import model.CharacterRepo
 import model.models.SchemaDefinition
 import org.apache.pekko.actor.ActorSystem
-import play.api.libs.json.{JsObject, Json, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.mvc.{Action, AnyContent, InjectedController, Request, Result}
 import sangria.execution.{ErrorWithResolver, ExceptionHandler, Executor, HandledException, MaxQueryDepthReachedError, QueryAnalysisError, QueryReducer}
 import sangria.execution.deferred.DeferredResolver
