@@ -31,7 +31,7 @@ object Dependencies {
   val mockitoVersion = "5.7.0"
   val catsEffectTestVersion = "1.5.0"
 
-  val springVersion = "3.1.5" // java world
+  val springVersion = "3.1.6" // java world
 }
 
 object DockerBuild {
