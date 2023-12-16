@@ -7,7 +7,6 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import com.typesafe.sbt.SbtNativePackager.autoImport._
 import play.sbt.PlayImport._
 import sbtrelease.ReleasePlugin.runtimeVersion
-import concurrent.duration._
 
 // setup common keys for every service, some of them might have extra build information
 def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
@@ -46,6 +45,12 @@ val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.42.0"
 val playJsonJoda = "org.playframework" %% "play-json-joda" % Dependencies.playJsonVersion
 val playWsAhcStandalone = "org.playframework" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
 val playWsJsonStandalone = "org.playframework" %% "play-ws-standalone-json" % Dependencies.playWsVersion
+
+val pekko = Seq(
+  "org.apache.pekko" %% "pekko-slf4j" % "1.0.2",
+  "org.apache.pekko" %% "pekko-serialization-jackson" % "1.0.2",
+  "org.apache.pekko" %% "pekko-actor-typed" % "1.0.2"
+)
 
 val apacheCommons = Seq(
   "org.apache.commons" % "commons-csv" % "1.10.0"
@@ -337,7 +342,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playTestPlus,
       mockito,
       scalaTest
-    ) ++ logging ++ sangria,
+    ) ++ pekko ++ logging ++ sangria,
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
       Seq(
