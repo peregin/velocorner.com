@@ -57,7 +57,7 @@ val apacheCommons = Seq(
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
-val playTestPlus = "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % "test"
+val playTestPlus = "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.1" % "test"
 val mockito = "org.mockito" % "mockito-core" % Dependencies.mockitoVersion % "test"
 val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion % "test"
 
