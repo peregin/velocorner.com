@@ -148,24 +148,24 @@ workflows:
           filters:
             branches:
               only: /master.*/
-#      - deploy_crawler-backend:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only: /master.*/
+      - deploy_crawler-backend:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master.*/
 #      - deploy_web-frontend:
 #          requires:
 #            - build
 #          filters:
 #            branches:
 #              only: /master.*/
-#      - deploy_rates-backend:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only: /master.*/
+      - deploy_rates-backend:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master.*/
 #      - deploy_weather-backend:
 #          requires:
 #            - build
@@ -175,7 +175,7 @@ workflows:
       - restart_stack:
           requires:
             - deploy_web-backend
-#            - deploy_crawler-backend
+            - deploy_crawler-backend
 #            - deploy_web-frontend
-#            - deploy_rates-backend
+            - deploy_rates-backend
 #            - deploy_weather-backend
