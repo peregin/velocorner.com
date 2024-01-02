@@ -58,9 +58,6 @@ def tracking():
 
     tracker = cv2.TrackerCSRT.create()
 
-    # frame = source.read()[1]
-    #tracker.init(frame, (0, 0, frame.shape[1], frame.shape[0]))
-
     tracker_ready = False
     while cv2.waitKey(1) != 27:  # Escape
         has_frame, frame = source.read()
