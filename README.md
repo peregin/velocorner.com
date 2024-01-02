@@ -10,4 +10,7 @@ pip install -r requirements.txt
 # check installation, test.py shows the opencv version
 brew install ffmpeg
 # PyCharm
+# models
+cat goturn.caffemodel.zip* > goturn.caffemodel.zip
+unzip goturn.caffemodel.zip
 ```
