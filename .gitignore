@@ -64,5 +64,6 @@ coverage
 **/gradle/*
 **/opencv-env/
 **caffemodel
-**bootcamp*
-**prototxt
+**opencv_bootcamp*
+deploy.prototxt
+ssd_mobilenet**
