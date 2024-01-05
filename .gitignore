@@ -67,3 +67,4 @@ coverage
 **opencv_bootcamp*
 deploy.prototxt
 ssd_mobilenet**
+**coco_class_labels.txt
