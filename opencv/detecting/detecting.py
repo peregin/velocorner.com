@@ -1,7 +1,4 @@
 import cv2
-import sys
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 from zipfile import ZipFile
 import urllib
@@ -19,8 +16,6 @@ THICKNESS = 1
 
 
 def detecting():
-    # source = cv2.VideoCapture('/Users/levi/Downloads/velo/timot_lepcso1.MOV')
-    # video = YouTubeVideo("XkJCvtCRdVM", width=1024, height=640)
     print('initializing...')
     load_models()
     load_assets()
@@ -37,10 +32,22 @@ def detecting():
     # Read the Tensorflow network
     net = cv2.dnn.readNetFromTensorflow(modelFile, configFile)
 
-    im = cv2.imread(os.path.join("images", "einsiedeln.jpg"))
-    objects = detect_objects(net, im)
-    display_objects(im, objects, labels)
-
+    source = cv2.VideoCapture('/Users/levi/Downloads/velo/timot_lepcso1.MOV')
+    # video = YouTubeVideo("XkJCvtCRdVM", width=1024, height=640)
+    # im = cv2.imread(os.path.join("images", "einsiedeln.jpg"))
+    # objects = detect_objects(net, im)
+    # display_objects(im, objects, labels)
+    win_name = 'Detecting Objects'
+    cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
+    while cv2.waitKey(1) != 27:  # Escape
+        has_frame, frame = source.read()
+        if not has_frame:
+            break
+        objects = detect_objects(net, frame)
+        display_objects(frame, objects, labels)
+        cv2.imshow(win_name, frame)
+    source.release()
+    cv2.destroyWindow(win_name)
     print('done...')
 
 
@@ -107,10 +114,10 @@ def display_objects(im, objects, labels, threshold=0.25):
             cv2.rectangle(im, (x, y), (x + w, y + h), (255, 255, 255), 2)
 
     # Convert Image to RGB since we are using Matplotlib for displaying image
-    mp_img = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-    plt.figure(figsize=(30, 10))
-    plt.imshow(mp_img)
-    plt.show()
+    # mp_img = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+    # plt.figure(figsize=(30, 10))
+    # plt.imshow(mp_img)
+    # plt.show()
 
 
 def load_models():
