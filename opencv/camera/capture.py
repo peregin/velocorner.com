@@ -3,7 +3,7 @@ import sys
 
 
 def capture():
-    s = 0
+    s = 1
     source = cv2.VideoCapture(s)
 
     win_name = 'Camera Preview'
