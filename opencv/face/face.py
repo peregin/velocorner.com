@@ -34,7 +34,7 @@ def detect():
         download_and_unzip(URL, asset_zip_path)
     # ====================================================================
 
-    s = 1
+    s = 0
     if len(sys.argv) > 1:
         s = sys.argv[1]
 
