@@ -13,7 +13,7 @@ object Dependencies {
   val argonautVersion = "6.3.9" // in the test service
   val playWsVersion = "3.0.1" // standalone version
   val sangriaVersion = "4.0.2"
-  val playJsonVersion = "3.0.1"
+  val playJsonVersion = "3.0.2"
   val shapelessVersion = "2.3.10"
   val logbackVersion = "1.4.14" // updating will cause conflict
   val doobieVersion = "1.0.0-RC5"
@@ -21,7 +21,7 @@ object Dependencies {
   val mongoDbVersion = "4.11.1"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.11.5"
-  val jwtVersion = "9.4.5"
+  val jwtVersion = "10.0.0"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.5.0"
   val circeVersion = "0.14.6"
