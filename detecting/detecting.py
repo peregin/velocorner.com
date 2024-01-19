@@ -37,33 +37,45 @@ def detecting():
     win_name = 'Detecting Objects'
     cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
 
-    # source = cv2.VideoCapture('/Users/levi/Downloads/velo/timot_lepcso1.MOV')
-    # # video = YouTubeVideo("XkJCvtCRdVM", width=1024, height=640)
-    im = cv2.imread(os.path.join("images", "einsiedeln.jpg"))
-    objects = detect_objects(net, im)
-    display_objects(im, objects, labels)
-    cv2.imshow(win_name, im)
-    #
-    # while cv2.waitKey(1) != 27:  # Escape
-    #     has_frame, frame = source.read()
-    #     if not has_frame:
-    #         break
-    #     objects = detect_objects(net, frame)
-    #     display_objects(frame, objects, labels)
-    #     cv2.imshow(win_name, frame)
-    # source.release()
-    #  cv2.destroyWindow(win_name)
+    # 1.
+    # from_image(net, labels, win_name)
+
+    # 2.
+    from_video(net, labels, win_name)
+
+    cv2.destroyWindow(win_name)
     print('done...')
 
+def from_video(net, labels, win_name):
+    source = cv2.VideoCapture(0)
+    # source = cv2.VideoCapture('/Users/levi/Downloads/velo/timot_lepcso1.MOV')
+    # source = YouTubeVideo("XkJCvtCRdVM", width=1024, height=640)
+    while cv2.waitKey(1) != 27:  # Escape
+        has_frame, frame = source.read()
+        if not has_frame:
+            break
+        timer = cv2.getTickCount()
+        objects = detect_objects(net, frame)
+        display_objects(frame, objects, labels, win_name)
+
+        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
+        display_text(frame, "FPS : " + str(int(fps)), 10, 30)
+        cv2.imshow(win_name, frame)
+    source.release()
+
+
+def from_image(net, labels, win_name):
+    im = cv2.imread(os.path.join("images", "einsiedeln.jpg"))
+    objects = detect_objects(net, im)
+    display_objects(im, objects, labels, win_name)
+    cv2.imshow(win_name, im)
 
 # For each file in the directory
 def detect_objects(net, im, dim=300):
     # Create a blob from the image
     blob = cv2.dnn.blobFromImage(im, 1.0, size=(dim, dim), mean=(0, 0, 0), swapRB=True, crop=False)
-
     # Pass blob to the network
     net.setInput(blob)
-
     # Perform Prediction
     objects = net.forward()
     return objects
@@ -97,7 +109,7 @@ def display_text(im, text, x, y):
     )
 
 
-def display_objects(im, objects, labels, threshold=0.25):
+def display_objects(im, objects, labels, win_name, threshold=0.25):
     rows = im.shape[0]
     cols = im.shape[1]
 
@@ -107,7 +119,7 @@ def display_objects(im, objects, labels, threshold=0.25):
         classId = int(objects[0, 0, i, 1])
         score = float(objects[0, 0, i, 2])
 
-        # Recover original cordinates from normalized coordinates
+        # Recover original coordinates from normalized coordinates
         x = int(objects[0, 0, i, 3] * cols)
         y = int(objects[0, 0, i, 4] * rows)
         w = int(objects[0, 0, i, 5] * cols - x)
@@ -120,9 +132,10 @@ def display_objects(im, objects, labels, threshold=0.25):
 
     # Convert Image to RGB since we are using Matplotlib for displaying image
     mp_img = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-    plt.figure(figsize=(30, 10))
-    plt.imshow(mp_img)
-    plt.show()
+    cv2.imshow(win_name, mp_img)
+    # plt.figure(figsize=(30, 10))
+    # plt.imshow(mp_img)
+    # plt.show()
 
 
 def load_models():
