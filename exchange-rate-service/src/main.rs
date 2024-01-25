@@ -7,56 +7,43 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, default::Default, env};
 
-// structure for the exchangerate.host response and exposed on rates endpoint as well
+const HOST: &str = "https://api.frankfurter.app";
+
+
+// structure for the exchangerate.host/frankfurter.app (same for both) response and exposed on rates endpoint as well
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct ExchangeRate {
     base: String,
     rates: HashMap<String, f32>,
 }
 
-// structure for the exchangerate.host response and exposed on currencies endpoint as well
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Currency {
-    description: String,
-    code: String,
-}
-
-// structure for the exchangerate.host response only
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Symbols {
-    symbols: HashMap<String, Currency>,
-}
-
 #[cached(time = 3600)]
 async fn rates_of(base: String) -> ExchangeRate {
     let client = Client::default();
     let mut reply = client
-        .get(format!("https://api.exchangerate.host/latest?base={}", base))
+        .get(format!("{}/latest?from={}", HOST, base))
         .insert_header(("User-Agent", "actix-web"))
         .insert_header(("Content-Type", "application/json"))
         .send()
         .await
         .unwrap();
-
-    dbg!(
-        "base={:?}, ratelimit-remaining={:?}",
-        base,
-        reply.headers().get("x-ratelimit-remaining")
-    );
-    reply.json::<ExchangeRate>().await.unwrap()
+    let reply = reply.json::<ExchangeRate>().await.unwrap();
+    info!("base={:#?}, {:#?} rates", base, reply.rates.keys().len());
+    reply
 }
 
+// map of ISO3 code -> description
 #[cached(time = 3600)]
-async fn symbols() -> Symbols {
+async fn symbols() -> HashMap<String, String> {
     let client = Client::default();
     let mut reply = client
-        .get("https://api.exchangerate.host/symbols")
+        .get(format!("{}/currencies", HOST))
         .insert_header(("User-Agent", "actix-web"))
         .insert_header(("Content-Type", "application/json"))
         .send()
         .await
         .unwrap();
-    reply.json::<Symbols>().await.unwrap()
+    reply.json::<HashMap<String, String>>().await.unwrap()
 }
 
 // root path, simple welcome message
@@ -77,7 +64,7 @@ async fn welcome(_: HttpRequest) -> impl Responder {
 
 #[get("/rates/currencies")]
 async fn currencies() -> impl Responder {
-    web::Json(symbols().await.symbols.values().cloned().collect::<Vec<_>>())
+    web::Json(symbols().await.keys().cloned().collect::<Vec<_>>())
 }
 
 #[get("/rates/{base}")]
