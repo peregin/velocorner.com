@@ -25,6 +25,7 @@ rustup run stable rust-analyzer --version
 
 # Exchange Rate Service
 Connects to exchangerate.host on demand and retrieves the latest conversion rates.
+exchangerate.host API has been changed and it is subscription based. Migrate to https://www.frankfurter.app/.
 It uses a one-hour cache. 
 
 Supports the following `json` endpoints:
