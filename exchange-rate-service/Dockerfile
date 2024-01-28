@@ -50,6 +50,7 @@ USER rates:rates
 ENV RUST_LOG=info
 # display backtrace
 ENV RUST_BACKTRACE=1
+ENV RUST_BACKTRACE=full
 
 EXPOSE 9012
 
