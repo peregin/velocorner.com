@@ -27,11 +27,11 @@ RUN cargo build --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM debian:buster-slim
+FROM debian:bookworm
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y libssl1.1 libssl-dev openssl ca-certificates && \
+    apt-get install -y libssl3 libssl-dev openssl ca-certificates && \
     update-ca-certificates
 
 # Import from builder.
