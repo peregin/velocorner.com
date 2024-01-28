@@ -27,7 +27,7 @@ RUN cargo build --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM debian:bookworm
+FROM debian:bookworm-slim
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
