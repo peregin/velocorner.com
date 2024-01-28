@@ -35,8 +35,8 @@ RUN apt-get update && \
     update-ca-certificates
 
 # Import from builder.
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
+#COPY --from=builder /etc/passwd /etc/passwd
+#COPY --from=builder /etc/group /etc/group
 
 WORKDIR /rates
 
@@ -44,7 +44,7 @@ WORKDIR /rates
 COPY --from=builder /rates/target/release/exchange-rate-service ./
 
 # Use an unprivileged user.
-USER rates:rates
+#USER rates:rates
 
 # enable logging with env_logger
 ENV RUST_LOG=info
