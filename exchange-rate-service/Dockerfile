@@ -28,7 +28,7 @@ RUN cargo build --release
 ## Final image
 ####################################################################################################
 #FROM debian:bookworm-slim
-FROM rust:1.75-alpine
+FROM rust:1.75-slim-buster
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
