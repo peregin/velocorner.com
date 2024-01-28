@@ -1,7 +1,7 @@
 ####################################################################################################
-## Builder
+## Builder - do not upgrade - openssl3 not supported properly
 ####################################################################################################
-FROM rust:1.75 AS builder
+FROM rust:1.68 AS builder
 
 # Create appuser
 ENV USER=rates
@@ -27,10 +27,10 @@ RUN cargo build --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-#FROM debian:bookworm-slim
-FROM rust:1.75-slim-buster
+#FROM debian:bookworm-slim - security issue
+FROM debian:buster-slim
 
-RUN apt-get update && \
+RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
     apt-get install -y libssl-dev openssl ca-certificates && \
     update-ca-certificates
