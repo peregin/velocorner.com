@@ -27,11 +27,12 @@ RUN cargo build --release
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM debian:bookworm-slim
+#FROM debian:bookworm-slim
+FROM rust:1.75-slim
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y libssl3 libssl-dev openssl ca-certificates && \
+    apt-get install -y libssl-dev openssl ca-certificates && \
     update-ca-certificates
 
 # Import from builder.
