@@ -48,6 +48,8 @@ USER rates:rates
 
 # enable logging with env_logger
 ENV RUST_LOG=info
+# display backtrace
+ENV RUST_BACKTRACE=1
 
 EXPOSE 9012
 
