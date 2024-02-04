@@ -160,12 +160,12 @@ workflows:
 #          filters:
 #            branches:
 #              only: /master.*/
-      - deploy_rates-backend:
-          requires:
-            - build
-          filters:
-            branches:
-              only: /master.*/
+#      - deploy_rates-backend:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              only: /master.*/
 #      - deploy_weather-backend:
 #          requires:
 #            - build
