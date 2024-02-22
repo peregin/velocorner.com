@@ -13,7 +13,7 @@ object highcharts {
     toSeries(items, _.to(unit).elevation)
 
   def toTimeSeries(items: Iterable[YearlyProgress], unit: Units.Entry): List[DailySeries] =
-    toSeries(items, _.to(unit).movingTime / 3600) // regardless of the unit, calculate from seconds to hours
+    toSeries(items, _.to(unit).movingTime.toDouble / 3600) // regardless of the unit, calculate from seconds to hours
 
   private def toSeries(items: Iterable[YearlyProgress], fun: Progress => Double): List[DailySeries] =
     items
