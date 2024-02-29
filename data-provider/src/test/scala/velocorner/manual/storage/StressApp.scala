@@ -1,7 +1,6 @@
 package velocorner.manual.storage
 
 import java.util.concurrent.{CountDownLatch, Executors, TimeUnit}
-
 import com.typesafe.scalalogging.LazyLogging
 import velocorner.manual.{AggregateActivities, MyLocalConfig}
 import velocorner.storage.Storage
@@ -20,7 +19,7 @@ object StressApp extends App with CloseableResource with LazyLogging with Aggreg
 
   val par = 10
   val latch = new CountDownLatch(par)
-  implicit val ec =
+  implicit val ec: ExecutionContext =
     ExecutionContext.fromExecutor(Executors.newFixedThreadPool(par, (r: Runnable) => new Thread(r, "worker") <| (_.setDaemon(true))))
 
   val json = withCloseable(Source.fromURL(getClass.getResource("/data/strava/last30activities.json")))(_.mkString)
