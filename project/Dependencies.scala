@@ -6,7 +6,7 @@ object Dependencies {
   val catsVersion = "2.10.0"
   val catsEffectVersion = "3.5.4"
   val mouseVersion = "1.2.3"
-  val fs2Version = "3.10.1"
+  val fs2Version = "3.10.2"
   val http4s = "0.23.26"
   val zioVersion = "2.0.21"
   val finatraVersion = "21.2.0" // in the test service
