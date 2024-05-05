@@ -39,7 +39,7 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
     }
   }
 
-  // def mapped to /api/ping/
+  // def mapped to /api/ping/ - expects text or json
   def ping: Action[AnyContent] = Action { implicit request =>
     val counter = pings.incrementAndGet()
     val maybePayload = request.contentType match {
