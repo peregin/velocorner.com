@@ -7,7 +7,7 @@ ENV SHELL "/bin/bash"
 ENV LANG="C.UTF-8"
 ENV SBT_OPTS="-Dfile.encoding=UTF-8"
 ENV SBT_HOME="/opt/sbt"
-ENV SBT_VERSION="1.9.9"
+ENV SBT_VERSION="1.10.0"
 
 USER root
 # install sbt (remove old 1.5)
