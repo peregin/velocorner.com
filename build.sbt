@@ -68,10 +68,10 @@ def logging = Seq(
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
 def elastic4s = Seq(
-  "com.sksamuel.elastic4s" %% "elastic4s-core" % Dependencies.elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-client-esjava" % Dependencies.elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
-  "com.sksamuel.elastic4s" %% "elastic4s-testkit" % Dependencies.elasticVersion % Test
+  "nl.gn0s1s" %% "elastic4s-core" % Dependencies.elasticVersion,
+  "nl.gn0s1s" %% "elastic4s-client-esjava" % Dependencies.elasticVersion,
+  "nl.gn0s1s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
+  "nl.gn0s1s" %% "elastic4s-testkit" % Dependencies.elasticVersion % Test
 )
 
 def cats = Seq(
