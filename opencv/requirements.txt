@@ -1,4 +1,0 @@
-opencv-python
-opencv-contrib-python
-matplotlib
-jupyter
