@@ -119,6 +119,7 @@ jobs:
   restart_stack:
     docker:
       - image: cimg/base:2021.04
+    resource_class: small
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
 
