@@ -57,7 +57,7 @@ class ExchangeRatesFeed(override val config: SecretConfig) extends HttpFeed with
   override def moneyContext(): Future[MoneyContext] = moneyContext(USD)
 
   def moneyContext(base: Currency): Future[MoneyContext] =
-    ws(_.url(s"$baseUrl/rates/${base.code}").get()).map(resp => Json.parse(resp.body)).map { json =>
+    ws(_.url(s"$baseUrl/api/rates/${base.code}").get()).map(resp => Json.parse(resp.body)).map { json =>
       val baseUsed = (json \ "base").as[String]
       require(baseUsed == base.code, s"base currency must be $base, not $baseUsed")
       val rates = (json \ "rates").as[Map[String, Double]]
