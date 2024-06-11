@@ -5,4 +5,5 @@ object ServiceProvider extends Enumeration {
   val Withings = Value("withings")
   val Weather = Value("weather")
   val Windy = Value("windy")
+  val Crawler = Value("crawler")
 }

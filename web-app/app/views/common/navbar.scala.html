@@ -33,8 +33,10 @@
             <ul class="nav navbar-nav">
                 <!-- Home -->
                 <li class="@(if (context.title == "Home") "active" else "")"><a href="/">Home</a></li>
+            @if(context.isCrawlerEnabled) {
                 <!-- Best price comparison -->
                 <li class="@(if (context.title == "Best") "active" else "")"><a href="/best">Find Best Components</a></li>
+            }
                 <!-- About -->
                 <li class="@(if (context.title == "About") "active" else "")"><a href="/about">About Us</a></li>
             @if(context.isAdmin()) {

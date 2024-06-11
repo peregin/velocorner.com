@@ -11,7 +11,8 @@ case class PageContext(
     weatherLocation: String,
     isWithingsEnabled: Boolean,
     isWindyEnabled: Boolean,
-    windyApiKey: String
+    windyApiKey: String,
+    isCrawlerEnabled: Boolean
 ) {
 
   def isLoggedIn(): Boolean = account.isDefined

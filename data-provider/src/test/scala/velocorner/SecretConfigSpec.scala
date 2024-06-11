@@ -43,5 +43,10 @@ class SecretConfigSpec extends AnyWordSpec with Matchers {
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
       conf.isServiceEnabled(ServiceProvider.Withings) mustBe true
     }
+
+    "check crawler when explicit setup is not provided" in {
+      val conf = new SecretConfig(ConfigFactory.parseString(""))
+      conf.isServiceEnabled(ServiceProvider.Crawler) mustBe false
+    }
   }
 }

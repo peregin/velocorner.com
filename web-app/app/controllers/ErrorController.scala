@@ -16,7 +16,8 @@ class ErrorController @Inject() (implicit assets: AssetsFinder) extends DefaultH
       weatherLocation = "",
       isWithingsEnabled = false,
       isWindyEnabled = false,
-      windyApiKey = ""
+      windyApiKey = "",
+      isCrawlerEnabled = false
     )
     Future.successful(NotFound(views.html.notFound(context)(assets = assets)))
   }

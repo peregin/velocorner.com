@@ -135,7 +135,8 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
       weatherLocation = WeatherCookie.retrieve,
       isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
       isWindyEnabled = windyEnabled,
-      windyApiKey = if (windyEnabled) connectivity.secretConfig.getAuthToken(ServiceProvider.Windy) else ""
+      windyApiKey = if (windyEnabled) connectivity.secretConfig.getAuthToken(ServiceProvider.Windy) else "",
+      isCrawlerEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Crawler)
     )
     logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
     context
