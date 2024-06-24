@@ -47,9 +47,9 @@ val playWsAhcStandalone = "org.playframework" %% "play-ahc-ws-standalone" % Depe
 val playWsJsonStandalone = "org.playframework" %% "play-ws-standalone-json" % Dependencies.playWsVersion
 
 val pekko = Seq(
-  "org.apache.pekko" %% "pekko-slf4j" % "1.0.2",
-  "org.apache.pekko" %% "pekko-serialization-jackson" % "1.0.2",
-  "org.apache.pekko" %% "pekko-actor-typed" % "1.0.2"
+  "org.apache.pekko" %% "pekko-slf4j" % "1.0.3",
+  "org.apache.pekko" %% "pekko-serialization-jackson" % "1.0.3",
+  "org.apache.pekko" %% "pekko-actor-typed" % "1.0.3"
 )
 
 val apacheCommons = Seq(
