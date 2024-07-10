@@ -205,7 +205,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playJsonExtensions,
       playJsonJoda,
       playWsAhcStandalone,
-      "com.beachape" %% "enumeratum" % "1.7.3",
+      "com.beachape" %% "enumeratum" % "1.7.4",
       scalaTest
     ) ++ logging
       ++ psqlDbClient
