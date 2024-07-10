@@ -11,7 +11,7 @@ object Dependencies {
   val zioVersion = "2.1.6"
   val finatraVersion = "21.2.0" // in the test service
   val argonautVersion = "6.3.10" // in the test service
-  val playWsVersion = "3.0.4" // standalone version
+  val playWsVersion = "3.0.5" // standalone version
   val pekkoVersion = "1.0.3"
   val sangriaVersion = "4.1.1"
   val playJsonVersion = "3.0.4"
