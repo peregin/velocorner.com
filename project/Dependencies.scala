@@ -5,7 +5,7 @@ object Dependencies {
   val flywayVersion = "10.17.0"
   val catsVersion = "2.12.0"
   val catsEffectVersion = "3.5.4"
-  val mouseVersion = "1.3.1"
+  val mouseVersion = "1.3.2"
   val fs2Version = "3.10.2"
   val http4s = "0.23.27"
   val zioVersion = "2.1.7"
