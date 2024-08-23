@@ -9,10 +9,10 @@ version = "1.0.0-SNAPSHOT"
 
 plugins {
     application
-    kotlin("jvm") version "1.8.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    kotlin("jvm") version "2.0.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
     id("name.remal.check-updates") version "1.5.0"
-    id("io.ktor.plugin") version "2.2.4"
+    id("io.ktor.plugin") version "2.3.12"
 }
 
 application {
@@ -40,9 +40,10 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.flywaydb:flyway-core:$flyway_version")
+    implementation("org.flywaydb:flyway-database-postgresql:$flyway_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.0.20")
 }
 
 ktor {
@@ -51,7 +52,7 @@ ktor {
     }
 
     docker {
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+        jreVersion.set(JavaVersion.VERSION_17)
         localImageName.set("velocorner.weather")
         imageTag.set("latest")
         portMappings.set(listOf(
