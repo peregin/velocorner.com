@@ -16,6 +16,7 @@ Useful commands and plugins
 ```shell
 # check for dependency updates
 ./gradlew checkUpdates
+# upgrade gradle version
 ./gradlew wrapper --gradle-version 8.10
 ```
 
