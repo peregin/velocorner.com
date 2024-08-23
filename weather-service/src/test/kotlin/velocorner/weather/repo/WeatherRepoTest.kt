@@ -88,7 +88,7 @@ internal class WeatherRepoTest {
     @Test fun upsertForecastWeather() = runBlocking {
         val repo = WeatherRepoImpl()
         assertEquals(40, forecastFixture.list?.size!!)
-        repo.storeForecast(forecastFixture?.list!!.map{ e -> ForecastWeather(
+        repo.storeForecast(forecastFixture.list!!.map{ e -> ForecastWeather(
             location = zhLocation,
             timestamp = e.dt,
             forecast = e) }
