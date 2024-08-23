@@ -4,8 +4,13 @@
       <env name="CONFIG_FILE" value="$USER_HOME$/Downloads/velo/velocorner/local.conf" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="velocorner.weather.ServiceKt" />
-    <module name="velocorner.weather.weather-service.main" />
+    <module name="weather-service.main" />
     <shortenClasspath name="NONE" />
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

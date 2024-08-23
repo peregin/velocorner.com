@@ -11,14 +11,14 @@ docker build -t peregin/velocorner.weather .
 docker push peregin/velocorner.weather:latest
 ```
 
-## gradle
+## Gradle
 Useful commands and plugins
 ```shell
 # check for dependency updates
 ./gradlew checkUpdates
 ```
 
-## docker
+## Docker
 ```shell
 docker build -t peregin/velocorner.weather .
 docker run --rm -it -p 9015:9015 peregin/velocorner.weather
