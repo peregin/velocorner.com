@@ -187,8 +187,6 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   ),
   dependencyOverrides ++= Seq(
-    "com.fasterxml.jackson.core" % "jackson-databind" % "2.14.0", // spark needs 2.14.2
-    "com.fasterxml.jackson.core" % "jackson-core" % "2.14.0", // spark needs 2.14.2
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
