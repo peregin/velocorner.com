@@ -18,7 +18,7 @@ import java.io.File
 fun main() {
     embeddedServer(Netty, port = 9015, host = "0.0.0.0") {
         val configPath = System.getenv("CONFIG_FILE")
-        log.info("CONFIG_FILE=$configPath")
+        log.info("1-CONFIG_FILE=$configPath")
         val config = ConfigFactory.parseFile(File(configPath))
 
         val feed = OpenWeatherFeed(config)
