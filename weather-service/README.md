@@ -25,5 +25,5 @@ Useful commands and plugins
 docker build -t peregin/velocorner.weather .
 docker run --rm -it -p 9015:9015 peregin/velocorner.weather
 docker push peregin/velocorner.weather:latest
-docker run -it --rm --name weather -p 9015:9015 -v /Users/levi/Downloads/velo/velocorner/:/weather/ -e "CONFIG_FILE=/weather/config/local.conf" peregin/velocorner.weather:latest
+docker run -it --rm --name weather -p 9015:9015 -v /Users/levi/Downloads/velo/velocorner/:/config/ -e "CONFIG_FILE=/config/local.conf" peregin/velocorner.weather:latest
 ```
