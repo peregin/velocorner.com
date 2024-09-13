@@ -18,7 +18,7 @@ object DatabaseFactory {
         val dbPassword = config.getString("psql.password")
         val dataSource = hikari(dbUrl, dbUser, dbPassword, driverClassName)
         Database.connect(dataSource)
-        val flyway = Flyway.configure().locations("psql/migration").dataSource(dataSource).load()
+        val flyway = Flyway.configure().locations("psql/migration").validateMigrationNaming(false).dataSource(dataSource).load()
         flyway.migrate()
     }
 
