@@ -13,7 +13,8 @@ object DatabaseFactory {
 
     fun init(config: Config, driverClassName: String = "org.postgresql.Driver") {
         val dbUrl = config.getString("weather.psql.url")
-        val dbUser = config.getString("psql.user")
+        // fallback to old user if config was not updated
+        val dbUser = if (config.hasPath("weather.psql.user")) config.getString("weather.psql.user") else config.getString("psql.user")
         val dbPassword = config.getString("psql.password")
         val dataSource = hikari(dbUrl, dbUser, dbPassword, driverClassName)
         Database.connect(dataSource)
