@@ -13,6 +13,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
     id("name.remal.check-updates") version "1.5.0"
     id("io.ktor.plugin") version "2.3.12"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 application {
@@ -70,5 +71,16 @@ ktor {
                 password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
             )
         )
+    }
+}
+
+tasks {
+    shadowJar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        mergeServiceFiles()
+        archiveBaseName.set("WeatherApp")
+        manifest {
+            attributes["Main-Class"] = "velocorner.weather.ServiceKt"
+        }
     }
 }

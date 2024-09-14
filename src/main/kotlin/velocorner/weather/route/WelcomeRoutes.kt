@@ -12,6 +12,12 @@ fun Route.welcomeRoutes() {
     get("/") {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)
         call.respondHtml(HttpStatusCode.OK) {
+            head {
+                title("Weather Service")
+                link(rel = "icon", href = "/favicon.ico", type = "image/x-icon")
+                link(rel = "icon", href = "/favicon-16x16.png", type = "image/png")
+                link(rel = "icon", href = "/favicon-32x32.png", type = "image/png")
+            }
             body {
                 h1 { +"Welcome @ $now" }
                 ul {

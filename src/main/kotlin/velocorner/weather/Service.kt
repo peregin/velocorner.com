@@ -4,6 +4,7 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -32,6 +33,7 @@ fun main() {
         install(CallLogging)
 
         routing {
+            staticResources("/", "static")
             welcomeRoutes()
             weatherRoutes(service)
         }
