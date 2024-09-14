@@ -6,7 +6,7 @@ Provides 5 days forecast, current weather conditions and suggestions for locatio
 
 ## Deploy
 ```shell
-./gradlew buildFatJar
+./gradlew shadowJar
 docker build -t peregin/velocorner.weather .
 docker push peregin/velocorner.weather:latest
 ```
