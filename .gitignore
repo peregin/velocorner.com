@@ -68,3 +68,4 @@ coverage
 deploy.prototxt
 ssd_mobilenet**
 **coco_class_labels.txt
+.scannerwork/*
