@@ -3,11 +3,11 @@ FROM circleci/openjdk:17-buster-node-browsers
 
 LABEL maintainer="velocorner.com@gmail.com"
 
-ENV SHELL "/bin/bash"
+ENV SHELL="/bin/bash"
 ENV LANG="C.UTF-8"
 ENV SBT_OPTS="-Dfile.encoding=UTF-8"
 ENV SBT_HOME="/opt/sbt"
-ENV SBT_VERSION="1.10.1"
+ENV SBT_VERSION="1.10.2"
 
 USER root
 # install sbt (remove old 1.5)
