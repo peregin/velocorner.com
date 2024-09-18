@@ -8,7 +8,6 @@ import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie._
 import doobie.implicits._
-import doobie.implicits.javasql.TimestampMeta
 // needed for sql interpolator when filtering on start date on activity (or DateTime in general)
 import doobie.postgres.implicits._
 import velocorner.model.ActionType

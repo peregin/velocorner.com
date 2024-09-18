@@ -9,7 +9,7 @@ executors:
     docker:
       - image: peregin/circleci:latest
         user: circleci
-      - image: postgres:12
+      - image: postgres:16
         environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: test
