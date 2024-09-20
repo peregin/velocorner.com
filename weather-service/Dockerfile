@@ -3,8 +3,8 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle shadowJar --no-daemon
 
-FROM eclipse-temurin:17-jdk-alpine
+FROM openjdk:17-slim-buster
 EXPOSE 9015:9015
 RUN mkdir /app
-COPY --from=build /home/gradle/src/build/libs/service.jar /app/service.jar
-ENTRYPOINT ["java","-jar","/app/service.jar"]
+COPY --from=build /home/gradle/src/build/libs/service.jar /app/weather-service.jar
+ENTRYPOINT ["java","-jar","/app/weather-service.jar"]
