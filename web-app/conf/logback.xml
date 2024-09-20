@@ -42,5 +42,6 @@
     <logger name="unknown.jul.logger" level="WARN"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG"/>
+    <logger name="org.apache.pekko" level="INFO"/>
 
 </configuration>
