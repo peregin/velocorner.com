@@ -49,11 +49,12 @@ dependencies {
 
 ktor {
     fatJar {
-        archiveFileName.set("service.jar")
+        archiveFileName = "service.jar"
     }
 
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
+        customBaseImage = "openjdk:17-slim-buster"
         localImageName.set("velocorner.weather")
         imageTag.set("latest")
         portMappings.set(listOf(
