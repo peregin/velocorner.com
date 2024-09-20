@@ -1,6 +1,5 @@
 package velocorner.weather
 
-import com.typesafe.config.ConfigFactory
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -14,16 +13,13 @@ import velocorner.weather.repo.WeatherRepoImpl
 import velocorner.weather.route.*
 import velocorner.weather.service.OpenWeatherFeed
 import velocorner.weather.service.WeatherService
-import java.io.File
 
 fun main() {
     embeddedServer(Netty, port = 9015, host = "0.0.0.0") {
-        val configPath = System.getenv("CONFIG_FILE")
-        log.info("CONFIG_FILE=$configPath")
-        val config = ConfigFactory.parseFile(File(configPath))
+        log.info("starting weather service...")
 
-        val feed = OpenWeatherFeed(config)
-        DatabaseFactory.init(config)
+        val feed = OpenWeatherFeed()
+        DatabaseFactory.init()
         val repo = WeatherRepoImpl()
         val service = WeatherService(feed, repo)
 

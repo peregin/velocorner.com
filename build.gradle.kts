@@ -22,7 +22,6 @@ application {
 
 repositories {
     mavenCentral()
-    //maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
 dependencies {
@@ -52,6 +51,7 @@ ktor {
         archiveFileName = "service.jar"
     }
 
+    // it is generated from the script, deploy.sh
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
         customBaseImage = "openjdk:17-slim-buster"
