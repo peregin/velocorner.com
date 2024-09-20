@@ -358,7 +358,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     dockerBaseImage := DockerBuild.baseImage,
     dockerUsername := Some("peregin"),
     Docker / version := "latest",
-    Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC", "$JAVA_OPTS"),
+    Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
     swaggerV3 := true
