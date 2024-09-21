@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter
 import io.ktor.server.html.*
 import kotlinx.html.*
 
+val javaOpts = System.getenv("JAVA_OPTS") ?: "n/a"
+
 fun Route.welcomeRoutes() {
     get("/") {
         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)
@@ -24,6 +26,7 @@ fun Route.welcomeRoutes() {
                     li { a("weather/current/Zurich,CH") { +"current weather for Zürich, Switzerland 🇨🇭" } }
                     li { a("weather/forecast/Zurich,CH") { +"5 days forecast ☀️ in 🇨🇭" } }
                 }
+                p { +"JAVA_OPTS: $javaOpts" }
             }
         }
     }
