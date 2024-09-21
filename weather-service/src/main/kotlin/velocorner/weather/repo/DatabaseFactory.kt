@@ -27,6 +27,7 @@ object DatabaseFactory {
         config.username = dbUser
         config.password = dbPassword
         config.maximumPoolSize = 3
+        config.minimumIdle = 1
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         config.validate()
