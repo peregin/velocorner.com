@@ -7,8 +7,12 @@ Provides 5 days forecast, current weather conditions and suggestions for locatio
 ## Deploy
 ```shell
 ./gradlew shadowJar
+# x64
 docker build -t peregin/velocorner.weather .
 docker push peregin/velocorner.weather:latest
+# aarch64
+docker buildx create --use
+docker buildx build --platform linux/amd64,linux/arm64 -t peregin/velocorner.weather:latest --push .
 ```
 
 ## Gradle
@@ -22,8 +26,5 @@ Useful commands and plugins
 
 ## Docker
 ```shell
-docker build -t peregin/velocorner.weather .
-docker run --rm -it -p 9015:9015 peregin/velocorner.weather
-docker push peregin/velocorner.weather:latest
-docker run -it --rm --name weather -p 9015:9015 -v /Users/levi/Downloads/velo/velocorner/:/config/ -e "CONFIG_FILE=/config/local.conf" peregin/velocorner.weather:latest
+docker run -it --rm --name weather -p 9015:9015 peregin/velocorner.weather:latest
 ```
