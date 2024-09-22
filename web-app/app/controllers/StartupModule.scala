@@ -13,7 +13,7 @@ class StartupModule extends AbstractModule {
 
 object StartupService {
 
-  val startupTime = System.currentTimeMillis()
+  private val startupTime = System.currentTimeMillis()
   def elapsedTimeText(): String = Metrics.elapsedTimeText(System.currentTimeMillis() - startupTime)
 }
 
