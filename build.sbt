@@ -1,12 +1,14 @@
-import play.sbt.routes.RoutesCompiler.autoImport._
+import play.sbt.routes.RoutesCompiler.autoImport.*
 import sbtbuildinfo.BuildInfoKeys
-import sbtrelease._
-import ReleaseStateTransformations._
-import sbtrelease.ReleasePlugin.autoImport._
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
-import com.typesafe.sbt.SbtNativePackager.autoImport._
-import play.sbt.PlayImport._
+import sbtrelease.*
+import ReleaseStateTransformations.*
+import sbtrelease.ReleasePlugin.autoImport.*
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.*
+import com.typesafe.sbt.SbtNativePackager.autoImport.*
+import play.sbt.PlayImport.*
 import sbtrelease.ReleasePlugin.runtimeVersion
+
+import scala.sys.process.Process
 
 // setup common keys for every service, some of them might have extra build information
 def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
@@ -361,7 +363,8 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
-    swaggerV3 := true
+    swaggerV3 := true,
+    dockerBuildxSettings
     // whenever we generate build information, run the formatter on the generated files
     /*
     Compile / buildInfo := Def.taskDyn {
@@ -375,7 +378,6 @@ lazy val webApp = (project in file("web-app") withId "web-app")
   )
   .enablePlugins(
     play.sbt.PlayScala,
-    // play.sbt.PlayAkkaHttp2Support,
     BuildInfoPlugin,
     com.iheart.sbtPlaySwagger.SwaggerPlugin,
     ScalafmtExtensionPlugin
@@ -404,3 +406,25 @@ lazy val root = (project in file(".") withId "velocorner")
   )
 
 addCommandAlias("fmt", "; scalafmtAll ; scalafmtSbt ; scalafmtGenerated")
+
+lazy val ensureDockerBuildx = taskKey[Unit]("Ensure that docker buildx configuration exists")
+lazy val dockerBuildWithBuildx = taskKey[Unit]("Build docker images using buildx")
+lazy val dockerBuildxSettings = Seq(
+  ensureDockerBuildx := {
+    if (Process("docker buildx inspect multi-arch-builder").! == 1) {
+      Process("docker buildx create --use --name multi-arch-builder", baseDirectory.value).!
+    }
+  },
+  dockerBuildWithBuildx := {
+    streams.value.log("Building and pushing image with Buildx")
+    dockerAliases.value.foreach(
+      alias => Process("docker buildx build --platform=linux/arm64,linux/amd64 --push -t " +
+        alias + " .", baseDirectory.value / "target" / "docker"/ "stage").!
+    )
+  },
+  Docker / publish := Def.sequential(
+    Docker / publishLocal,
+    ensureDockerBuildx,
+    dockerBuildWithBuildx
+  ).value
+)
