@@ -9,7 +9,7 @@ class StatusInfoSpec extends AnyWordSpec with Matchers {
 
   "model" should {
 
-    val status = StatusInfo.compute(Environment.simple().mode, pings = 2, "1.2.1")
+    val status = StatusInfo.compute(Environment.simple().mode, pings = 2)
 
     "read and write from json" in {
       val json = JsonIo.write(status)
