@@ -10,6 +10,7 @@ object SecretConfig {
 
   def load(config: Config): SecretConfig = new SecretConfig(config)
 
+  //def load(): SecretConfig = load(ConfigFactory.systemEnvironment())
   def load(): SecretConfig = load(ConfigFactory.load())
 
   implicit class PimpMyConfig(config: Config) {
