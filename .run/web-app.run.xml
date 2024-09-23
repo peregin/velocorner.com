@@ -5,7 +5,7 @@
     <option name="selectedOptions">
       <list />
     </option>
-    <option name="tasks" value="sbt &quot;project web-app; run&quot;" />
+    <option name="tasks" value="&quot;project web-app&quot;; run" />
     <option name="useSbtShell" value="false" />
     <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 -Dlogback.debug=true --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dconfig.file=$USER_HOME$/Downloads/velo/velocorner/local.conf" />
     <option name="workingDir" value="$PROJECT_DIR$" />
@@ -33,8 +33,6 @@
       <env name="HOME" value="$USER_HOME$" />
       <env name="DB_PASSWORD" value="velocorner" />
     </envs>
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>
