@@ -21,22 +21,14 @@ class ApiController @Inject() (environment: Environment, val connectivity: Conne
     with OriginChecker {
 
   val pings = new AtomicLong
-  lazy val brandFeed = new BrandSearch(connectivity.secretConfig)
 
   val allowedHosts: Seq[String] = connectivity.allowedHosts
   private val logger = Logger(getClass)
 
   // def mapped to /api/status
-  def status: Action[AnyContent] = Action.async { _ =>
-    for {
-      zincVersion <- brandFeed.version().recover { case err =>
-        logger.error("unable to retrieve ZincSearch version", err)
-        "n/a"
-      }
-    } yield {
-      val statusInfo = StatusInfo.compute(environment.mode, pings.get(), zincVersion)
-      Ok(Json.toJson(statusInfo))
-    }
+  def status: Action[AnyContent] = Action { _ =>
+    val statusInfo = StatusInfo.compute(environment.mode, pings.get())
+    Ok(Json.toJson(statusInfo))
   }
 
   // def mapped to /api/ping/ - expects text or json

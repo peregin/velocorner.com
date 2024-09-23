@@ -79,10 +79,6 @@
                                 <div class="VC_padding8">Cats Version</div>
                             </li>
                             <li class="list-group-item">
-                                <span id="status-zinc-version" class="badge badge-orange rounded-2x">X</span>
-                                <div class="VC_padding8">ZincSearch Version</div>
-                            </li>
-                            <li class="list-group-item">
                                 <span id="status-play-version" class="badge badge-aqua rounded-2x">X</span>
                                 <span id="status-play-mode" class="badge badge-aqua rounded-2x">X</span>
                                 <div class="VC_padding8">Play Version</div>
@@ -169,7 +165,6 @@
                 $('#status-scala-version').html(data.scalaVersion)
                 $('#status-sbt-version').html(data.sbtVersion)
                 $('#status-cats-version').html(data.catsVersion)
-                $('#status-zinc-version').html(data.zincVersion)
                 $('#status-play-version').html(data.playVersion)
                 $('#status-play-mode').html(data.applicationMode)
                 $('#memory-progress-bar').attr('aria-valuenow', data.memoryUsedPercentile).css("width", data.memoryUsedPercentile + "%");
