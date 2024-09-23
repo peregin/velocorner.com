@@ -20,12 +20,6 @@ GET     /about                                             controllers.WebContro
 ### NoDocs ###
 GET     /admin                                             controllers.WebController.admin
 ### NoDocs ###
-GET     /graphql                                           controllers.GraphQlController.graphql(query: String, variables: Option[String], operation: Option[String])
-### NoDocs ###
-POST    /graphql                                           controllers.GraphQlController.graphqlBody
-### NoDocs ###
-GET     /render-schema                                     controllers.GraphQlController.renderSchema
-### NoDocs ###
 GET     /sitemap.xml                                       controllers.WebController.sitemap
 
 # STRAVA AUTH

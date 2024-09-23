@@ -132,12 +132,6 @@ def scalacache = Seq(
   "com.github.cb372" %% "scalacache-guava"
 ).map(_ % Dependencies.scalacacheVersion)
 
-def sangria = Seq(
-  "org.sangria-graphql" %% "sangria" % Dependencies.sangriaVersion,
-  "org.sangria-graphql" %% "sangria-slowlog" % "3.0.0",
-  "org.sangria-graphql" %% "sangria-play-json" % "2.0.2"
-)
-
 lazy val runWebAppDist: ReleaseStep = ReleaseStep(
   action = { st: State =>
     val extracted = Project.extract(st)
@@ -207,12 +201,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playWsAhcStandalone,
       "com.beachape" %% "enumeratum" % "1.7.4",
       scalaTest
-    ) ++ logging
-      ++ psqlDbClient
-      ++ apacheCommons
-      ++ cats
-      ++ squants
-      ++ catsEffect.map(_ % Test)
+    ) ++ logging ++ psqlDbClient ++ apacheCommons ++ cats ++ squants ++ catsEffect.map(_ % Test)
   )
 
 lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")
@@ -225,10 +214,7 @@ lazy val dataProviderExtension = (project in file("data-provider-ext") withId "d
       playJsonExtensions,
       playJsonJoda,
       scalaTest
-    ) ++ logging
-      ++ Seq(mongoClient, orientDbClient) ++ rethinkClient
-      ++ cats
-      ++ zio.map(_ % Test)
+    ) ++ logging ++ Seq(mongoClient, orientDbClient) ++ rethinkClient ++ cats ++ zio.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -238,9 +224,7 @@ lazy val dataSearchElastic = (project in file("data-search-elastic") withId "dat
     description := "search with classic ElasticSearch",
     name := "data-search-elastic",
     libraryDependencies ++=
-      elastic4s
-        ++ catsEffect.map(_ % Test)
-        ++ fs2.map(_ % Test)
+      elastic4s ++ catsEffect.map(_ % Test) ++ fs2.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -258,15 +242,10 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     buildSettings,
     name := "crawler-service",
     description := "product crawler with an up-to-date data feed",
-    libraryDependencies ++= catsEffect
-      ++ http4s
-      ++ circe
-      ++ scalacache
-      ++ Seq(
+    libraryDependencies ++= catsEffect ++ http4s ++ circe ++ scalacache ++ Seq(
         "org.typelevel" %% "log4cats-slf4j" % "2.7.0",
         "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
-      )
-      ++ catsEffectTest.map(_ % Test),
+      ) ++ catsEffectTest.map(_ % Test),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.crawler.build",
     maintainer := DockerBuild.maintainer,
@@ -344,7 +323,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       playTestPlus,
       mockito,
       scalaTest
-    ) ++ pekko ++ logging ++ sangria,
+    ) ++ pekko ++ logging,
     routesGenerator := InjectedRoutesGenerator,
     BuildInfoKeys.buildInfoKeys := buildInfoKeys(extraKeys =
       Seq(
