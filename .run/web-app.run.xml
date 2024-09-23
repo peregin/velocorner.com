@@ -5,10 +5,36 @@
     <option name="selectedOptions">
       <list />
     </option>
-    <option name="tasks" value="&quot;project web-app&quot; run" />
+    <option name="tasks" value="sbt &quot;project web-app; run&quot;" />
     <option name="useSbtShell" value="false" />
     <option name="vmparams" value="-Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 -Dlogback.debug=true --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dconfig.file=$USER_HOME$/Downloads/velo/velocorner/local.conf" />
     <option name="workingDir" value="$PROJECT_DIR$" />
-    <method v="2" />
+    <envs>
+      <env name="__CFBundleIdentifier" value="com.jetbrains.intellij.ce" />
+      <env name="PATH" value="$USER_HOME$/.cabal/bin:$USER_HOME$/.ghcup/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/usr/local/go/bin:$USER_HOME$/.cargo/bin:$PROJECT_DIR$/../../tool/scala/scala-2.13.1/bin:/usr/local/go/bin:$USER_HOME$/.ghcup/bin:/usr/local/git/bin:$PROJECT_DIR$/../../tool:/usr/local/bin:$USER_HOME$/.local/bin:$USER_HOME$/.local/bin" />
+      <env name="SHELL" value="/bin/zsh" />
+      <env name="DB_USER" value="velocorner" />
+      <env name="JAVA_HOME" value="/usr/local/Cellar/openjdk@17/17.0.12/libexec/openjdk.jdk/Contents/Home" />
+      <env name="SBT_OPTS" value="-XX:MaxMetaspaceSize=512m -Xms2048m -Xmx4g" />
+      <env name="OLDPWD" value="/" />
+      <env name="GOPATH" value="$USER_HOME$/go" />
+      <env name="USER" value="levi" />
+      <env name="COMMAND_MODE" value="unix2003" />
+      <env name="TMPDIR" value="/var/folders/wp/qyw984c53_76p3t9zz89388m0000gq/T/" />
+      <env name="ANDROID_HOME" value="$PROJECT_DIR$/../../tool/android/sdk" />
+      <env name="SSH_AUTH_SOCK" value="/private/tmp/com.apple.launchd.4UkFbbPjEa/Listeners" />
+      <env name="XPC_FLAGS" value="0x0" />
+      <env name="GO_HOME" value="/usr/local/go" />
+      <env name="DB_URL" value="jdbc:postgresql://localhost:5492/velocorner" />
+      <env name="__CF_USER_TEXT_ENCODING" value="0x1F7:0x0:0x0" />
+      <env name="LOGNAME" value="levi" />
+      <env name="LC_CTYPE" value="en_CH.UTF-8" />
+      <env name="XPC_SERVICE_NAME" value="application.com.jetbrains.intellij.ce.131477316.131479984" />
+      <env name="HOME" value="$USER_HOME$" />
+      <env name="DB_PASSWORD" value="velocorner" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
   </configuration>
 </component>
