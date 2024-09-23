@@ -40,20 +40,20 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     accounts <- adminStorage.countAccounts
     activeAccounts <- adminStorage.countActiveAccounts
     activities <- adminStorage.countActivities
-    brands <- brandFeed.countBrands().recover { case error =>
-      logger.info(s"failed while counting brands: ${error.getMessage}") // zinc is disabled, since we have a crawler
-      0L
-    }
-    markets <- productFeed.supported().map(_.size.toLong).recover { case error =>
-      logger.error(s"failed while counting markets: ${error.getMessage}")
-      0L
-    }
+//    brands <- brandFeed.countBrands().recover { case error =>
+//      logger.info(s"failed while counting brands: ${error.getMessage}") // zinc is disabled, since we have a crawler
+//      0L
+//    }
+//    markets <- productFeed.supported().map(_.size.toLong).recover { case error =>
+//      logger.error(s"failed while counting markets: ${error.getMessage}")
+//      0L
+//    }
   } yield AdminInfo(
     accounts = accounts,
     activeAccounts = activeAccounts,
     activities = activities,
-    brands = brands,
-    markets = markets
+    brands = -1,
+    markets = -1
   )
 
   // called from the admin GUI
