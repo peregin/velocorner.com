@@ -57,12 +57,7 @@ Start database
 ./script/import_psql.sh ~/Downloads/velo/velocorner/backup/psql-202008031826.sql.gz
 
 # start web application
-sbt -Xms512M \
-    -Xmx2048M \
-    -Xss1M \
-    -XX:+CMSClassUnloadingEnabled \
-    -Dhttp.port=9001 \
-    -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf \
+sbt -Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 -Dlogback.debug=true --add-opens java.base/jdk.internal.misc=ALL-UNNAMED \
   "project web-app" run
 ```
 

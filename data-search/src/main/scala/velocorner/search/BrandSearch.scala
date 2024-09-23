@@ -36,7 +36,7 @@ class BrandSearch(val config: SecretConfig) extends HttpFeed with LazyLogging {
   }
   case class IndexMeta(name: String, doc_num: Long)
 
-  private val baseUrl = config.getZincUrl
+  private lazy val baseUrl = config.getZincUrl
   private val ixName = "brand"
 
   def bulk(brands: List[MarketplaceBrand]): Future[Unit] = {

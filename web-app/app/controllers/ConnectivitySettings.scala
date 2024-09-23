@@ -28,9 +28,7 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
 
-  def getElasticUrl: String = secretConfig.getElasticSearchUrl
-
-  def disconnect(): Unit = {
+  private def disconnect(): Unit = {
     logger.info("releasing storage connections...")
     getStorage.destroy()
     logger.info("stopped...")

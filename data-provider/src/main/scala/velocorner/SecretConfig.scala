@@ -5,12 +5,12 @@ import velocorner.SecretConfig.PimpMyConfig
 
 /**
  * Created by levi on 29/03/15.
+ * Read configs from environment variables and merge it with the default application.conf
  */
 object SecretConfig {
 
   def load(config: Config): SecretConfig = new SecretConfig(config)
 
-  //def load(): SecretConfig = load(ConfigFactory.systemEnvironment())
   def load(): SecretConfig = load(ConfigFactory.load())
 
   implicit class PimpMyConfig(config: Config) {
@@ -19,33 +19,33 @@ object SecretConfig {
       val maybePath = Some(path).filter(config.hasPath)
       maybePath.map(config.getAnyRef).map(_.asInstanceOf[T])
     }
+
+    def getOptBoolean(path: String, default: Boolean): Boolean = getOptAs[String](path).map(_.toBoolean).getOrElse(default)
   }
 
 }
 
-case class SecretConfig(config: Config) {
+case class SecretConfig(configProps: Config) {
 
-  def isServiceEnabled(application: ServiceProvider.Value): Boolean = config.getOptAs[Boolean](s"$application.enabled").getOrElse(false)
+  private val config = ConfigFactory.systemEnvironment().withFallback(configProps).resolve()
 
-  def getAuthId(application: ServiceProvider.Value): String = config.getString(s"$application.application.id")
+  def isServiceEnabled(application: ServiceProvider.Value): Boolean = config.getOptBoolean(s"${application.toString.toUpperCase}_ENABLED", default = false)
 
-  def getAuthToken(application: ServiceProvider.Value): String = config.getString(s"$application.application.token")
+  def getAuthId(application: ServiceProvider.Value): String = config.getString(s"${application.toString.toUpperCase}_API_ID")
 
-  def getAuthSecret(application: ServiceProvider.Value): String = config.getString(s"$application.application.secret")
+  def getAuthToken(application: ServiceProvider.Value): String = config.getString(s"${application.toString.toUpperCase}_API_TOKEN")
 
-  def getAuthCallbackUrl(application: ServiceProvider.Value): String = config.getString(s"$application.application.callback.url")
+  def getAuthSecret(application: ServiceProvider.Value): String = config.getString(s"${application.toString.toUpperCase}_API_SECRET")
+
+  def getAuthCallbackUrl(application: ServiceProvider.Value): String = config.getString(s"${application.toString.toUpperCase}_API_CALLBACK")
 
   def getStorageType: Option[String] = config.getOptAs[String]("storage")
 
-  def getOrientDbUrl: Option[String] = config.getOptAs("orientdb.url")
+  def getPsqlUrl: String = config.getString("DB_URL")
 
-  def getOrientDbPassword: String = config.getString("orientdb.password")
+  def getPsqlUser: String = config.getString("DB_USER")
 
-  def getPsqlUrl: String = config.getString("psql.url")
-
-  def getPsqlUser: String = config.getString("psql.user")
-
-  def getPsqlPassword: String = config.getString("psql.password")
+  def getPsqlPassword: String = config.getString("DB_PASSWORD")
 
   def getProxyHost: Option[String] = config.getOptAs[String]("proxy.host")
 
@@ -55,14 +55,14 @@ case class SecretConfig(config: Config) {
 
   def getProxyPassword: Option[String] = config.getOptAs[String]("proxy.password")
 
-  def getJwtSecret: String = config.getString("jwt.secret")
+  def getJwtSecret: String = config.getString("JWT_SECRET")
 
   def getElasticSearchUrl: String = config.getString("elasticsearch.url")
   def getZincUrl: String = config.getString("zinc.url")
   def getZincUser: String = config.getString("zinc.user")
   def getZincPassword: String = config.getString("zinc.password")
 
-  def getCrawlerUrl: String = config.getString("crawler.url")
-  def getRatesUrl: String = config.getString("rates.url")
-  def getWeatherUrl: String = config.getString("weather.url")
+  def getCrawlerUrl: String = config.getString("CRAWLER_URL")
+  def getRatesUrl: String = config.getString("RATES_URL")
+  def getWeatherUrl: String = config.getString("WEATHER_URL")
 }

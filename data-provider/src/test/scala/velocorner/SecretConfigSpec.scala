@@ -38,7 +38,7 @@ class SecretConfigSpec extends AnyWordSpec with Matchers {
     "mark enabled explicit withings setup" in {
       val testConfig =
         """
-          |withings.enabled=true
+          |WITHINGS_ENABLED="true"
         """.stripMargin
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
       conf.isServiceEnabled(ServiceProvider.Withings) mustBe true
