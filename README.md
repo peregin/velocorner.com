@@ -40,9 +40,9 @@ Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to he
 ![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD")
 
 ## Infrastructure
-Follows the infrastructure as code approach, see more details in this [repo](https://github.com/peregin/my-little-infra "Infrastructure") .
+Follows the infrastructure as code approach.
 
-![Infrastructure](https://raw.github.com/peregin/my-little-infra/master/doc/infra.png "Infrastructure")
+![Infrastructure](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/infra.png "Infrastructure")
 
 ## Local Setup
 
