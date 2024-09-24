@@ -64,7 +64,9 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-backend
-          command: sbt "release skip-tests with-defaults"
+          command: |
+            export DOCKER_CLI_EXPERIMENTAL=enabled
+            sbt "release skip-tests with-defaults"
       - run:
           name: upload version tags
           command: ssh-keyscan github.com >> ~/.ssh/known_hosts && git push --tags --quiet https://peregin:${GH_TOKEN}@github.com/peregin/velocorner.com.git "$CIRCLE_BRANCH"
