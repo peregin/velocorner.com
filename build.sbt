@@ -273,42 +273,6 @@ lazy val dataAnalytics = (project in file("data-analytics") withId "data-analyti
   )
   .dependsOn(dataProvider % "compile->compile; test->test")
 
-lazy val testServiceJava = (project in file("test/test-service-java") withId "test-service-java")
-  .settings(
-    buildSettings,
-    name := "test-service-java",
-    libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
-      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
-      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
-      "org.springframework.boot" % "spring-boot-starter-web" % Dependencies.springVersion,
-      "org.springframework.boot" % "spring-boot-starter-actuator" % Dependencies.springVersion,
-      "javax.servlet" % "javax.servlet-api" % "4.0.1",
-      scalaTest
-    ) ++ cats,
-    resolvers += "MavenRepository" at "https://mvnrepository.com/"
-  )
-
-lazy val testServiceScala = (project in file("test/test-service-scala") withId "test-service-scala")
-  .settings(
-    buildSettings,
-    name := "test-service-scala",
-    description := "test service with finatra",
-    libraryDependencies ++= Seq(
-      "com.twitter" %% "finatra-http" % Dependencies.finatraVersion,
-      "com.chuusai" %% "shapeless" % Dependencies.shapelessVersion,
-      "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-      "io.argonaut" %% "argonaut" % Dependencies.argonautVersion,
-      scalaTest
-    ) ++ cats,
-    BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
-    buildInfoPackage := "test.service.scala.build"
-  )
-  .enablePlugins(
-    BuildInfoPlugin
-  )
-
 lazy val webApp = (project in file("web-app") withId "web-app")
   .settings(
     buildSettings,
@@ -373,9 +337,7 @@ lazy val root = (project in file(".") withId "velocorner")
     dataSearchElastic,
     dataSearch,
     dataAnalytics,
-    webApp,
-    testServiceJava,
-    testServiceScala
+    webApp
   )
   .settings(
     name := "velocorner",

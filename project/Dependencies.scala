@@ -9,8 +9,6 @@ object Dependencies {
   val fs2Version = "3.11.0"
   val http4s = "0.23.28"
   val zioVersion = "2.1.9"
-  val finatraVersion = "21.2.0" // in the test service
-  val argonautVersion = "6.3.10" // in the test service
   val playWsVersion = "3.0.5" // standalone version
   val pekkoVersion = "1.1.1"
   val playJsonVersion = "3.0.4"
@@ -30,8 +28,6 @@ object Dependencies {
   val scalaTestVersion = "3.2.19"
   val mockitoVersion = "5.13.0"
   val catsEffectTestVersion = "1.5.0"
-
-  val springVersion = "3.3.4" // java world
 }
 
 object DockerBuild {
