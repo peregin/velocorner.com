@@ -20,7 +20,6 @@ executors:
     docker:
       - image: peregin/circleci:latest
         user: circleci
-    resource_class: arm.medium
     environment:
       JVM_OPTS: -Xmx3072m
 
@@ -54,11 +53,11 @@ jobs:
       - attach_workspace:
           at: .
       - setup_remote_docker:
-          docker_layer_caching: false
           version: 20.10.14
       - run:
           name: check docker settings (for buildx)
           command: |
+            export DOCKER_CLI_EXPERIMENTAL=enabled
             docker version
             docker buildx version
             docker context inspect
