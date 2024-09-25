@@ -49,6 +49,7 @@ jobs:
 
   deploy_web-backend:
     executor: ci-deploy-executor
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
