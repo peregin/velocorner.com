@@ -54,6 +54,13 @@ jobs:
           at: .
       - setup_remote_docker:
           docker_layer_caching: false
+          version: 20.10.14
+      - run:
+          name: check docker settings (for buildx)
+          command: |
+            docker version
+            docker buildx version
+            docker context inspect
       - run:
           name: setup git identity
           command: |
