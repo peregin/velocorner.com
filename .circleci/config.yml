@@ -53,14 +53,7 @@ jobs:
       - attach_workspace:
           at: .
       - setup_remote_docker:
-          version: 20.10.14
-      - run:
-          name: check docker settings (for buildx)
-          command: |
-            export DOCKER_CLI_EXPERIMENTAL=enabled
-            docker version
-            docker buildx version
-            docker context inspect
+          docker_layer_caching: false
       - run:
           name: setup git identity
           command: |
@@ -70,9 +63,15 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
+          name: check docker settings (for buildx)
+          command: |
+            docker run --privileged --rm tonistiigi/binfmt --install all
+            docker version
+            docker buildx version
+            docker context inspect
+      - run:
           name: deploy web-backend
           command: |
-            export DOCKER_CLI_EXPERIMENTAL=enabled
             sbt "release skip-tests with-defaults"
       - run:
           name: upload version tags
