@@ -66,7 +66,7 @@ jobs:
       - run:
           name: check docker settings (for buildx)
           command: |
-            sudo apt-get install -y qemu-user-static
+            sudo apt-get install -y apt-utils qemu-user-static
             docker version
             docker buildx version
             docker context inspect
