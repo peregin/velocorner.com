@@ -20,6 +20,7 @@ executors:
     docker:
       - image: peregin/circleci:latest
         user: circleci
+    resource_class: arm.medium
     environment:
       JVM_OPTS: -Xmx3072m
 
@@ -49,7 +50,6 @@ jobs:
 
   deploy_web-backend:
     executor: ci-deploy-executor
-    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
