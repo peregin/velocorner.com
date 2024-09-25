@@ -54,6 +54,8 @@ jobs:
           at: .
       - setup_remote_docker:
           docker_layer_caching: false
+          version: 24.0.0
+          privileged: true
       - run:
           name: setup git identity
           command: |
