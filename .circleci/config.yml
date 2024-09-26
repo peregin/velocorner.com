@@ -67,7 +67,6 @@ jobs:
       - run:
           name: update docker settings (for buildx)
           command: |
-            sudo apt-get update
             sudo apt-get install -y apt-utils qemu-user-static
             sudo apt-get install -y binfmt-support
       - run:
