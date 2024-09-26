@@ -49,6 +49,7 @@ jobs:
 
   deploy_web-backend:
     executor: ci-deploy-executor
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
@@ -64,15 +65,22 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
+          name: update docker settings (for buildx)
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y apt-utils qemu-user-static
+            sudo apt-get install -y binfmt-support
+      - run:
           name: check docker settings (for buildx)
           command: |
-            sudo apt-get install -y apt-utils qemu-user-static
+            export DOCKER_CLI_EXPERIMENTAL=enabled
             docker version
             docker buildx version
             docker context inspect
       - run:
           name: deploy web-backend
           command: |
+            export DOCKER_CLI_EXPERIMENTAL=enabled
             sbt "release skip-tests with-defaults"
       - run:
           name: upload version tags
