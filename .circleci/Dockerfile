@@ -18,6 +18,12 @@ RUN \
   tar zxf $SBT_HOME/sbt.tgz -C $SBT_HOME && \
   ln -s $SBT_HOME/sbt/bin/sbt /usr/local/bin/sbt
 
+# for multiplatform docker build
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E88979FB9B30ACF2 && \
+  apt-get update && \
+  apt-get install -y qemu-user-static && \
+  apt-get install -y binfmt-support
+
 USER circleci
 WORKDIR /home/circleci/test
 RUN sbt sbtVersion

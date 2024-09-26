@@ -130,7 +130,9 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-frontend
-          command: cd web-front && ./deploy.sh
+          command: |
+            docker buildx inspect multi-arch-builder
+            cd web-front && ./deploy.sh
 
   restart_stack:
     docker:

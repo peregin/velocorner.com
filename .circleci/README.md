@@ -13,6 +13,7 @@ docker push peregin/circleci:latest
 # arm
 buildx inspect multi-arch-builder
 buildx create --name multi-arch-builder
+docker buildx use multi-arch-builder
 docker buildx build --platform linux/amd64,linux/arm64 -t peregin/circleci:latest --push .
 ```
 
