@@ -49,13 +49,13 @@ jobs:
 
   deploy_web-backend:
     executor: ci-deploy-executor
-    resource_class: arm.medium
+    environment:
+      BUILDX_VERSION: 0.17.1
     steps:
       - attach_workspace:
           at: .
       - setup_remote_docker:
           docker_layer_caching: false
-          privileged: true
       - run:
           name: setup git identity
           command: |
@@ -65,21 +65,22 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
-          name: update docker settings (for buildx)
+          name: install docker buildx
           command: |
-            sudo apt-get install -y apt-utils qemu-user-static
-            sudo apt-get install -y binfmt-support
+            mkdir -p ~/.docker/cli-plugins
+            url="https://github.com/docker/buildx/releases/download/v$BUILDX_VERSION/buildx-v$BUILDX_VERSION.linux-amd64"
+            curl -sSL -o ~/.docker/cli-plugins/docker-buildx $url
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
       - run:
-          name: check docker settings (for buildx)
+          name: docker settings buildx
           command: |
-            export DOCKER_CLI_EXPERIMENTAL=enabled
-            docker version
-            docker buildx version
-            docker context inspect
+            docker buildx install
+            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            docker context create multi-arch-builder
+            docker buildx create multi-arch-builder --use
       - run:
           name: deploy web-backend
           command: |
-            export DOCKER_CLI_EXPERIMENTAL=enabled
             sbt "release skip-tests with-defaults"
       - run:
           name: upload version tags
