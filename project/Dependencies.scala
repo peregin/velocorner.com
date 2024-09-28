@@ -16,7 +16,7 @@ object Dependencies {
   val logbackVersion = "1.5.8" // updating will cause conflict
   val doobieVersion = "1.0.0-RC6"
   val orientDbVersion = "3.2.33"
-  val mongoDbVersion = "5.1.4"
+  val mongoDbVersion = "5.2.0"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.15.1"
   val jwtVersion = "10.0.1"
