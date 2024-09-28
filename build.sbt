@@ -57,7 +57,7 @@ val pekko = Seq(
 )
 
 val apacheCommons = Seq(
-  "org.apache.commons" % "commons-csv" % "1.11.0"
+  "org.apache.commons" % "commons-csv" % "1.12.0"
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
@@ -243,9 +243,9 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     name := "crawler-service",
     description := "product crawler with an up-to-date data feed",
     libraryDependencies ++= catsEffect ++ http4s ++ circe ++ scalacache ++ Seq(
-        "org.typelevel" %% "log4cats-slf4j" % "2.7.0",
-        "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
-      ) ++ catsEffectTest.map(_ % Test),
+      "org.typelevel" %% "log4cats-slf4j" % "2.7.0",
+      "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
+    ) ++ catsEffectTest.map(_ % Test),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.crawler.build",
     maintainer := DockerBuild.maintainer,
@@ -358,14 +358,19 @@ lazy val dockerBuildxSettings = Seq(
   },
   dockerBuildWithBuildx := {
     streams.value.log("Building and pushing image with Buildx")
-    dockerAliases.value.foreach(
-      alias => Process("docker buildx build --platform=linux/arm64,linux/amd64 --push -t " +
-        alias + " .", baseDirectory.value / "target" / "docker"/ "stage").!
+    dockerAliases.value.foreach(alias =>
+      Process(
+        "docker buildx build --platform=linux/arm64,linux/amd64 --push -t " +
+          alias + " .",
+        baseDirectory.value / "target" / "docker" / "stage"
+      ).!
     )
   },
-  Docker / publish := Def.sequential(
-    Docker / publishLocal,
-    ensureDockerBuildx,
-    dockerBuildWithBuildx
-  ).value
+  Docker / publish := Def
+    .sequential(
+      Docker / publishLocal,
+      ensureDockerBuildx,
+      dockerBuildWithBuildx
+    )
+    .value
 )
