@@ -1,5 +1,4 @@
-# it is a Debian distribution (Debian GNU/Linux 10 (buster) with java 17, sbt 1.5.0, node 16, docker
-FROM circleci/openjdk:17-buster-node-browsers
+FROM cimg/openjdk:17.0.11
 
 LABEL maintainer="velocorner.com@gmail.com"
 
