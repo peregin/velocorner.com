@@ -199,7 +199,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playJsonExtensions,
       playJsonJoda,
       playWsAhcStandalone,
-      "com.beachape" %% "enumeratum" % "1.7.4",
+      "com.beachape" %% "enumeratum" % "1.7.5",
       scalaTest
     ) ++ logging ++ psqlDbClient ++ apacheCommons ++ cats ++ squants ++ catsEffect.map(_ % Test)
   )
@@ -243,9 +243,9 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     name := "crawler-service",
     description := "product crawler with an up-to-date data feed",
     libraryDependencies ++= catsEffect ++ http4s ++ circe ++ scalacache ++ Seq(
-        "org.typelevel" %% "log4cats-slf4j" % "2.7.0",
-        "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
-      ) ++ catsEffectTest.map(_ % Test),
+      "org.typelevel" %% "log4cats-slf4j" % "2.7.0",
+      "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
+    ) ++ catsEffectTest.map(_ % Test),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
     buildInfoPackage := "velocorner.crawler.build",
     maintainer := DockerBuild.maintainer,
@@ -358,14 +358,19 @@ lazy val dockerBuildxSettings = Seq(
   },
   dockerBuildWithBuildx := {
     streams.value.log("Building and pushing image with Buildx")
-    dockerAliases.value.foreach(
-      alias => Process("docker buildx build --platform=linux/arm64,linux/amd64 --push -t " +
-        alias + " .", baseDirectory.value / "target" / "docker"/ "stage").!
+    dockerAliases.value.foreach(alias =>
+      Process(
+        "docker buildx build --platform=linux/arm64,linux/amd64 --push -t " +
+          alias + " .",
+        baseDirectory.value / "target" / "docker" / "stage"
+      ).!
     )
   },
-  Docker / publish := Def.sequential(
-    Docker / publishLocal,
-    ensureDockerBuildx,
-    dockerBuildWithBuildx
-  ).value
+  Docker / publish := Def
+    .sequential(
+      Docker / publishLocal,
+      ensureDockerBuildx,
+      dockerBuildWithBuildx
+    )
+    .value
 )
