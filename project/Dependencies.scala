@@ -10,7 +10,7 @@ object Dependencies {
   val http4s = "0.23.28"
   val zioVersion = "2.1.9"
   val playWsVersion = "3.0.5" // standalone version
-  val pekkoVersion = "1.1.1"
+  val pekkoVersion = "1.1.2"
   val playJsonVersion = "3.0.4"
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.9" // updating will cause conflict
