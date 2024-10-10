@@ -18,7 +18,7 @@ addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.11.0")
 // Report the licenses used in the project
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 // Show the hash of the current version
-addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.1")
+addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0")
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.5")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
