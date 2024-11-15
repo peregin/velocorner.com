@@ -28,7 +28,7 @@ Services are communicating via `http` with each other, exploring various languag
 - data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
 - data-search - with `zinc-search` a lightweight replacement for elasticsearch
 - user-service - with `Java` and `Spring Boot`
-- weather-service - with `Kotlin`
+- weather-service - with `Kotlin` (has been extracted in a separate repository)
 - health-check-service - with `Go`
 
 ___
