@@ -24,7 +24,7 @@ Services are communicating via `http` with each other, exploring various languag
 - web-app with `Scala` and `Play Framework`, `ZIO`
 - web-front with `React`
 - crawler-service with `Scala`, `http4s`, `cats-effect`, `circe` (Typelevel stack)
-- exchange-rate-service with `Rust` (extracted in a separate repository)
+- exchange-rate-service with `Rust` (has been extracted in a separate repository)
 - data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
 - data-search - with `zinc-search` a lightweight replacement for elasticsearch
 - user-service - with `Java` and `Spring Boot`
