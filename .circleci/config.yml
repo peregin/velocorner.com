@@ -22,6 +22,9 @@ executors:
         user: circleci
     environment:
       JVM_OPTS: -Xmx3072m
+  ci-min:
+    docker:
+      - image: cimg/base:2024.11
 
 jobs:
   build:
@@ -65,20 +68,6 @@ jobs:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
-          name: install docker buildx
-          command: |
-            mkdir -p ~/.docker/cli-plugins
-            url="https://github.com/docker/buildx/releases/download/v$BUILDX_VERSION/buildx-v$BUILDX_VERSION.linux-amd64"
-            curl -sSL -o ~/.docker/cli-plugins/docker-buildx $url
-            chmod a+x ~/.docker/cli-plugins/docker-buildx
-      - run:
-          name: docker settings buildx
-          command: |
-            docker buildx install
-            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-            docker context create multi-arch-builder
-            docker buildx create multi-arch-builder --use
-      - run:
           name: deploy web-backend
           command: |
             sbt "release skip-tests with-defaults"
@@ -102,6 +91,7 @@ jobs:
 
   deploy_weather-backend:
     executor: ci-deploy-executor
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
@@ -137,7 +127,7 @@ jobs:
 
   restart_stack:
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2024.11
     resource_class: small
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
