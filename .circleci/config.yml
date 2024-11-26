@@ -39,8 +39,6 @@ jobs:
       - save_cache:
           key: *cache_key
           paths:
-            - ~/.m2
-            - ~/.ivy2
             - ~/.sbt
             - ~/.sbt/launchers
             - ~/.cache/coursier
@@ -122,26 +120,26 @@ workflows:
     jobs:
       - build
       - deploy_web-backend:
-          context:
-            - peregin
+          context: peregin
           requires:
             - build
           filters:
             branches:
-              only: /master.*/
+              only: /^master.*/
 #      - deploy_crawler-backend:
 #          requires:
 #            - build
 #          filters:
 #            branches:
-#              only: /master.*/
+#              only: /^master.*/
 #      - deploy_web-frontend:
 #          requires:
 #            - build
 #          filters:
 #            branches:
-#              only: /master.*/
+#              only: /^master.*/
       - restart_stack:
+          context: peregin
           requires:
             - deploy_web-backend
 #            - deploy_crawler-backend
