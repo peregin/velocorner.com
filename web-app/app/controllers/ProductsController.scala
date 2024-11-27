@@ -1,7 +1,6 @@
 package controllers
 
 import controllers.util.WebMetrics
-import play.api.Environment
 import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import squants.market.USD
@@ -13,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
 
-class ProductsController @Inject() (val connectivity: ConnectivitySettings, environment: Environment, components: ControllerComponents)
+class ProductsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components)
     with WebMetrics {
 

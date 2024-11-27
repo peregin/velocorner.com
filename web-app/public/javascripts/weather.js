@@ -57,8 +57,12 @@
 
         // meteogram
         $.ajax({
-            dataType: 'xml',
-            url: "/api/weather/forecast/" + place,
+            url: "https://weather.velocorner.com/weather/forecast/" + place,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             success: function (xml) {
                 $('#weather-progress').css("visibility","hidden");
                 $('#weather-container').css('display', 'block');

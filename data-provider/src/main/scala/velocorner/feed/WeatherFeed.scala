@@ -11,19 +11,12 @@ import scala.concurrent.Future
 // client interface to the weather service
 trait WeatherFeed[F[_]] {
 
-  def forecast(location: String): F[String]
-
   def current(location: String): F[Option[CurrentWeather]]
 }
 
 class WeatherFeedClient(override val config: SecretConfig) extends HttpFeed with LazyLogging with WeatherFeed[Future] {
 
   private lazy val baseUrl = config.getWeatherUrl
-
-  // for 5 days in XML for meteogram
-  override def forecast(location: String): Future[String] =
-    ws(_.url(s"$baseUrl/weather/forecast/$location").get())
-      .map(_.body)
 
   override def current(location: String): Future[Option[CurrentWeather]] =
     ws(_.url(s"$baseUrl/weather/current/$location").get())

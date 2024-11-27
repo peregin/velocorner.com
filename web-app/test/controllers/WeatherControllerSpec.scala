@@ -60,22 +60,7 @@ class WeatherControllerSpec extends PlaySpec with StubControllerComponentsFactor
 
     val controller = new WeatherController(settingsMock, stubControllerComponents()) {
       override def clock(): DateTime = now
-      override lazy val weatherFeed: WeatherFeed[Future] = new WeatherFeed[Future] {
-        override def forecast(location: String): Future[String] = Future.successful("<weatherdata/>")
-        override def current(location: String): Future[Option[CurrentWeather]] = Future.successful(currentWeatherFixture.some)
-      }
-    }
-
-    "retrieve forecast" in {
-      val result = controller.forecast("Zurich").apply(FakeRequest())
-      Helpers.status(result) mustBe Status.OK
-      val dailyForecastXml = Helpers.contentAsString(result)
-      dailyForecastXml mustBe "<weatherdata/>"
-    }
-
-    "fail for empty place in weather forecast" in {
-      val result = controller.forecast("").apply(FakeRequest())
-      Helpers.status(result) mustBe Status.BAD_REQUEST
+      override lazy val weatherFeed: WeatherFeed[Future] = (location: String) => Future.successful(currentWeatherFixture.some)
     }
 
     "retrieve current weather" in {

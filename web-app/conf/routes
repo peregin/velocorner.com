@@ -395,34 +395,6 @@ GET     /api/activities/last                               controllers.ActivityC
 GET     /api/activities/:id                                controllers.ActivityController.activity(id: Long)
 
 ###
-#  summary: Retrieves the weather forecast for a specific place
-#  tags:
-#    - weather
-#  parameters:
-#    - in: path
-#      name: location
-#      required: true
-#      schema:
-#        type: string
-#      example: Zurich, Switzerland
-#      description: City and country of the forecast, comma separated
-#  responses:
-#    200:
-#      description: Weather forecast for the next 5 days
-#      content:
-#        application/xml:
-#          schema:
-#            type: string
-#    400:
-#      description: Bad request
-#    404:
-#      description: Place not found
-#    500:
-#      description: Internal error
-###
-GET     /api/weather/forecast/:location                    controllers.WeatherController.forecast(location: String)
-
-###
 #  summary: Retrieves the sunrise and sunset information for a specific place
 #  tags:
 #    - weather

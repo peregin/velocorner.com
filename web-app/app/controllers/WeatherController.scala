@@ -23,25 +23,6 @@ class WeatherController @Inject() (val connectivity: ConnectivitySettings, compo
 
   def clock(): DateTime = DateTime.now() // inject time iterator instead
 
-  // retrieves the weather forecast for a given place
-  // route mapped to /api/weather/forecast/:location
-  def forecast(location: String): Action[AnyContent] = Action.async {
-    timedRequest[AnyContent](s"query weather forecast for $location") { _ =>
-      val resultET = for {
-        loc <- EitherT(Future(Option(location).filter(_.nonEmpty).toRight(BadRequest)))
-        // convert city[,country] to city[ ,isoCountry]
-        isoLocation = CountryUtils.iso(loc)
-        _ = logger.debug(s"collecting weather forecast for [$location] -> [$isoLocation]")
-        // generate xml content for Meteogram from Highcharts
-        forecast <- EitherT.right[Status](weatherFeed.forecast(isoLocation))
-      } yield forecast
-
-      resultET
-        .map(Ok(_).withCookies(WeatherCookie.create(location)).as("application/xml"))
-        .merge
-    }
-  }
-
   // retrieves the sunrise and sunset information for a given place
   // route mapped to /api/weather/current/:location
   def current(location: String): Action[AnyContent] = Action.async {
