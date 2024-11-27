@@ -18,7 +18,6 @@ trait AccountStorage[M[_]] {
 trait LocationStorage[M[_]] {
   def store(location: String, position: GeoPosition): M[Unit]
   def getPosition(location: String): M[Option[GeoPosition]]
-  def getCountry(ip: String): M[Option[String]]
   def suggestLocations(snippet: String): M[Iterable[String]]
 }
 

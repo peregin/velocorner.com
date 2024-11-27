@@ -4,18 +4,18 @@ import cats.implicits.{catsSyntaxOptionId, none}
 import velocorner.model.CountryIso
 
 /**
- * Utility to convert a country name (if given) into 2 letter ISO standard.
+ * Utility:
+ * 1./ to convert a country name (if given) into 2 letter ISO standard.
  * <city[,country]>
  * E.g.
  * Zurich,Switzerland = Zurich,CH
  * London = London
+ * 2./ determine currency code for a country
  */
 object CountryUtils {
 
   // Switzerland -> CH
   lazy val country2Code: Map[String, String] = readCountries() // lowercase name -> ISO code2
-  // CH -> Bern
-  lazy val code2Capital: Map[String, String] = readCapitals()
   // CH -> CHF
   lazy val code2Currency: Map[String, String] = readCurrencies()
 
@@ -23,9 +23,6 @@ object CountryUtils {
     val countries = JsonIo.readReadFromResource[List[CountryIso]]("/countries.json")
     countries.map(ci => (ci.name.toLowerCase, ci.code)).toMap
   }
-
-  def readCapitals(): Map[String, String] =
-    JsonIo.readReadFromResource[Map[String, String]]("/capitals.json")
 
   def readCurrencies(): Map[String, String] =
     JsonIo.readReadFromResource[Map[String, String]]("/currencies.json")

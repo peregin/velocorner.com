@@ -316,14 +316,6 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
         .option
         .transactToFuture
 
-    override def getCountry(ip: String): Future[Option[String]] =
-      sql"""select country from ip2nation 
-           |where ip < ((${ip.toLowerCase}::inet - '0.0.0.0'::inet)::numeric)
-           |order by ip desc limit 1 """.stripMargin
-        .query[String]
-        .option
-        .transactToFuture
-
     override def suggestLocations(snippet: String): Future[Iterable[String]] = {
       val searchPattern = "%" + snippet + "%"
       sql"""select distinct location from location

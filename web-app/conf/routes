@@ -499,22 +499,6 @@ GET     /api/location/suggest                              controllers.LocationC
 GET     /api/location/geo/:location                        controllers.LocationController.geo(location: String)
 
 ###
-#  summary: Retrieves the nearest city, country based on IP address
-#  tags:
-#    - location
-#  responses:
-#    200:
-#      description: detected city and country
-#      content:
-#        application/json:
-#          schema:
-#            $ref: '#/components/schemas/velocorner.api.GeoLocation'
-#    404:
-#      description: Location not found
-###
-GET     /api/location/ip                                   controllers.LocationController.ip()
-
-###
 #  summary: Suggests a list of brands based on the query parameter
 #  tags:
 #    - brand

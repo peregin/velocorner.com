@@ -30,7 +30,7 @@
             // detect capital
             $.ajax({
                 dataType: 'json',
-                url: "/api/location/ip",
+                url: "https://weather.velocorner.com/location/ip",
                 success: function (data) {
                     let location = data.city+', '+data.country;
                     console.log('detected location is ' + location);

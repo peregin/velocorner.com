@@ -1,6 +1,6 @@
 package controllers
 
-import controllers.util.{RemoteIp, WebMetrics}
+import controllers.util.WebMetrics
 import play.api.Environment
 import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
@@ -15,7 +15,6 @@ import scala.math.BigDecimal.RoundingMode
 
 class ProductsController @Inject() (val connectivity: ConnectivitySettings, environment: Environment, components: ControllerComponents)
     extends AbstractController(components)
-    with RemoteIp
     with WebMetrics {
 
   val productFeed: ProductFeed = new ProductCrawlerFeed(connectivity.secretConfig)
@@ -35,11 +34,10 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, envi
       timedRequest[AnyContent](s"search products for [$query]") { request =>
         if (query.isBlank) Future(Ok(JsArray()))
         else {
-          val remoteIp = detectIp(request, environment)
           for {
             products <- productFeed.search(query.trim)
-            // detect country of ip
-            countryCode2 <- connectivity.getStorage.getLocationStorage.getCountry(remoteIp).map(_.getOrElse("US"))
+            // detect country of ip, use weather service -> location/ip endpoint
+            countryCode2 = "US"
             // detect currency of the country
             detectedCcy = CountryUtils.code2Currency.getOrElse(countryCode2, "USD")
             baseCcy = ExchangeRatesFeed.supported.getOrElse(detectedCcy, USD)

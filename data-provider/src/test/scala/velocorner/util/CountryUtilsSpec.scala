@@ -15,12 +15,6 @@ class CountryUtilsSpec extends AnyWordSpec with Matchers {
       name2Code.get("hungary") shouldBe "HU".some
     }
 
-    "read the capitals from json" in {
-      val code2Capital = CountryUtils.readCapitals()
-      code2Capital.get("CH") shouldBe "Berne".some
-      code2Capital.get("HU") shouldBe "Budapest".some
-    }
-
     "read the currencies from json" in {
       val code2Currency = CountryUtils.readCurrencies()
       code2Currency.get("CH") shouldBe "CHF".some

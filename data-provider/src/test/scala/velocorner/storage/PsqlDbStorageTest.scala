@@ -113,12 +113,6 @@ class PsqlDbStorageTest
     awaitOn(locationStorage.getPosition("Budapest,HU")) mustBe empty
   }
 
-  it should "lookup ip to country" in {
-    lazy val locationStorage = psqlStorage.getLocationStorage
-    awaitOn(locationStorage.getCountry("85.1.45.31")) mustBe Some("CH")
-    awaitOn(locationStorage.getCountry("188.156.14.255")) mustBe Some("HU")
-  }
-
   it should "lookup locations from geo positions" in {
     lazy val locationStorage = psqlStorage.getLocationStorage
     awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
