@@ -16,8 +16,8 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
     extends AbstractController(components)
     with WebMetrics {
 
-  val productFeed: ProductFeed = new ProductCrawlerFeed(connectivity.secretConfig)
-  val ratesFeed: RatesFeed = new ExchangeRatesFeed(connectivity.secretConfig)
+  private val productFeed: ProductFeed = new ProductCrawlerFeed(connectivity.secretConfig)
+  private val ratesFeed: RatesFeed = new ExchangeRatesFeed(connectivity.secretConfig)
 
   // wip - from elastic or live from marketplaces
   // route mapped to /api/products/suggest
