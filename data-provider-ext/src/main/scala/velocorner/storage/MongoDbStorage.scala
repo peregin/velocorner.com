@@ -128,8 +128,6 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
 
   override def getAdminStorage: AdminStorage[Future] = ???
 
-  override def getLocationStorage: LocationStorage[Future] = ???
-
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     db = Some(client.getDatabase(DB_NAME))

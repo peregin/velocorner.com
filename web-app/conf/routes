@@ -395,82 +395,6 @@ GET     /api/activities/last                               controllers.ActivityC
 GET     /api/activities/:id                                controllers.ActivityController.activity(id: Long)
 
 ###
-#  summary: Retrieves the sunrise and sunset information for a specific place
-#  tags:
-#    - weather
-#  parameters:
-#    - in: path
-#      name: location
-#      required: true
-#      schema:
-#        type: string
-#      example: Zurich, Switzerland
-#      description: City and country of the forecast, comma separated
-#  responses:
-#    200:
-#      description: Sunrise, sunset
-#      content:
-#        application/json:
-#          schema:
-#            $ref: '#/components/schemas/velocorner.api.weather.CurrentWeather'
-#    400:
-#      description: Bad request
-#    404:
-#      description: Place not found
-#    500:
-#      description: Internal error
-###
-GET     /api/weather/current/:location                     controllers.WeatherController.current(location: String)
-
-###
-#  summary: Suggests a list of locations based on the query parameter
-#  tags:
-#    - location
-#  parameters:
-#    - in: query
-#      name: query
-#      required: true
-#      schema:
-#        type: string
-#      example: Zur
-#      description: partial location name
-#  responses:
-#    200:
-#      description: Returns a list of matching locations
-#      content:
-#        application/json:
-#          schema:
-#            type: array
-#            items: string
-###
-GET     /api/location/suggest                              controllers.LocationController.suggest(query: String)
-
-
-###
-#  summary: Retrieves the geo position (lat, long) based on the location
-#  tags:
-#    - location
-#  parameters:
-#    - in: path
-#      name: location
-#      required: true
-#      schema:
-#        type: string
-#      example: Zurich, Switzerland or Zurich, CH
-#      description: City and country of the location, comma separated
-#  responses:
-#    200:
-#      description: latitude, longitude
-#      content:
-#        application/json:
-#          schema:
-#            $ref: '#/components/schemas/velocorner.api.GeoPosition'
-#    404:
-#      description: Location not found
-###
-GET     /api/location/geo/:location                        controllers.LocationController.geo(location: String)
-
-###
 #  summary: Suggests a list of brands based on the query parameter
 #  tags:
 #    - brand
@@ -581,35 +505,6 @@ GET     /api/products/search                               controllers.ProductsC
 #               $ref: '#/components/schemas/velocorner.api.brand.Marketplace'
 ###
 GET     /api/products/markets                              controllers.ProductsController.markets()
-
-###
-#  summary: Exchange rates
-#  tags:
-#    - rates
-#  parameters:
-#    - in: path
-#      name: base
-#      required: true
-#      schema:
-#        type: string
-#      example: CHF
-#      description: base currency for conversion
-#    - in: path
-#      name: counter
-#      required: true
-#      schema:
-#        type: string
-#      example: EUR
-#      description: counter currency for conversion
-#  responses:
-#    200:
-#      description: conversion rate
-#      content:
-#        application/json:
-#          schema:
-#            type: number
-###
-GET     /api/rates/:base/:counter                          controllers.RatesController.rates(base: String, counter: String)
 
 # DOC
 ### NoDocs ###

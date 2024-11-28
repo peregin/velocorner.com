@@ -138,8 +138,6 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
 
   override def getAdminStorage: AdminStorage[M] = ???
 
-  override def getLocationStorage: LocationStorage[M] = ???
-
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {
     val conn = client.connection().hostname("localhost").port(28015).connect()

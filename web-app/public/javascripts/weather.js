@@ -14,7 +14,7 @@
             }
         });
         weatherField.autocomplete({
-            serviceUrl: '/api/location/suggest',
+            serviceUrl: 'https://weather.velocorner.com/location/suggest',
             onSelect: function (suggestion) {
                 console.log('selected location: ' + suggestion.value);
                 triggerForecast(true);
@@ -77,7 +77,7 @@
         // current weather, sunrise and sunset
         $.ajax({
             dataType: 'json',
-            url: "/api/weather/current/" + place,
+            url: "https://weather.velocorner.com/weather/current/" + place,
             success: function (data) {
                 $('#sunrise-sunset').css("visibility","visible");
                 $('#temperature').css("visibility","visible");
@@ -108,7 +108,7 @@
                 console.log("windy forecast enabled", enabled);
                 $.ajax({
                     dataType: 'json',
-                    url: "/api/location/geo/" + place,
+                    url: "https://weather.velocorner.com/location/geo/" + place,
                     success: function (geo) {
                         windy.css('width','100%');
                         windy.css('height','250px');

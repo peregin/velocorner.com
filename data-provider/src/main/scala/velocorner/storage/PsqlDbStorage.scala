@@ -15,7 +15,7 @@ import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.{Achievement, GeoPosition}
+import velocorner.api.Achievement
 import velocorner.api.strava.Activity
 import velocorner.model.Account
 import velocorner.model.strava.Gear
@@ -297,39 +297,13 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
 
   }
 
-  override def getLocationStorage: LocationStorage[Future] = locationStorage
-  private lazy val locationStorage = new LocationStorage[Future] {
-
-    override def store(
-        location: String,
-        position: GeoPosition
-    ): Future[Unit] =
-      sql"""insert into location (location, latitude, longitude)
-           |values(${location.toLowerCase}, ${position.latitude}, ${position.longitude}) on conflict(location)
-           |do update set latitude = ${position.latitude}, longitude = ${position.longitude}
-           |""".stripMargin.update.run.void.transactToFuture
-
-    override def getPosition(location: String): Future[Option[GeoPosition]] =
-      sql"""select latitude, longitude from location where location = ${location.toLowerCase}""".stripMargin
-        .query[(Double, Double)]
-        .map(q => GeoPosition(q._1, q._2))
-        .option
-        .transactToFuture
-
-    override def suggestLocations(snippet: String): Future[Iterable[String]] = {
-      val searchPattern = "%" + snippet + "%"
-      sql"""select distinct location from location
-           |where location ilike $searchPattern
-           |""".stripMargin.query[String].to[List].transactToFuture
-    }
-  }
-
   override def initialize(): Unit = {
     val flyway = Flyway
       .configure()
       .locations(flywayLocation)
       .dataSource(dbUrl, dbUser, dbPassword)
       .load()
+    logger.info("running Flyway...")
     flyway.migrate()
   }
 

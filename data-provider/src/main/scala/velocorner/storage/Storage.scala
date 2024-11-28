@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.Gear
-import velocorner.api.{Achievement, GeoPosition}
+import velocorner.api.Achievement
 
 import scala.concurrent.Future
 import org.joda.time.DateTime
@@ -13,12 +13,6 @@ import velocorner.api.strava.Activity
 trait AccountStorage[M[_]] {
   def store(account: Account): M[Unit]
   def getAccount(id: Long): M[Option[Account]]
-}
-
-trait LocationStorage[M[_]] {
-  def store(location: String, position: GeoPosition): M[Unit]
-  def getPosition(location: String): M[Option[GeoPosition]]
-  def suggestLocations(snippet: String): M[Iterable[String]]
 }
 
 trait GearStorage[M[_]] {
@@ -75,8 +69,6 @@ trait Storage[M[_]] {
 
   // various achievements
   def getAchievementStorage: AchievementStorage[M]
-
-  def getLocationStorage: LocationStorage[M]
 
   def getAdminStorage: AdminStorage[M]
 

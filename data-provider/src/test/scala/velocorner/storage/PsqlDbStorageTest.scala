@@ -6,7 +6,6 @@ import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
-import velocorner.api.GeoPosition
 import velocorner.api.strava.Activity
 import velocorner.model.ActionType
 import velocorner.model.strava.Gear
@@ -102,28 +101,6 @@ class PsqlDbStorageTest
     awaitOn(gearStorage.getGear("id1")) mustBe Some(gear)
     awaitOn(gearStorage.listGears(1)) must contain theSameElementsAs List(gear)
     awaitOn(gearStorage.listGears(999)) mustBe empty
-  }
-
-  it should "store and lookup geo positions" in {
-    lazy val locationStorage = psqlStorage.getLocationStorage
-    awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
-    awaitOn(locationStorage.getPosition("Zurich,CH")) mustBe Some(GeoPosition(8.52, 47.31))
-    awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.1, 7.2)))
-    awaitOn(locationStorage.getPosition("Zurich,CH")) mustBe Some(GeoPosition(8.1, 7.2))
-    awaitOn(locationStorage.getPosition("Budapest,HU")) mustBe empty
-  }
-
-  it should "lookup locations from geo positions" in {
-    lazy val locationStorage = psqlStorage.getLocationStorage
-    awaitOn(locationStorage.store("Zurich,CH", GeoPosition(8.52, 47.31)))
-    awaitOn(locationStorage.store("Adliswil, CH", GeoPosition(8.52, 47.31)))
-    awaitOn(locationStorage.store("Budapest, HU", GeoPosition(8.52, 47.31)))
-    awaitOn(locationStorage.suggestLocations("Bud")) must contain theSameElementsAs List("budapest, hu")
-    awaitOn(locationStorage.suggestLocations("ch")) must contain theSameElementsAs List(
-      "zurich,ch",
-      "adliswil, ch"
-    )
-    awaitOn(locationStorage.suggestLocations("wien")) mustBe empty
   }
 
   override def beforeAll(): Unit =

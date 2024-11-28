@@ -7,7 +7,7 @@ import velocorner.model.AccountFixtures
 
 class JwtUserSpec extends AnyWordSpec with Matchers with LazyLogging with AccountFixtures {
 
-  implicit val secret = "secret"
+  implicit val secret: String = "secret"
 
   "JWT user" should {
 

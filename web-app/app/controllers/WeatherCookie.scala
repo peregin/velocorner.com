@@ -11,7 +11,7 @@ import java.util.Base64
 object WeatherCookie {
 
   // keep it for a week
-  val cookieAgeDuration = 7 days
+  private val cookieAgeDuration = 7 days
   val name = "weather_location"
 
   def create(location: String): Cookie = {

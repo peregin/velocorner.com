@@ -5,7 +5,7 @@ import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import squants.market.USD
 import velocorner.feed.{ExchangeRatesFeed, ProductCrawlerFeed, ProductFeed, RatesFeed}
-import velocorner.util.{CountryUtils, JsonIo}
+import velocorner.util.JsonIo
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +38,7 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
             // detect country of ip, use weather service -> location/ip endpoint
             countryCode2 = "US"
             // detect currency of the country
-            detectedCcy = CountryUtils.code2Currency.getOrElse(countryCode2, "USD")
+            detectedCcy = "USD" //CountryUtils.code2Currency.getOrElse(countryCode2, "USD")
             baseCcy = ExchangeRatesFeed.supported.getOrElse(detectedCcy, USD)
             mc <- ratesFeed.moneyContext()
             // convert prices into the base currency
