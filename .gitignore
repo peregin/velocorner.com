@@ -11,7 +11,6 @@ checksums.txt
 .gradle
 .cache
 .idea/*
-!.idea/runConfigurations/
 **/.idea/*
 .idea_modules/*
 .bloop
@@ -60,8 +59,6 @@ coverage
 .env.test.local
 .env.production.local
 .ipynb_checkpoints/
-**/gradlew*
-**/gradle/*
 **/opencv-env/
 **caffemodel
 **opencv_bootcamp*
