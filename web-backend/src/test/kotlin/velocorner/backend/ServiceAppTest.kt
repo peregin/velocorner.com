@@ -6,9 +6,9 @@ package velocorner.backend
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
 
-class AppTest {
+class ServiceAppTest {
     @Test fun appHasAGreeting() {
-        val classUnderTest = App()
+        val classUnderTest = ServiceApp()
         assertNotNull(classUnderTest.greeting, "app should have a greeting")
     }
 }
