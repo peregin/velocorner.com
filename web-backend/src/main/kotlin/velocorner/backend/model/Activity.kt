@@ -76,20 +76,22 @@ import java.time.OffsetDateTime
  */
 data class Activity(
     val id: Long,
-    val resourceState: Int,
-    val externalId: String?,
+    val resource_state: Int,
+    val external_id: String?,
     val uploadId: Long?,
     val athlete: Athlete,
     val name: String,
-    val distance: Float,
-    val movingTime: Int, // in seconds
-    val elapsedTime: Int,
-    val totalElevationGain: Float,
+    val distance: Double,
+    val moving_time: Int, // in seconds
+    val elapsed_time: Int,
+    val total_elevation_gain: Double,
     val type: String,
-    val startDate: OffsetDateTime,
-    val startDateLocal: OffsetDateTime?,
-    val averageSpeed: Float?,
-    val maxSpeed: Float?,
-    val averageCadence: Float?,
-    val averageTemp: Float?
-)
+    val start_date: OffsetDateTime,
+    val start_date_local: OffsetDateTime?,
+    val average_speed: Float?,
+    val max_speed: Float?,
+    val average_cadence: Float?,
+    val average_temp: Float?
+) {
+    fun getStartDateLocal(): OffsetDateTime = start_date_local ?: start_date
+}

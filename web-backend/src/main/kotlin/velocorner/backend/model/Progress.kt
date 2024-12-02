@@ -1,9 +1,7 @@
 package velocorner.backend.model
 
-// Function interface for double conversion
-fun interface FromDouble<T> {
-    fun convert(v: Double): T
-}
+const val MILES = 1.609344e3
+const val FEET = 3.048006096e-1
 
 /**
  * @param rides amount of rides in this aggregate
@@ -25,11 +23,6 @@ data class Progress(
 ) {
     companion object {
         val zero = Progress(0, 0, 0.0, 0.0, 0, 0.0, 0.0, 0.0)
-
-        // Converters
-        val intFromDouble = FromDouble<Int> { it.toInt() }
-        val longFromDouble = FromDouble<Long> { it.toLong() }
-        val doubleFromDouble = FromDouble<Double> { it }
     }
 
     // append using operator overloading
@@ -56,14 +49,16 @@ data class Progress(
         longestElevation = this.longestElevation
     )
 
-    private inline fun <T> factor(v: T, f: Double): T {
+    private fun <T> factor(v: T, f: Double): T {
+        @Suppress("UNCHECKED_CAST")
         return when (v) {
-            is Int -> intFromDouble.convert(v.toDouble() * f) as T
-            is Long -> longFromDouble.convert(v.toDouble() * f) as T
-            is Double -> doubleFromDouble.convert(v * f) as T
-            else -> throw IllegalArgumentException("Unsupported numeric type")
+            is Int -> (v * f).toInt() as T
+            is Long -> (v * f).toLong() as T
+            is Double -> (v * f) as T
+            else -> throw IllegalArgumentException("Unsupported numeric type: ${v?.let { it::class.simpleName }}")
         }
     }
+
 
     fun to(unit: Units): Progress = when (unit) {
         Units.IMPERIAL -> toImperial()
@@ -73,11 +68,11 @@ data class Progress(
     private fun toImperial(): Progress = Progress(
         days = this.days,
         rides = this.rides,
-        distance = Kilometers(this.distance).toInternationalMiles,
-        longestDistance = Kilometers(this.longestDistance).toInternationalMiles,
+        distance = distance * MILES,
+        longestDistance = this.longestDistance * MILES,
         movingTime = this.movingTime,
-        averageSpeed = KilometersPerHour(this.averageSpeed).toInternationalMilesPerHour,
-        elevation = Meters(this.elevation).toFeet,
-        longestElevation = Meters(this.longestElevation).toFeet
+        averageSpeed = this.averageSpeed * MILES / 3600,
+        elevation = this.elevation * FEET,
+        longestElevation = this.longestElevation * FEET
     )
 }

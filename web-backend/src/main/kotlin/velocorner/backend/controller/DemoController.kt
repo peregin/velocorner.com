@@ -4,8 +4,11 @@ import org.slf4j.LoggerFactory
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import velocorner.backend.model.Units
+import velocorner.backend.model.*
+import velocorner.backend.util.ActivityOps.toSumYtdSeries
+import velocorner.backend.util.ActivityOps.toYearlySeries
 import velocorner.backend.util.DemoActivityUtil
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/demo")
@@ -87,8 +90,8 @@ class DemoController {
     ): ResponseEntity<Any> {
         val activities = DemoActivityUtil.generate()
         val series = when (action.lowercase()) {
-            "distance" -> apexcharts.toDistanceHeatmap(activities, activity, Units.METRIC)
-            "elevation" -> apexcharts.toElevationHeatmap(activities, Units.METRIC)
+            "distance" -> Apexcharts.toDistanceHeatmap(activities, activity, Units.METRIC)
+            "elevation" -> Apexcharts.toElevationHeatmap(activities, Units.METRIC)
             else -> throw IllegalArgumentException("Not supported action: $action")
         }
 

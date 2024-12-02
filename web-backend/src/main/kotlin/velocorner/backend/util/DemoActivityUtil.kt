@@ -50,29 +50,29 @@ object DemoActivityUtil {
                 // add less noise to each year, then the stat will look like continuous yearly improvement
                 val yearlyNoise = rnd.nextInt(yearsBack + 1 - until.year + day.year)
                 val movingTime = rnd.nextInt(60000, 6000000)
-                val distanceInMeter = rnd.nextFloat() * (120000f - 3000f) + 3000f
-                val elevationInMeter = rnd.nextFloat() * (1100f - 50f) + 50f + (yearlyNoise * 500)
+                val distanceInMeter = rnd.nextDouble() * (120000 - 3000) + 3000
+                val elevationInMeter = rnd.nextDouble() * (1100 - 50) + 50 + (yearlyNoise * 500)
 
                 Activity(
                     id = day.toEpochDay(),
-                    resourceState = 0,
-                    externalId = null,
+                    resource_state = 0,
+                    external_id = null,
                     uploadId = null,
                     athlete = demoAthlete,
                     name = generateRandomString(10),
                     distance = distanceInMeter,
-                    movingTime = movingTime,
-                    elapsedTime = movingTime,
-                    totalElevationGain = elevationInMeter,
+                    moving_time = movingTime,
+                    elapsed_time = movingTime,
+                    total_elevation_gain = elevationInMeter,
                     type = "Ride",
-                    startDate = OffsetDateTime.now().withYear(day.year)
+                    start_date = OffsetDateTime.now().withYear(day.year)
                         .withMonth(day.monthValue)
                         .withDayOfMonth(day.dayOfMonth),
-                    startDateLocal = null,
-                    averageSpeed = null,
-                    maxSpeed = null,
-                    averageCadence = null,
-                    averageTemp = null
+                    start_date_local = null,
+                    average_speed = null,
+                    max_speed = null,
+                    average_cadence = null,
+                    average_temp = null
                 )
             }
     }
