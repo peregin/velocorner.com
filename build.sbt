@@ -109,7 +109,7 @@ def spark = Seq(
 )
 
 def smile: Seq[ModuleID] = Seq(
-  "com.github.haifengl" % "smile-core" % "4.0.0"
+  "com.github.haifengl" % "smile-core" % "4.1.0"
 )
 
 def http4s: Seq[ModuleID] = Seq(
