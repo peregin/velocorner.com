@@ -57,7 +57,7 @@ val pekko = Seq(
 )
 
 val apacheCommons = Seq(
-  "org.apache.commons" % "commons-csv" % "1.12.0"
+  "org.apache.commons" % "commons-csv" % "1.13.0"
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
