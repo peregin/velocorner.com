@@ -8,8 +8,7 @@ class FlywaySupportSpec extends AnyWordSpec with Matchers {
 
   "scanner" should {
 
-    "read resource folder" in {
-
+    "read resource folder" in
       // test resources are containing some overrides from the regular folder (V4__ip2nation.sql)
       // want to have test classes at the end
       FlywaySupport.copyInTemp("psql/migration") { tmpDir =>
@@ -19,6 +18,5 @@ class FlywaySupportSpec extends AnyWordSpec with Matchers {
         val overriddenFile = files.find(_.getName == "V4__ip2nation.sql").get
         overriddenFile.length() must be < 600L
       }
-    }
   }
 }
