@@ -18,16 +18,15 @@ class RouterTest extends AsyncFlatSpec with AsyncIOSpec with should.Matchers {
 
   implicit def logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
-  "router" should "handle valid search term" in {
+  "router" should "handle valid search term" in
     (for {
       rsp <- new Router[IO](Nil).routes.orNotFound.run(GET(uri"/search/SRAM"))
       res <- rsp.as[List[ProductDetails]]
     } yield res).asserting { res =>
       res shouldBe empty
     }
-  }
 
-  "router" should "handle empty search term" in {
+  "router" should "handle empty search term" in
     (for {
       rsp <- new Router[IO](Nil).routes.orNotFound.run(GET(uri"/search/"))
       res <- rsp.as[String]
@@ -35,5 +34,4 @@ class RouterTest extends AsyncFlatSpec with AsyncIOSpec with should.Matchers {
       rsp.status shouldBe Status.BadRequest
       res shouldBe "empty search term"
     }
-  }
 }

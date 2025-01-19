@@ -7,8 +7,7 @@ import velocorner.model.withings.MeasurementType._
 class MeasurementTypeSpec extends AnyWordSpec with Matchers {
 
   "type" should {
-    "have proper mapping" in {
+    "have proper mapping" in
       Weight.name === "Weight"
-    }
   }
 }

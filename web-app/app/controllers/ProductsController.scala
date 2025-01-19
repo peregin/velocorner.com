@@ -38,7 +38,7 @@ class ProductsController @Inject() (val connectivity: ConnectivitySettings, comp
             // detect country of ip, use weather service -> location/ip endpoint
             countryCode2 = "US"
             // detect currency of the country
-            detectedCcy = "USD" //CountryUtils.code2Currency.getOrElse(countryCode2, "USD")
+            detectedCcy = "USD" // CountryUtils.code2Currency.getOrElse(countryCode2, "USD")
             baseCcy = ExchangeRatesFeed.supported.getOrElse(detectedCcy, USD)
             mc <- ratesFeed.moneyContext()
             // convert prices into the base currency
