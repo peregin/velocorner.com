@@ -1,18 +1,18 @@
 {
   "name": "web-front",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
-    "@chakra-ui/react": "^2.5.5",
+    "@chakra-ui/react": "^2.10.5",
     "@tasoskakour/react-use-oauth2": "1.0.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "^6.10.0",
+    "react-router-dom": "^6.28.2",
     "react-scripts": "5.0.1",
-    "serve": "^14.2.0",
-    "super-tiny-icons": "^0.5.0",
+    "serve": "^14.2.4",
+    "super-tiny-icons": "^0.6.0",
     "typescript": "^4.9.5"
   },
   "scripts": {
@@ -41,8 +41,8 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.0.32",
+    "@types/react": "^18.3.18",
     "git-revision-webpack-plugin": "^5.0.0",
-    "webpack": "^5.77.0"
+    "webpack": "^5.97.1"
   }
 }
