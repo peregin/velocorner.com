@@ -12,7 +12,7 @@ else
     -e POSTGRES_DB=velocorner \
     -e POSTGRES_USER=velocorner \
     -e POSTGRES_PASSWORD=velocorner \
-    -v "$HOME"/Downloads/velo/velocorner/psql/data:/var/lib/postgresql/data \
+    -v "$HOME"/Downloads/psql/velocorner:/var/lib/postgresql/data \
     postgres:12.2-alpine
   echo "$CONTAINER_REPO has been started ..."
 fi
