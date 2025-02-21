@@ -26,4 +26,4 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.4")
 // checkDuplicates for resources and classes
 addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
 // refactoring and linting
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.2")
