@@ -9,7 +9,7 @@ object Dependencies {
   val fs2Version = "3.11.0"
   val http4s = "0.23.30"
   val zioVersion = "2.1.15"
-  val playWsVersion = "3.0.6" // standalone version
+  val playWsVersion = "3.0.7" // standalone version
   val pekkoVersion = "1.1.3"
   val playJsonVersion = "3.0.4"
   val shapelessVersion = "2.3.12"
