@@ -26,7 +26,7 @@ object Dependencies {
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.19.1"
   val scalaTestVersion = "3.2.19"
-  val mockitoVersion = "5.16.0"
+  val mockitoVersion = "5.16.1"
   val catsEffectTestVersion = "1.6.0"
 }
 
