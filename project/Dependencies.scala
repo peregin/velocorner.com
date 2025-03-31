@@ -6,7 +6,7 @@ object Dependencies {
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.6.0"
   val mouseVersion = "1.3.2"
-  val fs2Version = "3.11.0"
+  val fs2Version = "3.12.0"
   val http4s = "0.23.30"
   val zioVersion = "2.1.16"
   val playWsVersion = "3.0.7" // standalone version
