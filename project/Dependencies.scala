@@ -14,7 +14,7 @@ object Dependencies {
   val playJsonVersion = "3.0.4"
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.18" // updating will cause conflict
-  val doobieVersion = "1.0.0-RC8"
+  val doobieVersion = "1.0.0-RC9"
   val orientDbVersion = "3.2.38"
   val mongoDbVersion = "5.4.0"
   val rethinkDbVersion = "2.4.4"
