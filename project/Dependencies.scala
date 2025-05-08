@@ -6,7 +6,7 @@ object Dependencies {
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.6.1"
   val mouseVersion = "1.3.2"
-  val fs2Version = "3.11.0"
+  val fs2Version = "3.12.0"
   val http4s = "0.23.30"
   val zioVersion = "2.1.17"
   val playWsVersion = "3.0.7" // standalone version
@@ -15,8 +15,8 @@ object Dependencies {
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.18" // updating will cause conflict
   val doobieVersion = "1.0.0-RC9"
-  val orientDbVersion = "3.2.38"
-  val mongoDbVersion = "5.4.0"
+  val orientDbVersion = "3.2.39"
+  val mongoDbVersion = "5.5.0"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.18.0"
   val jwtVersion = "10.0.4"
