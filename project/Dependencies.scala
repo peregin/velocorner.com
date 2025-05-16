@@ -8,7 +8,7 @@ object Dependencies {
   val mouseVersion = "1.3.2"
   val fs2Version = "3.12.0"
   val http4s = "0.23.30"
-  val zioVersion = "2.1.17"
+  val zioVersion = "2.1.18"
   val playWsVersion = "3.0.7" // standalone version
   val pekkoVersion = "1.1.3"
   val playJsonVersion = "3.0.4"
