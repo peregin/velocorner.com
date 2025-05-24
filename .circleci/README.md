@@ -10,7 +10,7 @@ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -u circleci per
 docker build . -t peregin/circleci:latest
 docker push peregin/circleci:latest
 
-# arm
+# arm and x86/amd
 buildx inspect multi-arch-builder
 buildx create --name multi-arch-builder
 docker buildx use multi-arch-builder
