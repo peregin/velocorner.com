@@ -15,7 +15,7 @@ trait DecodeResource extends CloseableResource {
   def assert[T: Decoder](resource: String): T = {
     val reply = load(resource)
     parse(reply) match {
-      case Left(f) => fail(f.message)
+      case Left(f)      => fail(f.message)
       case Right(value) =>
         println("parsing succeeded")
         value.as[T] match {

@@ -58,10 +58,10 @@ object CrawlerVeloFactory {
       for {
         // filter "type" : "product" only, otherwise brands and other types will appear in the list
         productsOnly <- res.downField("results").focus match {
-          case None => Right(Nil)
+          case None          => Right(Nil)
           case Some(results) =>
             results.asArray match {
-              case None => Right(Nil)
+              case None              => Right(Nil)
               case Some(resultsJson) =>
                 Right(
                   resultsJson
