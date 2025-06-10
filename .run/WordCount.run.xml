@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WordCount" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="velocorner.spark.app.WordCount" />
-    <module name="velocorner.data-analytics" />
+    <module name="velocorner.data-analytics.main" />
     <option name="VM_PARAMETERS" value="--add-exports java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <extension name="net.ashald.envfile">

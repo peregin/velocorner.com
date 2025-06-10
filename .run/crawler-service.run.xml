@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="crawler-service" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="velocorner.crawler.Main" />
-    <module name="velocorner.crawler-service" />
+    <module name="velocorner.crawler-service.main" />
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
