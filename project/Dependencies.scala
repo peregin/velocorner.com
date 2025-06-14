@@ -22,7 +22,7 @@ object Dependencies {
   val jwtVersion = "10.0.4"
   val squantsVersion = "1.8.3"
   val sparkVersion = "3.5.6"
-  val circeVersion = "0.14.13"
+  val circeVersion = "0.14.14"
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.20.1"
   val scalaTestVersion = "3.2.19"
