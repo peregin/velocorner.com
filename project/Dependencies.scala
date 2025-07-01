@@ -11,7 +11,7 @@ object Dependencies {
   val zioVersion = "2.1.19"
   val playWsVersion = "3.0.7" // standalone version
   val pekkoVersion = "1.1.4"
-  val playJsonVersion = "3.0.4"
+  val playJsonVersion = "3.0.5"
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.18" // updating will cause conflict
   val doobieVersion = "1.0.0-RC9"
