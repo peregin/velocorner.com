@@ -22,7 +22,7 @@ addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0")
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.7")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.4")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 // checkDuplicates for resources and classes
 addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0")
 // refactoring and linting
