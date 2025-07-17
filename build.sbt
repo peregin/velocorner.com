@@ -183,7 +183,13 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   ),
   dependencyOverrides ++= Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0",
+    "com.fasterxml.jackson.core"      %  "jackson-core"            % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.core"      %  "jackson-annotations"     % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.core"      %  "jackson-databind"        % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.datatype"  %  "jackson-datatype-jdk8"   % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.datatype"  %  "jackson-datatype-jsr310" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.module"   %%  "jackson-module-scala"    % Dependencies.jacksonVersion
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
   dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
@@ -199,7 +205,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playJsonExtensions,
       playJsonJoda,
       playWsAhcStandalone,
-      "com.beachape" %% "enumeratum" % "1.7.5",
+      "com.beachape" %% "enumeratum" % "1.9.0",
       scalaTest
     ) ++ logging ++ psqlDbClient ++ apacheCommons ++ cats ++ squants ++ catsEffect.map(_ % Test)
   )
