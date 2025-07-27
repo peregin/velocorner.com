@@ -89,6 +89,10 @@ class WebController @Inject() (
     Ok(views.html.about(getPageContext("About")))
   }
 
+  def privacy = AuthAction(parse.default) { implicit request =>
+    Ok(views.html.privacy(getPageContext("Privacy")))
+  }
+
   def admin = AuthAction(parse.default) { implicit request =>
     Ok(views.html.admin(getPageContext("Admin")))
   }

@@ -18,6 +18,8 @@ GET     /marketing                                         controllers.WebContro
 ### NoDocs ###
 GET     /about                                             controllers.WebController.about
 ### NoDocs ###
+GET     /privacy                                           controllers.WebController.privacy
+### NoDocs ###
 GET     /admin                                             controllers.WebController.admin
 ### NoDocs ###
 GET     /sitemap.xml                                       controllers.WebController.sitemap
