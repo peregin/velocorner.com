@@ -57,7 +57,7 @@ val pekko = Seq(
 )
 
 val apacheCommons = Seq(
-  "org.apache.commons" % "commons-csv" % "1.14.0"
+  "org.apache.commons" % "commons-csv" % "1.14.1"
 )
 
 val playTest = "org.scalatestplus" %% "mockito-3-2" % "3.1.2.0" % "test"
@@ -184,12 +184,12 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   dependencyOverrides ++= Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0",
-    "com.fasterxml.jackson.core"      %  "jackson-core"            % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.core"      %  "jackson-annotations"     % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.core"      %  "jackson-databind"        % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.datatype"  %  "jackson-datatype-jdk8"   % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.datatype"  %  "jackson-datatype-jsr310" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.module"   %%  "jackson-module-scala"    % Dependencies.jacksonVersion
+    "com.fasterxml.jackson.core" % "jackson-core" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-annotations" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-databind" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % Dependencies.jacksonVersion,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % Dependencies.jacksonVersion
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
   dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
