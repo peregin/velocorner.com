@@ -1,4 +1,5 @@
 FROM node:22-alpine AS builder
+RUN apk --no-cache upgrade
 
 RUN mkdir /app
 WORKDIR /app
@@ -17,6 +18,7 @@ RUN npm run build
 
 # RUN THE APP
 FROM caddy:2.9-alpine
+RUN apk --no-cache upgrade
 
 # expose PORT 3000 on our virtual machine so we can run our server
 EXPOSE 3000
