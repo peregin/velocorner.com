@@ -24,6 +24,10 @@ import {
   useToast
 } from "@chakra-ui/react";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
+import LineSeriesChart from '../components/charts/LineSeriesChart';
+import BarChart from '../components/charts/BarChart';
+import HeatmapChart from '../components/charts/HeatmapChart';
+import CalendarHeatmap from '../components/charts/CalendarHeatmap';
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -149,6 +153,17 @@ const Home = () => {
       fetchUserData();
     }
   };
+
+  // fetchers for charts
+  const fetchYearlyDistance = () => ApiClient.yearlyStatistics('distance', selectedActivityType);
+  const fetchYearlyElevation = () => ApiClient.yearlyStatistics('elevation', selectedActivityType);
+  const fetchYearlyTime = () => ApiClient.yearlyStatistics('time', selectedActivityType);
+  const fetchYtdDistance = () => ApiClient.ytdStatistics('distance', selectedActivityType);
+  const fetchYtdElevation = () => ApiClient.ytdStatistics('elevation', selectedActivityType);
+  const fetchYtdTime = () => ApiClient.ytdStatistics('time', selectedActivityType);
+  const fetchHistogramDistance = () => ApiClient.yearlyHistogram('distance', selectedActivityType);
+  const fetchHistogramElevation = () => ApiClient.yearlyHistogram('elevation', selectedActivityType);
+  const fetchDailyDistance = () => ApiClient.dailyStatistics('distance');
 
   if (loading) {
     return (
@@ -295,6 +310,31 @@ const Home = () => {
                 </CardBody>
               </Card>
             )}
+
+            {/* Charts parity to Play widgets */}
+            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
+
+            <HStack align="stretch" spacing={4} flexWrap="wrap">
+              <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
+              <LineSeriesChart title="Yearly Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} />
+            </HStack>
+
+            <HStack align="stretch" spacing={4} flexWrap="wrap">
+              <BarChart title="Year To Date Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} />
+              <LineSeriesChart title="Yearly Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} />
+            </HStack>
+
+            <HStack align="stretch" spacing={4} flexWrap="wrap">
+              <BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} />
+              <LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} />
+            </HStack>
+
+            <HStack align="stretch" spacing={4} flexWrap="wrap">
+              <HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} />
+              <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
+            </HStack>
+
+            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
 
             {/* Word Cloud */}
             <Card>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Routes} from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react'
 import OAuth2Popup from './components/OAuth2Popup.tsx'
 
@@ -21,7 +21,10 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <HashRouter>
+      <BrowserRouter future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}>
         <Routes>
           <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
           <Route exact path="/best" element={<div><Header /><Best /><Footer /></div>} />
@@ -33,7 +36,7 @@ const App = () => {
           <Route exact path="/health" element={<Ping />} />
           <Route path="*" element={<div><Header /><NotFound /><Footer /></div>} />
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </ChakraProvider>
   )
 }

@@ -4,6 +4,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "apexcharts": "^5.3.5",
+    "react-apexcharts": "^1.7.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@tasoskakour/react-use-oauth2": "^1.0.14",
