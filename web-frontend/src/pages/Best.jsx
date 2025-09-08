@@ -29,7 +29,7 @@ const Best = () => {
 
       setSearching(true);
       console.info("searching for [" + query + "]...");
-      let results = await ApiClient.search(query);
+      let results = await ApiClient.searchProducts(query);
       window.analytics.track('Best', {
         term: query
       });

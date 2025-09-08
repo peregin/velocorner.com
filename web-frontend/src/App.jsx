@@ -8,6 +8,8 @@ import Best from "./pages/Best"
 import About from "./pages/About"
 import Search from "./pages/Search"
 import Brands from "./pages/Brands"
+import Privacy from "./pages/Privacy"
+import NotFound from "./pages/NotFound"
 
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -26,8 +28,10 @@ const App = () => {
           <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
           <Route exact path="/search" element={<div><Header /><Search /><Footer /></div>} />
           <Route exact path="/brands" element={<div><Header /><Brands /><Footer /></div>} />
+          <Route exact path="/privacy" element={<div><Header /><Privacy /><Footer /></div>} />
           <Route exact path="/oauth/strava" element={<OAuth2Popup />} />
           <Route exact path="/health" element={<Ping />} />
+          <Route path="*" element={<div><Header /><NotFound /><Footer /></div>} />
         </Routes>
       </HashRouter>
     </ChakraProvider>

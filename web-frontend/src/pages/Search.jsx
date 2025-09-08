@@ -18,7 +18,7 @@ import {
   Badge,
   Divider
 } from "@chakra-ui/react";
-import { SearchIcon, TimeIcon, LocationIcon } from "@chakra-ui/icons";
+import { SearchIcon, TimeIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 
 const Search = () => {
   const [query, setQuery] = useState("");
@@ -175,7 +175,7 @@ const Search = () => {
                                   <Text>{formatDate(activity.startDate)}</Text>
                                 </HStack>
                                 <HStack>
-                                  <LocationIcon />
+                                  <InfoOutlineIcon />
                                   <Text>{activity.location || "Unknown location"}</Text>
                                 </HStack>
                               </HStack>

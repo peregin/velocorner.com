@@ -34,6 +34,9 @@ const Header = () => {
                   <Link to="/about">
                     <Button variant="ghost" size="sm">About</Button>
                   </Link>
+                  <Link to="/privacy">
+                    <Button variant="ghost" size="sm">Privacy</Button>
+                  </Link>
                 </HStack>
               </Flex>
               

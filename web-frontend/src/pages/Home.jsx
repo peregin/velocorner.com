@@ -41,7 +41,7 @@ const Home = () => {
     redirectUri: `${ApiClient.apiHost}/fe/oauth/strava`,
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
-    extraQueryParameters: 'approval_prompt=auto',
+    extraQueryParameters: { approval_prompt: 'auto' },
     exchangeCodeForTokenServerURL: `${ApiClient.apiHost}/api/token/strava`,
     exchangeCodeForTokenMethod: "POST",
     onSuccess: (payload) => {
