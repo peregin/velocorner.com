@@ -36,24 +36,6 @@
                 </span>
         </div>
     </div>
-
-    <h1 xmlns="http://www.w3.org/1999/html">Brands</h1>
-    <div class="tag-box tag-box-v2 box-shadow shadow-effect-1">
-        <div class="panel-body">
-            <span class="row">
-                <ul class="list-group sidebar-nav-v1" id="sidebar-nav-3">
-                    <li class="list-group-item">
-                        <span id="admin-brands" class="badge badge-red rounded-2x">X</span>
-                        <div class="VC_padding8">Brands</div>
-                    </li>
-                </ul>
-            </span>
-            @helper.form(action = routes.AdminController.brandUpload, Symbol("enctype") -> "multipart/form-data") {
-                <input type="file" name="brands">
-                <button type="submit" class="btn-u">Submit</button>
-            }
-        </div>
-    </div>
 }
 
 <!-- end of common main section -->

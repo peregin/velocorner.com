@@ -332,7 +332,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     ScalafmtExtensionPlugin
   )
   .enablePlugins(PlayLogback)
-  .dependsOn(dataProvider % "compile->compile; test->test", dataSearch)
+  .dependsOn(dataProvider % "compile->compile; test->test")
 
 // top level aggregate
 lazy val root = (project in file(".") withId "velocorner")

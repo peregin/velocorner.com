@@ -10,8 +10,6 @@ GET     /refresh                                           controllers.WebContro
 ### NoDocs ###
 GET     /search                                            controllers.WebController.search
 ### NoDocs ###
-GET     /brands                                            controllers.WebController.brands
-### NoDocs ###
 GET     /best                                              controllers.WebController.best
 ### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
@@ -47,10 +45,6 @@ GET     /api/ws                                            controllers.ApiContro
 
 ### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status
-
-### NoDocs ###
-+ nocsrf
-POST    /api/admin/brand/upload                            controllers.AdminController.brandUpload
 
 ###
 #  summary: Retrieves the status of the system, versions of the libraries
@@ -395,54 +389,6 @@ GET     /api/activities/last                               controllers.ActivityC
 #      description: Internal error
 ###
 GET     /api/activities/:id                                controllers.ActivityController.activity(id: Long)
-
-###
-#  summary: Suggests a list of brands based on the query parameter
-#  tags:
-#    - brand
-#  parameters:
-#    - in: query
-#      name: query
-#      required: true
-#      schema:
-#        type: string
-#      example: Shima
-#      description: search term
-#  responses:
-#    200:
-#      description: Returns a list of brands
-#      content:
-#        application/json:
-#          schema:
-#            type: array
-#            items:
-#               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
-###
-GET     /api/brands/suggest                                controllers.BrandsController.suggest(query: String)
-
-###
-#  summary: Lookup for a list of brands based on the search parameter
-#  tags:
-#    - brand
-#  parameters:
-#    - in: query
-#      name: query
-#      required: true
-#      schema:
-#        type: string
-#      example: Shimano break pads
-#      description: search term
-#  responses:
-#    200:
-#      description: Returns a list of brands
-#      content:
-#        application/json:
-#          schema:
-#            type: array
-#            items:
-#               $ref: '#/components/schemas/velocorner.api.brand.MarketplaceBrand'
-###
-GET     /api/brands/search                                 controllers.BrandsController.search(query: String)
 
 ###
 #  summary: Suggests a list of product names based on the query parameter

@@ -9,7 +9,6 @@ import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.mvc._
 import play.api.{Environment, Logger}
 import velocorner.api.StatusInfo
-import velocorner.search.BrandSearch
 
 import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
