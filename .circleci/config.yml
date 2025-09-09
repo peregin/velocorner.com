@@ -32,7 +32,7 @@ executors:
       JVM_OPTS: -Xmx3072m
   ci-min:
     docker:
-      - image: cimg/base:2025.09
+      - image: cimg/base:2024.11
 
 jobs:
   build:
@@ -118,7 +118,7 @@ jobs:
 
   restart_stack:
     docker:
-      - image: cimg/base:2025.09
+      - image: cimg/base:2024.11
     resource_class: small
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
