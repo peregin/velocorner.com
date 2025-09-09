@@ -117,6 +117,20 @@ jobs:
 
 workflows:
   ci_cd:
+    when:
+      or:
+        - matches:
+            pattern: "^data-provider/.*"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^web-app/.*"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^build.sbt$"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^project/.*"
+            value: << pipeline.git.modified_files >>
     jobs:
       - build
       - deploy_web-backend:
