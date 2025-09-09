@@ -1,13 +1,5 @@
 version: 2.1
 
-orbs:
-  path-filtering: circleci/path-filtering@1.0.0
-
-parameters:
-  run-build:
-    type: boolean
-    default: false
-
 defaults:
   working_directory: ~/project
   cache_key: &cache_key 'v1-{{ checksum "checksums.txt" }}'
@@ -124,18 +116,21 @@ jobs:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
 
 workflows:
-  setup:
-    unless: << pipeline.parameters.run-build >>
-    jobs:
-      - path-filtering/filter:
-          mapping: |
-            data-provider/.* run-build true
-            web-app/.* run-build true
-            build.sbt run-build true
-            project/.* run-build true
-
   ci_cd:
-    when: << pipeline.parameters.run-build >>
+    when:
+      or:
+        - matches:
+            pattern: "^data-provider/.*"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^web-app/.*"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^build.sbt$"
+            value: << pipeline.git.modified_files >>
+        - matches:
+            pattern: "^project/.*"
+            value: << pipeline.git.modified_files >>
     jobs:
       - build
       - deploy_web-backend:
