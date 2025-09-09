@@ -10,7 +10,7 @@ echo "Current version is $CURRENT_VERSION"
 
 # Configuration
 BUILDER_NAME="multi-arch-builder"
-IMAGE_NAME="peregin/web-front"
+IMAGE_NAME="peregin/velocorner.frontend"
 TAG="latest"
 PLATFORMS="linux/arm64"
 
