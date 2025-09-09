@@ -131,7 +131,7 @@ workflows:
     unless: << pipeline.parameters.run-build >>
     jobs:
       - path-filtering/filter:
-          base-revision: main
+          executor: python-executor
           mapping: |
             data-provider/.* run-build true
             web-app/.* run-build true
