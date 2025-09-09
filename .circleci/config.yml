@@ -33,9 +33,6 @@ executors:
   ci-min:
     docker:
       - image: cimg/base:2025.09
-  python-executor:
-    docker:
-      - image: cimg/python:3.9
 
 jobs:
   build:
@@ -131,7 +128,6 @@ workflows:
     unless: << pipeline.parameters.run-build >>
     jobs:
       - path-filtering/filter:
-          executor: python-executor
           mapping: |
             data-provider/.* run-build true
             web-app/.* run-build true
