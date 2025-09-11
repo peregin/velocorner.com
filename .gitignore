@@ -23,6 +23,7 @@ classes/
 gen/
 out/
 build/
+dist/
 logs/
 *.tmp
 *.bak
@@ -40,6 +41,7 @@ spark-warehouse/
 /.pnp
 .pnp.js
 /build
+/dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

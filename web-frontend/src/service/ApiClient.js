@@ -1,5 +1,5 @@
-// react inject variables starting with REACT_APP_ to client side
-const apiHost = process.env.API_HOST || process.env.REACT_APP_API_HOST || 'https://velocorner.com';
+// vite inject variables starting with VITE_ to client side
+const apiHost = import.meta.env.VITE_API_HOST || 'https://velocorner.com';
 console.info('api host: ' + apiHost);
 
 // Status and health endpoints

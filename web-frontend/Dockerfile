@@ -11,7 +11,7 @@ RUN npm install --omit=dev
 # Copy only necessary files
 COPY /src /app/src
 COPY /public /app/public
-COPY *.js *.ts ./
+COPY index.html vite.config.js ./
 
 # build the application
 RUN npm run build
@@ -25,6 +25,6 @@ EXPOSE 3000
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app/build /usr/share/caddy/html
+COPY --from=builder /app/dist /usr/share/caddy/html
 COPY Caddyfile.live /etc/Caddyfile
 CMD ["caddy", "run", "--config", "/etc/Caddyfile"]
