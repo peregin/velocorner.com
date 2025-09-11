@@ -15,7 +15,6 @@ import {
   VStack,
   HStack,
   Card,
-  CardBody,
   Progress,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
@@ -37,8 +36,10 @@ const Home = () => {
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
     extraQueryParameters: { approval_prompt: 'auto' },
-    exchangeCodeForTokenServerURL: `${ApiClient.apiHost}/api/token/strava`,
-    exchangeCodeForTokenMethod: "POST",
+    exchangeCodeForTokenQuery: {
+      url: `${ApiClient.apiHost}/api/token/strava`,
+      method: "POST",
+    },
     onSuccess: (payload) => {
       console.log("Success", payload);
       localStorage.setItem('access_token', payload?.access_token);
