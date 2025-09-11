@@ -7,6 +7,7 @@ WORKDIR /app
 # Optimize layer caching by copying package files first
 COPY *.json ./
 RUN npm install --omit=dev
+RUN npm install vite
 
 # Copy only necessary files
 COPY /src /app/src
