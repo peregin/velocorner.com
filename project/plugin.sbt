@@ -16,7 +16,7 @@ addSbtPlugin("com.github.sbt" % "sbt-release" % "1.4.0")
 // Generate swagger doc from the routes
 addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.11.0")
 // Report the licenses used in the project
-addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.7.0")
+addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.8.0")
 // Show the hash of the current version
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0")
 // Use the Play sbt plugin for Play projects
