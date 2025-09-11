@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ApiClient from "../service/ApiClient";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
-import { 
-  Button, 
-  Heading, 
-  Text, 
-  Tag, 
-  Separator, 
+import {
+  Button,
+  Heading,
+  Text,
+  Tag,
+  Separator,
   Image,
   Box,
   Grid,
@@ -76,7 +76,7 @@ const Home = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch system status
       const status = await ApiClient.status();
       setMemoryUsage(status.memoryUsedPercentile);
@@ -88,7 +88,7 @@ const Home = () => {
           ApiClient.demoYtdStatistics('distance', 'Ride'),
           ApiClient.demoYearlyStatistics('elevation', 'Ride')
         ]);
-        
+
         setWordCloud(demoWc);
         setDemoStats({
           ytdDistance: demoYtdDistance,
@@ -100,7 +100,7 @@ const Home = () => {
           ApiClient.wordcloud(),
           ApiClient.activityTypes()
         ]);
-        
+
         setWordCloud(wc);
         setActivityTypes(types);
       }
@@ -124,7 +124,7 @@ const Home = () => {
         ApiClient.activityTypes(),
         ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString())
       ]);
-      
+
       setWordCloud(wc);
       setActivityTypes(types);
       setUserStats(stats);
@@ -156,7 +156,11 @@ const Home = () => {
   if (loading) {
     return (
       <Box textAlign="center" py={10}>
-        <Progress size="lg" isIndeterminate />
+        <Progress.Root size="lg" value={null}>
+          <Progress.Track>
+            <Progress.Range />
+          </Progress.Track>
+        </Progress.Root>
         <Text mt={4}>Loading...</Text>
       </Box>
     );
@@ -170,137 +174,136 @@ const Home = () => {
           <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
           <HStack justify="space-between" align="center">
             <Text>System Status: Memory usage {memoryUsage}%</Text>
-            <Progress value={memoryUsage} width="200px" />
+            {/* <Progress value={memoryUsage} width="200px" /> */}
           </HStack>
         </Box>
 
         {/* Authentication Section */}
-        {!isAuthenticated && (
-          <Card>
-            <CardBody>
-              <VStack spacing={4}>
-                <Text fontSize="lg" textAlign="center">
-                  Login with your Strava account to see your personal statistics
-                </Text>
-                <Button 
-                  leftIcon={<Image src={strava} boxSize="20px" />}
-                  colorScheme="orange" 
-                  size="lg"
-                  onClick={handleConnect}
-                  isLoading={authLoading}
-                >
-                  Connect with Strava
-                </Button>
-                <Text fontSize="sm" color="gray.600" textAlign="center">
-                  You will be able to see various statistics of your activities such as year to date progress, 
-                  yearly achievements, daily heatmap based on distance and elevation and much more!
-                </Text>
-              </VStack>
-            </CardBody>
-          </Card>
-        )}
+        {/* {!isAuthenticated && ( */}
+        {/* ( */}
+        <Card.Root>
+          <Card.Body>
+            <VStack spacing={4}>
+              <Text fontSize="lg" textAlign="center">
+                Login with your Strava account to see your personal statistics
+              </Text>
+              <Button
+                leftIcon={<Image src={strava} boxSize="20px" />}
+                colorScheme="orange"
+                size="lg"
+                onClick={handleConnect}
+                isLoading={authLoading}
+              >
+                Connect with Strava
+              </Button>
+              <Text fontSize="sm" color="gray.600" textAlign="center">
+                You will be able to see various statistics of your activities such as year to date progress,
+                yearly achievements, daily heatmap based on distance and elevation and much more!
+              </Text>
+            </VStack>
+          </Card.Body>
+        </Card.Root>
+        {/* ) */}
 
         {/* Demo Statistics for Non-Authenticated Users */}
-        {!isAuthenticated && demoStats && (
-          <Card>
-            <CardBody>
-              <Heading size="md" mb={4}>Sample Statistics</Heading>
-              <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
+        {/* {!isAuthenticated && demoStats && ( */}
+        <Card.Root>
+          <Card.Body>
+            <Heading size="md" mb={4}>Sample Statistics</Heading>
+            <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
+              <GridItem>
+                <Text fontWeight="bold" mb={2}>YTD Distance (Sample)</Text>
+                <Text fontSize="2xl" color="blue.500">
+                  {demoStats.ytdDistance?.total?.toFixed(1) || 0} km
+                </Text>
+              </GridItem>
+              <GridItem>
+                <Text fontWeight="bold" mb={2}>Yearly Elevation (Sample)</Text>
+                <Text fontSize="2xl" color="green.500">
+                  {demoStats.yearlyElevation?.total?.toFixed(0) || 0} m
+                </Text>
+              </GridItem>
+            </Grid>
+
+            <Separator my={6} />
+
+            <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
+            <Box>
+              {wordCloud.slice(0, 10).map((word, index) => (
+                <Tag.Root
+                  key={index}
+                  size="lg"
+                  colorScheme="teal"
+                  mr={2}
+                  mb={2}
+                  fontSize={Math.max(12, word.count / 2)}
+                >
+                  <Tag.Label>{word.text}</Tag.Label>
+                </Tag.Root>
+              ))}
+            </Box>
+          </Card.Body>
+        </Card.Root>
+
+        {/* User Statistics for Authenticated Users */}
+        {/* {isAuthenticated && ( */}
+        <VStack spacing={6} align="stretch">
+          {/* Activity Type Tabs */}
+          <Card.Root>
+            <Card.Body>
+              <Text fontWeight="bold" mb={4}>Activity Types</Text>
+              <HStack spacing={2} wrap="wrap">
+                {activityTypes.map((type) => (
+                  <Button
+                    key={type}
+                    size="sm"
+                    variant={selectedActivityType === type ? "solid" : "outline"}
+                    colorScheme="blue"
+                    onClick={() => handleActivityTypeChange(type)}
+                  >
+                    {type}
+                  </Button>
+                ))}
+              </HStack>
+            </Card.Body>
+          </Card.Root>
+
+          {/* User Statistics */}
+          {/* {userStats && ( */}
+          {/* <Card.Root>
+            <Card.Body>
+              <Heading size="md" mb={4}>Your Statistics</Heading>
+              <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
                 <GridItem>
-                  <Text fontWeight="bold" mb={2}>YTD Distance (Sample)</Text>
+                  <Text fontWeight="bold" mb={2}>Total Distance</Text>
                   <Text fontSize="2xl" color="blue.500">
-                    {demoStats.ytdDistance?.total?.toFixed(1) || 0} km
+                    {userStats.totalDistance?.toFixed(1) || 0} km
                   </Text>
                 </GridItem>
                 <GridItem>
-                  <Text fontWeight="bold" mb={2}>Yearly Elevation (Sample)</Text>
+                  <Text fontWeight="bold" mb={2}>Total Elevation</Text>
                   <Text fontSize="2xl" color="green.500">
-                    {demoStats.yearlyElevation?.total?.toFixed(0) || 0} m
+                    {userStats.totalElevation?.toFixed(0) || 0} m
+                  </Text>
+                </GridItem>
+                <GridItem>
+                  <Text fontWeight="bold" mb={2}>Total Time</Text>
+                  <Text fontSize="2xl" color="purple.500">
+                    {userStats.totalTime?.toFixed(1) || 0} h
+                  </Text>
+                </GridItem>
+                <GridItem>
+                  <Text fontWeight="bold" mb={2}>Activities</Text>
+                  <Text fontSize="2xl" color="orange.500">
+                    {userStats.activityCount || 0}
                   </Text>
                 </GridItem>
               </Grid>
-              
-              <Separator my={6} />
-              
-              <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
-              <Box>
-                {wordCloud.slice(0, 10).map((word, index) => (
-                  <Tag 
-                    key={index} 
-                    size="lg" 
-                    colorScheme="teal" 
-                    mr={2} 
-                    mb={2}
-                    fontSize={Math.max(12, word.count / 2)}
-                  >
-                    {word.text}
-                  </Tag>
-                ))}
-              </Box>
-            </CardBody>
-          </Card>
-        )}
+            </Card.Body>
+          </Card.Root> */}
 
-        {/* User Statistics for Authenticated Users */}
-        {isAuthenticated && (
-          <VStack spacing={6} align="stretch">
-            {/* Activity Type Tabs */}
-            <Card>
-              <CardBody>
-                <Text fontWeight="bold" mb={4}>Activity Types</Text>
-                <HStack spacing={2} wrap="wrap">
-                  {activityTypes.map((type) => (
-                    <Button
-                      key={type}
-                      size="sm"
-                      variant={selectedActivityType === type ? "solid" : "outline"}
-                      colorScheme="blue"
-                      onClick={() => handleActivityTypeChange(type)}
-                    >
-                      {type}
-                    </Button>
-                  ))}
-                </HStack>
-              </CardBody>
-            </Card>
-
-            {/* User Statistics */}
-            {userStats && (
-              <Card>
-                <CardBody>
-                  <Heading size="md" mb={4}>Your Statistics</Heading>
-                  <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Distance</Text>
-                      <Text fontSize="2xl" color="blue.500">
-                        {userStats.totalDistance?.toFixed(1) || 0} km
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Elevation</Text>
-                      <Text fontSize="2xl" color="green.500">
-                        {userStats.totalElevation?.toFixed(0) || 0} m
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Time</Text>
-                      <Text fontSize="2xl" color="purple.500">
-                        {userStats.totalTime?.toFixed(1) || 0} h
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Activities</Text>
-                      <Text fontSize="2xl" color="orange.500">
-                        {userStats.activityCount || 0}
-                      </Text>
-                    </GridItem>
-                  </Grid>
-                </CardBody>
-              </Card>
-            )}
-
-            {/* Charts parity to Play widgets */}
-            {/* <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
+          {/* Charts parity to Play widgets */}
+          {/* <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
 
             <HStack align="stretch" spacing={4} flexWrap="wrap">
               <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
@@ -324,28 +327,27 @@ const Home = () => {
 
             <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} /> */}
 
-            {/* Word Cloud */}
-            <Card>
-              <CardBody>
-                <Text fontWeight="bold" mb={4}>Your Activity Word Cloud</Text>
-                <Box>
-                  {wordCloud.slice(0, 15).map((word, index) => (
-                    <Tag 
-                      key={index} 
-                      size="lg" 
-                      colorScheme="teal" 
-                      mr={2} 
-                      mb={2}
-                      fontSize={Math.max(12, word.count / 2)}
-                    >
-                      {word.text}
-                    </Tag>
-                  ))}
-                </Box>
-              </CardBody>
-            </Card>
-          </VStack>
-        )}
+          {/* Word Cloud */}
+          <Card.Root>
+            <Card.Body>
+              <Text fontWeight="bold" mb={4}>Your Activity Word Cloud</Text>
+              <Box>
+                {wordCloud.slice(0, 15).map((word, index) => (
+                  <Tag.Root
+                    key={index}
+                    size="lg"
+                    colorScheme="teal"
+                    mr={2}
+                    mb={2}
+                    fontSize={Math.max(12, word.count / 2)}
+                  >
+                    <Tag.Label>{word.text}</Tag.Label>
+                  </Tag.Root>
+                ))}
+              </Box>
+            </Card.Body>
+          </Card.Root>
+        </VStack>
 
         {/* Footer */}
         <Box textAlign="center" pt={8}>
