@@ -12,10 +12,9 @@ import {
   Card,
   CardBody,
   Link,
-  Divider,
+  Separator,
   Progress,
   Alert,
-  AlertIcon,
 } from "@chakra-ui/react";
 
 const About = () => {
@@ -51,10 +50,10 @@ const About = () => {
         </Box>
 
         {error && (
-          <Alert status="error">
-            <AlertIcon />
-            Failed to load status information.
-          </Alert>
+          <Alert.Root status="error">
+            <Alert.Indicator />
+            <Alert.Title>Failed to load status information.</Alert.Title>
+          </Alert.Root>
         )}
 
         <Card>
@@ -127,7 +126,7 @@ const About = () => {
                       </GridItem>
                     </Grid>
 
-                    <Divider />
+                    <Separator />
 
                     <HStack justify="space-between">
                       <HStack>

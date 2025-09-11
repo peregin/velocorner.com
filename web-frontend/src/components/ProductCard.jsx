@@ -1,6 +1,6 @@
 import { React } from "react";
-import { Box, LinkBox, LinkOverlay, Image, Badge, Flex, Tooltip } from "@chakra-ui/react";
-import { StarIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import { Box, LinkBox, LinkOverlay, Image, Badge, Flex, Tooltip, Icon } from "@chakra-ui/react";
+import { FaStar, FaCheckCircle } from "react-icons/fa";
 
 const ProductCard = ({ productName, productUrl, brandName, marketName, formattedPrice, imageUrl, imageAlt, reviewStars, isNew, onSales }) => {
   return (
@@ -14,7 +14,9 @@ const ProductCard = ({ productName, productUrl, brandName, marketName, formatted
           {isNew && <Badge borderRadius='full' px='2' colorScheme='teal'>New</Badge>}
           {onSales && <Badge borderRadius='full' px='2' colorScheme='orange'>SALE</Badge>}
           <Tooltip label='Available'>
-            <CheckCircleIcon color='green' px='2px' />
+            <Icon color='green' px='2px'>
+              <FaCheckCircle />
+            </Icon>
           </Tooltip>
           <Box color='gray.500' fontWeight='semibold' letterSpacing='wide' fontSize='xs' textTransform='uppercase' ml='2'>
             {brandName}
@@ -29,10 +31,12 @@ const ProductCard = ({ productName, productUrl, brandName, marketName, formatted
         <Flex mt='2' dir='row'>
           <Box alignItems='center'>
             {Array(5).fill('').map((_, i) => (
-              <StarIcon
+              <Icon
                 key={i}
                 color={i < reviewStars ? 'teal.500' : 'gray.300'}
-              />
+              >
+                <FaStar />
+              </Icon>
             ))}
           </Box>
         </Flex>

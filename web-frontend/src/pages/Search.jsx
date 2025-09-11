@@ -12,29 +12,26 @@ import {
   Heading,
   List,
   ListItem,
-  ListIcon,
-  useToast,
   Spinner,
   Badge,
-  Divider
+  Separator
 } from "@chakra-ui/react";
-import { SearchIcon, TimeIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { LuSearch, LuClock, LuInfo } from "react-icons/lu";
+import { toaster } from "@/components/ui/toaster";
 
 const Search = () => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const toast = useToast();
 
   const handleSearch = async () => {
     if (!query.trim()) {
-      toast({
+      toaster.create({
         title: "Search Error",
         description: "Please enter a search term",
         status: "warning",
         duration: 3000,
-        isClosable: true,
       });
       return;
     }
@@ -47,22 +44,20 @@ const Search = () => {
       setSearchResults(results);
       
       if (results.length === 0) {
-        toast({
+        toaster.create({
           title: "No Results",
           description: "No activities found matching your search",
           status: "info",
           duration: 3000,
-          isClosable: true,
         });
       }
     } catch (error) {
       console.error('Search error:', error);
-      toast({
+      toaster.create({
         title: "Search Error",
         description: "Failed to search activities. Please try again.",
         status: "error",
         duration: 5000,
-        isClosable: true,
       });
     } finally {
       setLoading(false);
@@ -117,7 +112,7 @@ const Search = () => {
                   size="lg"
                   onClick={handleSearch}
                   isLoading={loading}
-                  leftIcon={<SearchIcon />}
+                  leftIcon={<LuSearch />}
                 >
                   Search
                 </Button>
@@ -171,16 +166,16 @@ const Search = () => {
                               
                               <HStack spacing={6} color="gray.500" fontSize="sm">
                                 <HStack>
-                                  <TimeIcon />
+                                  <LuClock />
                                   <Text>{formatDate(activity.startDate)}</Text>
                                 </HStack>
                                 <HStack>
-                                  <InfoOutlineIcon />
+                                  <LuInfo />
                                   <Text>{activity.location || "Unknown location"}</Text>
                                 </HStack>
                               </HStack>
                               
-                              <Divider />
+                              <Separator />
                               
                               <HStack justify="space-between" fontSize="sm">
                                 <Text>
@@ -209,4 +204,4 @@ const Search = () => {
   );
 };
 
-export default Search; 
+export default Search;

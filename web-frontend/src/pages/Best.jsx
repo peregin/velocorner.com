@@ -9,7 +9,7 @@ import {
   Progress,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { LuSearch } from "react-icons/lu";
 import ApiClient from "../service/ApiClient";
 import ProductCard from "../components/ProductCard";
 import SupportedMarkets from "../components/SupportedMarkets";
@@ -93,7 +93,7 @@ const Best = () => {
           <IconButton
             colorScheme="green"
             aria-label="Search components"
-            icon={<SearchIcon onClick={handleSearch} />}
+            icon={<LuSearch onClick={handleSearch} />}
           />
         </Flex>
       </Box>

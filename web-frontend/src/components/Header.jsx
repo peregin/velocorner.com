@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { SearchIcon } from "@chakra-ui/icons";
-import { useBreakpointValue, useColorModeValue, Flex, Box, Container, HStack, Image, IconButton, Text, Button } from '@chakra-ui/react'
+import { LuSearch } from "react-icons/lu";
+import { useBreakpointValue, Flex, Box, Container, HStack, Image, IconButton, Text, Button, Icon } from '@chakra-ui/react'
+import { useColorModeValue } from '@/components/ui/color-mode'
 
 const Header = () => {
 
@@ -25,9 +26,6 @@ const Header = () => {
                   <Link to="/search">
                     <Button variant="ghost" size="sm">Search</Button>
                   </Link>
-                  <Link to="/brands">
-                    <Button variant="ghost" size="sm">Brands</Button>
-                  </Link>
                   <Link to="/best">
                     <Button variant="ghost" size="sm">Best Prices</Button>
                   </Link>
@@ -43,9 +41,12 @@ const Header = () => {
             ) : (
               <IconButton
                 variant="ghost"
-                icon={<SearchIcon />}
                 aria-label="Open Menu"
-              />
+              >
+                <Icon>
+                  <LuSearch />
+                </Icon>
+              </IconButton>
             )}
           </HStack>
         </Container>

@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect } from 'react'
-import { Image, Link, Tooltip } from '@chakra-ui/react'
+import { Image, Link } from '@chakra-ui/react'
+import { Tooltip } from '@/components/ui/tooltip'
 
 const Logo = ({ image, name, link, rotation = 90, timing = 200 }) => {
 
@@ -47,7 +48,7 @@ const Logo = ({ image, name, link, rotation = 90, timing = 200 }) => {
 
     return (
         <Link href={link} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <Tooltip label={name}>
+            <Tooltip content={name}>
                 <Image src={image} boxSize={{ base: '30px', md: '40px', lg: '40px' }} boxShadow='md' borderRadius='full' alt={name} style={style} />
             </Tooltip>
         </Link>

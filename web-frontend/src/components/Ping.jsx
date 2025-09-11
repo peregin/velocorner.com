@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ListItem, List, ListIcon } from "@chakra-ui/react";
-import { CheckCircleIcon } from '@chakra-ui/icons'
+import { ListItem, List, Icon } from "@chakra-ui/react";
+import { FaCheckCircle } from 'react-icons/fa'
 
 const Ping = () => {
     const [date, setDate] = useState(new Date());
@@ -13,11 +13,11 @@ const Ping = () => {
     return (
         <List spacing={3}>
             <ListItem>
-                <ListIcon as={CheckCircleIcon} color='green.500' />
+                <Icon as={FaCheckCircle} color='green.500' />
                 Time: {date.toLocaleTimeString()}
             </ListItem>
             <ListItem>
-                <ListIcon as={CheckCircleIcon} color='green.500' />
+                <Icon as={FaCheckCircle} color='green.500' />
                 Ping: OK
             </ListItem>
         </List>

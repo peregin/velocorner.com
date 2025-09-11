@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ApiClient from "../service/ApiClient";
-import ConnectWithStravaIcon from "../icons/ConnectWithStrava.tsx";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
 import { 
@@ -8,9 +7,8 @@ import {
   Heading, 
   Text, 
   Tag, 
-  Divider, 
-  Image, 
-  IconButton,
+  Separator, 
+  Image,
   Box,
   Grid,
   GridItem,
@@ -19,15 +17,9 @@ import {
   Card,
   CardBody,
   Progress,
-  Alert,
-  AlertIcon,
-  useToast
 } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
-import LineSeriesChart from '../components/charts/LineSeriesChart';
-import BarChart from '../components/charts/BarChart';
-import HeatmapChart from '../components/charts/HeatmapChart';
-import CalendarHeatmap from '../components/charts/CalendarHeatmap';
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -37,7 +29,6 @@ const Home = () => {
   const [userStats, setUserStats] = useState(null);
   const [demoStats, setDemoStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const toast = useToast();
 
   const { data, loading: authLoading, error: authError, getAuth } = useOAuth2({
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
@@ -51,23 +42,21 @@ const Home = () => {
     onSuccess: (payload) => {
       console.log("Success", payload);
       localStorage.setItem('access_token', payload?.access_token);
-      toast({
+      toaster.create({
         title: "Connected to Strava",
         description: "Successfully connected your Strava account!",
         status: "success",
         duration: 5000,
-        isClosable: true,
       });
       fetchUserData();
     },
     onError: (error_) => {
       console.error("Error", error_);
-      toast({
+      toaster.create({
         title: "Connection Failed",
         description: "Failed to connect to Strava. Please try again.",
         status: "error",
         duration: 5000,
-        isClosable: true,
       });
     }
   });
@@ -117,12 +106,11 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast({
+      toaster.create({
         title: "Error",
         description: "Failed to load data. Please try again.",
         status: "error",
         duration: 5000,
-        isClosable: true,
       });
     } finally {
       setLoading(false);
@@ -232,7 +220,7 @@ const Home = () => {
                 </GridItem>
               </Grid>
               
-              <Divider my={6} />
+              <Separator my={6} />
               
               <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
               <Box>
@@ -312,7 +300,7 @@ const Home = () => {
             )}
 
             {/* Charts parity to Play widgets */}
-            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
+            {/* <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
 
             <HStack align="stretch" spacing={4} flexWrap="wrap">
               <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
@@ -334,7 +322,7 @@ const Home = () => {
               <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
             </HStack>
 
-            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} /> */}
 
             {/* Word Cloud */}
             <Card>
