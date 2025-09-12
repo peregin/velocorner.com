@@ -1,57 +1,31 @@
-# Use a more specific Node.js version and smaller base image
 FROM node:22-alpine AS builder
+RUN apk --no-cache upgrade
 
-# Install only necessary system packages and clean up in same layer
-RUN apk --no-cache add --virtual .build-deps \
-    && apk --no-cache upgrade \
-    && apk del .build-deps
-
+RUN mkdir /app
 WORKDIR /app
 
-# Copy package files for better layer caching
-COPY package*.json ./
+# Optimize layer caching by copying package files first
+COPY *.json ./
+RUN npm install --omit=dev
+RUN npm install vite
 
-# Install dependencies with optimizations
-RUN npm ci --only=production --no-audit --no-fund \
-    && npm install --no-audit --no-fund vite \
-    && npm cache clean --force
+# Copy only necessary files
+COPY /src /app/src
+COPY /public /app/public
+COPY index.html vite.config.js ./
 
-# Copy source files
-COPY src/ ./src/
-COPY public/ ./public/
-COPY index.html vite.config.js tsconfig.json ./
+# build the application
+RUN npm run build
 
-# Build the application
-RUN npm run build \
-    && rm -rf node_modules \
-    && rm -rf src
-
-# Production stage with minimal Caddy image
+# RUN THE APP
 FROM caddy:2.9-alpine
+RUN apk --no-cache upgrade
 
-# Security updates in single layer
-RUN apk --no-cache upgrade \
-    && addgroup -g 1001 -S nodejs \
-    && adduser -S caddy -u 1001 -G nodejs \
-    && mkdir -p /config/caddy /data/caddy \
-    && chown -R caddy:nodejs /config/caddy /data/caddy
-
-# Set production environment
-ENV NODE_ENV=production
-
-# Copy built assets and configuration
-COPY --from=builder --chown=caddy:nodejs /app/dist /usr/share/caddy/html
-COPY --chown=caddy:nodejs Caddyfile.live /etc/Caddyfile
-
-# Use non-root user
-USER caddy
-
-# Expose port
+# expose PORT 3000 on our virtual machine so we can run our server
 EXPOSE 3000
 
-# Health check
-#HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-#    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+ENV NODE_ENV=production
 
-# Start Caddy
+COPY --from=builder /app/dist /usr/share/caddy/html
+COPY Caddyfile.live /etc/Caddyfile
 CMD ["caddy", "run", "--config", "/etc/Caddyfile"]
