@@ -163,7 +163,7 @@ docker build -t velocorner.frontend .
 # for ARM
 docker build -t velocorner.frontend --platform linux/arm64 .
 
-# Intel
+# Intel/ARM
 docker run -p 8080:3000 peregin/velocorner.frontend:latest
 # ARM - build and push
 docker buildx build --platform linux/amd64 -t peregin/velocorner.frontend:latest --cache-from "type=registry,ref=peregin/velocorner.frontend:latest" --cache-to "type=inline" --push .
