@@ -32,7 +32,9 @@ FROM caddy:2.9-alpine
 # Security updates in single layer
 RUN apk --no-cache upgrade \
     && addgroup -g 1001 -S nodejs \
-    && adduser -S caddy -u 1001 -G nodejs
+    && adduser -S caddy -u 1001 -G nodejs \
+    && mkdir -p /config/caddy /data/caddy \
+    && chown -R caddy:nodejs /config/caddy /data/caddy
 
 # Set production environment
 ENV NODE_ENV=production
