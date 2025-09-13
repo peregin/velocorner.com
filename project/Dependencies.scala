@@ -33,6 +33,6 @@ object Dependencies {
 
 object DockerBuild {
 
-  val baseImage = "eclipse-temurin:21-jre-alpine"
+  val baseImage = "openjdk:17-slim-buster"
   val maintainer = "velocorner.com@gmail.com"
 }
