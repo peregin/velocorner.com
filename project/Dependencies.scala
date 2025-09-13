@@ -33,6 +33,6 @@ object Dependencies {
 
 object DockerBuild {
 
-  val baseImage = "openjdk:17-slim-buster"
+  val baseImage = "bellsoft/liberica-runtime-container:jre-21-musl"
   val maintainer = "velocorner.com@gmail.com"
 }
