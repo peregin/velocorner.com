@@ -363,7 +363,7 @@ lazy val dockerBuildxSettings = Seq(
     }
   },
   dockerBuildWithBuildx := {
-    streams.value.log("Building and pushing image with Buildx")
+    streams.value.log("Building and pushing image with buildx")
     dockerAliases.value.foreach(alias =>
       Process(
         "docker buildx build --platform=linux/arm64 --push -t " +
