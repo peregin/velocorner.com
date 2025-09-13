@@ -308,22 +308,13 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     Docker / dockerExposedPorts := Seq(9000),
     dockerBaseImage := DockerBuild.baseImage,
     dockerUsername := Some("peregin"),
+    dockerExecCommand := Seq("sh", "-c"),
     Docker / version := "latest",
     Universal / javaOptions ++= Seq("-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC"),
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
     swaggerV3 := true,
     dockerBuildxSettings
-    // whenever we generate build information, run the formatter on the generated files
-    /*
-    Compile / buildInfo := Def.taskDyn {
-      val files = (Compile / buildInfo).value
-      Def.task {
-        (Compile / scalafmtGenerated).value
-        files
-      }
-    }.value
-     */
   )
   .enablePlugins(
     play.sbt.PlayScala,
