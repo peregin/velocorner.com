@@ -7,17 +7,8 @@ This is the React-based frontend for Velocorner, a cycling activity analytics pl
 - **User Authentication**: OAuth2 integration with Strava
 - **Activity Analytics**: View personal cycling statistics and achievements
 - **Activity Search**: Search through your activities by title, description, or location
-- **Brand Search**: Search for cycling brands and products across multiple marketplaces
 - **Product Comparison**: Compare prices across different marketplaces
 - **Demo Mode**: View sample statistics for non-authenticated users
-
-## Technology Stack
-
-- **React 18.2.0**: Modern React with hooks
-- **Chakra UI 2.10.5**: Component library for consistent design
-- **React Router DOM 6.28.2**: Client-side routing
-- **TypeScript 4.9.5**: Type safety
-- **OAuth2 Integration**: Strava authentication
 
 ## Project Structure
 
@@ -62,32 +53,17 @@ The frontend communicates with the Scala Play backend through a comprehensive AP
 - Top activities
 - Achievements
 
-### Brand & Product Endpoints
-- Brand search and suggestions
-- Product search across marketplaces
-- Marketplace information
-
 ### Demo Endpoints
 - Sample data for non-authenticated users
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js 16+ 
-- npm or yarn
-
 ### Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
 
 2. Set up environment variables:
 ```bash
 # Create .env file
-REACT_APP_API_HOST=https://velocorner.com
+VITE_API_HOST=https://velocorner.com
 ```
 
 ### Development
@@ -110,9 +86,8 @@ npm run build
 
 The frontend can be configured for different environments:
 
-- **Development**: `npm start` - Uses localhost backend
+- **Production**: `npm start` - Uses remote backend
 - **Local**: `npm run local` - Uses localhost:9001 backend
-- **Production**: `npm run build` - Uses production API
 
 ## Authentication Flow
 
@@ -138,12 +113,6 @@ The frontend can be configured for different environments:
 - Real-time search suggestions
 - Detailed activity results
 - Distance, duration, and elevation display
-
-### Brands Page
-- Brand search with autocomplete
-- Marketplace integration
-- Product price comparison
-- Brand information and logos
 
 ## Deployment
 

@@ -19,6 +19,10 @@ import {
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+// needed the import to load the module
+import Wordcloud from 'highcharts/modules/wordcloud'
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -165,6 +169,42 @@ const Home = () => {
         <Text mt={4}>Loading...</Text>
       </Box>
     );
+  }
+
+  const wordOptions = {
+    accessibility: {
+      screenReaderSection: {
+        beforeChartFormat: '<h5>{chartTitle}</h5>>' +
+          '<div>{chartSubtitle}</div>' +
+          '<div>{chartLongdesc}</div>' +
+          '<div>{viewTableButton}</div>'
+      }
+    },
+    series: [{
+      type: 'wordcloud',
+      rotation: {
+        from: 0,
+        to: 0,
+      },
+      name: '#',
+      minFontSize: 8,
+      data: wordCloud
+    }],
+    title: {
+      text: ''
+    },
+    exporting: {
+      buttons: {
+        contextButtons: {
+          enabled: false,
+          menuItems: null
+        }
+      },
+      enabled: false
+    },
+    credits: {
+      enabled: false
+    }
   }
 
   return (
@@ -331,21 +371,10 @@ const Home = () => {
           {/* Word Cloud */}
           <Card.Root>
             <Card.Body>
-              <Text fontWeight="bold" mb={4}>Your Activity Word Cloud</Text>
-              <Box>
-                {wordCloud.slice(0, 15).map((word, index) => (
-                  <Tag.Root
-                    key={index}
-                    size="lg"
-                    colorScheme="teal"
-                    mr={2}
-                    mb={2}
-                    fontSize={Math.max(12, word.count / 2)}
-                  >
-                    <Tag.Label>{word.text}</Tag.Label>
-                  </Tag.Root>
-                ))}
-              </Box>
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={wordOptions}
+              />
             </Card.Body>
           </Card.Root>
         </VStack>
