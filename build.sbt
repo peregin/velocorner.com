@@ -109,7 +109,7 @@ def spark = Seq(
 )
 
 def smile: Seq[ModuleID] = Seq(
-  "com.github.haifengl" % "smile-core" % "4.4.0"
+  "com.github.haifengl" % "smile-core" % "4.4.1"
 )
 
 def http4s: Seq[ModuleID] = Seq(
@@ -184,12 +184,12 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   dependencyOverrides ++= Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0",
-    "com.fasterxml.jackson.core" % "jackson-core" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.core" % "jackson-annotations" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.core" % "jackson-databind" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % Dependencies.jacksonVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % Dependencies.jacksonVersion
+//    "com.fasterxml.jackson.core" % "jackson-core" % Dependencies.jacksonVersion,
+//    "com.fasterxml.jackson.core" % "jackson-annotations" % Dependencies.jacksonVersion,
+//    "com.fasterxml.jackson.core" % "jackson-databind" % Dependencies.jacksonVersion,
+//    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % Dependencies.jacksonVersion,
+//    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % Dependencies.jacksonVersion,
+//    "com.fasterxml.jackson.module" %% "jackson-module-scala" % Dependencies.jacksonVersion
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
   dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
