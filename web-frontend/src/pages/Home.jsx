@@ -19,10 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-// needed the import to load the module
-import Wordcloud from 'highcharts/modules/wordcloud'
+import WordCloud from "../components/WordCloud";
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -169,42 +166,6 @@ const Home = () => {
         <Text mt={4}>Loading...</Text>
       </Box>
     );
-  }
-
-  const wordOptions = {
-    accessibility: {
-      screenReaderSection: {
-        beforeChartFormat: '<h5>{chartTitle}</h5>>' +
-          '<div>{chartSubtitle}</div>' +
-          '<div>{chartLongdesc}</div>' +
-          '<div>{viewTableButton}</div>'
-      }
-    },
-    series: [{
-      type: 'wordcloud',
-      rotation: {
-        from: 0,
-        to: 0,
-      },
-      name: '#',
-      minFontSize: 8,
-      data: wordCloud
-    }],
-    title: {
-      text: ''
-    },
-    exporting: {
-      buttons: {
-        contextButtons: {
-          enabled: false,
-          menuItems: null
-        }
-      },
-      enabled: false
-    },
-    credits: {
-      enabled: false
-    }
   }
 
   return (
@@ -369,14 +330,7 @@ const Home = () => {
             <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} /> */}
 
           {/* Word Cloud */}
-          <Card.Root>
-            <Card.Body>
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={wordOptions}
-              />
-            </Card.Body>
-          </Card.Root>
+          <WordCloud words={wordCloud} />
         </VStack>
 
         {/* Footer */}
