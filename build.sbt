@@ -67,7 +67,7 @@ val scalaTest = "org.scalatest" %% "scalatest" % Dependencies.scalaTestVersion %
 
 def logging = Seq(
   "ch.qos.logback" % "logback-classic" % Dependencies.logbackVersion,
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.6",
   "org.codehaus.janino" % "janino" % "3.1.12", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
@@ -183,7 +183,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2"
   ),
   dependencyOverrides ++= Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0",
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
 //    "com.fasterxml.jackson.core" % "jackson-core" % Dependencies.jacksonVersion,
 //    "com.fasterxml.jackson.core" % "jackson-annotations" % Dependencies.jacksonVersion,
 //    "com.fasterxml.jackson.core" % "jackson-databind" % Dependencies.jacksonVersion,
