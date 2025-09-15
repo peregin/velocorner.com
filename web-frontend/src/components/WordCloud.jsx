@@ -14,7 +14,8 @@ const WordCloud = ({ words }) => {
                     '<div>{chartSubtitle}</div>' +
                     '<div>{chartLongdesc}</div>' +
                     '<div>{viewTableButton}</div>'
-            }
+            },
+            enabled: false
         },
         series: [{
             type: 'wordcloud',
@@ -41,9 +42,6 @@ const WordCloud = ({ words }) => {
         credits: {
             enabled: false
         },
-        accessibility: {
-            enabled: false
-        }
     };
 
     return (
