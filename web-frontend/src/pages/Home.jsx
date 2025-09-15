@@ -330,7 +330,11 @@ const Home = () => {
             <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} /> */}
 
           {/* Word Cloud */}
-          <WordCloud words={wordCloud} />
+          <Card.Root>
+            <Card.Body>
+              <WordCloud words={wordCloud} />
+            </Card.Body>
+          </Card.Root>
         </VStack>
 
         {/* Footer */}
