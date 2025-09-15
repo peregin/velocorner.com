@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
-import WordCloud from "../components/WordCloud";
+import WordCloud from "../components/charts/WordCloud";
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
