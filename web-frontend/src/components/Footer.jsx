@@ -47,7 +47,6 @@ const Footer = () => {
                     <div className="footer">
                         <div className="container">
                             <div className="row">
-                                <Instagram />
                                 <Social />
                             </div>
                         </div>

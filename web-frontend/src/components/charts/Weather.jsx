@@ -14,8 +14,9 @@ import {
 } from '@chakra-ui/react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import Patternfill from 'highcharts/modules/pattern-fill';
+import Datagrouping from 'highcharts/modules/datagrouping';
 import Windbarb from 'highcharts/modules/windbarb';
+import Patternfill from 'highcharts/modules/pattern-fill';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
@@ -192,7 +193,7 @@ class Meteogram {
       if (meteogram.resolution > 36e5 || i % 2 === 0) {
         chart.renderer
           .image(
-            `https://cdn.jsdelivr.net/gh/nrkno/yr-weather-symbols@8.0.1/dist/svg/${icon}.svg`,
+            `https://openweathermap.org/img/w/${meteogram.symbols[i]}.png`,
             point.plotX + chart.plotLeft - 8,
             point.plotY + chart.plotTop - 30,
             30,
@@ -203,7 +204,6 @@ class Meteogram {
       }
     });
   }
-
 
 
   getTitle() {
