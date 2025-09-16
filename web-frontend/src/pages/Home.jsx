@@ -173,13 +173,18 @@ const Home = () => {
     <Box maxW="1200px" mx="auto" p={6}>
       <VStack spacing={8} align="stretch">
 
-        <Weather/>
+        <Weather />
 
         {/* Header Section */}
         <Box>
           <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
           <HStack justify="space-between" align="center">
             <Text>System Status: Memory usage {memoryUsage}%</Text>
+            <Progress.Root value={memoryUsage} defaultValue={90}>
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
             {/* <Progress value={memoryUsage} width="200px" /> */}
           </HStack>
         </Box>
