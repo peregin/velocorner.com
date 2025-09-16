@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Card, CardBody, Heading, useBreakpointValue } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
+import { Box, Card, Heading, useBreakpointValue } from '@chakra-ui/react';
 
 // Lightweight calendar heatmap using simple SVG rects for last N months
 const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) => {
@@ -21,8 +21,8 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
   }, [fetchDaily, monthsToShow]);
 
   return (
-    <Card>
-      <CardBody>
+    <Card.Root>
+      <Card.Body>
         <Heading size="md" mb={4}>{title}</Heading>
         <Box overflowX="auto">
           <svg width={monthsToShow * 140} height={140}>
@@ -36,8 +36,8 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
             ))}
           </svg>
         </Box>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 

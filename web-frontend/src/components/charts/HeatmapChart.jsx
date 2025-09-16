@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Chart from 'react-apexcharts';
-import { Card, CardBody, Heading } from '@chakra-ui/react';
+import { Card, Heading } from '@chakra-ui/react';
 
 const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
   const [series, setSeries] = useState([]);
@@ -25,12 +25,12 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
   }, [fetchHeatmap]);
 
   return (
-    <Card>
-      <CardBody>
+    <Card.Root>
+      <Card.Body>
         <Heading size="md" mb={4}>{title}</Heading>
         <Chart options={options} series={series} type="heatmap" height={height} />
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 

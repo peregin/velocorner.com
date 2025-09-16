@@ -21,6 +21,10 @@ import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
+import LineSeriesChart from "@/components/charts/LineSeriesChart";
+import BarChart from "@/components/charts/BarChart";
+import HeatmapChart from "@/components/charts/HeatmapChart";
+import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -265,64 +269,65 @@ const Home = () => {
         )}
 
         {/* User Statistics for Authenticated Users */}
-        {/* {isAuthenticated && ( */}
-        <VStack spacing={6} align="stretch">
-          {/* Activity Type Tabs */}
-          <Card.Root>
-            <Card.Body>
-              <Text fontWeight="bold" mb={4}>Activity Types</Text>
-              <HStack spacing={2} wrap="wrap">
-                {activityTypes.map((type) => (
-                  <Button
-                    key={type}
-                    size="sm"
-                    variant={selectedActivityType === type ? "solid" : "outline"}
-                    colorScheme="blue"
-                    onClick={() => handleActivityTypeChange(type)}
-                  >
-                    {type}
-                  </Button>
-                ))}
-              </HStack>
-            </Card.Body>
-          </Card.Root>
+        {isAuthenticated && (
+          <VStack spacing={6} align="stretch">
+            {/* Activity Type Tabs */}
+            <Card.Root>
+              <Card.Body>
+                <Text fontWeight="bold" mb={4}>Activity Types</Text>
+                <HStack spacing={2} wrap="wrap">
+                  {activityTypes.map((type) => (
+                    <Button
+                      key={type}
+                      size="sm"
+                      variant={selectedActivityType === type ? "solid" : "outline"}
+                      colorScheme="blue"
+                      onClick={() => handleActivityTypeChange(type)}
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </HStack>
+              </Card.Body>
+            </Card.Root>
 
-          {/* User Statistics */}
-          {/* {userStats && ( */}
-          {/* <Card.Root>
-            <Card.Body>
-              <Heading size="md" mb={4}>Your Statistics</Heading>
-              <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>Total Distance</Text>
-                  <Text fontSize="2xl" color="blue.500">
-                    {userStats.totalDistance?.toFixed(1) || 0} km
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>Total Elevation</Text>
-                  <Text fontSize="2xl" color="green.500">
-                    {userStats.totalElevation?.toFixed(0) || 0} m
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>Total Time</Text>
-                  <Text fontSize="2xl" color="purple.500">
-                    {userStats.totalTime?.toFixed(1) || 0} h
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>Activities</Text>
-                  <Text fontSize="2xl" color="orange.500">
-                    {userStats.activityCount || 0}
-                  </Text>
-                </GridItem>
-              </Grid>
-            </Card.Body>
-          </Card.Root> */}
+            {/* User Statistics */}
+            {userStats && (
+              <Card.Root>
+                <Card.Body>
+                  <Heading size="md" mb={4}>Your Statistics</Heading>
+                  <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
+                    <GridItem>
+                      <Text fontWeight="bold" mb={2}>Total Distance</Text>
+                      <Text fontSize="2xl" color="blue.500">
+                        {userStats.totalDistance?.toFixed(1) || 0} km
+                      </Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold" mb={2}>Total Elevation</Text>
+                      <Text fontSize="2xl" color="green.500">
+                        {userStats.totalElevation?.toFixed(0) || 0} m
+                      </Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold" mb={2}>Total Time</Text>
+                      <Text fontSize="2xl" color="purple.500">
+                        {userStats.totalTime?.toFixed(1) || 0} h
+                      </Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="bold" mb={2}>Activities</Text>
+                      <Text fontSize="2xl" color="orange.500">
+                        {userStats.activityCount || 0}
+                      </Text>
+                    </GridItem>
+                  </Grid>
+                </Card.Body>
+              </Card.Root>
+            )}
 
-          {/* Charts parity to Play widgets */}
-          {/* <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
+            {/* Charts parity to Play widgets */}
+            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
 
             <HStack align="stretch" spacing={4} flexWrap="wrap">
               <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
@@ -344,15 +349,17 @@ const Home = () => {
               <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
             </HStack>
 
-            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} /> */}
+            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+            
 
-          {/* Word Cloud */}
-          <Card.Root>
-            <Card.Body>
-              <WordCloud words={wordCloud} />
-            </Card.Body>
-          </Card.Root>
-        </VStack>
+            {/* Word Cloud */}
+            <Card.Root>
+              <Card.Body>
+                <WordCloud words={wordCloud} />
+              </Card.Body>
+            </Card.Root>
+          </VStack>
+        )}
 
         {/* Footer */}
         <Box textAlign="center" pt={8}>

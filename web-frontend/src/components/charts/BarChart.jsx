@@ -32,12 +32,12 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
   }, [fetchSeries]);
 
   return (
-    <Card>
-      <CardBody>
+    <Card.Root>
+      <Card.Body>
         <Heading size="md" mb={4}>{title}</Heading>
         <Chart options={options} series={series} type="bar" height={height} />
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 

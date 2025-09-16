@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Chart from 'react-apexcharts';
-import { Card, CardBody, Heading } from '@chakra-ui/react';
+import { Card, Heading } from '@chakra-ui/react';
 
 const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 400 }) => {
   const [series, setSeries] = useState([]);
@@ -45,12 +45,12 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
   }, [fetchSeries, seriesToShow]);
 
   return (
-    <Card>
-      <CardBody>
+    <Card.Root>
+      <Card.Body>
         <Heading size="md" mb={4}>{title}</Heading>
         <Chart options={options} series={series} type="line" height={height} />
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 
