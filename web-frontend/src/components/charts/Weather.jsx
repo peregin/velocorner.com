@@ -17,6 +17,7 @@ import HighchartsReact from 'highcharts-react-official';
 import Datagrouping from 'highcharts/modules/datagrouping';
 import Windbarb from 'highcharts/modules/windbarb';
 import Patternfill from 'highcharts/modules/pattern-fill';
+import Data from 'highcharts/modules/data';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
@@ -142,11 +143,11 @@ const Weather = ({ defaultLocation = '' }) => {
               <Box textAlign="center">
                 <Flex justify="center" align="center">
                   <Icon as="span" fontSize="2xl" mr={2}>🌅</Icon>
-                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunrise * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
+                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                 </Flex>
                 <Flex justify="center" align="center" mt={2}>
                   <Icon as="span" fontSize="2xl" mr={2}>🌇</Icon>
-                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunset * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
+                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                 </Flex>
               </Box>
             </GridItem>
@@ -411,6 +412,18 @@ class Meteogram {
         tooltip: { valueSuffix: ' hPa' },
         dashStyle: 'shortdot',
         yAxis: 2
+      }, {
+        name: 'Wind',
+        type: 'windbarb',
+        id: 'windbarbs',
+        color: Highcharts.getOptions().colors[1],
+        lineWidth: 1.5,
+        data: this.winds,
+        vectorLength: 18,
+        yOffset: -15,
+        tooltip: {
+          valueSuffix: ' m/s'
+        }
       }]
     };
   }
