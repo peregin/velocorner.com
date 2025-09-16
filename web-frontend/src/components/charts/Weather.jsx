@@ -14,17 +14,8 @@ import {
 } from '@chakra-ui/react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-
-// Initialize Highcharts modules after Highcharts is loaded
-if (typeof window !== 'undefined') {
-  import('highcharts/modules/windbarb').then(module => {
-    module.default(Highcharts);
-  }).catch(err => console.warn('Windbarb module failed to load:', err));
-
-  import('highcharts/modules/pattern-fill').then(module => {
-    module.default(Highcharts);
-  }).catch(err => console.warn('Pattern-fill module failed to load:', err));
-}
+import Patternfill from 'highcharts/modules/pattern-fill';
+import Windbarb from 'highcharts/modules/windbarb';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
