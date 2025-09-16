@@ -224,44 +224,45 @@ const Home = () => {
         {/* ) */}
 
         {/* Demo Statistics for Non-Authenticated Users */}
-        {/* {!isAuthenticated && demoStats && ( */}
-        <Card.Root>
-          <Card.Body>
-            <Heading size="md" mb={4}>Sample Statistics</Heading>
-            <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
-              <GridItem>
-                <Text fontWeight="bold" mb={2}>YTD Distance (Sample)</Text>
-                <Text fontSize="2xl" color="blue.500">
-                  {demoStats.ytdDistance?.total?.toFixed(1) || 0} km
-                </Text>
-              </GridItem>
-              <GridItem>
-                <Text fontWeight="bold" mb={2}>Yearly Elevation (Sample)</Text>
-                <Text fontSize="2xl" color="green.500">
-                  {demoStats.yearlyElevation?.total?.toFixed(0) || 0} m
-                </Text>
-              </GridItem>
-            </Grid>
+        {!isAuthenticated && demoStats && (
+          <Card.Root>
+            <Card.Body>
+              <Heading size="md" mb={4}>Sample Statistics</Heading>
+              <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
+                <GridItem>
+                  <Text fontWeight="bold" mb={2}>YTD Distance (Sample)</Text>
+                  <Text fontSize="2xl" color="blue.500">
+                    {demoStats.ytdDistance?.total?.toFixed(1) || 0} km
+                  </Text>
+                </GridItem>
+                <GridItem>
+                  <Text fontWeight="bold" mb={2}>Yearly Elevation (Sample)</Text>
+                  <Text fontSize="2xl" color="green.500">
+                    {demoStats.yearlyElevation?.total?.toFixed(0) || 0} m
+                  </Text>
+                </GridItem>
+              </Grid>
 
-            <Separator my={6} />
+              <Separator my={6} />
 
-            <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
-            <Box>
-              {wordCloud.slice(0, 10).map((word, index) => (
-                <Tag.Root
-                  key={index}
-                  size="lg"
-                  colorScheme="teal"
-                  mr={2}
-                  mb={2}
-                  fontSize={Math.max(12, word.count / 2)}
-                >
-                  <Tag.Label>{word.text}</Tag.Label>
-                </Tag.Root>
-              ))}
-            </Box>
-          </Card.Body>
-        </Card.Root>
+              <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
+              <Box>
+                {wordCloud.slice(0, 10).map((word, index) => (
+                  <Tag.Root
+                    key={index}
+                    size="lg"
+                    colorScheme="teal"
+                    mr={2}
+                    mb={2}
+                    fontSize={Math.max(12, word.count / 2)}
+                  >
+                    <Tag.Label>{word.text}</Tag.Label>
+                  </Tag.Root>
+                ))}
+              </Box>
+            </Card.Body>
+          </Card.Root>
+        )}
 
         {/* User Statistics for Authenticated Users */}
         {/* {isAuthenticated && ( */}
