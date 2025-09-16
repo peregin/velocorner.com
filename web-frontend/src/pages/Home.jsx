@@ -178,15 +178,16 @@ const Home = () => {
         {/* Header Section */}
         <Box>
           <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
-          <HStack justify="space-between" align="center">
-            <Text>System Status: Memory usage {memoryUsage}%</Text>
+          <VStack justify="space-between" align="left">
             <Progress.Root value={memoryUsage} defaultValue={90}>
-              <Progress.Track>
+              <Progress.Label>Memory usage</Progress.Label>
+              <Progress.Track flex='1'>
                 <Progress.Range />
               </Progress.Track>
+              <Progress.ValueText>{memoryUsage}%</Progress.ValueText>
             </Progress.Root>
             {/* <Progress value={memoryUsage} width="200px" /> */}
-          </HStack>
+          </VStack>
         </Box>
 
         {/* Authentication Section */}
