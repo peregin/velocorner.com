@@ -8,7 +8,6 @@ import {
   Button,
   Text,
   Card,
-  CardBody,
   Heading,
   List,
   ListItem,
@@ -96,8 +95,8 @@ const Search = () => {
         </Box>
 
         {/* Search Form */}
-        <Card>
-          <CardBody>
+        <Card.Root>
+          <Card.Body>
             <VStack spacing={4}>
               <HStack width="100%" maxW="600px">
                 <Input
@@ -118,13 +117,13 @@ const Search = () => {
                 </Button>
               </HStack>
             </VStack>
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
         {/* Search Results */}
         {hasSearched && (
-          <Card>
-            <CardBody>
+          <Card.Root>
+            <Card.Body>
               <VStack spacing={4} align="stretch">
                 <HStack justify="space-between">
                   <Heading size="md">
@@ -196,8 +195,8 @@ const Search = () => {
                   </List>
                 )}
               </VStack>
-            </CardBody>
-          </Card>
+            </Card.Body>
+          </Card.Root>
         )}
       </VStack>
     </Box>

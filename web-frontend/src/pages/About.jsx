@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ApiClient from "../service/ApiClient";
 import {
   Box,
@@ -10,7 +10,6 @@ import {
   GridItem,
   Badge,
   Card,
-  CardBody,
   Link,
   Separator,
   Progress,
@@ -56,14 +55,19 @@ const About = () => {
           </Alert.Root>
         )}
 
-        <Card>
-          <CardBody>
+        <Card.Root>
+          <Card.Body>
             <VStack align="stretch" spacing={4}>
               <Heading size="md">Build & Runtime</Heading>
               {loading ? (
                 <HStack>
                   <Text>Loading status…</Text>
-                  <Progress isIndeterminate w="200px" />
+                  <Progress.Root size="lg" value={null}>
+                    <Progress.Track>
+                      <Progress.Range />
+                    </Progress.Track>
+                  </Progress.Root>
+                  {/* <Progress isIndeterminate w="200px" /> */}
                 </HStack>
               ) : (
                 status && (
@@ -135,23 +139,30 @@ const About = () => {
                       </HStack>
                       <Text color="gray.600">Total: {formatBytes(status.memoryTotal)}</Text>
                     </HStack>
-                    <Progress value={status.memoryUsedPercentile} size="sm" />
+                    <Progress.Root value={status.memoryUsedPercentile} defaultValue={90}>
+                      <Progress.Label>Memory usage</Progress.Label>
+                      <Progress.Track flex='1'>
+                        <Progress.Range />
+                      </Progress.Track>
+                      <Progress.ValueText>{status.memoryUsedPercentile}%</Progress.ValueText>
+                    </Progress.Root>
+                    {/* <Progress value={status.memoryUsedPercentile} size="sm" /> */}
                   </VStack>
                 )
               )}
             </VStack>
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
-        <Card>
-          <CardBody>
+        <Card.Root>
+          <Card.Body>
             <Heading size="md" mb={2}>API</Heading>
             <Text>
-              Use the <Link href="/docs" color="blue.500">Velocorner API</Link> to retrieve statistics for your activities. It supports the OpenAPI initiative and
-              is compatible with Swagger.
+              Use the <Link href="/docs" color="blue.500">Velocorner API</Link> to access your activity statistics. The API follows OpenAPI specifications and
+              provides Swagger compatibility.
             </Text>
-          </CardBody>
-        </Card>
+          </Card.Body>
+        </Card.Root>
       </VStack>
     </Box>
   );

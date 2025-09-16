@@ -26,15 +26,15 @@ const Header = () => {
                   <Link to="/search">
                     <Button variant="ghost" size="sm">Search</Button>
                   </Link>
-                  <Link to="/best">
+                  {/* <Link to="/best">
                     <Button variant="ghost" size="sm">Best Prices</Button>
-                  </Link>
+                  </Link> */}
                   <Link to="/about">
                     <Button variant="ghost" size="sm">About</Button>
                   </Link>
-                  <Link to="/privacy">
+                  {/* <Link to="/privacy">
                     <Button variant="ghost" size="sm">Privacy</Button>
-                  </Link>
+                  </Link> */}
                 </HStack>
               </Flex>
               
