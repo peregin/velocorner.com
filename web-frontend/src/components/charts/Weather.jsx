@@ -192,7 +192,7 @@ class Meteogram {
       if (meteogram.resolution > 36e5 || i % 2 === 0) {
         chart.renderer
           .image(
-            `https://openweathermap.org/img/w/${meteogram.symbols[i]}.png`,
+            `https://cdn.jsdelivr.net/gh/nrkno/yr-weather-symbols@8.0.1/dist/svg/${icon}.svg`,
             point.plotX + chart.plotLeft - 8,
             point.plotY + chart.plotTop - 30,
             30,

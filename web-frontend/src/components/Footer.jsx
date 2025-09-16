@@ -1,5 +1,4 @@
 import { HStack } from '@chakra-ui/react'
-import React from 'react'
 import Logo from './Logo'
 import instagram from 'super-tiny-icons/images/svg/instagram.svg'
 import github from 'super-tiny-icons/images/svg/github.svg'
@@ -9,13 +8,6 @@ import twitter from 'super-tiny-icons/images/svg/twitter.svg'
 import email from 'super-tiny-icons/images/svg/email.svg'
 import facebook from 'super-tiny-icons/images/svg/facebook.svg'
 
-const Instagram = () => {
-    return <div className="col-md-8 md-margin-bottom-40">
-        <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-        <iframe src="//lightwidget.com/widgets/7e189a75033c5aaaba216b818e656c0b.html" title="Instagram Photos" scrolling="no" allowtransparency="true" className="lightwidget-widget"
-            style={{ width: '100%', border: '0', overflow: 'hidden' }}></iframe>
-    </div>
-}
 
 const Social = () => {
     return <div className="col-md-4 md-margin-bottom-40">
