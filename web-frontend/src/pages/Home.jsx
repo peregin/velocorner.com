@@ -173,7 +173,11 @@ const Home = () => {
     <Box maxW="1200px" mx="auto" p={6}>
       <VStack spacing={8} align="stretch">
 
-        <Weather />
+        <Card.Root>
+          <Card.Body>
+            <Weather />
+          </Card.Body>
+        </Card.Root>
 
         {/* Header Section */}
         <Box>
