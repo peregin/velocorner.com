@@ -13,6 +13,7 @@ import {
   Flex
 } from '@chakra-ui/react';
 import Highcharts from 'highcharts';
+// needed the import to load the module
 import HighchartsReact from 'highcharts-react-official';
 import Datagrouping from 'highcharts/modules/datagrouping';
 import Windbarb from 'highcharts/modules/windbarb';

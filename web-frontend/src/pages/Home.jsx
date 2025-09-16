@@ -249,21 +249,7 @@ const Home = () => {
 
               <Separator my={6} />
 
-              <Text fontWeight="bold" mb={4}>Word Cloud (Sample)</Text>
-              <Box>
-                {wordCloud.slice(0, 10).map((word, index) => (
-                  <Tag.Root
-                    key={index}
-                    size="lg"
-                    colorScheme="teal"
-                    mr={2}
-                    mb={2}
-                    fontSize={Math.max(12, word.count / 2)}
-                  >
-                    <Tag.Label>{word.text}</Tag.Label>
-                  </Tag.Root>
-                ))}
-              </Box>
+              <WordCloud words={wordCloud} />
             </Card.Body>
           </Card.Root>
         )}
@@ -350,9 +336,7 @@ const Home = () => {
             </HStack>
 
             <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
-            
 
-            {/* Word Cloud */}
             <Card.Root>
               <Card.Body>
                 <WordCloud words={wordCloud} />
