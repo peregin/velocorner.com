@@ -93,20 +93,11 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     result.map(_.removingFromSession(OAuth2StateKey))
   }
 
-  // bound to /fe/oauth/strava
-  // needed temporarily to double redirect FE OAuth2 call because of the HashRouter
-  def feAuthorize: Action[AnyContent] = Action { implicit request =>
-    val params = request.queryString
-    logger.info(s"redirect on (${request.host}) to FE with $params")
-    val host = if (request.host.contains("localhost")) "http://localhost:3000" else "https://dev.velocorner.com"
-    Redirect(host + "/#/oauth/strava", params)
-  }
-
   // bound to /api/token/strava
   // called by FE to after from the Strava callback to exchange the access code with access and refresh tokens
   def feToken: Action[AnyContent] = Action.async { implicit request =>
     (for {
-      code <- OptionT(Future.successful(request.getQueryString("code")))
+      code <- OptionT[Future, String](Future.successful(request.getQueryString("code")))
       _ = logger.info(s"requesting token $code")
       resp <- OptionT.liftF(authenticator.retrieveAccessToken(code))
       athlete <- OptionT.liftF(login(resp, none))

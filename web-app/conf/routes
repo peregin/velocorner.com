@@ -28,8 +28,6 @@ GET     /login/strava                                      controllers.auth.Stra
 ### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
-GET     /fe/oauth/strava                                   controllers.auth.StravaController.feAuthorize
-### NoDocs ###
 POST    /api/token/strava                                  controllers.auth.StravaController.feToken
 ### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout

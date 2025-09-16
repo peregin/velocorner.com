@@ -1,6 +1,6 @@
 package controllers.auth
 
-import StravaController.{ec, Id, ResultUpdater, User}
+import StravaController.{AuthenticityToken, Id, ResultUpdater, User, ec}
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import controllers.ConnectivitySettings
@@ -79,7 +79,7 @@ trait AuthChecker extends WebMetrics {
   // restore user from authorization bearer token or cookie
   private def restoreUser(implicit request: RequestHeader): Future[(Option[User], ResultUpdater)] = {
     def fromCookie(): OptionT[Future, (Long, ResultUpdater)] = for {
-      token <- OptionT(Future.successful(tokenAccessor.extract(request)))
+      token <- OptionT[Future, AuthenticityToken](Future.successful(tokenAccessor.extract(request)))
       userId <- OptionT(idContainer.get(token))
       _ <- OptionT.liftF(idContainer.prolongTimeout(token, sessionTimeoutInSeconds))
     } yield (userId, tokenAccessor.put(token) _)

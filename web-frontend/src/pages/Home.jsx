@@ -34,7 +34,9 @@ const Home = () => {
   const { data, loading: authLoading, error: authError, getAuth } = useOAuth2({
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
     clientId: '4486',
-    redirectUri: `${ApiClient.apiHost}/fe/oauth/strava`,
+    // must be the web host
+    // redirectUri: `${ApiClient.apiHost}/oauth/strava`,
+    redirectUri: `http://localhost:3000/oauth/strava`,
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
     extraQueryParameters: { approval_prompt: 'auto' },
