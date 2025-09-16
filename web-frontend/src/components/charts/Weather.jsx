@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   Input,
@@ -45,8 +45,8 @@ const Weather = ({ defaultLocation = '' }) => {
     try {
       const response = await fetch(`https://weather.velocorner.com/weather/current/${encodeURIComponent(place)}`);
       const data = await response.json();
-      console.info(`current weather is ${JSON.stringify(data)}`);
-      //setCurrentWeather(data);
+      // console.info(`current weather is ${JSON.stringify(data)}`);
+      setCurrentWeather(data);
     } catch (error) {
       console.error('Failed to load weather data:', error);
     } finally {
@@ -89,7 +89,12 @@ const Weather = ({ defaultLocation = '' }) => {
 
           {/* Loading Progress */}
           {isLoading && (
-            <Progress size="sm" isIndeterminate colorScheme="blue" />
+            <Progress.Root size='sm' colorScheme="blue" maxW="240px" value={null}>
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+            // <Progress size="sm" isIndeterminate colorScheme="blue" />
           )}
 
           {/* Current Weather Display */}

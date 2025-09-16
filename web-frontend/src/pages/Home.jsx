@@ -20,6 +20,7 @@ import {
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 import WordCloud from "../components/charts/WordCloud";
+import Weather from "@/components/charts/Weather";
 
 const Home = () => {
   const [memoryUsage, setMemoryUsage] = useState(0);
@@ -171,6 +172,9 @@ const Home = () => {
   return (
     <Box maxW="1200px" mx="auto" p={6}>
       <VStack spacing={8} align="stretch">
+
+        <Weather/>
+
         {/* Header Section */}
         <Box>
           <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
