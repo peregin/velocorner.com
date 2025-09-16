@@ -236,6 +236,9 @@ class Meteogram {
           minWidth: 720
         }
       },
+      accessibility: {
+        enabled: false
+      },
       defs: {
         patterns: [{
           'id': 'precipitation-error',
