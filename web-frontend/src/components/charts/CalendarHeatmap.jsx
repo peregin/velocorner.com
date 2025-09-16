@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Box, Card, Heading, useBreakpointValue } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Box, Heading, useBreakpointValue } from '@chakra-ui/react';
 
 // Lightweight calendar heatmap using simple SVG rects for last N months
 const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) => {
@@ -21,23 +21,21 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
   }, [fetchDaily, monthsToShow]);
 
   return (
-    <Card.Root>
-      <Card.Body>
-        <Heading size="md" mb={4}>{title}</Heading>
-        <Box overflowX="auto">
-          <svg width={monthsToShow * 140} height={140}>
-            {points.map((m, mi) => (
-              <g key={m.key} transform={`translate(${mi * 140}, 0)`}>
-                <text x={0} y={12} fontSize="12" fill="#666">{m.label}</text>
-                {m.days.map((d, di) => (
-                  <rect key={di} x={(di % 7) * 18} y={20 + Math.floor(di / 7) * 18} width={16} height={16} fill={color(d.value)} rx={3} />
-                ))}
-              </g>
-            ))}
-          </svg>
-        </Box>
-      </Card.Body>
-    </Card.Root>
+    <Box>
+      <Heading size="md" mb={4}>{title}</Heading>
+      <Box overflowX="auto">
+        <svg width={monthsToShow * 140} height={140}>
+          {points.map((m, mi) => (
+            <g key={m.key} transform={`translate(${mi * 140}, 0)`}>
+              <text x={0} y={12} fontSize="12" fill="#666">{m.label}</text>
+              {m.days.map((d, di) => (
+                <rect key={di} x={(di % 7) * 18} y={20 + Math.floor(di / 7) * 18} width={16} height={16} fill={color(d.value)} rx={3} />
+              ))}
+            </g>
+          ))}
+        </svg>
+      </Box>
+    </Box>
   );
 };
 

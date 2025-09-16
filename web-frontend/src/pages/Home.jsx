@@ -335,7 +335,11 @@ const Home = () => {
               <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
             </HStack>
 
-            <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+            <Card.Root>
+              <Card.Body>
+                <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+              </Card.Body>
+            </Card.Root>
 
             <Card.Root>
               <Card.Body>

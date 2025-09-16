@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Chart from 'react-apexcharts';
-import { Card, CardBody, Heading } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 
 const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
   const [series, setSeries] = useState([]);
@@ -32,12 +32,10 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
   }, [fetchSeries]);
 
   return (
-    <Card.Root>
-      <Card.Body>
-        <Heading size="md" mb={4}>{title}</Heading>
-        <Chart options={options} series={series} type="bar" height={height} />
-      </Card.Body>
-    </Card.Root>
+    <Box>
+      <Heading size="md" mb={4}>{title}</Heading>
+      <Chart options={options} series={series} type="bar" height={height} />
+    </Box>
   );
 };
 
