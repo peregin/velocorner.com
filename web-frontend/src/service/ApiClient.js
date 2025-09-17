@@ -1,6 +1,8 @@
 // vite inject variables starting with VITE_ to client side
 const apiHost = import.meta.env.VITE_API_HOST || 'https://velocorner.com';
 console.info('api host: ' + apiHost);
+const webHost = import.meta.env.VITE_WEB_HOST || 'https://dev.velocorner.com';
+console.info('web host: ' + webHost);
 
 // Status and health endpoints
 function status() { return get('/api/status'); }

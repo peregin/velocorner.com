@@ -39,8 +39,7 @@ const Home = () => {
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
     clientId: '4486',
     // must be the web host
-    // redirectUri: `${ApiClient.apiHost}/oauth/strava`,
-    redirectUri: `http://localhost:3000/oauth/strava`,
+    redirectUri: `${ApiClient.webHost}/oauth/strava`,
     scope: 'read,activity:read,profile:read_all',
     responseType: 'code',
     extraQueryParameters: { approval_prompt: 'auto' },
