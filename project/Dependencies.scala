@@ -27,7 +27,7 @@ object Dependencies {
   val jsoupVersion = "1.21.2"
   val scalaTestVersion = "3.2.19"
   val mockitoVersion = "5.19.0"
-  val catsEffectTestVersion = "1.6.0"
+  val catsEffectTestVersion = "1.7.0"
 }
 
 object DockerBuild {
