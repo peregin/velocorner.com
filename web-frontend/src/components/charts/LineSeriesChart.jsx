@@ -66,7 +66,8 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
           data: (s.series || []).map(p => {
             const d = p.day; // yyyy-MM-dd
             const dateParts = d.split('-');
-            const x = Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+            // use fixed year to overlap
+            const x = Date.UTC(2016, parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
             return [x, p.value];
           }),
           visible: ix >= seriesList.length - seriesToShow
