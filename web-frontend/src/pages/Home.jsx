@@ -6,7 +6,6 @@ import {
   Button,
   Heading,
   Text,
-  Tag,
   Separator,
   Image,
   Box,
@@ -56,7 +55,7 @@ const Home = () => {
         status: "success",
         duration: 5000,
       });
-      fetchUserData();
+      // Data will be fetched by useEffect
     },
     onError: (error_) => {
       console.error("Error", error_);
@@ -72,82 +71,49 @@ const Home = () => {
   const isAuthenticated = !!localStorage.getItem('access_token');
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const status = await ApiClient.status();
+        setMemoryUsage(status.memoryUsedPercentile);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserData();
-    }
-  }, [isAuthenticated]);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-
-      // Fetch system status
-      const status = await ApiClient.status();
-      setMemoryUsage(status.memoryUsedPercentile);
-
-      // Fetch demo data for non-authenticated users
-      if (!isAuthenticated) {
-        const [demoWc, demoYtdDistance, demoYearlyElevation] = await Promise.all([
-          ApiClient.demoWordcloud(),
-          ApiClient.demoYtdStatistics('distance', 'Ride'),
-          ApiClient.demoYearlyStatistics('elevation', 'Ride')
-        ]);
-
-        setWordCloud(demoWc);
-        setDemoStats({
-          ytdDistance: demoYtdDistance,
-          yearlyElevation: demoYearlyElevation
+        if (!isAuthenticated) {
+          const [demoWc, demoYtdDistance, demoYearlyElevation] = await Promise.all([
+            ApiClient.demoWordcloud(),
+            ApiClient.demoYtdStatistics('distance', 'Ride'),
+            ApiClient.demoYearlyStatistics('elevation', 'Ride')
+          ]);
+          setWordCloud(demoWc);
+          setDemoStats({ ytdDistance: demoYtdDistance, yearlyElevation: demoYearlyElevation });
+        } else {
+          const [wc, types, stats] = await Promise.all([
+            ApiClient.wordcloud(),
+            ApiClient.activityTypes(),
+            ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString())
+          ]);
+          setWordCloud(wc);
+          setActivityTypes(types);
+          setUserStats(stats);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toaster.create({
+          title: "Error",
+          description: "Failed to load data. Please try again.",
+          status: "error",
+          duration: 5000,
         });
-      } else {
-        // Fetch user data
-        const [wc, types] = await Promise.all([
-          ApiClient.wordcloud(),
-          ApiClient.activityTypes()
-        ]);
-
-        setWordCloud(wc);
-        setActivityTypes(types);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toaster.create({
-        title: "Error",
-        description: "Failed to load data. Please try again.",
-        status: "error",
-        duration: 5000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchUserData = async () => {
-    try {
-      const [wc, types, stats] = await Promise.all([
-        ApiClient.wordcloud(),
-        ApiClient.activityTypes(),
-        ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString())
-      ]);
-
-      setWordCloud(wc);
-      setActivityTypes(types);
-      setUserStats(stats);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
+    };
+    fetchData();
+  }, [isAuthenticated, selectedActivityType]);
 
   const handleConnect = () => getAuth();
 
   const handleActivityTypeChange = (activityType) => {
     setSelectedActivityType(activityType);
-    if (isAuthenticated) {
-      fetchUserData();
-    }
   };
 
   // fetchers for charts
