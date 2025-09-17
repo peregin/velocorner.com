@@ -18,6 +18,7 @@ function suggestActivities(query) { return get(`/api/activities/suggest?query=${
 
 // Athlete statistics endpoints
 function profileStatistics(activity, year) { return get(`/api/athletes/statistics/profile/${activity}/${year}`); }
+function yearlyHeatmap(activity) { return get(`/api/athletes/statistics/yearly/heatmap/${activity}`); }
 function yearlyStatistics(action, activity) { return get(`/api/athletes/statistics/yearly/${action}/${activity}`); }
 function ytdStatistics(action, activity) { return get(`/api/athletes/statistics/ytd/${action}/${activity}`); }
 function dailyStatistics(action) { return get(`/api/athletes/statistics/daily/${action}`); }
@@ -119,6 +120,7 @@ const ApiClient = {
   
   // Athlete statistics
   profileStatistics: profileStatistics,
+  yearlyHeatmap: yearlyHeatmap,
   yearlyStatistics: yearlyStatistics,
   ytdStatistics: ytdStatistics,
   dailyStatistics: dailyStatistics,

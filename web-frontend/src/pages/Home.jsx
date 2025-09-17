@@ -151,6 +151,7 @@ const Home = () => {
   };
 
   // fetchers for charts
+  const fetchYearlyHeatmap = () => ApiClient.yearlyHeatmap(selectedActivityType);
   const fetchYearlyDistance = () => ApiClient.yearlyStatistics('distance', selectedActivityType);
   const fetchYearlyElevation = () => ApiClient.yearlyStatistics('elevation', selectedActivityType);
   const fetchYearlyTime = () => ApiClient.yearlyStatistics('time', selectedActivityType);
@@ -312,7 +313,7 @@ const Home = () => {
             )}
 
             {/* Charts parity to Play widgets */}
-            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={2} height={400} />
+            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
             <HStack align="stretch" spacing={4} flexWrap="wrap">
               <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
