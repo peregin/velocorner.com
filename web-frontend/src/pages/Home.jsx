@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import ApiClient from "../service/ApiClient";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
@@ -33,6 +33,7 @@ const Home = () => {
   const [userStats, setUserStats] = useState(null);
   const [demoStats, setDemoStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const initialLoadRef = useRef(false);
 
   const { data, loading: authLoading, error: authError, getAuth } = useOAuth2({
     authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
@@ -68,9 +69,11 @@ const Home = () => {
     }
   });
 
-  const isAuthenticated = !!localStorage.getItem('access_token');
+  const isAuthenticated = useMemo(() => !!localStorage.getItem('access_token'), []);
 
   useEffect(() => {
+    if (initialLoadRef.current) return;
+    initialLoadRef.current = true;
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -108,7 +111,21 @@ const Home = () => {
       }
     };
     fetchData();
-  }, [isAuthenticated, selectedActivityType]);
+  }, []);
+
+  useEffect(() => {
+    if (!initialLoadRef.current) return;
+    const fetchUserData = async () => {
+      if (!isAuthenticated) return;
+      try {
+        const stats = await ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString());
+        setUserStats(stats);
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+      }
+    };
+    fetchUserData();
+  }, [selectedActivityType, isAuthenticated]);
 
   const handleConnect = () => getAuth();
 

@@ -17,6 +17,9 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
       backgroundColor: '#FFFADE',
       borderRadius: 20
     },
+    accessibility: {
+      enabled: false
+    },
     title: {
       text: title
     },
