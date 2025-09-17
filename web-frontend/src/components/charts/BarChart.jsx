@@ -1,18 +1,67 @@
-import { useEffect, useMemo, useState } from 'react';
-import Chart from 'react-apexcharts';
+import { useEffect, useState } from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import 'highcharts/highcharts-3d';
 import { Box, Heading } from '@chakra-ui/react';
 
 const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
-  const [series, setSeries] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const options = useMemo(() => ({
-    chart: { type: 'bar', toolbar: { show: false } },
-    plotOptions: { bar: { horizontal: true, dataLabels: { position: 'right' } } },
-    dataLabels: { enabled: true, formatter: (v) => `${Math.round(v)} ${unit}` },
-    xaxis: { categories },
-    tooltip: { y: { formatter: (v) => `${Math.round(v)} ${unit}` } },
-  }), [categories, unit]);
+  const [options, setOptions] = useState({
+    chart: {
+      type: 'bar',
+      height,
+      options3d: {
+        enabled: false,
+        alpha: 45,
+      },
+      zoomType: 'x',
+      backgroundColor: '#FFFADE',
+      borderRadius: 20
+    },
+    title: {
+      text: title
+    },
+    credits: {
+      enabled: false
+    },
+    exporting: {
+      enabled: false
+    },
+    xAxis: {
+      categories: []
+    },
+    yAxis: {
+      min: 0,
+      title: {
+        text: unit,
+        align: 'middle'
+      },
+      labels: {
+        overflow: 'justify'
+      }
+    },
+    plotOptions: {
+      bar: {
+        dataLabels: {
+          enabled: true
+        }
+      }
+    },
+    legend: {
+      layout: 'vertical',
+      floating: true,
+      backgroundColor: '#FFFFFF',
+      align: 'right',
+      verticalAlign: 'top',
+      y: 60,
+      x: -60
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 0) + ' ' + unit;
+      }
+    },
+    series: []
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -23,22 +72,35 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
       const data = bag.map(item => (item.series && item.series[0] && item.series[0].value) || 0);
       const names = bag.map(item => item.name);
       if (mounted) {
-        setSeries([{ name: 'Years', data }]);
-        setCategories(names);
+        setOptions(prev => ({
+          ...prev,
+          series: [{
+            name: 'Years',
+            dataLabels: {
+              formatter: function() {
+                return '<b>' + Highcharts.numberFormat(this.y, 0) + '</b> ' + unit;
+              }
+            },
+            showInLegend: false,
+            colorByPoint: true,
+            data
+          }],
+          xAxis: {
+            categories: names
+          }
+        }));
       }
     };
     load();
     return () => { mounted = false };
-  }, [fetchSeries]);
+  }, [fetchSeries, unit]);
 
   return (
     <Box>
       <Heading size="md" mb={4}>{title}</Heading>
-      <Chart options={options} series={series} type="bar" height={height} />
+      <HighchartsReact highcharts={Highcharts} options={options} />
     </Box>
   );
 };
 
 export default BarChart;
-
-
