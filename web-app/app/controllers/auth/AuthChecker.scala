@@ -1,6 +1,6 @@
 package controllers.auth
 
-import StravaController.{AuthenticityToken, Id, ResultUpdater, User, ec}
+import StravaController.{ec, AuthenticityToken, Id, ResultUpdater, User}
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import controllers.ConnectivitySettings
