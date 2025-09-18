@@ -43,7 +43,7 @@ val psqlDbClient = Seq(
 
 val playJson = "org.playframework" %% "play-json" % Dependencies.playJsonVersion
 // for more than 22 parameter case classes
-val playJsonExtensions = "ai.x" %% "play-json-extensions" % "0.42.0"
+val playJsonExtensions = ("ai.x" %% "play-json-extensions" % "0.42.0").excludeAll("com.typesafe.play")
 val playJsonJoda = "org.playframework" %% "play-json-joda" % Dependencies.playJsonVersion
 val playWsAhcStandalone = "org.playframework" %% "play-ahc-ws-standalone" % Dependencies.playWsVersion
 val playWsJsonStandalone = "org.playframework" %% "play-ws-standalone-json" % Dependencies.playWsVersion
@@ -105,7 +105,7 @@ def squants = Seq(
 )
 
 def spark = Seq(
-  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion exclude ("com.google.inject", "guice")
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion excludeAll ("com.google.inject")
 )
 
 def smile: Seq[ModuleID] = Seq(
@@ -326,11 +326,19 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       case referenceOverrides if referenceOverrides.contains("reference-overrides.conf") =>
         // Keep the content for all reference-overrides.conf files
         MergeStrategy.concat
+      case PathList("META-INF", "versions", "9", "module-info.class") => 
+        MergeStrategy.discard
+      case "module-info.class"                                        => 
+        MergeStrategy.discard
       case x =>
         // For all the other files, use the default sbt-assembly merge strategy
         val oldStrategy = (assembly / assemblyMergeStrategy).value
         oldStrategy(x)
-    }
+    },
+    // Enable SBOM generation for web-app module only
+    makeBom / skip := false,
+    bomFileName := "web-app.bom.json",
+    bomFormat := "json",
   )
   .enablePlugins(
     play.sbt.PlayScala,
