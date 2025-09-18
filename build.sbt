@@ -319,6 +319,10 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     assembly / mainClass := Some("play.core.server.ProdServerStart"),
     assembly / fullClasspath += Attributed.blank(PlayKeys.playPackageAssets.value),
     assembly / assemblyMergeStrategy := {
+      case PathList("reference.conf")               =>
+        MergeStrategy.concat
+      case PathList("application.conf")             =>
+        MergeStrategy.last
       case manifest if manifest.contains("MANIFEST.MF") =>
         // We don't need manifest files since sbt-assembly will create
         // one with the given settings
