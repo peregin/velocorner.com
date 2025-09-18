@@ -40,15 +40,12 @@ update account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athl
 select data->>'role' from account where athlete_id = 432909;
 ```
 
-#### Troubleshooting
-if embedded psql fails to start
-```shell script
-brew install postgresql
-```
-
 # Release (includes the distribution without manual intervention)
 ```shell script
 sbt "release with-defaults"
+
+# or
+sbt web-app/assembly
 ```
 
 # Docker
