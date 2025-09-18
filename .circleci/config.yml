@@ -60,7 +60,7 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: build fat jar
-          command: sbt "service/assembly"
+          command: sbt "web-app/assembly"
       - run:
           name: deploy backend
           command: ./deploy.sh

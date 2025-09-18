@@ -1,14 +1,9 @@
 import play.sbt.routes.RoutesCompiler.autoImport.*
 import sbtbuildinfo.BuildInfoKeys
-import sbtrelease.*
-import ReleaseStateTransformations.*
-import sbtrelease.ReleasePlugin.autoImport.*
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.*
 import com.typesafe.sbt.SbtNativePackager.autoImport.*
 import play.sbt.PlayImport.*
-import sbtrelease.ReleasePlugin.runtimeVersion
 
-import scala.sys.process.Process
 
 // setup common keys for every service, some of them might have extra build information
 def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
@@ -132,20 +127,6 @@ def scalacache = Seq(
   "com.github.cb372" %% "scalacache-guava"
 ).map(_ % Dependencies.scalacacheVersion)
 
-lazy val runWebAppDist: ReleaseStep = ReleaseStep(
-  action = { st: State =>
-    val extracted = Project.extract(st)
-    extracted.runAggregated(webApp / dist, st)
-  }
-)
-
-lazy val runWebAppDockerPush: ReleaseStep = ReleaseStep(
-  action = { st: State =>
-    val extracted = Project.extract(st)
-    extracted.runAggregated(webApp / Docker / publish, st)
-  }
-)
-
 lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   version := (ThisBuild / version).value,
   scalaVersion := Dependencies.projectScalaVersion,
@@ -160,22 +141,6 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   packageDoc / publishArtifact := false,
   packageSrc / publishArtifact := false,
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    // runClean, // it is disabled at release time, avoid reloading sbt
-    // runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    // runWebAppDist, // it is a dependency of publish
-    runWebAppDockerPush, // will push automatically the image to the docker hub
-    setNextVersion,
-    commitNextVersion
-    // pushChanges  // travis/circleci release script will push the changes
-  ),
-  releaseCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]", // it is invoked from ci, skip a new trigger
-  releaseNextCommitMessage := s"Setting version to ${runtimeVersion.value} [skip ci]",
   libraryDependencySchemes ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always
   ),
@@ -313,7 +278,6 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     swaggerDomainNameSpaces := Seq("velocorner.api"),
     swaggerPrettyJson := true,
     swaggerV3 := true,
-    dockerBuildxSettings,
     assembly / test := {},
     assembly / assemblyJarName := "web-app-all.jar",
     assembly / mainClass := Some("play.core.server.ProdServerStart"),
@@ -372,30 +336,3 @@ lazy val root = (project in file(".") withId "velocorner")
   )
 
 addCommandAlias("fmt", "; scalafmtAll ; scalafmtSbt ; scalafmtGenerated")
-
-lazy val ensureDockerBuildx = taskKey[Unit]("Ensure that docker buildx configuration exists")
-lazy val dockerBuildWithBuildx = taskKey[Unit]("Build docker images using buildx")
-lazy val dockerBuildxSettings = Seq(
-  ensureDockerBuildx := {
-    if (Process("docker buildx inspect multi-arch-builder").! == 1) {
-      Process("docker buildx create --use --name multi-arch-builder", baseDirectory.value).!
-    }
-  },
-  dockerBuildWithBuildx := {
-    streams.value.log("Building and pushing image with buildx")
-    dockerAliases.value.foreach(alias =>
-      Process(
-        "docker buildx build --platform=linux/arm64 --push -t " +
-          alias + " .",
-        baseDirectory.value / "target" / "docker" / "stage"
-      ).!
-    )
-  },
-  Docker / publish := Def
-    .sequential(
-      Docker / publishLocal,
-      ensureDockerBuildx,
-      dockerBuildWithBuildx
-    )
-    .value
-)

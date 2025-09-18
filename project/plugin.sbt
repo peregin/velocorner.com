@@ -11,8 +11,6 @@ addDependencyTreePlugin
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.4")
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.1")
-// Gerolf's release plugin
-addSbtPlugin("com.github.sbt" % "sbt-release" % "1.4.0")
 // Generate swagger doc from the routes
 addSbtPlugin("com.iheart" % "sbt-play-swagger" % "0.11.0")
 // Report the licenses used in the project

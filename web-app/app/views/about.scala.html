@@ -61,11 +61,6 @@
                             <li class="list-group-item">
                                 <span id="status-java-version" class="badge badge-sea rounded-2x">X</span>
                                 <div class="VC_padding8">Java Runtime Version</div>
-                            </li>
-                                <li class="list-group-item">
-                                <span id="status-docker-image" class="badge badge-red rounded-2x">X</span>
-                                <div class="VC_padding8">Docker Base Image</div>
-                            </li>
                             <li class="list-group-item">
                                 <span id="status-scala-version" class="badge badge-yellow rounded-2x">X</span>
                                 <div class="VC_padding8">Scala Version</div>
@@ -160,7 +155,6 @@
                 $('#status-up-time-main').html(data.upTime)
                 $('#status-host-os-version').html(data.hostOsVersion)
                 $('#status-os-version').html(data.osVersion)
-                $('#status-docker-image').html(data.dockerBaseImage)
                 $('#status-java-version').html(data.javaVersion)
                 $('#status-scala-version').html(data.scalaVersion)
                 $('#status-sbt-version').html(data.sbtVersion)
