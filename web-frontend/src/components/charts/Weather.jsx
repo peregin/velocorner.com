@@ -10,7 +10,10 @@ import {
   Grid,
   GridItem,
   Icon,
-  Flex
+  Flex,
+  Combobox,
+  Portal,
+  createListCollection
 } from '@chakra-ui/react';
 import Highcharts from 'highcharts';
 // needed the import to load the module
@@ -25,6 +28,7 @@ const Weather = ({ defaultLocation = '' }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecastData, setForecastData] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
   const chartRef = useRef(null);
 
   // Initialize weather on component mount
@@ -94,17 +98,72 @@ const Weather = ({ defaultLocation = '' }) => {
     }
   };
 
+  const fetchSuggestions = async (query) => {
+    if (!query || query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://weather.velocorner.com/location/suggest?query=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      setSuggestions(data.suggestions || []);
+    } catch (error) {
+      console.error('Failed to fetch location suggestions:', error);
+      setSuggestions([]);
+    }
+  };
+
   return (
     <Box p={4}>
       <VStack spacing={4} align="stretch">
         {/* Location Input */}
         <HStack>
-          <Input
-            placeholder="Enter location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
+          <Combobox.Root
+            collection={createListCollection({
+              items: suggestions,
+              itemToString: (item) => item.value || item,
+              itemToValue: (item) => item.value || item,
+            })}
+            onInputValueChange={(details) => {
+              setLocation(details.inputValue);
+              fetchSuggestions(details.inputValue);
+            }}
+            onValueChange={(details) => {
+              if (details.value && details.value[0]) {
+                const selectedLocation = details.value[0];
+                setLocation(selectedLocation);
+                loadWeather(selectedLocation);
+              }
+            }}
+            inputBehavior="autohighlight"
+            width="300px"
+          >
+            <Combobox.Control>
+              <Combobox.Input
+                placeholder="Enter location"
+                value={location}
+                onKeyPress={handleKeyPress}
+              />
+              <Combobox.IndicatorGroup>
+                <Combobox.ClearTrigger />
+                <Combobox.Trigger />
+              </Combobox.IndicatorGroup>
+            </Combobox.Control>
+            <Portal>
+              <Combobox.Positioner>
+                <Combobox.Content>
+                  <Combobox.Empty>No locations found</Combobox.Empty>
+                  {suggestions.map((suggestion, index) => (
+                    <Combobox.Item key={index} item={suggestion}>
+                      {suggestion.value || suggestion}
+                      <Combobox.ItemIndicator />
+                    </Combobox.Item>
+                  ))}
+                </Combobox.Content>
+              </Combobox.Positioner>
+            </Portal>
+          </Combobox.Root>
           <Button
             onClick={handleLocationSubmit}
             isLoading={isLoading}
