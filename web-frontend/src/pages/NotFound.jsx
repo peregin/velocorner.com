@@ -9,7 +9,7 @@ const NotFound = () => {
         <Heading size="2xl">404</Heading>
         <Text fontSize="lg">That’s an error! The requested URL was not found on this server.</Text>
         <Link to="/">
-          <Button colorScheme="blue" variant="outline">Back Home</Button>
+          <Button colorPalette="blue" variant="outline">Back Home</Button>
         </Link>
       </VStack>
     </Box>

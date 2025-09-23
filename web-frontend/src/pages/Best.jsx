@@ -91,7 +91,7 @@ const Best = () => {
             placeholder="Type in your query..."
           />
           <IconButton
-            colorScheme="green"
+            colorPalette="green"
             aria-label="Search components"
             icon={<LuSearch onClick={handleSearch} />}
           />

@@ -11,8 +11,8 @@ const ProductCard = ({ productName, productUrl, brandName, marketName, formatted
 
       <Box p='6'>
         <Box display='flex' alignItems='baseline'>
-          {isNew && <Badge borderRadius='full' px='2' colorScheme='teal'>New</Badge>}
-          {onSales && <Badge borderRadius='full' px='2' colorScheme='orange'>SALE</Badge>}
+          {isNew && <Badge borderRadius='full' px='2' colorPalette='teal'>New</Badge>}
+          {onSales && <Badge borderRadius='full' px='2' colorPalette='orange'>SALE</Badge>}
           <Tooltip label='Available'>
             <Icon color='green' px='2px'>
               <FaCheckCircle />

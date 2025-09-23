@@ -107,7 +107,7 @@ const Search = () => {
                   size="lg"
                 />
                 <Button
-                  colorScheme="blue"
+                  colorPalette="blue"
                   size="lg"
                   onClick={handleSearch}
                   isLoading={loading}
@@ -129,7 +129,7 @@ const Search = () => {
                   <Heading size="md">
                     Search Results
                     {searchResults.length > 0 && (
-                      <Badge ml={2} colorScheme="blue">
+                      <Badge ml={2} colorPalette="blue">
                         {searchResults.length}
                       </Badge>
                     )}
@@ -154,7 +154,7 @@ const Search = () => {
                                 <Text fontWeight="bold" fontSize="lg">
                                   {activity.name}
                                 </Text>
-                                <Badge colorScheme="green">
+                                <Badge colorPalette="green">
                                   {activity.type}
                                 </Badge>
                               </HStack>

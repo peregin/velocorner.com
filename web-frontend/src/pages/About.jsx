@@ -75,19 +75,19 @@ const About = () => {
                     <Grid templateColumns="repeat(auto-fit, minmax(220px, 1fr))" gap={4}>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Version</Text>
-                        <Badge colorScheme="blue">{status.appVersion}</Badge>
+                        <Badge colorPalette="blue">{status.appVersion}</Badge>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Build Time</Text>
-                        <Badge colorScheme="purple">{status.buildTime}</Badge>
+                        <Badge colorPalette="purple">{status.buildTime}</Badge>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Uptime</Text>
-                        <Badge colorScheme="green">{status.upTime}</Badge>
+                        <Badge colorPalette="green">{status.upTime}</Badge>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Git</Text>
-                        <Badge colorScheme="gray">{status.gitHash?.slice(0, 10)}</Badge>
+                        <Badge colorPalette="gray">{status.gitHash?.slice(0, 10)}</Badge>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Host OS</Text>
@@ -121,12 +121,12 @@ const About = () => {
                         <Text fontSize="sm" color="gray.600">Play</Text>
                         <HStack>
                           <Badge>{status.playVersion}</Badge>
-                          <Badge colorScheme="teal">{status.applicationMode}</Badge>
+                          <Badge colorPalette="teal">{status.applicationMode}</Badge>
                         </HStack>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Pings</Text>
-                        <Badge colorScheme="red">{status.pings}</Badge>
+                        <Badge colorPalette="red">{status.pings}</Badge>
                       </GridItem>
                     </Grid>
 
@@ -135,7 +135,7 @@ const About = () => {
                     <HStack justify="space-between">
                       <HStack>
                         <Text>Memory usage</Text>
-                        <Badge colorScheme="pink">{status.memoryUsedPercentile}%</Badge>
+                        <Badge colorPalette="pink">{status.memoryUsedPercentile}%</Badge>
                       </HStack>
                       <Text color="gray.600">Total: {formatBytes(status.memoryTotal)}</Text>
                     </HStack>

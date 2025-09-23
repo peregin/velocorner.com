@@ -194,7 +194,7 @@ const Home = () => {
               </Text>
               <Button
                 leftIcon={<Image src={strava} boxSize="20px" />}
-                colorScheme="orange"
+                colorPalette="orange"
                 size="lg"
                 onClick={handleConnect}
                 isLoading={authLoading}
@@ -250,7 +250,7 @@ const Home = () => {
                       key={type}
                       size="sm"
                       variant={selectedActivityType === type ? "solid" : "outline"}
-                      colorScheme="blue"
+                      colorPalette="blue"
                       onClick={() => handleActivityTypeChange(type)}
                     >
                       {type}
