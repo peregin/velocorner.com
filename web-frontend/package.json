@@ -24,9 +24,8 @@
     "clean": "rm -Rf node_modules/ dist/",
     "version": "echo $npm_package_version",
     "start": "vite",
-    "web": "VITE_WEB_HOST=http://localhost:3000 vite",
-    "proxy": "VITE_API_HOST=https://local.velocorner.com VITE_WEB_HOST=http://localhost:3000 vite",
-    "local": "VITE_API_HOST=http://localhost:9001 VITE_WEB_HOST=http://localhost:3000 vite",
+    "local": "VITE_WEB_HOST=http://localhost:3000 vite",
+    "local_all": "VITE_API_HOST=http://localhost:9001 VITE_WEB_HOST=http://localhost:3000 vite",
     "build": "vite build",
     "preview": "vite preview"
   },
