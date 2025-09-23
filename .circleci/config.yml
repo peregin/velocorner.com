@@ -25,6 +25,9 @@ executors:
   ci-min:
     docker:
       - image: cimg/base:2025.09
+  ci-fe:
+    docker:
+      - image: cimg/node:23.3.0
 
 jobs:
   build:
@@ -80,7 +83,7 @@ jobs:
           command: sbt "crawler-service/docker:publish"
 
   deploy_web-frontend:
-    executor: ci-min
+    executor: ci-fe
     steps:
       - attach_workspace:
           at: .
