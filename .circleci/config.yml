@@ -94,8 +94,7 @@ jobs:
           command: cd web-frontend && ./deploy.sh
 
   restart_stack:
-    docker:
-      - image: cimg/base:2025.09
+    executor: ci-min
     resource_class: small
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
