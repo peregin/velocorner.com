@@ -14,6 +14,7 @@ import {
   Portal,
   createListCollection
 } from '@chakra-ui/react';
+import { HiRefresh } from "react-icons/hi";
 import Highcharts from 'highcharts';
 // needed the import to load the module
 import HighchartsReact from 'highcharts-react-official';
@@ -165,10 +166,11 @@ const Weather = ({ defaultLocation = '' }) => {
           </Combobox.Root>
           <Button
             onClick={handleLocationSubmit}
-            isLoading={isLoading}
+            loading={isLoading}
+            loadingText="Loading.." 
             colorPalette="green"
           >
-            Weather
+            <HiRefresh /> Weather
           </Button>
         </HStack>
 
