@@ -31,10 +31,30 @@ const Weather = ({ defaultLocation = '' }) => {
   const [suggestions, setSuggestions] = useState([]);
   const chartRef = useRef(null);
 
+  // Helper functions for cookie management
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days = 30) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  };
+
   // Initialize weather on component mount
   useEffect(() => {
     if (!location && !defaultLocation) {
-      detectLocation();
+      const savedLocation = getCookie('weather_location');
+      if (savedLocation) {
+        setLocation(savedLocation);
+        loadWeather(savedLocation);
+      } else {
+        detectLocation();
+      }
     } else if (location || defaultLocation) {
       loadWeather(location || defaultLocation);
     }
@@ -70,6 +90,9 @@ const Weather = ({ defaultLocation = '' }) => {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(forecastXml, 'text/xml');
       setForecastData(xmlDoc);
+
+      // Set cookie with the location after successful forecast retrieval
+      setCookie('weather_location', place);
 
       // Create meteogram if we have forecast data
       if (xmlDoc) {
