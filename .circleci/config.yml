@@ -24,7 +24,7 @@ executors:
       JVM_OPTS: -Xmx3072m
   ci-min:
     docker:
-      - image: cimg/base:2024.11
+      - image: cimg/base:2025.09
 
 jobs:
   build:
@@ -80,7 +80,7 @@ jobs:
           command: sbt "crawler-service/docker:publish"
 
   deploy_web-frontend:
-    executor: ci-deploy-executor
+    executor: ci-min
     steps:
       - attach_workspace:
           at: .
@@ -91,11 +91,11 @@ jobs:
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
           name: deploy web-frontend
-          command: cd web-front && ./deploy.sh
+          command: cd web-frontend && ./deploy.sh
 
   restart_stack:
     docker:
-      - image: cimg/base:2024.11
+      - image: cimg/base:2025.09
     resource_class: small
     steps:
       - run: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$DEPLOYER_USER"@velocorner.com '/opt/velocorner/deploy.sh'
@@ -117,15 +117,15 @@ workflows:
 #          filters:
 #            branches:
 #              only: /^master.*/
-#      - deploy_web-frontend:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only: /^master.*/
+      - deploy_web-frontend:
+         requires:
+           - build
+         filters:
+           branches:
+             only: /^master.*/
       - restart_stack:
           context: peregin
           requires:
             - deploy_web-backend
+            - deploy_web-frontend
 #            - deploy_crawler-backend
-#            - deploy_web-frontend
