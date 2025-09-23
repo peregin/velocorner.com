@@ -87,9 +87,9 @@ const Weather = ({ defaultLocation = '' }) => {
   };
 
   const handleLocationSubmit = () => {
-    if (location.trim()) {
-      loadWeather(location.trim());
-    }
+    const trimmedLocation = location.trim();
+    if (!trimmedLocation) return;
+    loadWeather(trimmedLocation);
   };
 
   const handleKeyPress = (e) => {
