@@ -33,13 +33,6 @@ function demoYtdStatistics(action, activity) { return get(`/api/demo/statistics/
 function demoDailyStatistics(action) { return get(`/api/demo/statistics/daily/${action}`); }
 function demoYearlyHistogram(action, activity) { return get(`/api/demo/statistics/histogram/${action}/${activity}`); }
 
-// Brand and product endpoints
-function searchBrands(query) { return get(`/api/brands/search?query=${encodeURIComponent(query)}`); }
-function suggestBrands(query) { return get(`/api/brands/suggest?query=${encodeURIComponent(query)}`); }
-function searchProducts(query) { return get(`/api/products/search?query=${encodeURIComponent(query)}`); }
-function suggestProducts(query) { return get(`/api/products/suggest?query=${encodeURIComponent(query)}`); }
-function markets() { return get('/api/products/markets'); }
-
 // Profile endpoints
 function updateUnits(unit) { return put(`/api/athletes/units/${unit}`); }
 
@@ -134,13 +127,6 @@ const ApiClient = {
   demoYtdStatistics: demoYtdStatistics,
   demoDailyStatistics: demoDailyStatistics,
   demoYearlyHistogram: demoYearlyHistogram,
-  
-  // Brands and products
-  searchBrands: searchBrands,
-  suggestBrands: suggestBrands,
-  searchProducts: searchProducts,
-  suggestProducts: suggestProducts,
-  markets: markets,
   
   // Profile
   updateUnits: updateUnits
