@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  Input,
   Button,
   Text,
   VStack,
@@ -167,7 +166,7 @@ const Weather = ({ defaultLocation = '' }) => {
           <Button
             onClick={handleLocationSubmit}
             isLoading={isLoading}
-            colorScheme="blue"
+            colorPalette="green"
           >
             Weather
           </Button>
@@ -175,7 +174,7 @@ const Weather = ({ defaultLocation = '' }) => {
 
         {/* Loading Progress */}
         {isLoading && (
-          <Progress.Root size='sm' colorScheme="blue" maxW="240px" value={null}>
+          <Progress.Root size='sm' colorPalette="blue" maxW="240px" value={null}>
             <Progress.Track>
               <Progress.Range />
             </Progress.Track>
