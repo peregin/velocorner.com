@@ -117,11 +117,12 @@ workflows:
 #            branches:
 #              only: /^master.*/
       - deploy_web-frontend:
-         requires:
-           - build
-         filters:
-           branches:
-             only: /^master.*/
+          context: peregin
+          requires:
+            - build
+          filters:
+            branches:
+              only: /^master.*/
       - restart_stack:
           context: peregin
           requires:
