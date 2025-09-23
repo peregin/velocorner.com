@@ -4,9 +4,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-npm version patch
-CURRENT_VERSION=$(npm run version --silent)
-echo "Current version is $CURRENT_VERSION"
+# npm version patch
+# CURRENT_VERSION=$(npm run version --silent)
+# echo "Current version is $CURRENT_VERSION"
 
 # Configuration
 BUILDER_NAME="multi-arch-builder"
