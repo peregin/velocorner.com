@@ -184,8 +184,7 @@ const Home = () => {
         </Box>
 
         {/* Authentication Section */}
-        {/* {!isAuthenticated && ( */}
-        {/* ( */}
+        {!isAuthenticated && (
         <Card.Root>
           <Card.Body>
             <VStack spacing={4}>
@@ -208,7 +207,7 @@ const Home = () => {
             </VStack>
           </Card.Body>
         </Card.Root>
-        {/* ) */}
+        )}
 
         {/* Demo Statistics for Non-Authenticated Users */}
         {!isAuthenticated && demoStats && (
