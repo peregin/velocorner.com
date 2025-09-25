@@ -45,7 +45,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
-  // called from FE web-app ONLY
+  // called from Play Framework FE web-app ONLY
   def login(): Action[AnyContent] = timed("LOGIN") {
     Action { implicit request =>
       logger.info(s"LOGIN started...")
@@ -104,6 +104,13 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
       jwt = JwtUser.toJwtUser(athlete)
       token = jwt.toToken(connectivity.secretConfig.getJwtSecret)
     } yield Ok(Json.obj("access_token" -> JsString(token)))).getOrElse(BadRequest)
+  }
+
+  // bound to /api/logout/strava
+  def feLogout: Action[AnyContent] = Action { implicit request =>
+    logger.info("logout")
+    tokenAccessor.extract(request) foreach idContainer.remove
+    tokenAccessor.delete(Ok)
   }
 
   def logout: Action[AnyContent] = Action { implicit request =>

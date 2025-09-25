@@ -28,8 +28,6 @@ GET     /login/strava                                      controllers.auth.Stra
 ### NoDocs ###
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
-POST    /api/token/strava                                  controllers.auth.StravaController.feToken
-### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout
 
 # WITHINGS AUTH
@@ -43,6 +41,15 @@ GET     /api/ws                                            controllers.ApiContro
 
 ### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status
+
+#AUTH
+### NoDocs ###
+POST    /api/token/strava                                  controllers.auth.StravaController.feToken
+
+### NoDocs ###
+GET     /api/logout/strava                                 controllers.auth.StravaController.feLogout
+
+### NoDocs ###
 
 ###
 #  summary: Retrieves the status of the system, versions of the libraries

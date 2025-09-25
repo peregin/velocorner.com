@@ -7,6 +7,7 @@ console.info('web host: ' + webHost);
 // Status and health endpoints
 function status() { return get('/api/status'); }
 function ping() { return get('/api/ping'); }
+function logout() { return get('/api/logout/strava'); }
 
 // Activity endpoints
 function wordcloud() { return get('/api/activities/wordcloud'); }
@@ -102,6 +103,7 @@ const ApiClient = {
   // Status and health
   status: status,
   ping: ping,
+  logout: logout,
   
   // Activities
   wordcloud: wordcloud,
