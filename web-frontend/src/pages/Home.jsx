@@ -168,6 +168,11 @@ const Home = () => {
           </Card.Body>
         </Card.Root>
 
+        {/* Mandatory Strava logo */}
+        <Box display="flex" justifyContent="flex-end">
+          <Image width='169px' height='31px' src='/images/powered-by-strava1.png' />
+        </Box>
+
         {/* Header Section */}
         <Box>
           <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
@@ -185,28 +190,28 @@ const Home = () => {
 
         {/* Authentication Section */}
         {!isAuthenticated && (
-        <Card.Root>
-          <Card.Body>
-            <VStack spacing={4}>
-              <Text fontSize="lg" textAlign="center">
-                Login with your Strava account to see your personal statistics
-              </Text>
-              <Button
-                leftIcon={<Image src={strava} boxSize="20px" />}
-                colorPalette="orange"
-                size="lg"
-                onClick={handleConnect}
-                isLoading={authLoading}
-              >
-                Connect with Strava
-              </Button>
-              <Text fontSize="sm" color="gray.600" textAlign="center">
-                You will be able to see various statistics of your activities such as year to date progress,
-                yearly achievements, daily heatmap based on distance and elevation and much more!
-              </Text>
-            </VStack>
-          </Card.Body>
-        </Card.Root>
+          <Card.Root>
+            <Card.Body>
+              <VStack spacing={4}>
+                <Text fontSize="lg" textAlign="center">
+                  Login with your Strava account to see your personal statistics
+                </Text>
+                <Button
+                  leftIcon={<Image src={strava} boxSize="20px" />}
+                  colorPalette="orange"
+                  size="lg"
+                  onClick={handleConnect}
+                  isLoading={authLoading}
+                >
+                  Connect with Strava
+                </Button>
+                <Text fontSize="sm" color="gray.600" textAlign="center">
+                  You will be able to see various statistics of your activities such as year to date progress,
+                  yearly achievements, daily heatmap based on distance and elevation and much more!
+                </Text>
+              </VStack>
+            </Card.Body>
+          </Card.Root>
         )}
 
         {/* Demo Statistics for Non-Authenticated Users */}
@@ -331,15 +336,6 @@ const Home = () => {
           </VStack>
         )}
 
-        {/* Footer */}
-        <Box textAlign="center" pt={8}>
-          <HStack justify="center" spacing={4}>
-            <Text fontSize="sm" color="gray.600">
-              Powered by Strava
-            </Text>
-            <Image src={strava} boxSize="20px" />
-          </HStack>
-        </Box>
       </VStack>
     </Box>
   );
