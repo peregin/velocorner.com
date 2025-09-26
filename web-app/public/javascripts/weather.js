@@ -3,6 +3,28 @@
         triggerForecast(false);
     });
 
+    // Cookie utility functions
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
     function setupWeather() {
         $('#weather_button').click(function() {
             triggerForecast(true);
@@ -27,18 +49,29 @@
         if (place) {
             forecast(place, clicked);
         } else {
-            // detect capital
-            $.ajax({
-                dataType: 'json',
-                url: "https://weather.velocorner.com/location/ip",
-                success: function (data) {
-                    let location = data.city+', '+data.country;
-                    console.log('detected location is ' + location);
-                    $('#weather').val(location);
-                    forecast(location, clicked);
-                }
-            });
-            console.log("won't request weather forecast, place is not set");
+            // First check for location in cookie
+            var cookieLocation = getCookie('weather_location');
+            if (cookieLocation) {
+                console.log('using location from cookie: ' + cookieLocation);
+                $('#weather').val(cookieLocation);
+                forecast(cookieLocation, clicked);
+            } else {
+                // Fallback to IP-based location detection
+                $.ajax({
+                    dataType: 'json',
+                    url: "https://weather.velocorner.com/location/ip",
+                    success: function (data) {
+                        let location = data.city+', '+data.country;
+                        console.log('detected location is ' + location);
+                        $('#weather').val(location);
+                        forecast(location, clicked);
+                    },
+                    error: function(e) {
+                        console.error("failed to detect location via IP", e);
+                    }
+                });
+                console.log("won't request weather forecast, place is not set");
+            }
         }
     }
 
@@ -90,6 +123,10 @@
                 $('[data-toggle="weather-tooltip"]').tooltip(); // enable tooltip
                 $('#weather-temperature-min').html(data.info.temp_min.toFixed(0));
                 $('#weather-temperature-max').html(data.info.temp_max.toFixed(0));
+                
+                // Store location in cookie for 30 days after successful forecast
+                setCookie('weather_location', place, 30);
+                console.log('stored location in cookie: ' + place);
             },
             error: function(e) {
                 $('#sunrise-sunset').css("visibility","hidden");
