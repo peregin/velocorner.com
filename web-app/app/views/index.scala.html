@@ -1,6 +1,8 @@
 @(context: PageContext)(implicit request: play.api.mvc.Request[Any], assets: AssetsFinder)
 @common.main(context) {
 
+    @widget.redesign(context)
+
     @widget.weather(context)
 
     @if(context.isWithingsEnabled) {

@@ -10,8 +10,8 @@
 }
 
 #defaultCountdown span.countdown_row span { 
-	font-size: 16px;
-	line-height: 20px;
+	font-size: 10px;
+	line-height: 15px;
 	margin-right: 2px;
 	text-align: center;
 	display: inline-block;
@@ -19,14 +19,14 @@
 
 #defaultCountdown span.countdown_section {
 	color: #fff;
-	padding: 30px 45px;
+	padding: 10px 15px;
 	margin-bottom: 2px;
 	background: url(../../../img/bg-black.png) repeat;
 	text-align: center;
 }
 
 #defaultCountdown span.countdown_amount {
-	font-size: 50px !important;
-	padding: 15px;
+	font-size: 30px !important;
+	padding: 5px;
 	font-family: Arial !important;
 }
