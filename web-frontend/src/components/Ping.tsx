@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ListItem, List, Icon } from "@chakra-ui/react";
+import { useState, useEffect } from 'react';
+import { Box, HStack, Icon } from "@chakra-ui/react";
 import { FaCheckCircle } from 'react-icons/fa'
 
 const Ping = () => {
@@ -11,16 +11,16 @@ const Ping = () => {
     }, []);
 
     return (
-        <List spacing={3}>
-            <ListItem>
+        <Box>
+            <HStack gap={2} mb={2}>
                 <Icon as={FaCheckCircle} color='green.500' />
                 Time: {date.toLocaleTimeString()}
-            </ListItem>
-            <ListItem>
+            </HStack>
+            <HStack gap={2}>
                 <Icon as={FaCheckCircle} color='green.500' />
                 Ping: OK
-            </ListItem>
-        </List>
+            </HStack>
+        </Box>
     )
 }
 

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import OAuth2Popup from './components/OAuth2Popup.tsx'
+import OAuth2Popup from './components/OAuth2Popup.js'
 
 import { useBreakpointValue, Flex, Box, Container, HStack, Image, IconButton, Text, Button, Icon } from '@chakra-ui/react'
 
@@ -11,16 +11,15 @@ import Privacy from "./pages/Privacy"
 import NotFound from "./pages/NotFound"
 
 import Header from './components/Header'
-import Footer from './components/Footer'
 import Hero from './components/Hero'
 import { Toaster } from '@/components/ui/toaster'
 
 import './App.css'
 import Ping from './components/Ping';
-import Stats from './components/Stats';
-import DemoCharts from './components/DemoCharts';
-import Features from './components/Features';
-import Footer2 from './components/Footer2';
+import Stats from './components/Stats.js';
+import DemoCharts from './components/DemoCharts.js';
+import Features from './components/Features.js';
+import Footer2 from './components/Footer2.js';
 
 // ReactGA.initialize([
 //   { trackingId: 'G-7B41YC11PS' }
@@ -50,18 +49,15 @@ const App = () => {
       <DemoCharts />
       <Features />
       <Footer2/>
-      <BrowserRouter future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}>
+      <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<div><Header /><Home /><Footer /></div>} />
-          <Route path="/about" element={<div><Header /><About /><Footer /></div>} />
-          <Route exact path="/search" element={<div><Header /><Search /><Footer /></div>} />
-          <Route exact path="/privacy" element={<div><Header /><Privacy /><Footer /></div>} />
-          <Route exact path="/oauth/strava" element={<OAuth2Popup />} />
-          <Route exact path="/health" element={<Ping />} />
-          <Route path="*" element={<div><Header /><NotFound /><Footer /></div>} />
+          <Route path="/" element={<div><Header /><Home /><Footer2 /></div>} />
+          <Route path="/about" element={<div><Header /><About /><Footer2 /></div>} />
+          <Route path="/search" element={<div><Header /><Search /><Footer2 /></div>} />
+          <Route path="/privacy" element={<div><Header /><Privacy /><Footer2 /></div>} />
+          <Route path="/oauth/strava" element={<OAuth2Popup />} />
+          <Route path="/health" element={<Ping />} />
+          <Route path="*" element={<div><Header /><NotFound /><Footer2 /></div>} />
         </Routes>
         <Toaster />
       </BrowserRouter>

@@ -57,7 +57,7 @@ const About = () => {
 
         <Card.Root>
           <Card.Body>
-            <VStack align="stretch" spacing={4}>
+            <VStack align="stretch" gap={4}>
               <Heading size="md">Build & Runtime</Heading>
               {loading ? (
                 <HStack>
@@ -71,7 +71,7 @@ const About = () => {
                 </HStack>
               ) : (
                 status && (
-                  <VStack align="stretch" spacing={4}>
+                  <VStack align="stretch" gap={4}>
                     <Grid templateColumns="repeat(auto-fit, minmax(220px, 1fr))" gap={4}>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Version</Text>
@@ -168,7 +168,7 @@ const About = () => {
   );
 };
 
-function formatBytes(bytes) {
+function formatBytes(bytes: number) {
   if (!bytes && bytes !== 0) return "-";
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));

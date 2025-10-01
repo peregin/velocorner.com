@@ -160,7 +160,7 @@ const Home = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      <VStack spacing={8} align="stretch">
+      <VStack gap={8} align="stretch">
 
         <Card.Root>
           <Card.Body>

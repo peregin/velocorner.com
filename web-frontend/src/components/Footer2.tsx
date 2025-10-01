@@ -103,6 +103,7 @@ export default function Footer2() {
             </HStack>
           </Flex>
         </Box>
+        {/* add status page widget that shows the status of the site */}
       </Container>
     </Box>
   );
