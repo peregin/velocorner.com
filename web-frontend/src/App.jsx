@@ -22,6 +22,23 @@ import DemoCharts from './components/DemoCharts';
 import Features from './components/Features';
 import Footer2 from './components/Footer2';
 
+// ReactGA.initialize([
+//   { trackingId: 'G-7B41YC11PS' }
+// ]);
+
+// const Layout = ({ children }) => {
+//   const { user } = useAuthContext();
+//   const userId = user?.data?.id;
+//   //console.log(`setting userId ${userId}`);
+//   ReactGA.set({ userId: userId });
+//   return (
+//     <>
+//       <Header />
+//       {children}
+//     </>
+//   );
+// }
+
 const App = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

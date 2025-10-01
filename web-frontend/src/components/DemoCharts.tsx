@@ -1,5 +1,5 @@
 import { Box, Container, VStack, HStack, Text, Grid, GridItem, Flex, Badge } from '@chakra-ui/react';
-import { TrendingUp, BarChart3, Cloud } from 'lucide-react';
+import { LuTrendingUp, LuChartBar, LuCloud } from 'react-icons/lu';
 
 export default function DemoCharts() {
   const yearlyDistance = [
@@ -95,7 +95,7 @@ export default function DemoCharts() {
             >
               <HStack gap={3} mb={6}>
                 <Box p={2} bgGradient="to-br" gradientFrom="brand.600" gradientTo="cyan.600" borderRadius="lg">
-                  <BarChart3 size={20} color="white" strokeWidth={2.5} />
+                  <LuChartBar size={20} color="white" strokeWidth={2.5} />
                 </Box>
                 <Text fontSize="xl" fontWeight="bold" color="gray.900">
                   YTD Distance
@@ -169,7 +169,7 @@ export default function DemoCharts() {
             >
               <HStack gap={3} mb={6}>
                 <Box p={2} bgGradient="to-br" gradientFrom="teal.600" gradientTo="emerald.600" borderRadius="lg">
-                  <TrendingUp size={20} color="white" strokeWidth={2.5} />
+                  <LuTrendingUp size={20} color="white" strokeWidth={2.5} />
                 </Box>
                 <Text fontSize="xl" fontWeight="bold" color="gray.900">
                   Yearly Elevation
@@ -253,7 +253,7 @@ export default function DemoCharts() {
         >
           <HStack gap={3} mb={6}>
             <Box p={2} bgGradient="to-br" gradientFrom="purple.600" gradientTo="pink.600" borderRadius="lg">
-              <Cloud size={20} color="white" strokeWidth={2.5} />
+              <LuCloud size={20} color="white" strokeWidth={2.5} />
             </Box>
             <Text fontSize="xl" fontWeight="bold" color="gray.900">
               Activity Word Cloud

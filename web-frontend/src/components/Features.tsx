@@ -1,45 +1,45 @@
 import { Box, Container, VStack, HStack, Text, Grid, GridItem, Button } from '@chakra-ui/react';
-import { BarChart3, Calendar, Map, Zap, Target, Users } from 'lucide-react';
+import { LuChartBar, LuCalendar, LuMap, LuZap, LuTarget, LuUsers } from 'react-icons/lu';
 
 export default function Features() {
   const features = [
     {
-      icon: BarChart3,
+      icon: LuChartBar,
       title: 'Performance Analytics',
       description: 'Track your progress with detailed statistics, charts, and insights into your cycling performance over time.',
       gradientFrom: 'blue.500',
       gradientTo: 'cyan.500',
     },
     {
-      icon: Calendar,
+      icon: LuCalendar,
       title: 'Activity Heatmaps',
       description: 'Visualize your training consistency with beautiful daily distance heatmaps and activity patterns.',
       gradientFrom: 'cyan.500',
       gradientTo: 'teal.500',
     },
     {
-      icon: Map,
+      icon: LuMap,
       title: 'Elevation Tracking',
       description: 'Monitor your climbing achievements with yearly elevation tracking and distribution analysis.',
       gradientFrom: 'teal.500',
       gradientTo: 'emerald.500',
     },
     {
-      icon: Zap,
+      icon: LuZap,
       title: 'Real-time Sync',
       description: 'Seamlessly sync with Strava to keep your stats up-to-date automatically with every ride.',
       gradientFrom: 'emerald.500',
       gradientTo: 'green.500',
     },
     {
-      icon: Target,
+      icon: LuTarget,
       title: 'Goal Setting',
       description: 'Set personal goals and track your progress towards achieving new cycling milestones.',
       gradientFrom: 'green.500',
       gradientTo: 'lime.500',
     },
     {
-      icon: Users,
+      icon: LuUsers,
       title: 'Community Insights',
       description: 'Compare your performance with the community and discover new challenges to conquer.',
       gradientFrom: 'lime.500',

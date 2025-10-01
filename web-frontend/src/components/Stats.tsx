@@ -1,10 +1,10 @@
 import { Box, Container, Grid, GridItem, VStack, HStack, Text, Icon } from '@chakra-ui/react';
-import { Activity, TrendingUp, Mountain, Calendar } from 'lucide-react';
+import { LuActivity, LuTrendingUp, LuMountain, LuCalendar } from 'react-icons/lu';
 
 export default function Stats() {
   const stats = [
     {
-      icon: Activity,
+      icon: LuActivity,
       value: '2,547',
       label: 'Total Activities',
       change: '+12.5%',
@@ -12,7 +12,7 @@ export default function Stats() {
       gradientTo: 'cyan.500',
     },
     {
-      icon: TrendingUp,
+      icon: LuTrendingUp,
       value: '18,432 km',
       label: 'Distance This Year',
       change: '+8.2%',
@@ -20,7 +20,7 @@ export default function Stats() {
       gradientTo: 'teal.500',
     },
     {
-      icon: Mountain,
+      icon: LuMountain,
       value: '234,891 m',
       label: 'Elevation Gained',
       change: '+15.7%',
@@ -28,7 +28,7 @@ export default function Stats() {
       gradientTo: 'emerald.500',
     },
     {
-      icon: Calendar,
+      icon: LuCalendar,
       value: '186 days',
       label: 'Active Days',
       change: '+4.3%',
@@ -84,7 +84,7 @@ export default function Stats() {
 
                 <HStack mt={4} gap={1} fontSize="sm" fontWeight="medium" color="green.600">
                   <Icon fontSize="16px">
-                    <TrendingUp />
+                    <LuTrendingUp />
                   </Icon>
                   <Text>{stat.change}</Text>
                 </HStack>

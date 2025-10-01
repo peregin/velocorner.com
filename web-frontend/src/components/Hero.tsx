@@ -1,5 +1,5 @@
-import { Box, Container, Flex, HStack, VStack, Text, Button, Icon, Link, IconButton } from '@chakra-ui/react';
-import { Menu, X, TrendingUp, Github, Twitter, Mail } from 'lucide-react';
+import { Box, Container, Flex, HStack, VStack, Text, Button, Icon, Link, IconButton, Image } from '@chakra-ui/react';
+import { LuMenu, LuX, LuTrendingUp, LuGithub, LuTwitter, LuMail } from 'react-icons/lu';
 
 interface HeroProps {
   isMenuOpen: boolean;
@@ -12,29 +12,9 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
       <Box as="nav" py={6}>
         <Container maxW="container.xl">
           <Flex alignItems="center" justifyContent="space-between">
-            <HStack gap={3}>
-              <Box
-                bgGradient="to-br"
-                gradientFrom="brand.600"
-                gradientTo="cyan.500"
-                p={2.5}
-                borderRadius="xl"
-                boxShadow="lg"
-              >
-                <Icon fontSize="28px" color="white">
-                  <TrendingUp strokeWidth={2.5} />
-                </Icon>
-              </Box>
-              <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                bgGradient="to-r"
-                gradientFrom="brand.600"
-                gradientTo="cyan.600"
-                bgClip="text"
-              >
-                VeloCorner
-              </Text>
+            <HStack gap={4}>
+              <Image src='/images/logo50.png' alt="Velocorner Logo"/>
+              <Text fontSize='1.5em' fontWeight='semibold' fontFamily='sans-serif' textTransform='uppercase'>Velocorner</Text>
             </HStack>
 
             <HStack gap={8} display={{ base: 'none', md: 'flex' }}>
@@ -48,10 +28,10 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
                 About
               </Link>
               <Button
-                bgGradient="to-r"
+                //bgGradient="to-r"
                 gradientFrom="brand.600"
                 gradientTo="cyan.600"
-                color="white"
+                //color="white"
                 fontWeight="medium"
                 _hover={{ boxShadow: 'lg', transform: 'scale(1.05)' }}
                 transition="all 0.2s"
@@ -68,7 +48,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
               color="gray.700"
               _hover={{ color: 'brand.600' }}
             >
-              {isMenuOpen ? <X /> : <Menu />}
+              {isMenuOpen ? <LuX /> : <LuMenu />}
             </IconButton>
           </Flex>
 
@@ -96,7 +76,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
                 bgGradient="to-r"
                 gradientFrom="brand.600"
                 gradientTo="cyan.600"
-                color="white"
+                color="gray.700"
                 fontWeight="medium"
               >
                 Connect Strava
@@ -135,7 +115,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
                 bgGradient="to-r"
                 gradientFrom="brand.600"
                 gradientTo="cyan.600"
-                bgClip="text"
+                //bgClip="text"
                 lineHeight="tight"
               >
                 Visualized Beautifully
@@ -162,7 +142,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
               <HStack>
                 <Text>Get Started Free</Text>
                 <Icon>
-                  <TrendingUp size={20} />
+                  <LuTrendingUp size={20} />
                 </Icon>
               </HStack>
             </Button>
@@ -194,7 +174,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
               _hover={{ color: 'brand.600', borderColor: 'blue.300', boxShadow: 'md' }}
               transition="all 0.2s"
             >
-              <Github size={20} />
+              <LuGithub size={20} />
             </Link>
             <Link
               href="https://twitter.com/velocorner"
@@ -209,7 +189,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
               _hover={{ color: 'brand.600', borderColor: 'blue.300', boxShadow: 'md' }}
               transition="all 0.2s"
             >
-              <Twitter size={20} />
+              <LuTwitter size={20} />
             </Link>
             <Link
               href="mailto:contact@velocorner.com"
@@ -222,7 +202,7 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
               _hover={{ color: 'brand.600', borderColor: 'blue.300', boxShadow: 'md' }}
               transition="all 0.2s"
             >
-              <Mail size={20} />
+              <LuMail size={20} />
             </Link>
           </HStack>
         </VStack>
