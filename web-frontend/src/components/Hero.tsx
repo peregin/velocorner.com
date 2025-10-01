@@ -13,8 +13,8 @@ export default function Hero({ isMenuOpen, setIsMenuOpen }: HeroProps) {
         <Container maxW="container.xl">
           <Flex alignItems="center" justifyContent="space-between">
             <HStack gap={4}>
-              <Image src='/images/logo50.png' alt="Velocorner Logo"/>
-              <Text fontSize='1.5em' fontWeight='semibold' fontFamily='sans-serif' textTransform='uppercase'>Velocorner</Text>
+              <Image boxSize="40px" src='/images/logo50.png' alt="Velocorner Logo"/>
+              <Text fontSize='1.5em' fontWeight='semibold' textTransform='uppercase'>Velocorner</Text>
             </HStack>
 
             <HStack gap={8} display={{ base: 'none', md: 'flex' }}>

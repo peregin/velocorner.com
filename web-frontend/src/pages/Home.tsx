@@ -53,7 +53,7 @@ const Home = () => {
       toaster.create({
         title: "Connected to Strava",
         description: "Successfully connected your Strava account!",
-        status: "success",
+        type: "success",
         duration: 5000,
       });
       // Data will be fetched by useEffect
@@ -63,7 +63,7 @@ const Home = () => {
       toaster.create({
         title: "Connection Failed",
         description: "Failed to connect to Strava. Please try again.",
-        status: "error",
+        type: "error",
         duration: 5000,
       });
     }
@@ -103,7 +103,7 @@ const Home = () => {
         toaster.create({
           title: "Error",
           description: "Failed to load data. Please try again.",
-          status: "error",
+          type: "error",
           duration: 5000,
         });
       } finally {
@@ -129,7 +129,7 @@ const Home = () => {
 
   const handleConnect = () => getAuth();
 
-  const handleActivityTypeChange = (activityType) => {
+  const handleActivityTypeChange = (activityType: string) => {
     setSelectedActivityType(activityType);
   };
 
@@ -192,17 +192,17 @@ const Home = () => {
         {!isAuthenticated && (
           <Card.Root>
             <Card.Body>
-              <VStack spacing={4}>
+              <VStack gap={4}>
                 <Text fontSize="lg" textAlign="center">
                   Login with your Strava account to see your personal statistics
                 </Text>
                 <Button
-                  leftIcon={<Image src={strava} boxSize="20px" />}
                   colorPalette="orange"
                   size="lg"
                   onClick={handleConnect}
-                  isLoading={authLoading}
+                  loading={authLoading}
                 >
+                  <Image src={strava} boxSize="20px" mr={2} />
                   Connect with Strava
                 </Button>
                 <Text fontSize="sm" color="gray.600" textAlign="center">
@@ -243,12 +243,12 @@ const Home = () => {
 
         {/* User Statistics for Authenticated Users */}
         {isAuthenticated && (
-          <VStack spacing={6} align="stretch">
+          <VStack gap={6} align="stretch">
             {/* Activity Type Tabs */}
             <Card.Root>
               <Card.Body>
                 <Text fontWeight="bold" mb={4}>Activity Types</Text>
-                <HStack spacing={2} wrap="wrap">
+                <HStack gap={2} wrap="wrap">
                   {activityTypes.map((type) => (
                     <Button
                       key={type}
@@ -302,22 +302,22 @@ const Home = () => {
             {/* Charts parity to Play widgets */}
             <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
-            <HStack align="stretch" spacing={4} flexWrap="wrap">
+            <HStack align="stretch" gap={4} flexWrap="wrap">
               <BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} />
               <LineSeriesChart title="Yearly Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} />
             </HStack>
 
-            <HStack align="stretch" spacing={4} flexWrap="wrap">
+            <HStack align="stretch" gap={4} flexWrap="wrap">
               <BarChart title="Year To Date Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} />
               <LineSeriesChart title="Yearly Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} />
             </HStack>
 
-            <HStack align="stretch" spacing={4} flexWrap="wrap">
+            <HStack align="stretch" gap={4} flexWrap="wrap">
               <BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} />
               <LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} />
             </HStack>
 
-            <HStack align="stretch" spacing={4} flexWrap="wrap">
+            <HStack align="stretch" gap={4} flexWrap="wrap">
               <HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} />
               <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
             </HStack>
