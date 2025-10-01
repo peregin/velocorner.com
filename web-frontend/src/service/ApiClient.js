@@ -99,6 +99,7 @@ function checkStatus(response) {
 
 const ApiClient = {
   apiHost: apiHost,
+  webHost: webHost,
   
   // Status and health
   status: status,

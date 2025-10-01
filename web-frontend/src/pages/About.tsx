@@ -16,10 +16,29 @@ import {
   Alert,
 } from "@chakra-ui/react";
 
+interface StatusResponse {
+  appVersion?: string;
+  buildTime?: string;
+  upTime?: string;
+  gitHash?: string;
+  hostOsVersion?: string;
+  osVersion?: string;
+  dockerBaseImage?: string;
+  javaVersion?: string;
+  scalaVersion?: string;
+  sbtVersion?: string;
+  catsVersion?: string;
+  playVersion?: string;
+  applicationMode?: string;
+  pings?: number;
+  memoryUsedPercentile?: number;
+  memoryTotal?: number;
+}
+
 const About = () => {
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -28,7 +47,7 @@ const About = () => {
         const res = await ApiClient.status();
         setStatus(res);
       } catch (e) {
-        setError(e);
+        setError(e as Error);
       } finally {
         setLoading(false);
       }
@@ -38,7 +57,7 @@ const About = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      <VStack align="stretch" spacing={8}>
+      <VStack align="stretch" gap={8}>
         <Box>
           <Heading size="lg" mb={2}>Welcome to the cycling site!</Heading>
           <Text color="gray.700">
@@ -137,7 +156,7 @@ const About = () => {
                         <Text>Memory usage</Text>
                         <Badge colorPalette="pink">{status.memoryUsedPercentile}%</Badge>
                       </HStack>
-                      <Text color="gray.600">Total: {formatBytes(status.memoryTotal)}</Text>
+                      <Text color="gray.600">Total: {formatBytes(status.memoryTotal || 0)}</Text>
                     </HStack>
                     <Progress.Root value={status.memoryUsedPercentile} defaultValue={90}>
                       <Progress.Label>Memory usage</Progress.Label>
