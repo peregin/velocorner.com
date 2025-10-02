@@ -148,19 +148,6 @@ const Home = () => {
   const fetchHistogramElevation = () => ApiClient.yearlyHistogram('elevation', selectedActivityType);
   const fetchDailyDistance = () => ApiClient.dailyStatistics('distance');
 
-  if (loading) {
-    return (
-      <Box textAlign="center" py={10}>
-        <Progress.Root size="lg" value={null}>
-          <Progress.Track>
-            <Progress.Range />
-          </Progress.Track>
-        </Progress.Root>
-        <Text mt={4}>Loading...</Text>
-      </Box>
-    );
-  }
-
   return (
     <Box maxW="1200px" mx="auto" p={6}>
       <VStack gap={8} align="stretch">
@@ -175,6 +162,23 @@ const Home = () => {
         <Box display="flex" justifyContent="flex-end">
           <Image width='169px' height='31px' src='/images/powered-by-strava1.png' />
         </Box>
+
+        {loading && (
+          <Box textAlign="center" py={10}>
+            <Progress.Root size="lg" value={null}>
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+            <Text mt={4}>Loading...</Text>
+          </Box>
+        )}
+
+        <Card.Root>
+          <Card.Body>
+            <WordCloud words={wordCloud} />
+          </Card.Body>
+        </Card.Root>
 
         {/* Header Section */}
         <Box>
@@ -331,11 +335,6 @@ const Home = () => {
               </Card.Body>
             </Card.Root>
 
-            <Card.Root>
-              <Card.Body>
-                <WordCloud words={wordCloud} />
-              </Card.Body>
-            </Card.Root>
           </VStack>
         )}
 
