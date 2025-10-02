@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useState, useEffect, useRef, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import OAuth2Popup from './components/OAuth2Popup.js'
 
 import ReactGA from 'react-ga4';
 
-import { useBreakpointValue, Flex, Box, Container, HStack, Image, IconButton, Text, Button, Icon } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 
 import Home from "./pages/Home"
 import About from "./pages/About"
@@ -13,14 +13,10 @@ import Privacy from "./pages/Privacy"
 import NotFound from "./pages/NotFound"
 
 import Header from './components/Header'
-import Hero from './components/Hero'
 import { Toaster } from '@/components/ui/toaster'
 
 import './App.css'
 import Ping from './components/Ping';
-import Stats from './components/Stats.js';
-import DemoCharts from './components/DemoCharts.js';
-import Features from './components/Features.js';
 import Footer from './components/Footer.js';
 
 ReactGA.initialize([
@@ -37,11 +33,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <Box minH="100vh" bgGradient="to-br" gradientFrom="gray.50" gradientVia="white" gradientTo="blue.50">
-      <Header />
-      <Hero isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-      <Stats />
-      <DemoCharts />
-      <Features />
+      <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen}/>
+      {/* <Hero /> */}
+      {/* <Features /> */}
       {children}
       <Footer />
       <Toaster />
