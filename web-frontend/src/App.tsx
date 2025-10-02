@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
 import OAuth2Popup from './components/OAuth2Popup.js'
+
+import ReactGA from 'react-ga4';
 
 import { useBreakpointValue, Flex, Box, Container, HStack, Image, IconButton, Text, Button, Icon } from '@chakra-ui/react'
 
@@ -21,47 +23,52 @@ import DemoCharts from './components/DemoCharts.js';
 import Features from './components/Features.js';
 import Footer2 from './components/Footer2.js';
 
-// ReactGA.initialize([
-//   { trackingId: 'G-7B41YC11PS' }
-// ]);
+ReactGA.initialize([
+  { trackingId: 'G-7B41YC11PS' }
+]);
 
-// const Layout = ({ children }) => {
-//   const { user } = useAuthContext();
-//   const userId = user?.data?.id;
-//   //console.log(`setting userId ${userId}`);
-//   ReactGA.set({ userId: userId });
-//   return (
-//     <>
-//       <Header />
-//       {children}
-//     </>
-//   );
-// }
-
-const App = () => {
+const Layout = ({ children }: { children: ReactNode }) => {
+  // const { user } = useAuthContext();
+  // const userId = user?.data?.id;
+  //console.log(`setting userId ${userId}`);
+  // ReactGA.set({ userId: userId });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <Box minH="100vh" bgGradient="to-br" gradientFrom="gray.50" gradientVia="white" gradientTo="blue.50">
+      <Header />
       <Hero isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
       <Stats />
       <DemoCharts />
       <Features />
-      <Footer2/>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<div><Header /><Home /><Footer2 /></div>} />
-          <Route path="/about" element={<div><Header /><About /><Footer2 /></div>} />
-          <Route path="/search" element={<div><Header /><Search /><Footer2 /></div>} />
-          <Route path="/privacy" element={<div><Header /><Privacy /><Footer2 /></div>} />
-          <Route path="/oauth/strava" element={<OAuth2Popup />} />
-          <Route path="/health" element={<Ping />} />
-          <Route path="*" element={<div><Header /><NotFound /><Footer2 /></div>} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
+      {children}
+      <Footer2 />
+      <Toaster />
     </Box>
+  );
+}
+
+const App = () => {
+
+  useEffect(() => {
+    const page = window.location.pathname + window.location.search;
+    //console.log(`sending pageview for ${page}`);
+    ReactGA.send({ hitType: "pageview", page: page });
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout><Home /></Layout>} />
+        <Route path="/about" element={<Layout><About /></Layout>} />
+        <Route path="/search" element={<Layout><Search /></Layout>} />
+        <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
+        <Route path="/oauth/strava" element={<OAuth2Popup />} />
+        <Route path="/health" element={<Ping />} />
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
