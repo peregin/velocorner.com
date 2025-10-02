@@ -9,13 +9,15 @@ interface HeaderProps {
 const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
 
   return (
-    <Box as="nav" py={6}>
+    <Box as="nav" py='1rem' boxShadow="0 2px 4px rgba(0,0,0,0.1)">
       <Container maxW="container.xl">
         <Flex alignItems="center" justifyContent="space-between">
-          <HStack gap={4}>
-            <Image boxSize="40px" src='/images/logo50.png' alt="Velocorner Logo" />
-            <Text fontSize='1.5em' fontWeight='semibold' textTransform='uppercase'>Velocorner</Text>
-          </HStack>
+          <Link href="/" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
+            <HStack gap={4}>
+              <Image boxSize="40px" src='/images/logo50.png' alt="Velocorner Logo" />
+              <Text fontSize='1.5em' fontWeight='semibold' textTransform='uppercase'>Velocorner</Text>
+            </HStack>
+          </Link>
 
           <HStack gap={8} display={{ base: 'none', md: 'flex' }}>
             {/* <Link href="#features" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
