@@ -22,7 +22,7 @@ The infrastructure is built following the "Infra as code" principle, the FE is w
 with the `Play Framework` exposing the contract with Swagger.
 Services are communicating via `http` with each other, exploring various languages and technologies:
 - web-app with `Scala` and `Play Framework`, `ZIO`
-- web-front with `React`
+- web-frontend with `React`
 - crawler-service with `Scala`, `http4s`, `cats-effect`, `circe` (Typelevel stack)
 - exchange-rate-service with `Rust` (has been extracted in a separate repository)
 - data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
@@ -36,30 +36,15 @@ ___
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
 
 ## CI/CD Flow
-
 ![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD")
 
 ## Infrastructure
 Follows the infrastructure as code approach.
-
 ![Infrastructure](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/infra.png "Infrastructure")
 
 ## Local Setup
-
 ### Mirror Infrastructure
 Start local infrastructure and deploy the stack
-
-### Individual Services
-Start database
-```shell script
-# start and import database
-./script/start_psql.sh
-./script/import_psql.sh ~/Downloads/velo/velocorner/backup/psql-202008031826.sql.gz
-
-# start web application
-sbt -Xms512M -Xmx2048M -Xss1M -Dhttp.port=9001 -Dlogback.debug=true --add-opens java.base/jdk.internal.misc=ALL-UNNAMED \
-  "project web-app" run
-```
 
 ## Code
 Some useful plugins
