@@ -7,7 +7,7 @@ import twitter from 'super-tiny-icons/images/svg/twitter.svg'
 import email from 'super-tiny-icons/images/svg/email.svg'
 import facebook from 'super-tiny-icons/images/svg/facebook.svg'
 import Social from './Social';
-import { LuHeart, LuTrendingUp } from 'react-icons/lu';
+import { LuHeart } from 'react-icons/lu';
 
 export default function Footer() {
   return (
@@ -16,16 +16,7 @@ export default function Footer() {
         <Grid templateColumns={{ base: '1fr', md: 'repeat(4, 1fr)' }} gap={12} mb={12}>
           <GridItem colSpan={{ base: 1, md: 2 }}>
             <HStack gap={3} mb={4}>
-              <Box
-                bgGradient="to-br"
-                gradientFrom="brand.600"
-                gradientTo="cyan.500"
-                p={2.5}
-                borderRadius="xl"
-                boxShadow="lg"
-              >
-                <LuTrendingUp size={24} color="white" strokeWidth={2.5} />
-              </Box>
+              <Image boxSize="40px" src='/images/logo50-gray.png' alt="Velocorner Logo" />
               <Text fontSize="xl" fontWeight="bold" color="white" textTransform="uppercase">
                 Velocorner
               </Text>
@@ -55,9 +46,6 @@ export default function Footer() {
               </Link>
               <Link href="#stats" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                 Statistics
-              </Link>
-              <Link href="#" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
-                Pricing
               </Link>
               <Link href="#" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                 Demo
