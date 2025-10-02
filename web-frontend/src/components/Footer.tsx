@@ -9,7 +9,7 @@ import facebook from 'super-tiny-icons/images/svg/facebook.svg'
 import Social from './Social';
 import { LuHeart, LuTrendingUp } from 'react-icons/lu';
 
-export default function Footer2() {
+export default function Footer() {
   return (
     <Box as="footer" id="about" bg="gray.900" color="gray.300" py={16}>
       <Container maxW="container.xl">

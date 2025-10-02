@@ -21,7 +21,7 @@ import Ping from './components/Ping';
 import Stats from './components/Stats.js';
 import DemoCharts from './components/DemoCharts.js';
 import Features from './components/Features.js';
-import Footer2 from './components/Footer2.js';
+import Footer from './components/Footer.js';
 
 ReactGA.initialize([
   { trackingId: 'G-7B41YC11PS' }
@@ -43,7 +43,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <DemoCharts />
       <Features />
       {children}
-      <Footer2 />
+      <Footer />
       <Toaster />
     </Box>
   );
