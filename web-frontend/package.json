@@ -1,24 +1,24 @@
 {
   "name": "web-front",
-  "version": "1.2.10",
+  "version": "1.3.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@chakra-ui/react": "^3.26.0",
+    "@chakra-ui/react": "^3.27.0",
     "@emotion/react": "^11.13.5",
     "@tasoskakour/react-use-oauth2": "^2.1.1",
     "apexcharts": "^5.3.5",
     "highcharts": "^12.4.0",
-    "highcharts-react-official": "^3.2.2",
+    "highcharts-react-official": "^3.2.3",
     "next-themes": "^0.4.6",
-    "react": "^19.1.1",
+    "react": "^19.2.0",
     "react-apexcharts": "^1.7.0",
-    "react-dom": "^19.1.1",
+    "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.8.2",
+    "react-router-dom": "^7.9.3",
     "react-ga4": "2.1.0",
     "super-tiny-icons": "^0.6.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "scripts": {
     "clean": "rm -Rf node_modules/ dist/",
@@ -30,10 +30,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.2",
-    "vite": "^7.1.5",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^7.1.8",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "overrides": {
