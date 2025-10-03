@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Cycling Platform">
-    <meta name="author" content="velocorner.com">
-    <meta name="theme-color" content="#ffffff"/>
 
-    <!--
+<head>
+  <!-- Meta -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Cycling Platform">
+  <meta name="author" content="velocorner.com">
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LKV8LYV34F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-LKV8LYV34F');
+  </script>
+
+  <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/favicon.png">
-    <title>Velocorner</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="shortcut icon" href="/favicon.png">
+  <title>Velocorner</title>
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
-    <link rel="apple-touch-icon" href="/images/appleicon.png">
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/index.jsx"></script>
-  </body>
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
+  <link rel="apple-touch-icon" href="/images/appleicon.png">
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/index.jsx"></script>
+</body>
+
 </html>

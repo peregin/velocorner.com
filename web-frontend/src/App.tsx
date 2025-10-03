@@ -20,7 +20,7 @@ import Ping from './components/Ping';
 import Footer from './components/Footer.js';
 
 ReactGA.initialize([
-  { trackingId: 'G-7B41YC11PS' }
+  { trackingId: 'G-1GNXX7WZHH' }
 ]);
 
 const Layout = ({ children }: { children: ReactNode }) => {
