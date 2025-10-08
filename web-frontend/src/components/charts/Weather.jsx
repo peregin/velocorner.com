@@ -308,7 +308,7 @@ class Meteogram {
         renderTo: this.container,
         marginBottom: 70,
         marginRight: 40,
-        marginTop: 50,
+        marginTop: 70,
         plotBorderWidth: 1,
         height: 250,
         alignTicks: false,
@@ -338,6 +338,7 @@ class Meteogram {
       title: {
         text: this.getTitle(),
         align: 'left',
+        margin: 20,
         style: {
           whiteSpace: 'nowrap',
           textOverflow: 'ellipsis'
