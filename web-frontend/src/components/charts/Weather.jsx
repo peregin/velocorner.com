@@ -9,11 +9,9 @@ import {
   Grid,
   GridItem,
   Icon,
-  Flex,
-  Combobox,
-  Portal,
-  createListCollection
+  Flex
 } from '@chakra-ui/react';
+import AutocompleteCombobox from '../ui/AutocompleteCombobox.jsx';
 import { HiRefresh } from "react-icons/hi";
 import Highcharts from 'highcharts';
 // needed the import to load the module
@@ -142,51 +140,22 @@ const Weather = ({ defaultLocation = '' }) => {
       <VStack spacing={4} align="stretch">
         {/* Location Input */}
         <HStack>
-          <Combobox.Root
-            collection={createListCollection({
-              items: suggestions,
-              itemToString: (item) => item.value || item,
-              itemToValue: (item) => item.value || item,
-            })}
-            onInputValueChange={(details) => {
-              setLocation(details.inputValue);
-              fetchSuggestions(details.inputValue);
-            }}
-            onValueChange={(details) => {
-              if (details.value && details.value[0]) {
-                const selectedLocation = details.value[0];
-                setLocation(selectedLocation);
-                loadWeather(selectedLocation);
-              }
-            }}
-            inputBehavior="autohighlight"
+          <AutocompleteCombobox
+            value={location}
+            items={suggestions}
+            placeholder="Enter location"
             width="300px"
-          >
-            <Combobox.Control>
-              <Combobox.Input
-                placeholder="Enter location"
-                value={location}
-                onKeyPress={handleKeyPress}
-              />
-              <Combobox.IndicatorGroup>
-                <Combobox.ClearTrigger />
-                <Combobox.Trigger />
-              </Combobox.IndicatorGroup>
-            </Combobox.Control>
-            <Portal>
-              <Combobox.Positioner>
-                <Combobox.Content>
-                  <Combobox.Empty>No locations found</Combobox.Empty>
-                  {suggestions.map((suggestion, index) => (
-                    <Combobox.Item key={index} item={suggestion}>
-                      {suggestion.value || suggestion}
-                      <Combobox.ItemIndicator />
-                    </Combobox.Item>
-                  ))}
-                </Combobox.Content>
-              </Combobox.Positioner>
-            </Portal>
-          </Combobox.Root>
+            emptyMessage="No locations found"
+            onInputValueChange={(val) => {
+              setLocation(val);
+              fetchSuggestions(val);
+            }}
+            onSelect={(selected) => {
+              setLocation(selected);
+              loadWeather(selected);
+            }}
+            onKeyPress={handleKeyPress}
+          />
           <Button
             onClick={handleLocationSubmit}
             loading={isLoading}
