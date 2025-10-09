@@ -28,21 +28,6 @@ export default function DemoCharts() {
 
   const maxElevation = Math.max(...elevationData.map(d => d.elevation));
 
-  const wordCloudData = [
-    { word: 'Cycling', size: 32, color: 'blue.600' },
-    { word: 'Training', size: 28, color: 'cyan.600' },
-    { word: 'Mountain', size: 24, color: 'teal.600' },
-    { word: 'Performance', size: 20, color: 'emerald.600' },
-    { word: 'Endurance', size: 18, color: 'green.600' },
-    { word: 'Speed', size: 24, color: 'blue.500' },
-    { word: 'Climb', size: 22, color: 'cyan.500' },
-    { word: 'Ride', size: 30, color: 'teal.500' },
-    { word: 'Distance', size: 26, color: 'emerald.500' },
-    { word: 'Route', size: 16, color: 'green.500' },
-    { word: 'Challenge', size: 20, color: 'blue.400' },
-    { word: 'Achievement', size: 18, color: 'cyan.400' },
-  ];
-
   return (
     <Box as="section" py={24} bg="white">
       <Container maxW="container.xl">
@@ -241,47 +226,6 @@ export default function DemoCharts() {
           </GridItem>
         </Grid>
 
-        <Box
-          bgGradient="to-br"
-          gradientFrom="yellow.50"
-          gradientTo="orange.50"
-          p={8}
-          borderRadius="2xl"
-          border="1px"
-          borderColor="yellow.200"
-          boxShadow="lg"
-        >
-          <HStack gap={3} mb={6}>
-            <Box p={2} bgGradient="to-br" gradientFrom="purple.600" gradientTo="pink.600" borderRadius="lg">
-              <LuCloud size={20} color="white" strokeWidth={2.5} />
-            </Box>
-            <Text fontSize="xl" fontWeight="bold" color="gray.900">
-              Activity Word Cloud
-            </Text>
-          </HStack>
-
-          <Box bg="white" borderRadius="xl" p={8} border="1px" borderColor="yellow.200" minH="200px">
-            <Flex flexWrap="wrap" alignItems="center" justifyContent="center" gap={4}>
-              {wordCloudData.map((item, index) => (
-                <Text
-                  key={index}
-                  color={item.color}
-                  fontWeight="bold"
-                  fontSize={`${item.size}px`}
-                  _hover={{ transform: 'scale(1.1)' }}
-                  transition="transform 0.2s"
-                  cursor="default"
-                >
-                  {item.word}
-                </Text>
-              ))}
-            </Flex>
-          </Box>
-
-          <Text mt={6} pt={4} borderTop="1px" borderColor="yellow.300" textAlign="center" fontSize="sm" color="gray.600">
-            Most frequent words from your activity descriptions
-          </Text>
-        </Box>
       </Container>
     </Box>
   );

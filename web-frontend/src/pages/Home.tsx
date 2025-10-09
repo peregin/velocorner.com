@@ -6,7 +6,6 @@ import {
   Button,
   Heading,
   Text,
-  Separator,
   Image,
   Box,
   Grid,
@@ -240,10 +239,6 @@ const Home = () => {
                   </Text>
                 </GridItem>
               </Grid>
-
-              <Separator my={6} />
-
-              <WordCloud words={wordCloud} />
             </Card.Body>
           </Card.Root>
         )}
