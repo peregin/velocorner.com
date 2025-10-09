@@ -24,7 +24,6 @@ import BarChart from "@/components/charts/BarChart";
 import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
-import Footer from "@/components/Footer";
 import DemoCharts from "@/components/DemoCharts";
 
 const Home = () => {
