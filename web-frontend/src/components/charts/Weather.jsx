@@ -9,7 +9,8 @@ import {
   Grid,
   GridItem,
   Icon,
-  Flex
+  Flex,
+  Stack
 } from '@chakra-ui/react';
 import AutocompleteCombobox from '../ui/AutocompleteCombobox.jsx';
 import { HiRefresh } from "react-icons/hi";
@@ -136,59 +137,67 @@ const Weather = ({ defaultLocation = '' }) => {
   };
 
   return (
-    <Box p={4}>
-      <VStack spacing={4} align="stretch">
-        {/* Location Input */}
-        <HStack>
-          <AutocompleteCombobox
-            value={location}
-            items={suggestions}
-            placeholder="Enter location"
-            width="300px"
-            emptyMessage="No locations found"
-            onInputValueChange={(val) => {
-              setLocation(val);
-              fetchSuggestions(val);
-            }}
-            onSelect={(selected) => {
-              setLocation(selected);
-              loadWeather(selected);
-            }}
-            onKeyPress={handleKeyPress}
-          />
-          <Button
-            onClick={handleLocationSubmit}
-            loading={isLoading}
-            loadingText="Loading.." 
-            colorPalette="green"
-          >
-            <HiRefresh /> Weather
-          </Button>
-        </HStack>
+    <Box p={2}>
+      <Stack direction={{ base: 'row', sm: 'column' }} spacing={4} width="100%">
+        <VStack spacing={2} align="stretch">
+          {/* Location Input */}
+          <HStack>
+            <AutocompleteCombobox
+              value={location}
+              items={suggestions}
+              placeholder="Enter location"
+              width="300px"
+              emptyMessage="No locations found"
+              onInputValueChange={(val) => {
+                setLocation(val);
+                fetchSuggestions(val);
+              }}
+              onSelect={(selected) => {
+                setLocation(selected);
+                loadWeather(selected);
+              }}
+              onKeyPress={handleKeyPress}
+            />
+            <Button
+              onClick={handleLocationSubmit}
+              loading={isLoading}
+              loadingText="Loading.."
+              colorPalette="green"
+            >
+              <HiRefresh /> Weather
+            </Button>
+          </HStack>
 
-        {/* Loading Progress */}
-        {isLoading && (
-          <Progress.Root size='sm' colorPalette="blue" maxW="240px" value={null}>
-            <Progress.Track>
-              <Progress.Range />
-            </Progress.Track>
-          </Progress.Root>
-        )}
+          {/* Loading Progress */}
+          <Box minH="20px" position="relative">
+            <Progress.Root
+              size='sm'
+              colorPalette="blue"
+              value={null}
+              opacity={isLoading ? 1 : 0}
+              position="absolute"
+              width="100%"
+              transition="opacity 0.2s ease-in-out"
+            >
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+          </Box>
 
-        {/* Current Weather Display */}
-        {currentWeather && (
+          {/* Current Weather Display */}
           <Grid templateColumns="repeat(2, 1fr)" gap={4}>
             <GridItem>
               <Box textAlign="center">
                 <Text fontSize="2xl" fontWeight="bold">
-                  {currentWeather.info.temp.toFixed(1)}°C
+                  {currentWeather?.info?.temp?.toFixed(1)}°C
                 </Text>
                 <Text fontSize="md">
-                  {currentWeather.current.description}
+                  {currentWeather?.current?.description}
                 </Text>
                 <Flex justify="center" mt={2}>
-                  <Text fontSize="sm">Min: {currentWeather.info.temp_min.toFixed(0)}°C</Text>
-                  <Text fontSize="sm" ml={4}>Max: {currentWeather.info.temp_max.toFixed(0)}°C</Text>
+                  <Text fontSize="sm">Min: {currentWeather?.info?.temp_min?.toFixed(0)}°C</Text>
+                  <Text fontSize="sm" ml={4}>Max: {currentWeather?.info?.temp_max?.toFixed(0)}°C</Text>
                 </Flex>
               </Box>
             </GridItem>
@@ -196,22 +205,24 @@ const Weather = ({ defaultLocation = '' }) => {
               <Box textAlign="center">
                 <Flex justify="center" align="center">
                   <Icon as="span" fontSize="2xl" mr={2}>🌅</Icon>
-                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                  <Text fontSize="lg">{new Date(currentWeather?.sunriseSunset?.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                 </Flex>
                 <Flex justify="center" align="center" mt={2}>
                   <Icon as="span" fontSize="2xl" mr={2}>🌇</Icon>
-                  <Text fontSize="lg">{new Date(currentWeather.sunriseSunset.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                  <Text fontSize="lg">{new Date(currentWeather?.sunriseSunset?.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
                 </Flex>
               </Box>
             </GridItem>
           </Grid>
-        )}
 
-        {/* Meteogram Chart */}
-        <Box id="weather-container" height="250px" display={forecastData ? 'block' : 'none'}>
-          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
-        </Box>
-      </VStack>
+          {/* Meteogram Chart */}
+          <Box id="weather-container" height="250px" display={forecastData ? 'block' : 'none'}>
+            <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+          </Box>
+        </VStack>
+
+      </Stack>
+
     </Box>
   );
 };
