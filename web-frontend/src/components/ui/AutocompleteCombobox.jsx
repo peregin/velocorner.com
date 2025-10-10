@@ -22,7 +22,6 @@ const AutocompleteCombobox = ({
   value,
   items = [],
   placeholder = 'Enter value',
-  width = '300px',
   emptyMessage = 'No items found',
   onInputValueChange,
   onSelect,
@@ -47,7 +46,7 @@ const AutocompleteCombobox = ({
         if (v != null && onSelect) onSelect(v);
       }}
       inputBehavior="autohighlight"
-      width={width}
+      // width={width}
     >
       <Combobox.Control>
         <Combobox.Input

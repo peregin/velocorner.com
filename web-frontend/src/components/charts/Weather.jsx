@@ -138,7 +138,7 @@ const Weather = ({ defaultLocation = '' }) => {
 
   return (
     <Box p={2}>
-      <Stack direction={{ base: 'row', sm: 'column' }} spacing={4} width="100%">
+      <Stack direction={{ base: 'row', sm: 'column' }} spacing={2} width="100%">
         <VStack spacing={2} align="stretch">
           {/* Location Input */}
           <HStack>
@@ -146,7 +146,6 @@ const Weather = ({ defaultLocation = '' }) => {
               value={location}
               items={suggestions}
               placeholder="Enter location"
-              width="300px"
               emptyMessage="No locations found"
               onInputValueChange={(val) => {
                 setLocation(val);
