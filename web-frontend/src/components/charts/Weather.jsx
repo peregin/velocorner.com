@@ -220,7 +220,13 @@ const Weather = ({ defaultLocation = '' }) => {
         </Stack>
 
         {/* Meteogram Chart */}
-        <Box id="weather-container" height="250px" display={forecastData ? 'block' : 'none'}>
+        <Box
+          id="weather-container"
+          flex="1"
+          width="100%"
+          height="250px"
+          display={forecastData ? 'block' : 'none'}
+        >
           <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
         </Box>
 
