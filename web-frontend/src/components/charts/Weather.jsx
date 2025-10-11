@@ -138,12 +138,13 @@ const Weather = ({ defaultLocation = '' }) => {
 
   return (
     <Box p={2}>
-      <Stack direction={{ base: 'row', sm: 'column' }}>
-        <VStack spacing={2} align="stretch">
+      <Stack direction={{ base: 'column', sm: 'row' }}>
 
-          <Stack direction={{ base: 'column', sm: 'row' }}>
+        <Stack direction={{ base: 'column', sm: 'row' }}>
+
+          <VStack>
             {/* Location Input */}
-            <HStack>
+            <Stack direction={{ base: 'column', sm: 'row' }}>
               <AutocompleteCombobox
                 value={location}
                 items={suggestions}
@@ -167,24 +168,8 @@ const Weather = ({ defaultLocation = '' }) => {
               >
                 <HiRefresh /> Weather
               </Button>
-            </HStack>
 
-            {/* Loading Progress */}
-            <Box minH="20px" position="relative">
-              <Progress.Root
-                size='sm'
-                colorPalette="blue"
-                value={null}
-                opacity={isLoading ? 1 : 0}
-                position="absolute"
-                width="100%"
-                transition="opacity 0.2s ease-in-out"
-              >
-                <Progress.Track>
-                  <Progress.Range />
-                </Progress.Track>
-              </Progress.Root>
-            </Box>
+            </Stack>
 
             {/* Current Weather Display */}
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
@@ -215,13 +200,29 @@ const Weather = ({ defaultLocation = '' }) => {
                 </Box>
               </GridItem>
             </Grid>
-          </Stack>
 
-          {/* Meteogram Chart */}
-          <Box id="weather-container" height="250px" display={forecastData ? 'block' : 'none'}>
-            <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
-          </Box>
-        </VStack>
+            {/* Loading Progress */}
+            <Progress.Root
+              size='sm'
+              colorPalette="blue"
+              value={null}
+              opacity={isLoading ? 1 : 0}
+              // position="absolute"
+              width="100%"
+              transition="opacity 0.2s ease-in-out"
+            >
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+          </VStack>
+
+        </Stack>
+
+        {/* Meteogram Chart */}
+        <Box id="weather-container" height="250px" display={forecastData ? 'block' : 'none'}>
+          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+        </Box>
 
       </Stack>
 
