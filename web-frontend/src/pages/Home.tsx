@@ -27,7 +27,6 @@ import Stats from "@/components/Stats";
 import DemoCharts from "@/components/DemoCharts";
 
 const Home = () => {
-  const [memoryUsage, setMemoryUsage] = useState(0);
   const [wordCloud, setWordCloud] = useState([]);
   const [activityTypes, setActivityTypes] = useState([]);
   const [selectedActivityType, setSelectedActivityType] = useState("Ride");
@@ -78,8 +77,6 @@ const Home = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const status = await ApiClient.status();
-        setMemoryUsage(status.memoryUsedPercentile);
 
         if (!isAuthenticated) {
           const [demoWc, demoYtdDistance, demoYearlyElevation] = await Promise.all([
@@ -177,21 +174,6 @@ const Home = () => {
             <WordCloud words={wordCloud} />
           </Card.Body>
         </Card.Root>
-
-        {/* Header Section */}
-        <Box>
-          <Heading size="lg" mb={4}>Welcome to Velocorner</Heading>
-          <VStack justify="space-between" align="left">
-            <Progress.Root value={memoryUsage} defaultValue={90}>
-              <Progress.Label>Memory usage</Progress.Label>
-              <Progress.Track flex='1'>
-                <Progress.Range />
-              </Progress.Track>
-              <Progress.ValueText>{memoryUsage}%</Progress.ValueText>
-            </Progress.Root>
-            {/* <Progress value={memoryUsage} width="200px" /> */}
-          </VStack>
-        </Box>
 
         {/* Authentication Section */}
         {!isAuthenticated && (
