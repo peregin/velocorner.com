@@ -11,12 +11,12 @@ object Dependencies {
   val zioVersion = "2.1.21"
   val playWsVersion = "3.0.8" // standalone version
   val pekkoVersion = "1.2.1"
-  val playJsonVersion = "3.0.5"
+  val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.19" // updating will cause conflict
   val doobieVersion = "1.0.0-RC10"
   val orientDbVersion = "3.2.44"
-  val mongoDbVersion = "5.6.0"
+  val mongoDbVersion = "5.6.1"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.19.0"
   val jwtVersion = "11.0.3"
