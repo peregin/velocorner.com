@@ -1,9 +1,9 @@
 package model
 
 import squants.space.{Kilometers, Meters}
+import velocorner.api.Units
 import velocorner.api.heatmap.{HeatmapPoint, HeatmapSeries}
 import velocorner.api.strava.Activity
-import velocorner.model.Units
 
 object apexcharts {
 

@@ -5,7 +5,6 @@ import squants.Meters
 import squants.motion.KilometersPerHour
 import squants.space.Kilometers
 import velocorner.api.Progress._
-import velocorner.model.Units
 
 import scala.Numeric.Implicits._
 

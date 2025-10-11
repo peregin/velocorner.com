@@ -7,9 +7,10 @@ import com.rethinkdb.net.{Connection, Result}
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import org.json.simple.JSONObject
+import velocorner.api.Account
 import velocorner.api.strava.Activity
 import velocorner.model.strava.Gear
-import velocorner.model.{Account, ActionType}
+import velocorner.model.ActionType
 import velocorner.storage.RethinkDbStorage._
 import velocorner.util.JsonIo
 

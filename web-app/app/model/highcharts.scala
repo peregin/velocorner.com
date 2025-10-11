@@ -1,8 +1,8 @@
 package model
 
-import velocorner.api.{chart, Progress}
+import velocorner.api.{Progress, Units, chart}
 import velocorner.api.chart.{DailyPoint, DailySeries}
-import velocorner.model.{Units, YearlyProgress}
+import velocorner.model.YearlyProgress
 
 object highcharts {
 

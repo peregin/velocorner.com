@@ -3,8 +3,8 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.Logger
+import velocorner.api.Account
 import velocorner.api.strava.Activity
-import velocorner.model.Account
 import velocorner.feed.{ActivityFeed, StravaActivityFeed}
 import velocorner.storage.Storage
 

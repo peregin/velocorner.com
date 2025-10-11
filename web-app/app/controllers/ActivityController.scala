@@ -12,9 +12,8 @@ import play.api.mvc._
 import velocorner.api.chart.DailyPoint
 import velocorner.api.strava.Activity
 import velocorner.api.wordcloud.WordCloud
-import velocorner.api.{Achievements, ProfileStatistics, Progress}
+import velocorner.api.{Achievements, ProfileStatistics, Progress, Units}
 import velocorner.model._
-import velocorner.storage.PsqlDbStorage
 import velocorner.util.{JsonIo, Metrics}
 
 import javax.inject.Inject

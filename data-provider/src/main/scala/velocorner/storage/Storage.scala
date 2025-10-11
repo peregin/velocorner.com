@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.Gear
-import velocorner.api.Achievement
+import velocorner.api.{Account, Achievement}
 
 import scala.concurrent.Future
 import org.joda.time.DateTime

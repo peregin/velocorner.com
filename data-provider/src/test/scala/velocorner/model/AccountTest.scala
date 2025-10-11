@@ -4,6 +4,7 @@ import velocorner.util.JsonIo
 import cats.implicits._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import velocorner.api.{Account, Role, Units}
 
 class AccountTest extends AnyWordSpec with Matchers with AccountFixtures {
 

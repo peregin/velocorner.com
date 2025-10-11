@@ -6,7 +6,7 @@ import play.Logger
 import play.api.libs.oauth.{ConsumerKey, OAuth, RequestToken, ServiceInfo}
 import play.api.mvc._
 import velocorner.ServiceProvider
-import velocorner.model.Account
+import velocorner.api.Account
 
 class WithingsController @Inject() (val connectivity: ConnectivitySettings, components: ControllerComponents) extends AbstractController(components) {
 

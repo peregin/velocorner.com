@@ -4,7 +4,7 @@ import controllers.auth.JwtUser.issuer
 import org.joda.time.{DateTime, DateTimeZone}
 import pdi.jwt.{JwtAlgorithm, JwtJson, JwtOptions}
 import play.api.libs.json._
-import velocorner.model.Account
+import velocorner.api.Account
 import velocorner.model.strava.Athlete
 
 import java.time.Clock

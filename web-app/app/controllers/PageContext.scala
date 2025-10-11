@@ -1,6 +1,6 @@
 package controllers
 
-import velocorner.model.Account
+import velocorner.api.Account
 
 /**
  * Created by levi on 04/11/15.

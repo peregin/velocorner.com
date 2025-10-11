@@ -5,8 +5,8 @@ import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
 import doobie.util.fragment.Fragment
 import play.api.libs.json.Reads
+import velocorner.api.Account
 import velocorner.api.strava.Activity
-import velocorner.model.Account
 import velocorner.util.Metrics
 
 import scala.concurrent.ExecutionContext.Implicits.global

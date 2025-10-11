@@ -15,7 +15,7 @@ import play.api.data.Form
 import play.api.data.Forms.{nonEmptyText, tuple}
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
-import velocorner.model.Account
+import velocorner.api.Account
 import velocorner.model.strava.Gear
 import velocorner.feed.OAuth2._
 

@@ -9,6 +9,7 @@ import org.mongodb.scala._
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
+import velocorner.api.Account
 import velocorner.api.strava.Activity
 import velocorner.model._
 import velocorner.model.strava.Gear

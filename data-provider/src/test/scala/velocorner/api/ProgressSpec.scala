@@ -2,7 +2,6 @@ package velocorner.api
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import velocorner.model.Units
 import velocorner.util.JsonIo
 
 class ProgressSpec extends AnyWordSpec with Matchers {

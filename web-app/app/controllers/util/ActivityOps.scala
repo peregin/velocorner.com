@@ -2,9 +2,10 @@ package controllers.util
 
 import model.highcharts
 import org.joda.time.LocalDate
+import velocorner.api.Units
 import velocorner.api.chart.DailySeries
 import velocorner.api.strava.Activity
-import velocorner.model.{DailyProgress, Units, YearlyProgress}
+import velocorner.model.{DailyProgress, YearlyProgress}
 
 trait ActivityOps {
 

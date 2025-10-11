@@ -1,7 +1,7 @@
 package velocorner.feed
 
 import org.joda.time.DateTime
-import velocorner.model.{Account, OAuth2Access}
+import velocorner.api.{Account, OAuth2Access}
 import velocorner.model.strava.Athlete
 
 object OAuth2 {

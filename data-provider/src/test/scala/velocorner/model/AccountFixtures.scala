@@ -2,6 +2,7 @@ package velocorner.model
 
 import cats.implicits._
 import org.joda.time.{DateTime, DateTimeZone}
+import velocorner.api.{Account, OAuth2Access, Units}
 
 trait AccountFixtures {
 

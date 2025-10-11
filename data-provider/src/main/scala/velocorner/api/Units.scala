@@ -1,4 +1,4 @@
-package velocorner.model
+package velocorner.api
 
 object Units {
 

@@ -5,9 +5,10 @@ import model.apexcharts
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import velocorner.api.Units
 import velocorner.api.chart.DailyPoint
 import velocorner.api.wordcloud.WordCloud
-import velocorner.model.{DailyProgress, Units}
+import velocorner.model.DailyProgress
 import velocorner.util.{DemoActivityUtils, JsonIo}
 
 import javax.inject.Inject

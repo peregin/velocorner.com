@@ -90,6 +90,20 @@ POST    /api/ping                                          controllers.ApiContro
 GET     /api/ping                                          controllers.ApiController.ping
 
 ###
+#  summary: Retrieves the logged in athletes public information
+#  tags:
+#    - athlete
+#  responses:
+#    200:
+#      description: Returns account information
+#      content:
+#        application/json:
+#          schema:
+#            $ref: '#/components/schemas/velocorner.api.Account'
+###
+GET      /api/athletes/me                                  controllers.ProfileController.me()
+
+###
 #  summary: Stores preferences for units of measurement
 #  tags:
 #    - athlete
@@ -444,7 +458,7 @@ GET     /api/products/suggest                              controllers.ProductsC
 GET     /api/products/search                               controllers.ProductsController.search(query: String)
 
 ###
-#  summary: List of supported markerplaces
+#  summary: List of supported marketplaces
 #  tags:
 #    - product
 #  responses:

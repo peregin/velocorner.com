@@ -12,7 +12,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json, Reads, Writes}
-import velocorner.api.Achievement
+import velocorner.api.{Account, Achievement}
 import velocorner.api.strava.Activity
 import velocorner.model._
 import velocorner.model.strava.Gear

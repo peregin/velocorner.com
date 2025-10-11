@@ -4,7 +4,6 @@ import play.api.libs.json.{Format, Json}
 import squants.motion.KilometersPerHour
 import squants.space.{Kilometers, Meters}
 import squants.thermal.Celsius
-import velocorner.model.Units
 
 object Achievements {
   implicit val format: Format[Achievements] = Format[Achievements](Json.reads[Achievements], Json.writes[Achievements])

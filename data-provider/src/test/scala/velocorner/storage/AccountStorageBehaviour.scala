@@ -4,8 +4,8 @@ import cats.implicits._
 import org.joda.time.{DateTime, DateTimeZone}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
+import velocorner.api.{Account, OAuth2Access}
 import velocorner.manual.AwaitSupport
-import velocorner.model.{Account, OAuth2Access}
 
 import scala.concurrent.Future
 

@@ -9,7 +9,7 @@ object ProfileStatistics {
 
   val zero = ProfileStatistics(0, Progress.zero, Progress.zero, Progress.zero)
 
-  implicit val totalFormat: Format[ProfileStatistics] = Format[ProfileStatistics](Json.reads[ProfileStatistics], Json.writes[ProfileStatistics])
+  implicit val format: Format[ProfileStatistics] = Format[ProfileStatistics](Json.reads[ProfileStatistics], Json.writes[ProfileStatistics])
 
   def from(now: LocalDate, ytdProgress: Progress, ytdCommute: Progress): ProfileStatistics = {
     val dayToDate = now.dayOfYear().get()

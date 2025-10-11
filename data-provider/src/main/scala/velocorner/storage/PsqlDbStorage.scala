@@ -15,9 +15,8 @@ import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.Achievement
+import velocorner.api.{Account, Achievement}
 import velocorner.api.strava.Activity
-import velocorner.model.Account
 import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
 

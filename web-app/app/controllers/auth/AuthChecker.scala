@@ -7,13 +7,13 @@ import controllers.ConnectivitySettings
 import controllers.auth.AuthChecker.{OAuth2AttrKey, OAuth2CookieKey}
 import play.api.cache.SyncCacheApi
 import play.api.mvc._
-import velocorner.model.Account
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import controllers.util.WebMetrics
 import play.api.libs.typedmap.TypedKey
+import velocorner.api.Account
 
 import scala.util.Try
 

@@ -1,8 +1,9 @@
-package velocorner.model
+package velocorner.api
 
 import cats.implicits._
 import org.joda.time.DateTime
 import play.api.libs.json._
+import velocorner.model.DateTimePattern
 import velocorner.model.strava.Athlete
 
 import scala.util.{Failure, Success, Try}
