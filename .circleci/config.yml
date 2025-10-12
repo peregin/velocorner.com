@@ -57,6 +57,9 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
+          name: generate swagger.json
+          command: sbt "web-app/swagger"
+      - run:
           name: dockerhub login
           command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
       - run:
