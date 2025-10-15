@@ -24,6 +24,6 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 // refactoring and linting
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.3")
 // generate bill of materials
-addSbtPlugin("com.github.sbt" %% "sbt-sbom" % "0.4.0")
+addSbtPlugin("com.github.sbt" %% "sbt-sbom" % "0.5.0")
 // to generate fat jar and individual Dockerfile with a smaller image
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.3.1")
