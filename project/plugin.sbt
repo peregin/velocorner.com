@@ -20,7 +20,7 @@ addSbtPlugin("com.github.sbt" % "sbt-git" % "2.1.0")
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.9")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.6")
 // refactoring and linting
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.3")
 // generate bill of materials
