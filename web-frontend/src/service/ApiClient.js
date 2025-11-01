@@ -27,6 +27,9 @@ function yearlyHistogram(action, activity) { return get(`/api/athletes/statistic
 function topActivities(action, activity) { return get(`/api/athletes/statistics/top/${action}/${activity}`); }
 function achievements(activity) { return get(`/api/athletes/statistics/achievements/${activity}`); }
 
+// Athlete profile endpoints
+function athleteProfile() { return get(`/api/athletes/me`); }
+
 // Demo endpoints
 function demoWordcloud() { return get('/api/demo/wordcloud'); }
 function demoYearlyStatistics(action, activity) { return get(`/api/demo/statistics/yearly/${action}/${activity}`); }
@@ -123,6 +126,9 @@ const ApiClient = {
   yearlyHistogram: yearlyHistogram,
   topActivities: topActivities,
   achievements: achievements,
+
+  // Athlete profile
+  athleteProfile: athleteProfile,
   
   // Demo data
   demoWordcloud: demoWordcloud,

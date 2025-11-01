@@ -3,6 +3,7 @@ import ApiClient from "../service/ApiClient";
 
 import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
 import {
+  Avatar,
   Button,
   Heading,
   Text,
@@ -14,6 +15,7 @@ import {
   HStack,
   Card,
   Progress,
+  Spinner,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
@@ -26,13 +28,56 @@ import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
 import DemoCharts from "@/components/DemoCharts";
 
+type AthleteUnits = {
+  speedLabel?: string;
+  distanceLabel?: string;
+  elevationLabel?: string;
+  temperatureLabel?: string;
+};
+
+type AthleteRole = {
+  name?: string;
+  description?: string;
+  [key: string]: unknown;
+} | string | null;
+
+type AthleteProfile = {
+  athleteId: number;
+  displayName: string;
+  displayLocation?: string;
+  avatarUrl?: string;
+  lastUpdate?: number;
+  role?: AthleteRole;
+  unit?: AthleteUnits;
+};
+
+type DemoStatistic = {
+  total?: number;
+};
+
+type DemoStats = {
+  ytdDistance?: DemoStatistic;
+  yearlyElevation?: DemoStatistic;
+};
+
+type UserStats = {
+  totalDistance?: number;
+  totalElevation?: number;
+  totalTime?: number;
+  activityCount?: number;
+  units?: AthleteUnits;
+};
+
 const Home = () => {
-  const [wordCloud, setWordCloud] = useState([]);
-  const [activityTypes, setActivityTypes] = useState([]);
+  const [wordCloud, setWordCloud] = useState<any[]>([]);
+  const [activityTypes, setActivityTypes] = useState<string[]>([]);
   const [selectedActivityType, setSelectedActivityType] = useState("Ride");
-  const [userStats, setUserStats] = useState(null);
-  const [demoStats, setDemoStats] = useState(null);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [demoStats, setDemoStats] = useState<DemoStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const initialLoadRef = useRef(false);
 
   const { data, loading: authLoading, error: authError, getAuth } = useOAuth2({
@@ -131,6 +176,95 @@ const Home = () => {
     setSelectedActivityType(activityType);
   };
 
+  const getInitials = (value?: string) => {
+    if (!value) return undefined;
+    const initials = value
+      .split(" ")
+      .map((part) => part.trim().charAt(0))
+      .filter(Boolean)
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    return initials || undefined;
+  };
+
+  const formatTimestamp = (timestamp?: number) => {
+    if (!timestamp) return null;
+    const milliseconds = timestamp > 1_000_000_000_000 ? timestamp : timestamp * 1000;
+    const date = new Date(milliseconds);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toLocaleString();
+  };
+
+  const lastUpdatedLabel = formatTimestamp(athleteProfile?.lastUpdate);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const cleanup = () => {
+      isActive = false;
+    };
+
+    if (!isAuthenticated) {
+      setAthleteProfile(null);
+      setProfileLoading(false);
+      return cleanup;
+    }
+
+    const fetchAthleteProfile = async () => {
+      try {
+        setProfileLoading(true);
+        const profile = await ApiClient.athleteProfile();
+        if (isActive) {
+          setAthleteProfile(profile);
+        }
+      } catch (error) {
+        console.error('Error fetching athlete profile:', error);
+        if (isActive) {
+          toaster.create({
+            title: "Unable to load profile",
+            description: "We couldn't load your profile information right now.",
+            type: "error",
+            duration: 5000,
+          });
+        }
+      } finally {
+        if (isActive) {
+          setProfileLoading(false);
+        }
+      }
+    };
+
+    fetchAthleteProfile();
+
+    return cleanup;
+  }, [isAuthenticated]);
+
+  const handleLogout = async () => {
+    try {
+      setLogoutLoading(true);
+      await ApiClient.logout();
+      toaster.create({
+        title: "Logged out",
+        description: "You have been logged out successfully.",
+        type: "success",
+        duration: 4000,
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+      toaster.create({
+        title: "Logout failed",
+        description: "We were unable to log you out. Please try again.",
+        type: "error",
+        duration: 5000,
+      });
+    } finally {
+      localStorage.removeItem('access_token');
+      setLogoutLoading(false);
+      window.location.reload();
+    }
+  };
+
   // fetchers for charts
   const fetchYearlyHeatmap = () => ApiClient.yearlyHeatmap(selectedActivityType);
   const fetchYearlyDistance = () => ApiClient.yearlyStatistics('distance', selectedActivityType);
@@ -174,6 +308,86 @@ const Home = () => {
             <WordCloud words={wordCloud} />
           </Card.Body>
         </Card.Root>
+
+      {/* Profile Section for Authenticated Users */}
+        {isAuthenticated && (
+          <Card.Root>
+            <Card.Body>
+              <VStack gap={4} align="stretch">
+                <Heading size="md">Your Profile</Heading>
+                {profileLoading ? (
+                  <HStack gap={3}>
+                    <Spinner />
+                    <Text>Loading your profile...</Text>
+                  </HStack>
+                ) : athleteProfile ? (
+                  <VStack gap={4} align="stretch">
+                    <HStack gap={4} align="center">
+                      <Avatar.Root size="xl">
+                        {athleteProfile.avatarUrl && (
+                          <Avatar.Image
+                            src={athleteProfile.avatarUrl}
+                            alt={athleteProfile.displayName}
+                          />
+                        )}
+                        <Avatar.Fallback>
+                          {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
+                        </Avatar.Fallback>
+                      </Avatar.Root>
+                      <Box>
+                        <Heading size="md">{athleteProfile.displayName}</Heading>
+                        {athleteProfile.displayLocation && (
+                          <Text color="gray.500">{athleteProfile.displayLocation}</Text>
+                        )}
+                        {athleteProfile.role && (
+                          <Text fontSize="sm" color="purple.500">
+                            {typeof athleteProfile.role === 'string'
+                              ? athleteProfile.role
+                              : athleteProfile.role?.name || athleteProfile.role?.description || 'Member'}
+                          </Text>
+                        )}
+                        {lastUpdatedLabel && (
+                          <Text fontSize="xs" color="gray.500">
+                            Last updated: {lastUpdatedLabel}
+                          </Text>
+                        )}
+                      </Box>
+                    </HStack>
+
+                    {athleteProfile.unit && (
+                      <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
+                        <GridItem>
+                          <Text fontWeight="bold">Speed</Text>
+                          <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
+                        </GridItem>
+                        <GridItem>
+                          <Text fontWeight="bold">Distance</Text>
+                          <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
+                        </GridItem>
+                        <GridItem>
+                          <Text fontWeight="bold">Elevation</Text>
+                          <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
+                        </GridItem>
+                        <GridItem>
+                          <Text fontWeight="bold">Temperature</Text>
+                          <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
+                        </GridItem>
+                      </Grid>
+                    )}
+
+                    <HStack justify="flex-end">
+                      <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                        Logout
+                      </Button>
+                    </HStack>
+                  </VStack>
+                ) : (
+                  <Text>No profile information available.</Text>
+                )}
+              </VStack>
+            </Card.Body>
+          </Card.Root>
+        )}
 
         {/* Authentication Section */}
         {!isAuthenticated && (
