@@ -67,9 +67,6 @@ export default function Footer() {
               <Link href="#" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                 Support
               </Link>
-              <Link href="#" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
-                Blog
-              </Link>
             </VStack>
           </GridItem>
         </Grid>
