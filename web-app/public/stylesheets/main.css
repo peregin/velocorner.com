@@ -93,6 +93,25 @@
     .VC_map {
         height: 400px;
     }
+    
+    /* Fix countdown widget on mobile */
+    #defaultCountdown {
+        font-size: 0.6em !important;
+    }
+    #defaultCountdown span.countdown_section {
+        padding: 5px 8px !important;
+        margin-bottom: 1px !important;
+    }
+    #defaultCountdown span.countdown_amount {
+        font-size: 20px !important;
+        padding: 3px !important;
+    }
+    .coming-soon-plugin h3 {
+        font-size: 18px !important;
+    }
+    .coming-soon-plugin p {
+        font-size: 12px !important;
+    }
 }
 
 #windy #logo-wrapper {
