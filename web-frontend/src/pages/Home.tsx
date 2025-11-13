@@ -312,7 +312,7 @@ const Home = () => {
                   <Text fontSize="lg" textAlign="center">
                     Login with your Strava account to see your personal statistics.
                     <Text fontSize="sm" color="gray.600" textAlign="center">
-                    See your cycling data come to life with interactive charts and insights that help you understand your performance.
+                      See your cycling data come to life with interactive charts and insights that help you understand your performance.
                     </Text>
                   </Text>
                   <Button
@@ -349,8 +349,8 @@ const Home = () => {
 
             <Card.Root>
               <Card.Body>
-                <CalendarHeatmap title="Latest Activities (Sample)" 
-                fetchDaily={() => ApiClient.demoDailyStatistics('distance')} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+                <CalendarHeatmap title="Latest Activities (Sample)"
+                  fetchDaily={() => ApiClient.demoDailyStatistics('distance')} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
               </Card.Body>
             </Card.Root>
           </>
@@ -537,7 +537,9 @@ const Home = () => {
 
       </VStack>
 
-      <iframe width="100%" height="400" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true" frameborder="0"></iframe>
+      <Box py='1rem'>
+        <iframe width="100%" height="400" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true" frameborder="0"></iframe>
+      </Box>
     </Box>
   );
 };

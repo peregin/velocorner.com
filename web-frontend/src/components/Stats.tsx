@@ -16,7 +16,7 @@ export default function Stats() {
       value: '18,432 km',
       label: 'Distance This Year',
       change: '+8.2%',
-      gradientFrom: 'cyan.500',
+      gradientFrom: 'cyan.800',
       gradientTo: 'teal.500',
     },
     {
@@ -38,7 +38,7 @@ export default function Stats() {
   ];
 
   return (
-    <Box as="section" id="stats" py={16} bg="white">
+    <Box as="section" id="stats" py='.2rem' bg="white">
       <Container maxW="container.xl">
         <Grid templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
           {stats.map((stat, index) => (
@@ -68,9 +68,7 @@ export default function Stats() {
                   mb={4}
                   boxShadow="lg"
                 >
-                  <Icon fontSize="24px" color="white">
-                    <stat.icon strokeWidth={2.5} />
-                  </Icon>
+                  <Icon as={stat.icon} fontSize="24px" color="gray" strokeWidth={2.5} />
                 </Box>
 
                 <VStack alignItems="flex-start" gap={1}>
