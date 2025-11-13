@@ -6,8 +6,6 @@ import {
   HStack,
   Progress,
   Box,
-  Grid,
-  GridItem,
   Icon,
   Flex,
   Stack
@@ -21,6 +19,7 @@ import Datagrouping from 'highcharts/modules/datagrouping';
 import Windbarb from 'highcharts/modules/windbarb';
 import Patternfill from 'highcharts/modules/pattern-fill';
 import Data from 'highcharts/modules/data';
+import { LuMoonStar, LuSun, LuThermometerSnowflake, LuThermometerSun } from 'react-icons/lu';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
@@ -172,34 +171,43 @@ const Weather = ({ defaultLocation = '' }) => {
             </Stack>
 
             {/* Current Weather Display */}
-            <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-              <GridItem>
-                <Box textAlign="center">
-                  <Text fontSize="2xl" fontWeight="bold">
-                    {currentWeather?.info?.temp?.toFixed(1)}°C
-                  </Text>
-                  <Text fontSize="md">
-                    {currentWeather?.current?.description}
-                  </Text>
-                  <Flex justify="center" mt={2}>
-                    <Text fontSize="sm">Min: {currentWeather?.info?.temp_min?.toFixed(0)}°C</Text>
-                    <Text fontSize="sm" ml={4}>Max: {currentWeather?.info?.temp_max?.toFixed(0)}°C</Text>
-                  </Flex>
-                </Box>
-              </GridItem>
-              <GridItem>
-                <Box textAlign="center">
-                  <Flex justify="center" align="center">
-                    <Icon as="span" fontSize="2xl" mr={2}>🌅</Icon>
-                    <Text fontSize="lg">{new Date(currentWeather?.sunriseSunset?.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                  </Flex>
-                  <Flex justify="center" align="center" mt={2}>
-                    <Icon as="span" fontSize="2xl" mr={2}>🌇</Icon>
-                    <Text fontSize="lg">{new Date(currentWeather?.sunriseSunset?.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                  </Flex>
-                </Box>
-              </GridItem>
-            </Grid>
+            <HStack textAlign="center" align="center" pt='1rem' gap='2rem'>
+              <Flex justify="center" align="center" gap='.5rem'>
+                <LuSun size='1.5rem' />
+                <Text fontSize="2xl">{new Date(currentWeather?.sunriseSunset?.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+              </Flex>
+              <Flex justify="center" align="center" gap='.5rem'>
+                <LuMoonStar size='1.5rem' />
+                <Text fontSize="2xl">{new Date(currentWeather?.sunriseSunset?.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+              </Flex>
+            </HStack>
+
+
+            <Box textAlign="center">
+              <Text fontSize="4xl" fontWeight="bold">
+                {currentWeather?.info?.temp?.toFixed(1)}°C
+              </Text>
+              <Text fontSize="md">
+                {currentWeather?.current?.description}
+              </Text>
+              <HStack textAlign="center" align="center" pt='1rem' gap='2rem'>
+                <Flex justify="center" align="end">
+                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1">
+                    <LuThermometerSnowflake />
+                    <Text fontSize="md" ml='.2rem'>{currentWeather?.info?.temp_min?.toFixed(0)}°C</Text>
+                    <Text fontSize="sm" ml='.2rem'>min</Text>
+                  </Box>
+                </Flex>
+                <Flex justify="center" align="end">
+                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1">
+                    <LuThermometerSun />
+                    <Text fontSize="md" ml='.2rem'>{currentWeather?.info?.temp_max?.toFixed(0)}°C</Text>
+                    <Text fontSize="sm" ml='.2rem'>max</Text>
+                  </Box>
+                </Flex>
+              </HStack>
+            </Box>
+
 
             {/* Loading Progress */}
             <Progress.Root
