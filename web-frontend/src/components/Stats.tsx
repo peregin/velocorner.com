@@ -83,9 +83,7 @@ export default function Stats() {
                 </VStack>
 
                 <HStack mt={4} gap={1} fontSize="sm" fontWeight="medium" color="green.600">
-                  <Icon fontSize="16px">
-                    <LuTrendingUp />
-                  </Icon>
+                  <LuTrendingUp size="16px" color="green.600" />
                   <Text>{stat.change}</Text>
                 </HStack>
 
