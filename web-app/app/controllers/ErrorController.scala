@@ -13,7 +13,6 @@ class ErrorController @Inject() (implicit assets: AssetsFinder) extends DefaultH
     val context = PageContext(
       title = "Not Found",
       account = None,
-      weatherLocation = "",
       isWithingsEnabled = false,
       isWindyEnabled = false,
       windyApiKey = "",

@@ -131,7 +131,6 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
     val context = PageContext(
       title,
       maybeAccount,
-      weatherLocation = WeatherCookie.retrieve,
       isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
       isWindyEnabled = windyEnabled,
       windyApiKey = if (windyEnabled) connectivity.secretConfig.getAuthToken(ServiceProvider.Windy) else "",

@@ -8,7 +8,6 @@ import velocorner.api.Account
 case class PageContext(
     title: String,
     account: Option[Account],
-    weatherLocation: String,
     isWithingsEnabled: Boolean,
     isWindyEnabled: Boolean,
     windyApiKey: String,
