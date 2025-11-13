@@ -303,140 +303,147 @@ const Home = () => {
           </Box>
         )}
 
-        <Card.Root>
-          <Card.Body>
-            <WordCloud words={wordCloud} />
-          </Card.Body>
-        </Card.Root>
-
-      {/* Profile Section for Authenticated Users */}
-        {isAuthenticated && (
-          <Card.Root>
-            <Card.Body>
-              <VStack gap={4} align="stretch">
-                <Heading size="md">Your Profile</Heading>
-                {profileLoading ? (
-                  <HStack gap={3}>
-                    <Spinner />
-                    <Text>Loading your profile...</Text>
-                  </HStack>
-                ) : athleteProfile ? (
-                  <VStack gap={4} align="stretch">
-                    <HStack gap={4} align="center">
-                      <Avatar.Root size="xl">
-                        {athleteProfile.avatarUrl && (
-                          <Avatar.Image
-                            src={athleteProfile.avatarUrl}
-                            alt={athleteProfile.displayName}
-                          />
-                        )}
-                        <Avatar.Fallback>
-                          {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
-                        </Avatar.Fallback>
-                      </Avatar.Root>
-                      <Box>
-                        <Heading size="md">{athleteProfile.displayName}</Heading>
-                        {athleteProfile.displayLocation && (
-                          <Text color="gray.500">{athleteProfile.displayLocation}</Text>
-                        )}
-                        {athleteProfile.role && (
-                          <Text fontSize="sm" color="purple.500">
-                            {typeof athleteProfile.role === 'string'
-                              ? athleteProfile.role
-                              : athleteProfile.role?.name || athleteProfile.role?.description || 'Member'}
-                          </Text>
-                        )}
-                        {lastUpdatedLabel && (
-                          <Text fontSize="xs" color="gray.500">
-                            Last updated: {lastUpdatedLabel}
-                          </Text>
-                        )}
-                      </Box>
-                    </HStack>
-
-                    {athleteProfile.unit && (
-                      <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
-                        <GridItem>
-                          <Text fontWeight="bold">Speed</Text>
-                          <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
-                        </GridItem>
-                        <GridItem>
-                          <Text fontWeight="bold">Distance</Text>
-                          <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
-                        </GridItem>
-                        <GridItem>
-                          <Text fontWeight="bold">Elevation</Text>
-                          <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
-                        </GridItem>
-                        <GridItem>
-                          <Text fontWeight="bold">Temperature</Text>
-                          <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
-                        </GridItem>
-                      </Grid>
-                    )}
-
-                    <HStack justify="flex-end">
-                      <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
-                        Logout
-                      </Button>
-                    </HStack>
-                  </VStack>
-                ) : (
-                  <Text>No profile information available.</Text>
-                )}
-              </VStack>
-            </Card.Body>
-          </Card.Root>
-        )}
-
         {/* Authentication Section */}
         {!isAuthenticated && (
-          <Card.Root>
-            <Card.Body>
-              <VStack gap={4}>
-                <Text fontSize="lg" textAlign="center">
-                  Login with your Strava account to see your personal statistics
-                </Text>
-                <Button
-                  colorPalette="orange"
-                  size="lg"
-                  onClick={handleConnect}
-                  loading={authLoading}
-                >
-                  <Image src={strava} boxSize="20px" mr={2} />
-                  Connect with Strava
-                </Button>
-                <Text fontSize="sm" color="gray.600" textAlign="center">
-                  You will be able to see various statistics of your activities such as year to date progress,
-                  yearly achievements, daily heatmap based on distance and elevation and much more!
-                </Text>
-              </VStack>
-            </Card.Body>
-          </Card.Root>
+          <>
+            <Card.Root>
+              <Card.Body>
+                <VStack gap={4}>
+                  <Text fontSize="lg" textAlign="center">
+                    Login with your Strava account to see your personal statistics.
+                    <Text fontSize="sm" color="gray.600" textAlign="center">
+                    See your cycling data come to life with interactive charts and insights that help you understand your performance.
+                    </Text>
+                  </Text>
+                  <Button
+                    colorPalette="orange"
+                    size="lg"
+                    onClick={handleConnect}
+                    loading={authLoading}
+                  >
+                    <Image src={strava} boxSize="20px" mr={2} />
+                    Connect with Strava
+                  </Button>
+                  <Text fontSize="sm" color="gray.600" textAlign="center">
+                    You will be able to see various statistics of your activities such as year to date progress,
+                    yearly achievements, daily heatmap based on distance and elevation and much more!
+                  </Text>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+
+
+            <HStack align="stretch" gap={4} flexWrap="wrap">
+              <Box flex="0 0 30%">
+                <WordCloud words={wordCloud} />
+              </Box>
+              <Box flex="0 0 30%">
+                <BarChart title="Year To Date Distance (Sample)" unit={userStats?.units?.distanceLabel || 'km'}
+                  fetchSeries={() => ApiClient.demoYearlyStatistics('distance', 'Ride')} height={350} /></Box>
+              <Box flex={1}>
+                <LineSeriesChart title="Yearly Elevation (Sample)" unit={userStats?.units?.elevationLabel || 'm'}
+                  fetchSeries={() => ApiClient.demoYearlyStatistics('elevation', 'Ride')} seriesToShow={5} height={350} /></Box>
+            </HStack>
+
+            <Stats />
+
+            <Card.Root>
+              <Card.Body>
+                <CalendarHeatmap title="Latest Activities (Sample)" 
+                fetchDaily={() => ApiClient.demoDailyStatistics('distance')} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+              </Card.Body>
+            </Card.Root>
+          </>
         )}
 
-        {/* Demo Statistics for Non-Authenticated Users */}
-        {!isAuthenticated && demoStats && (
-          <Card.Root>
-            <Card.Body>
-              <Heading size="md" mb={4}>Sample Statistics</Heading>
-              <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>YTD Distance (Sample)</Text>
-                  <Text fontSize="2xl" color="blue.500">
-                    {demoStats.ytdDistance?.total?.toFixed(1) || 0} km
-                  </Text>
-                </GridItem>
-                <GridItem>
-                  <Text fontWeight="bold" mb={2}>Yearly Elevation (Sample)</Text>
-                  <Text fontSize="2xl" color="green.500">
-                    {demoStats.yearlyElevation?.total?.toFixed(0) || 0} m
-                  </Text>
-                </GridItem>
-              </Grid>
-            </Card.Body>
-          </Card.Root>
+        {/* Profile Section for Authenticated Users */}
+        {isAuthenticated && (
+          <>
+            <Card.Root>
+              <Card.Body>
+                <WordCloud words={wordCloud} />
+              </Card.Body>
+            </Card.Root>
+
+            <Card.Root>
+              <Card.Body>
+                <VStack gap={4} align="stretch">
+                  <Heading size="md">Your Profile</Heading>
+                  {profileLoading ? (
+                    <HStack gap={3}>
+                      <Spinner />
+                      <Text>Loading your profile...</Text>
+                    </HStack>
+                  ) : athleteProfile ? (
+                    <VStack gap={4} align="stretch">
+                      <HStack gap={4} align="center">
+                        <Avatar.Root size="xl">
+                          {athleteProfile.avatarUrl && (
+                            <Avatar.Image
+                              src={athleteProfile.avatarUrl}
+                              alt={athleteProfile.displayName}
+                            />
+                          )}
+                          <Avatar.Fallback>
+                            {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
+                          </Avatar.Fallback>
+                        </Avatar.Root>
+                        <Box>
+                          <Heading size="md">{athleteProfile.displayName}</Heading>
+                          {athleteProfile.displayLocation && (
+                            <Text color="gray.500">{athleteProfile.displayLocation}</Text>
+                          )}
+                          {athleteProfile.role && (
+                            <Text fontSize="sm" color="purple.500">
+                              {typeof athleteProfile.role === 'string'
+                                ? athleteProfile.role
+                                : athleteProfile.role?.name || athleteProfile.role?.description || 'Member'}
+                            </Text>
+                          )}
+                          {lastUpdatedLabel && (
+                            <Text fontSize="xs" color="gray.500">
+                              Last updated: {lastUpdatedLabel}
+                            </Text>
+                          )}
+                        </Box>
+                      </HStack>
+
+                      {athleteProfile.unit && (
+                        <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
+                          <GridItem>
+                            <Text fontWeight="bold">Speed</Text>
+                            <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
+                          </GridItem>
+                          <GridItem>
+                            <Text fontWeight="bold">Distance</Text>
+                            <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
+                          </GridItem>
+                          <GridItem>
+                            <Text fontWeight="bold">Elevation</Text>
+                            <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
+                          </GridItem>
+                          <GridItem>
+                            <Text fontWeight="bold">Temperature</Text>
+                            <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
+                          </GridItem>
+                        </Grid>
+                      )}
+
+                      <HStack justify="flex-end">
+                        <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                          Logout
+                        </Button>
+                      </HStack>
+                    </VStack>
+                  ) : (
+                    <Text>No profile information available.</Text>
+                  )}
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+          </>
         )}
+
 
         {/* User Statistics for Authenticated Users */}
         {isAuthenticated && (
@@ -529,9 +536,6 @@ const Home = () => {
         )}
 
       </VStack>
-
-      <Stats />
-      <DemoCharts />
 
       <iframe width="100%" height="400" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true" frameborder="0"></iframe>
     </Box>
