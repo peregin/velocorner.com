@@ -20,6 +20,7 @@ import Windbarb from 'highcharts/modules/windbarb';
 import Patternfill from 'highcharts/modules/pattern-fill';
 import Data from 'highcharts/modules/data';
 import { LuMoonStar, LuSun, LuThermometerSnowflake, LuThermometerSun } from 'react-icons/lu';
+import * as WiIcons from 'react-icons/wi';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
@@ -184,10 +185,26 @@ const Weather = ({ defaultLocation = '' }) => {
 
 
             <Box textAlign="center">
-              <Text fontSize="4xl" fontWeight="bold">
-                {currentWeather?.info?.temp?.toFixed(1)}°C
-              </Text>
-              <Text fontSize="md">
+              <HStack justify="center" align="center" gap={2}>
+                {currentWeather?.reactIcon && (() => {
+                  const iconComponent = typeof currentWeather.reactIcon === 'string' 
+                    ? WiIcons[currentWeather.reactIcon]
+                    : currentWeather.reactIcon;
+                  return iconComponent && (
+                    <Icon 
+                      as={iconComponent} 
+                      boxSize="4rem" 
+                    />
+                  );
+                })()}
+                <Text fontSize="4xl" fontWeight="bold">
+                  {currentWeather?.info?.temp?.toFixed(1)}
+                </Text>
+                <Text fontSize="lg" fontWeight="normal">
+                  °C
+                </Text>
+              </HStack>
+              <Text fontSize="sm">
                 {currentWeather?.current?.description}
               </Text>
               <HStack textAlign="center" align="center" pt='1rem' gap='2rem'>
