@@ -353,6 +353,13 @@ const Home = () => {
                   fetchDaily={() => ApiClient.demoDailyStatistics('distance')} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
               </Card.Body>
             </Card.Root>
+
+            <HStack align="stretch" gap={4} flexWrap="wrap">
+              <Box flex={1}><HeatmapChart title="Distance Distribution (Sample)" 
+                fetchHeatmap={() => ApiClient.demoYearlyHistogram('distance', 'Ride')} height={250} /></Box>
+              <Box flex={1}><HeatmapChart title="Elevation Distribution (Sample)" 
+                fetchHeatmap={() => ApiClient.demoYearlyHistogram('elevation', 'Ride')} height={250} /></Box>
+            </HStack>
           </>
         )}
 
