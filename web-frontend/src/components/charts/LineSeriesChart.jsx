@@ -11,7 +11,7 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
     chart: {
       type: 'spline',
       zoomType: 'x',
-      backgroundColor: '#FFFADE',
+      // backgroundColor: '#FFFADE',
       borderRadius: 20,
       height: height
     },
