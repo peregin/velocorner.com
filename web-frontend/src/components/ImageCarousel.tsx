@@ -85,7 +85,7 @@ const ImageCarousel = ({ items = [
                                         py={3}
                                         textAlign="center"
                                     >
-                                        <Text fontSize="xl" fontWeight="bold">
+                                        <Text fontSize={{ base: "sm", md: "4xl" }} fontWeight="bold">
                                             {item.label}
                                         </Text>
                                     </Box>
