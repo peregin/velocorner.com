@@ -11,7 +11,14 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
     plotOptions: { heatmap: { radius: 3, enableShades: true, distributed: true, shadeIntensity: 0.9 } },
     grid: { padding: { right: 20 } },
     noData: { text: `Loading ${title} Data...` },
-    xaxis: { type: 'category' },
+    xaxis: {
+      type: 'category',
+      labels: {
+        style: {
+          fontSize: '8px'
+        }
+      }
+    },
   }), [title]);
 
   useEffect(() => {
