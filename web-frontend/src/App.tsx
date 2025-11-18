@@ -19,6 +19,7 @@ import './App.css'
 import Ping from './components/Ping';
 import Footer from './components/Footer.js';
 import ImageCarousel from './components/ImageCarousel.js';
+import Hero from './components/Hero.js';
 
 ReactGA.initialize([
   { trackingId: 'G-1GNXX7WZHH' }
@@ -36,7 +37,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <Box minH="100vh" bgGradient="to-br" gradientFrom="gray.50" gradientVia="white" gradientTo="blue.50">
       <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen}/>
       {/* <Hero /> */}
-      {/* <Features /> */}
       <ImageCarousel />
       {children}
       <Footer />
