@@ -18,6 +18,7 @@ import { Toaster } from '@/components/ui/toaster'
 import './App.css'
 import Ping from './components/Ping';
 import Footer from './components/Footer.js';
+import ImageCarousel from './components/ImageCarousel.js';
 
 ReactGA.initialize([
   { trackingId: 'G-1GNXX7WZHH' }
@@ -36,6 +37,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen}/>
       {/* <Hero /> */}
       {/* <Features /> */}
+      <ImageCarousel />
       {children}
       <Footer />
       <Toaster />

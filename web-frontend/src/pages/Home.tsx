@@ -26,7 +26,6 @@ import BarChart from "@/components/charts/BarChart";
 import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
-import DemoCharts from "@/components/DemoCharts";
 
 type AthleteUnits = {
   speedLabel?: string;
@@ -279,6 +278,7 @@ const Home = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
+      
       <VStack gap={8} align="stretch">
 
         <Card.Root>
