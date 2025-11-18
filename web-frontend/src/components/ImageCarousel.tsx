@@ -56,6 +56,7 @@ const ImageCarousel = ({ items = [
             pt='.5rem'
             position="relative"
             colorPalette="white"
+            autoplay={{ delay: 8000 }}
         >
             <Carousel.Control gap="4" width="full" position="relative">
                 <Carousel.PrevTrigger asChild>
