@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@chakra-ui/react": "^3.29.0",
+    "@chakra-ui/react": "^3.30.0",
     "@emotion/react": "^11.13.5",
     "@tasoskakour/react-use-oauth2": "^2.1.1",
     "apexcharts": "^5.3.6",
@@ -30,10 +30,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "overrides": {
