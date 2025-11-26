@@ -1,6 +1,6 @@
 package model
 
-import velocorner.api.{Progress, Units, chart}
+import velocorner.api.{chart, Progress, Units}
 import velocorner.api.chart.{DailyPoint, DailySeries}
 import velocorner.model.YearlyProgress
 
