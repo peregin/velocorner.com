@@ -22,7 +22,7 @@ class ProfileController @Inject() (val connectivity: ConnectivitySettings, val c
     loggedIn match {
       // do not send back Strava access information
       case Some(account) => Ok(Json.toJson(account.copy(stravaAccess = None)))
-      case None => Unauthorized
+      case None          => Unauthorized
     }
   }
 
