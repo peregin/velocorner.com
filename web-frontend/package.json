@@ -14,15 +14,16 @@
     "react": "^19.2.0",
     "react-apexcharts": "^1.8.0",
     "react-dom": "^19.2.0",
+    "react-ga4": "2.1.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.6",
-    "react-ga4": "2.1.0",
     "super-tiny-icons": "^0.6.0",
     "typescript": "^5.9.3"
   },
   "scripts": {
     "clean": "rm -Rf node_modules/ dist/",
     "version": "echo $npm_package_version",
+    "test": "vitest",
     "start": "vite",
     "local": "VITE_WEB_HOST=http://localhost:3000 vite",
     "local_all": "VITE_API_HOST=http://localhost:9000 VITE_WEB_HOST=http://localhost:3000 vite",
@@ -30,11 +31,16 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^27.0.1",
     "vite": "^7.2.4",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   },
   "overrides": {
     "nth-check": "^2.0.1",
