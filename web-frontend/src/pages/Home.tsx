@@ -18,6 +18,14 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
+
+const showError = (title: string, description: string) => {
+  toaster.create({ title, description, type: "error", duration: 5000 });
+};
+
+const showSuccess = (title: string, description: string, duration = 5000) => {
+  toaster.create({ title, description, type: "success", duration });
+};
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
@@ -94,22 +102,11 @@ const Home = () => {
     onSuccess: (payload) => {
       console.log("Success", payload);
       localStorage.setItem('access_token', payload?.access_token);
-      toaster.create({
-        title: "Connected to Strava",
-        description: "Successfully connected your Strava account!",
-        type: "success",
-        duration: 5000,
-      });
-      // Data will be fetched by useEffect
+      showSuccess("Connected to Strava", "Successfully connected your Strava account!");
     },
     onError: (error_) => {
       console.error("Error", error_);
-      toaster.create({
-        title: "Connection Failed",
-        description: "Failed to connect to Strava. Please try again.",
-        type: "error",
-        duration: 5000,
-      });
+      showError("Connection Failed", "Failed to connect to Strava. Please try again.");
     }
   });
 
@@ -142,12 +139,7 @@ const Home = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        toaster.create({
-          title: "Error",
-          description: "Failed to load data. Please try again.",
-          type: "error",
-          duration: 5000,
-        });
+        showError("Error", "Failed to load data. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -220,12 +212,7 @@ const Home = () => {
       } catch (error) {
         console.error('Error fetching athlete profile:', error);
         if (isActive) {
-          toaster.create({
-            title: "Unable to load profile",
-            description: "We couldn't load your profile information right now.",
-            type: "error",
-            duration: 5000,
-          });
+          showError("Unable to load profile", "We couldn't load your profile information right now.");
         }
       } finally {
         if (isActive) {
@@ -243,20 +230,10 @@ const Home = () => {
     try {
       setLogoutLoading(true);
       await ApiClient.logout();
-      toaster.create({
-        title: "Logged out",
-        description: "You have been logged out successfully.",
-        type: "success",
-        duration: 4000,
-      });
+      showSuccess("Logged out", "You have been logged out successfully.", 4000);
     } catch (error) {
       console.error('Error during logout:', error);
-      toaster.create({
-        title: "Logout failed",
-        description: "We were unable to log you out. Please try again.",
-        type: "error",
-        duration: 5000,
-      });
+      showError("Logout failed", "We were unable to log you out. Please try again.");
     } finally {
       localStorage.removeItem('access_token');
       setLogoutLoading(false);

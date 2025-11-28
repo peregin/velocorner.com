@@ -20,6 +20,12 @@ function request(method, path, data) {
   return fetch(apiHost + path, options)
     .then(response => {
       if (response.status >= 200 && response.status < 300) return response;
+      // logout when not authenticated and go to the landing page
+      if (response.status === 401) {
+        localStorage.removeItem('access_token');
+        window.location.href = `${webHost}`;
+        return;
+      }
       console.log(`status error ${response.status} - ${response.statusText}`);
       const error = new Error(`HTTP Error ${response}`);
       error.status = response.statusText;
