@@ -1,144 +1,73 @@
-// vite inject variables starting with VITE_ to client side
 const apiHost = import.meta.env.VITE_API_HOST || 'https://velocorner.com';
-console.info('api host: ' + apiHost);
 const webHost = import.meta.env.VITE_WEB_HOST || 'https://dev.velocorner.com';
-console.info('web host: ' + webHost);
+console.info('api host:', apiHost);
+console.info('web host:', webHost);
 
-// Status and health endpoints
-function status() { return get('/api/status'); }
-function ping() { return get('/api/ping'); }
-function logout() { return get('/api/logout/strava'); }
-
-// Activity endpoints
-function wordcloud() { return get('/api/activities/wordcloud'); }
-function activityTypes() { return get('/api/activities/types'); }
-function activityYears(activity) { return get(`/api/activities/${activity}/years`); }
-function lastActivity() { return get('/api/activities/last'); }
-function getActivity(id) { return get(`/api/activities/${id}`); }
-function suggestActivities(query) { return get(`/api/activities/suggest?query=${encodeURIComponent(query)}`); }
-
-// Athlete statistics endpoints
-function profileStatistics(activity, year) { return get(`/api/athletes/statistics/profile/${activity}/${year}`); }
-function yearlyHeatmap(activity) { return get(`/api/athletes/statistics/yearly/heatmap/${activity}`); }
-function yearlyStatistics(action, activity) { return get(`/api/athletes/statistics/yearly/${action}/${activity}`); }
-function ytdStatistics(action, activity) { return get(`/api/athletes/statistics/ytd/${action}/${activity}`); }
-function dailyStatistics(action) { return get(`/api/athletes/statistics/daily/${action}`); }
-function yearlyHistogram(action, activity) { return get(`/api/athletes/statistics/histogram/${action}/${activity}`); }
-function topActivities(action, activity) { return get(`/api/athletes/statistics/top/${action}/${activity}`); }
-function achievements(activity) { return get(`/api/athletes/statistics/achievements/${activity}`); }
-
-// Athlete profile endpoints
-function athleteProfile() { return get(`/api/athletes/me`); }
-
-// Demo endpoints
-function demoWordcloud() { return get('/api/demo/wordcloud'); }
-function demoYearlyStatistics(action, activity) { return get(`/api/demo/statistics/yearly/${action}/${activity}`); }
-function demoYtdStatistics(action, activity) { return get(`/api/demo/statistics/ytd/${action}/${activity}`); }
-function demoDailyStatistics(action) { return get(`/api/demo/statistics/daily/${action}`); }
-function demoYearlyHistogram(action, activity) { return get(`/api/demo/statistics/histogram/${action}/${activity}`); }
-
-// Profile endpoints
-function updateUnits(unit) { return put(`/api/athletes/units/${unit}`); }
-
-const getOptions = {
-  method: 'GET',
-  accept: 'application/json',
-  cache: 'no-cache',
-  mode: 'cors'
-}
-
-const putOptions = {
-  method: 'PUT',
-  accept: 'application/json',
-  cache: 'no-cache',
-  mode: 'cors',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-
-function get(path) {
-  let token = localStorage.getItem('access_token');
-  let options = token ? { ...getOptions, ...{
+function request(method, path, data) {
+  const token = localStorage.getItem('access_token');
+  const options = {
+    method,
     headers: {
-      ...getOptions.headers,
-      'Authorization': `Bearer ${token}`
-    }
-  }} : getOptions;
-  return fetch(apiHost + path, options)
-    .then(checkStatus)
-    .then(r => r.json())
-}
-
-function put(path, data) {
-  let token = localStorage.getItem('access_token');
-  let options = token ? { ...putOptions, ...{
-    headers: {
-      ...putOptions.headers,
-      'Authorization': `Bearer ${token}`
-    }
-  }} : putOptions;
-  
-  if (data) {
-    options.body = JSON.stringify(data);
-  }
+      'Accept': 'application/json',
+      ...(method === 'PUT' && { 'Content-Type': 'application/json' }),
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    },
+    cache: 'no-cache',
+    mode: 'cors',
+    ...(data && { body: JSON.stringify(data) })
+  };
   
   return fetch(apiHost + path, options)
-    .then(checkStatus)
-    .then(r => r.json())
+    .then(response => {
+      if (response.status >= 200 && response.status < 300) return response;
+      console.log(`status error ${response.status} - ${response.statusText}`);
+      const error = new Error(`HTTP Error ${response}`);
+      error.status = response.statusText;
+      error.response = response;
+      throw error;
+    })
+    .then(r => r.json());
 }
 
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-  console.log(`status error ${response.status} - ${response.statusText}`)
-  const error = new Error(`HTTP Error ${response}`);
-  error.status = response.statusText;
-  error.response = response;
+const get = (path) => request('GET', path);
+const put = (path, data) => request('PUT', path, data);
 
-  throw error;
-}
-
-const ApiClient = {
-  apiHost: apiHost,
-  webHost: webHost,
-  
+const endpoints = {
   // Status and health
-  status: status,
-  ping: ping,
-  logout: logout,
+  status: () => get('/api/status'),
+  ping: () => get('/api/ping'),
+  logout: () => get('/api/logout/strava'),
   
   // Activities
-  wordcloud: wordcloud,
-  activityTypes: activityTypes,
-  activityYears: activityYears,
-  lastActivity: lastActivity,
-  getActivity: getActivity,
-  suggestActivities: suggestActivities,
+  wordcloud: () => get('/api/activities/wordcloud'),
+  activityTypes: () => get('/api/activities/types'),
+  activityYears: (activity) => get(`/api/activities/${activity}/years`),
+  lastActivity: () => get('/api/activities/last'),
+  getActivity: (id) => get(`/api/activities/${id}`),
+  suggestActivities: (query) => get(`/api/activities/suggest?query=${encodeURIComponent(query)}`),
   
   // Athlete statistics
-  profileStatistics: profileStatistics,
-  yearlyHeatmap: yearlyHeatmap,
-  yearlyStatistics: yearlyStatistics,
-  ytdStatistics: ytdStatistics,
-  dailyStatistics: dailyStatistics,
-  yearlyHistogram: yearlyHistogram,
-  topActivities: topActivities,
-  achievements: achievements,
-
-  // Athlete profile
-  athleteProfile: athleteProfile,
+  profileStatistics: (activity, year) => get(`/api/athletes/statistics/profile/${activity}/${year}`),
+  yearlyHeatmap: (activity) => get(`/api/athletes/statistics/yearly/heatmap/${activity}`),
+  yearlyStatistics: (action, activity) => get(`/api/athletes/statistics/yearly/${action}/${activity}`),
+  ytdStatistics: (action, activity) => get(`/api/athletes/statistics/ytd/${action}/${activity}`),
+  dailyStatistics: (action) => get(`/api/athletes/statistics/daily/${action}`),
+  yearlyHistogram: (action, activity) => get(`/api/athletes/statistics/histogram/${action}/${activity}`),
+  topActivities: (action, activity) => get(`/api/athletes/statistics/top/${action}/${activity}`),
+  achievements: (activity) => get(`/api/athletes/statistics/achievements/${activity}`),
   
-  // Demo data
-  demoWordcloud: demoWordcloud,
-  demoYearlyStatistics: demoYearlyStatistics,
-  demoYtdStatistics: demoYtdStatistics,
-  demoDailyStatistics: demoDailyStatistics,
-  demoYearlyHistogram: demoYearlyHistogram,
+  // Athlete profile
+  athleteProfile: () => get('/api/athletes/me'),
+  
+  // Demo endpoints
+  demoWordcloud: () => get('/api/demo/wordcloud'),
+  demoYearlyStatistics: (action, activity) => get(`/api/demo/statistics/yearly/${action}/${activity}`),
+  demoYtdStatistics: (action, activity) => get(`/api/demo/statistics/ytd/${action}/${activity}`),
+  demoDailyStatistics: (action) => get(`/api/demo/statistics/daily/${action}`),
+  demoYearlyHistogram: (action, activity) => get(`/api/demo/statistics/histogram/${action}/${activity}`),
   
   // Profile
-  updateUnits: updateUnits
-}
+  updateUnits: (unit) => put(`/api/athletes/units/${unit}`)
+};
 
-export default ApiClient;
+export default { apiHost, webHost, ...endpoints };
