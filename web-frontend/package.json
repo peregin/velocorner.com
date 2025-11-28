@@ -23,7 +23,8 @@
   "scripts": {
     "clean": "rm -Rf node_modules/ dist/",
     "version": "echo $npm_package_version",
-    "test": "vitest",
+    "test": "vitest --run",
+    "test:ui": "vitest --ui",
     "start": "vite",
     "local": "VITE_WEB_HOST=http://localhost:3000 vite",
     "local_all": "VITE_API_HOST=http://localhost:9000 VITE_WEB_HOST=http://localhost:3000 vite",
