@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import ApiClient from "../service/ApiClient";
-
-import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
+import { useAuth } from "../service/auth";
+import { getInitials, formatTimestamp } from "../service/formatters";
 import {
   Avatar,
   Button,
@@ -18,14 +18,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
-
-const showError = (title: string, description: string) => {
-  toaster.create({ title, description, type: "error", duration: 5000 });
-};
-
-const showSuccess = (title: string, description: string, duration = 5000) => {
-  toaster.create({ title, description, type: "success", duration });
-};
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
@@ -34,45 +26,10 @@ import BarChart from "@/components/charts/BarChart";
 import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
+import type { AthleteProfile, DemoStats, UserStats } from "../types/athlete";
 
-type AthleteUnits = {
-  speedLabel?: string;
-  distanceLabel?: string;
-  elevationLabel?: string;
-  temperatureLabel?: string;
-};
-
-type AthleteRole = {
-  name?: string;
-  description?: string;
-  [key: string]: unknown;
-} | string | null;
-
-type AthleteProfile = {
-  athleteId: number;
-  displayName: string;
-  displayLocation?: string;
-  avatarUrl?: string;
-  lastUpdate?: number;
-  role?: AthleteRole;
-  unit?: AthleteUnits;
-};
-
-type DemoStatistic = {
-  total?: number;
-};
-
-type DemoStats = {
-  ytdDistance?: DemoStatistic;
-  yearlyElevation?: DemoStatistic;
-};
-
-type UserStats = {
-  totalDistance?: number;
-  totalElevation?: number;
-  totalTime?: number;
-  activityCount?: number;
-  units?: AthleteUnits;
+const showError = (title: string, description: string) => {
+  toaster.create({ title, description, type: "error", duration: 5000 });
 };
 
 const Home = () => {
@@ -87,30 +44,7 @@ const Home = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const initialLoadRef = useRef(false);
 
-  const { data, loading: authLoading, error: authError, getAuth } = useOAuth2({
-    authorizeUrl: 'https://www.strava.com/api/v3/oauth/authorize',
-    clientId: '4486',
-    // must be the web host
-    redirectUri: `${ApiClient.webHost}/oauth/strava`,
-    scope: 'read,activity:read,profile:read_all',
-    responseType: 'code',
-    extraQueryParameters: { approval_prompt: 'auto' },
-    exchangeCodeForTokenQuery: {
-      url: `${ApiClient.apiHost}/api/token/strava`,
-      method: "POST",
-    },
-    onSuccess: (payload) => {
-      console.log("Success", payload);
-      localStorage.setItem('access_token', payload?.access_token);
-      showSuccess("Connected to Strava", "Successfully connected your Strava account!");
-    },
-    onError: (error_) => {
-      console.error("Error", error_);
-      showError("Connection Failed", "Failed to connect to Strava. Please try again.");
-    }
-  });
-
-  const isAuthenticated = useMemo(() => !!localStorage.getItem('access_token'), []);
+  const { isAuthenticated, authLoading, connect, logout } = useAuth();
 
   useEffect(() => {
     if (initialLoadRef.current) return;
@@ -161,30 +95,8 @@ const Home = () => {
     fetchUserData();
   }, [selectedActivityType, isAuthenticated]);
 
-  const handleConnect = () => getAuth();
-
   const handleActivityTypeChange = (activityType: string) => {
     setSelectedActivityType(activityType);
-  };
-
-  const getInitials = (value?: string) => {
-    if (!value) return undefined;
-    const initials = value
-      .split(" ")
-      .map((part) => part.trim().charAt(0))
-      .filter(Boolean)
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-    return initials || undefined;
-  };
-
-  const formatTimestamp = (timestamp?: number) => {
-    if (!timestamp) return null;
-    const milliseconds = timestamp > 1_000_000_000_000 ? timestamp : timestamp * 1000;
-    const date = new Date(milliseconds);
-    if (Number.isNaN(date.getTime())) return null;
-    return date.toLocaleString();
   };
 
   const lastUpdatedLabel = formatTimestamp(athleteProfile?.lastUpdate);
@@ -227,18 +139,9 @@ const Home = () => {
   }, [isAuthenticated]);
 
   const handleLogout = async () => {
-    try {
-      setLogoutLoading(true);
-      await ApiClient.logout();
-      showSuccess("Logged out", "You have been logged out successfully.", 4000);
-    } catch (error) {
-      console.error('Error during logout:', error);
-      showError("Logout failed", "We were unable to log you out. Please try again.");
-    } finally {
-      localStorage.removeItem('access_token');
-      setLogoutLoading(false);
-      window.location.reload();
-    }
+    setLogoutLoading(true);
+    await logout();
+    setLogoutLoading(false);
   };
 
   // fetchers for charts
@@ -295,7 +198,7 @@ const Home = () => {
                   <Button
                     colorPalette="orange"
                     size="lg"
-                    onClick={handleConnect}
+                    onClick={connect}
                     loading={authLoading}
                   >
                     <Image src={strava} boxSize="20px" mr={2} />
