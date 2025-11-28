@@ -158,7 +158,7 @@ const Home = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      
+
       <VStack gap={8} align="stretch">
 
         <Card.Root>
@@ -235,9 +235,9 @@ const Home = () => {
             </Card.Root>
 
             <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex={1}><HeatmapChart title="Distance Distribution (Sample)" 
+              <Box flex={1}><HeatmapChart title="Distance Distribution (Sample)"
                 fetchHeatmap={() => ApiClient.demoYearlyHistogram('distance', 'Ride')} height={250} /></Box>
-              <Box flex={1}><HeatmapChart title="Elevation Distribution (Sample)" 
+              <Box flex={1}><HeatmapChart title="Elevation Distribution (Sample)"
                 fetchHeatmap={() => ApiClient.demoYearlyHistogram('elevation', 'Ride')} height={250} /></Box>
             </HStack>
           </>
@@ -328,98 +328,95 @@ const Home = () => {
                 </VStack>
               </Card.Body>
             </Card.Root>
-          </>
-        )}
 
-
-        {/* User Statistics for Authenticated Users */}
-        {isAuthenticated && (
-          <VStack gap={6} align="stretch">
-            {/* Activity Type Tabs */}
-            <Card.Root>
-              <Card.Body>
-                <Text fontWeight="bold" mb={4}>Activity Types</Text>
-                <HStack gap={2} wrap="wrap">
-                  {activityTypes.map((type) => (
-                    <Button
-                      key={type}
-                      size="sm"
-                      variant={selectedActivityType === type ? "solid" : "outline"}
-                      colorPalette="blue"
-                      onClick={() => handleActivityTypeChange(type)}
-                    >
-                      {type}
-                    </Button>
-                  ))}
-                </HStack>
-              </Card.Body>
-            </Card.Root>
-
-            {/* User Statistics */}
-            {userStats && (
+     // {/* User Statistics for Authenticated Users */}
+            <VStack gap={6} align="stretch">
+              {/* Activity Type Tabs */}
               <Card.Root>
                 <Card.Body>
-                  <Heading size="md" mb={4}>Your Statistics</Heading>
-                  <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Distance</Text>
-                      <Text fontSize="2xl" color="blue.500">
-                        {userStats.totalDistance?.toFixed(1) || 0} km
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Elevation</Text>
-                      <Text fontSize="2xl" color="green.500">
-                        {userStats.totalElevation?.toFixed(0) || 0} m
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Total Time</Text>
-                      <Text fontSize="2xl" color="purple.500">
-                        {userStats.totalTime?.toFixed(1) || 0} h
-                      </Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="bold" mb={2}>Activities</Text>
-                      <Text fontSize="2xl" color="orange.500">
-                        {userStats.activityCount || 0}
-                      </Text>
-                    </GridItem>
-                  </Grid>
+                  <Text fontWeight="bold" mb={4}>Activity Types</Text>
+                  <HStack gap={2} wrap="wrap">
+                    {activityTypes.map((type) => (
+                      <Button
+                        key={type}
+                        size="sm"
+                        variant={selectedActivityType === type ? "solid" : "outline"}
+                        colorPalette="blue"
+                        onClick={() => handleActivityTypeChange(type)}
+                      >
+                        {type}
+                      </Button>
+                    ))}
+                  </HStack>
                 </Card.Body>
               </Card.Root>
-            )}
 
-            {/* Charts parity to Play widgets */}
-            <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
+              {/* User Statistics */}
+              {userStats && (
+                <Card.Root>
+                  <Card.Body>
+                    <Heading size="md" mb={4}>Your Statistics</Heading>
+                    <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
+                      <GridItem>
+                        <Text fontWeight="bold" mb={2}>Total Distance</Text>
+                        <Text fontSize="2xl" color="blue.500">
+                          {userStats.totalDistance?.toFixed(1) || 0} km
+                        </Text>
+                      </GridItem>
+                      <GridItem>
+                        <Text fontWeight="bold" mb={2}>Total Elevation</Text>
+                        <Text fontSize="2xl" color="green.500">
+                          {userStats.totalElevation?.toFixed(0) || 0} m
+                        </Text>
+                      </GridItem>
+                      <GridItem>
+                        <Text fontWeight="bold" mb={2}>Total Time</Text>
+                        <Text fontSize="2xl" color="purple.500">
+                          {userStats.totalTime?.toFixed(1) || 0} h
+                        </Text>
+                      </GridItem>
+                      <GridItem>
+                        <Text fontWeight="bold" mb={2}>Activities</Text>
+                        <Text fontSize="2xl" color="orange.500">
+                          {userStats.activityCount || 0}
+                        </Text>
+                      </GridItem>
+                    </Grid>
+                  </Card.Body>
+                </Card.Root>
+              )}
 
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} /></Box>
-              <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
-            </HStack>
+              {/* Charts parity to Play widgets */}
+              <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} /></Box>
-              <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
-            </HStack>
+              <HStack align="stretch" gap={4} flexWrap="wrap">
+                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
+              </HStack>
 
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex="0 0 30%"><BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} /></Box>
-              <Box flex={1}><LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} /></Box>
-            </HStack>
+              <HStack align="stretch" gap={4} flexWrap="wrap">
+                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
+              </HStack>
 
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex={1}><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
-              <Box flex={1}><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
-            </HStack>
+              <HStack align="stretch" gap={4} flexWrap="wrap">
+                <Box flex="0 0 30%"><BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} /></Box>
+              </HStack>
 
-            <Card.Root>
-              <Card.Body>
-                <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
-              </Card.Body>
-            </Card.Root>
+              <HStack align="stretch" gap={4} flexWrap="wrap">
+                <Box flex={1}><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
+                <Box flex={1}><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
+              </HStack>
 
-          </VStack>
+              <Card.Root>
+                <Card.Body>
+                  <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+                </Card.Body>
+              </Card.Root>
+
+            </VStack>
+          </>
         )}
 
       </VStack>

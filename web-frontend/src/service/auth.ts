@@ -26,6 +26,7 @@ export const useAuth = () => {
     onSuccess: (payload) => {
       localStorage.setItem('access_token', payload?.access_token);
       showSuccess('Connected to Strava', 'Successfully connected your Strava account!');
+      window.location.reload();
     },
     onError: (error_) => {
       console.error('Error', error_);
