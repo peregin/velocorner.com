@@ -12,6 +12,7 @@ import cats.implicits._
 import cats.data.OptionT
 import org.joda.time.DateTime
 import velocorner.ServiceProvider
+import velocorner.api.Account
 import velocorner.build.BuildInfo
 
 import scala.xml.Elem
@@ -37,23 +38,11 @@ class WebController @Inject() (
     val maybeAccount = loggedIn
     logger.info(s"refreshing page for $maybeAccount")
     val result = for {
-      account <- OptionT(Future(maybeAccount))
+      account <- OptionT[Future, Account](Future(maybeAccount))
       now = DateTime.now()
       // if the access token is expired refresh it and store it
-      refreshAccount <- OptionT.liftF(
-        account.stravaAccess
-          .filter(_.accessExpiresAt.isBefore(now))
-          .map { stravaAccess =>
-            val authenticator = new StravaAuthenticator(connectivity)
-            logger.info(s"refreshing access token expired at ${stravaAccess.accessExpiresAt}")
-            for {
-              resp <- authenticator.refreshAccessToken(stravaAccess.refreshToken)
-              refreshAccount = account.copy(stravaAccess = resp.toStravaAccess.some)
-              _ <- connectivity.getStorage.getAccountStorage.store(refreshAccount)
-            } yield refreshAccount
-          }
-          .getOrElse(Future(account))
-      )
+      refreshAccount <- OptionT.liftF(strategy.refreshToken(account, now))
+      // retrieve latest activities
       activities <- OptionT.liftF(strategy.refreshAccountActivities(refreshAccount, now))
       _ = logger.info(s"found ${activities.size} new activities")
     } yield ()

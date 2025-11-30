@@ -1,5 +1,8 @@
 package controllers
 
+import cats.implicits.catsSyntaxOptionId
+import controllers.auth.StravaAuthenticator
+
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.Logger
@@ -23,7 +26,21 @@ class RefreshStrategy @Inject() (connectivity: ConnectivitySettings) {
   private val log = Logger.of(this.getClass)
 
   // won't refresh from the feed if was updated within this time period
-  val stalePeriodInMillis = 60000 // more than a minute
+  private val stalePeriodInMillis = 60000 // more than a minute
+
+  def refreshToken(account: Account, now: DateTime): Future[Account] =
+    account.stravaAccess
+      .filter(_.accessExpiresAt.isBefore(now))
+      .map { stravaAccess =>
+        val authenticator = new StravaAuthenticator(connectivity)
+        log.info(s"refreshing access token expired at ${stravaAccess.accessExpiresAt}")
+        for {
+          resp <- authenticator.refreshAccessToken(stravaAccess.refreshToken)
+          refreshAccount = account.copy(stravaAccess = resp.toStravaAccess.some)
+          _ <- connectivity.getStorage.getAccountStorage.store(refreshAccount)
+        } yield refreshAccount
+      }
+      .getOrElse(Future(account))
 
   // query from the storage and eventually from the activity feed
   def refreshAccountActivities(account: Account, now: DateTime): Future[Iterable[Activity]] =
