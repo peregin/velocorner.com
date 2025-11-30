@@ -332,7 +332,7 @@ const Home = () => {
               </Card.Body>
             </Card.Root>
 
-     // {/* User Statistics for Authenticated Users */}
+            {/* User Statistics for Authenticated Users */}
             <VStack gap={6} align="stretch">
               {/* Activity Type Tabs */}
               <Card.Root>
