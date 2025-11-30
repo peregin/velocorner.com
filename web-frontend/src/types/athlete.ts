@@ -25,11 +25,6 @@ export type DemoStatistic = {
   total?: number;
 };
 
-export type DemoStats = {
-  ytdDistance?: DemoStatistic;
-  yearlyElevation?: DemoStatistic;
-};
-
 export type UserStats = {
   totalDistance?: number;
   totalElevation?: number;

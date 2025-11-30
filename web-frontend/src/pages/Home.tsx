@@ -26,7 +26,7 @@ import BarChart from "@/components/charts/BarChart";
 import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
-import type { AthleteProfile, DemoStats, UserStats } from "../types/athlete";
+import type { AthleteProfile, UserStats } from "../types/athlete";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -37,7 +37,6 @@ const Home = () => {
   const [activityTypes, setActivityTypes] = useState<string[]>([]);
   const [selectedActivityType, setSelectedActivityType] = useState("Ride");
   const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [demoStats, setDemoStats] = useState<DemoStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -54,13 +53,8 @@ const Home = () => {
         setLoading(true);
 
         if (!isAuthenticated) {
-          const [demoWc, demoYtdDistance, demoYearlyElevation] = await Promise.all([
-            ApiClient.demoWordcloud(),
-            ApiClient.demoYtdStatistics('distance', 'Ride'),
-            ApiClient.demoYearlyStatistics('elevation', 'Ride')
-          ]);
+          const demoWc = await ApiClient.demoWordcloud();
           setWordCloud(demoWc);
-          setDemoStats({ ytdDistance: demoYtdDistance, yearlyElevation: demoYearlyElevation });
         } else {
           const [wc, types, stats] = await Promise.all([
             ApiClient.wordcloud(),
