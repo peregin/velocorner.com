@@ -197,7 +197,10 @@ const Home = () => {
                   </Text>
                   <Button
                     colorPalette="orange"
-                    size="lg"
+                    size="md"
+                    fontWeight="medium"
+                    _hover={{ boxShadow: 'lg', transform: 'scale(1.05)' }}
+                    transition="all 0.2s"
                     onClick={connect}
                     loading={authLoading}
                   >
