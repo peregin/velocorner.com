@@ -93,8 +93,6 @@ const Home = () => {
     setSelectedActivityType(activityType);
   };
 
-  const lastUpdatedLabel = formatTimestamp(athleteProfile?.lastUpdate);
-
   useEffect(() => {
     let isActive = true;
 
@@ -245,84 +243,79 @@ const Home = () => {
           <>
             <Card.Root>
               <Card.Body>
-                <WordCloud words={wordCloud} />
-              </Card.Body>
-            </Card.Root>
-
-            <Card.Root>
-              <Card.Body>
-                <VStack gap={4} align="stretch">
-                  <Heading size="md">Your Profile</Heading>
-                  {profileLoading ? (
-                    <HStack gap={3}>
-                      <Spinner />
-                      <Text>Loading your profile...</Text>
-                    </HStack>
-                  ) : athleteProfile ? (
+                <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={4}>
+                  <Box>
                     <VStack gap={4} align="stretch">
-                      <HStack gap={4} align="center">
-                        <Avatar.Root size="xl">
-                          {athleteProfile.avatarUrl && (
-                            <Avatar.Image
-                              src={athleteProfile.avatarUrl}
-                              alt={athleteProfile.displayName}
-                            />
-                          )}
-                          <Avatar.Fallback>
-                            {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
-                          </Avatar.Fallback>
-                        </Avatar.Root>
-                        <Box>
-                          <Heading size="md">{athleteProfile.displayName}</Heading>
-                          {athleteProfile.displayLocation && (
-                            <Text color="gray.500">{athleteProfile.displayLocation}</Text>
-                          )}
-                          {athleteProfile.role && (
-                            <Text fontSize="sm" color="purple.500">
-                              {typeof athleteProfile.role === 'string'
-                                ? athleteProfile.role
-                                : athleteProfile.role?.name || athleteProfile.role?.description || 'Member'}
-                            </Text>
-                          )}
-                          {lastUpdatedLabel && (
-                            <Text fontSize="xs" color="gray.500">
-                              Last updated: {lastUpdatedLabel}
-                            </Text>
-                          )}
-                        </Box>
-                      </HStack>
+                      <Heading size="md">Your Profile</Heading>
+                      {profileLoading ? (
+                        <HStack gap={3}>
+                          <Spinner />
+                          <Text>Loading your profile...</Text>
+                        </HStack>
+                      ) : athleteProfile ? (
+                        <VStack gap={4} align="stretch">
+                          <HStack gap={4} align="center">
+                            <Avatar.Root size="xl">
+                              {athleteProfile.avatarUrl && (
+                                <Avatar.Image
+                                  src={athleteProfile.avatarUrl}
+                                  alt={athleteProfile.displayName}
+                                />
+                              )}
+                              <Avatar.Fallback>
+                                {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
+                              </Avatar.Fallback>
+                            </Avatar.Root>
+                            <Box>
+                              <Heading size="md">{athleteProfile.displayName}</Heading>
+                              {athleteProfile.displayLocation && (
+                                <Text color="gray.500">{athleteProfile.displayLocation}</Text>
+                              )}
+                              {athleteProfile?.lastUpdate && (
+                                <Text fontSize="xs" color="gray.500">
+                                  Last updated: {formatTimestamp(athleteProfile?.lastUpdate)}
+                                </Text>
+                              )}
+                            </Box>
+                          </HStack>
 
-                      {athleteProfile.unit && (
-                        <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
-                          <GridItem>
-                            <Text fontWeight="bold">Speed</Text>
-                            <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Text fontWeight="bold">Distance</Text>
-                            <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Text fontWeight="bold">Elevation</Text>
-                            <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Text fontWeight="bold">Temperature</Text>
-                            <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
-                          </GridItem>
-                        </Grid>
+                          {athleteProfile.unit && (
+                            <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
+                              <GridItem>
+                                <Text fontWeight="bold">Speed</Text>
+                                <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
+                              </GridItem>
+                              <GridItem>
+                                <Text fontWeight="bold">Distance</Text>
+                                <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
+                              </GridItem>
+                              <GridItem>
+                                <Text fontWeight="bold">Elevation</Text>
+                                <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
+                              </GridItem>
+                              <GridItem>
+                                <Text fontWeight="bold">Temperature</Text>
+                                <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
+                              </GridItem>
+                            </Grid>
+                          )}
+
+                          <HStack justify="flex-end">
+                            <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                              Logout
+                            </Button>
+                          </HStack>
+                        </VStack>
+                      ) : (
+                        <Text>No profile information available.</Text>
                       )}
-
-                      <HStack justify="flex-end">
-                        <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
-                          Logout
-                        </Button>
-                      </HStack>
                     </VStack>
-                  ) : (
-                    <Text>No profile information available.</Text>
-                  )}
-                </VStack>
+                  </Box>
+
+                  <Box>
+                    <WordCloud words={wordCloud} />
+                  </Box>
+                </Grid>
               </Card.Body>
             </Card.Root>
 
