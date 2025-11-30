@@ -387,6 +387,23 @@ GET     /api/activities/:activity/years                    controllers.ActivityC
 GET     /api/activities/last                               controllers.ActivityController.last()
 
 ###
+#  summary: Retrieves the latest activities from the feed
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Retrieves the latest activities from the external feed, like Strava
+#    403:
+#      description: Forbidden
+#    404:
+#      description: Not found
+#    500:
+#      description: Internal error
+###
+GET     /api/activities/refresh                            controllers.ActivityController.last()
+
+
+###
 #  summary: Retrieves an activity
 #  tags:
 #    - activity

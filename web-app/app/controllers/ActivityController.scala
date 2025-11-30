@@ -298,4 +298,18 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
         .getOrElse(Iterable.empty)
         .map(series => Ok(JsonIo.write(series)))
     }
+
+  // refreshes the activities for an athlete
+  // route mapped to /api/activities/refresh
+  def refresh(): Action[AnyContent] =
+    TimedAuthAsyncAction("refresh activities")(parse.default) { implicit request =>
+      val storage = connectivity.getStorage
+      val resultTF = for {
+        account <- OptionT[Future, Account](Future(loggedIn))
+        //_ <- OptionT.liftF(storage.refreshActivities(account.athleteId))
+      } yield ()
+      resultTF
+        .map(_ => Ok(Json.obj("status" -> "OK")))
+        .getOrElse(Forbidden)
+    }
 }

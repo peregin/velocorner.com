@@ -18,7 +18,8 @@ import velocorner.build.BuildInfo
 import scala.xml.Elem
 
 /**
- * Serves the web pages, rendered from server side. Being replaced with web-front module running on node, with react components.
+ * Serves the web pages, rendered from server side.
+ * Being replaced with web-front module running on node, with react components.
  */
 //noinspection TypeAnnotation
 class WebController @Inject() (
