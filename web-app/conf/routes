@@ -37,9 +37,6 @@ GET     /login/withings                                    controllers.auth.With
 GET     /authorize/withings                                controllers.auth.WithingsController.authorize
 
 ### NoDocs ###
-GET     /api/ws                                            controllers.ApiController.ws
-
-### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status
 
 #AUTH

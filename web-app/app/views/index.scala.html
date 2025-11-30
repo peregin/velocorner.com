@@ -145,7 +145,6 @@
         @if(context.account.nonEmpty) {
             setupTabs();
         }
-        setupWebSocket();
         analytics.page('Home');
     });
 
@@ -185,34 +184,6 @@
                 });
            }
         });
-    }
-
-    function setupWebSocket() {
-        let proto = 'ws:'
-        if (window.location.protocol === 'https:') {
-            proto = 'wss:'
-        }
-        websocket = new WebSocket(proto + '//' + window.location.host + '/api/ws');
-        websocket.onopen = function(evt) { onOpen(evt) };
-        websocket.onclose = function(evt) { onClose(evt) };
-        websocket.onmessage = function(evt) { onMessage(evt) };
-        websocket.onerror = function(evt) { onError(evt) };
-    }
-
-    function onOpen(evt) {
-        console.log('CONNECTED ' + evt);
-    }
-
-    function onClose(evt) {
-        console.log('DISCONNECTED ' + evt);
-    }
-
-    function onMessage(evt) {
-        console.log('RESPONSE: ' + evt.data);
-    }
-
-    function onError(evt) {
-        console.log('ERROR: ' + evt.data);
     }
 
 //]]>
