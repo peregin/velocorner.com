@@ -27,17 +27,16 @@ import mouse.all._
  */
 class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
-  val authorizationUrl: String = StravaActivityFeed.authorizationUrl
-  val clientSecret: String = connectivity.secretConfig.getAuthSecret(ServiceProvider.Strava)
-  val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
-  val clientId: String = connectivity.secretConfig.getAuthId(ServiceProvider.Strava)
-  val callbackUrl: String = connectivity.secretConfig.getAuthCallbackUrl(ServiceProvider.Strava)
-  val callbackUri = new URI(callbackUrl)
+  private val clientSecret: String = connectivity.secretConfig.getAuthSecret(ServiceProvider.Strava)
+  private val accessTokenUrl: String = StravaActivityFeed.accessTokenUrl
+  private val clientId: String = connectivity.secretConfig.getAuthId(ServiceProvider.Strava)
 
   private val logger = Logger.of(this.getClass)
 
   def getAuthorizationUrl(host: String, state: String): String = {
     logger.info(s"authorization url for host[$host]")
+    val authorizationUrl: String = StravaActivityFeed.authorizationUrl
+    val callbackUri = new URI(connectivity.secretConfig.getAuthCallbackUrl(ServiceProvider.Strava))
     val encodedClientId = URLEncoder.encode(clientId, "utf-8")
     // the host is mainly localhost:9001 or www.velocorner.com
     val adjustedCallbackUrl = s"${callbackUri.getScheme}://$host${callbackUri.getPath}"
