@@ -11,7 +11,7 @@ import velocorner.api.StatusInfo
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
+class StatusControllerSpec extends PlaySpec with StubControllerComponentsFactory with MockitoSugar {
 
   "rest controller for club activity series" should {
 
@@ -19,7 +19,7 @@ class ApiControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
 
     "return system status" in {
       val settingsMock = mock[ConnectivitySettings]
-      val controller = new ApiController(Environment.simple(), settingsMock, stubControllerComponents())
+      val controller = new StatusController(Environment.simple(), settingsMock, stubControllerComponents())
       val result = controller.status().apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
       val statusInfo = Helpers.contentAsJson(result).as[StatusInfo]

@@ -60,7 +60,7 @@ GET     /api/logout/strava                                 controllers.auth.Stra
 #          schema:
 #            $ref: '#/components/schemas/velocorner.api.StatusInfo'
 ###
-GET     /api/status                                        controllers.ApiController.status
+GET     /api/status                                        controllers.StatusController.status
 
 ###
 #  summary: Collects ping notification
@@ -74,7 +74,7 @@ GET     /api/status                                        controllers.ApiContro
 #    200:
 #      description: information has been collected
 ###
-POST    /api/ping                                          controllers.ApiController.ping
+POST    /api/ping                                          controllers.StatusController.ping
 
 ###
 #  summary: Collects ping notification
@@ -84,7 +84,7 @@ POST    /api/ping                                          controllers.ApiContro
 #    200:
 #      description: information has been collected
 ###
-GET     /api/ping                                          controllers.ApiController.ping
+GET     /api/ping                                          controllers.StatusController.ping
 
 ###
 #  summary: Retrieves the logged in athletes public information

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class ApiController @Inject() (environment: Environment, val connectivity: ConnectivitySettings, components: ControllerComponents)
+class StatusController @Inject()(environment: Environment, val connectivity: ConnectivitySettings, components: ControllerComponents)
     extends AbstractController(components) {
 
   val pings = new AtomicLong
