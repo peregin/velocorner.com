@@ -31,7 +31,7 @@ class ProfileController @Inject() (val connectivity: ConnectivitySettings, val c
     // validate unit
     val newUnit = Account.convert(unit)
     val res = for {
-      account <- OptionT(Future(loggedIn))
+      account <- OptionT[Future, Account](Future(loggedIn))
       accountStorage = connectivity.getStorage.getAccountStorage
       _ <- OptionT.liftF(accountStorage.store(account.copy(unit = newUnit.some)))
     } yield ()

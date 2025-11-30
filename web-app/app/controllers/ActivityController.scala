@@ -12,7 +12,7 @@ import play.api.mvc._
 import velocorner.api.chart.DailyPoint
 import velocorner.api.strava.Activity
 import velocorner.api.wordcloud.WordCloud
-import velocorner.api.{Achievements, ProfileStatistics, Progress, Units}
+import velocorner.api.{Account, Achievements, ProfileStatistics, Progress, Units}
 import velocorner.model._
 import velocorner.util.{JsonIo, Metrics}
 
@@ -43,7 +43,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       }
 
       val statisticsOT = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         _ = logger.info(s"athletes' $activity profile for ${account.displayName}")
         activities <- OptionT.liftF(storage.listYtdActivities(account.athleteId, activity, year.toInt))
         ytdActivities = activities.filter(_.getStartDateLocal().toLocalDate.compareTo(ytd) <= 0)
@@ -67,7 +67,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val storage = connectivity.getStorage
 
       val result = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         _ = logger.info(s"athlete yearly statistics for ${account.displayName}")
         activities <- OptionT.liftF(
           timedFuture(s"storage list all for $action/$activity")(storage.listAllActivities(account.athleteId, activity))
@@ -87,7 +87,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val now = LocalDate.now()
       val storage = connectivity.getStorage
       val result = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         units = account.units()
         _ = logger.info(s"athlete year to date $now statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
@@ -107,7 +107,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       val storage = connectivity.getStorage
 
       val result = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         _ = logger.info(s"athlete daily statistics from date $last12Month statistics for ${account.displayName}")
         activities <- OptionT.liftF(storage.listActivities(account.athleteId, last12Month, now.plusDays(1)))
         dailyProgress = DailyProgress.from(activities)
@@ -128,7 +128,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def yearlyHistogram(action: String, activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for heatmap statistics in $action/$activity")(parse.default) { implicit request =>
       val result = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         storage = connectivity.getStorage
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
@@ -146,7 +146,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def top(action: String, activity: String): Action[AnyContent] =
     TimedAuthAsyncAction(s"top 10 statistics in $action/$activity")(parse.default) { implicit request =>
       val result = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         storage = connectivity.getStorage
         activities <- OptionT.liftF(storage.listTopActivities(account.athleteId, ActionType(action), activity, 10))
       } yield activities
@@ -201,8 +201,8 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def last(): Action[AnyContent] =
     TimedAuthAsyncAction("query for last activity")(parse.default) { implicit request =>
       val resultET = for {
-        account <- EitherT(Future(loggedIn.toRight(Forbidden)))
-        activity <- EitherT(connectivity.getStorage.getLastActivity(account.athleteId).map(_.toRight(NotFound)))
+        account <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
+        activity <- EitherT[Future, Status, Activity](connectivity.getStorage.getLastActivity(account.athleteId).map(_.toRight(NotFound)))
       } yield activity
 
       resultET
@@ -216,8 +216,8 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def activity(id: Long): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for activity $id")(parse.default) { implicit request =>
       val resultET = for {
-        _ <- EitherT(Future(loggedIn.toRight(Forbidden)))
-        activity <- EitherT(connectivity.getStorage.getActivity(id).map(_.toRight(NotFound)))
+        _ <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
+        activity <- EitherT[Future, Status, Activity](connectivity.getStorage.getActivity(id).map(_.toRight(NotFound)))
       } yield activity
 
       resultET
@@ -230,7 +230,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def activityTypes: Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
-      account <- OptionT(Future(loggedIn))
+      account <- OptionT[Future, Account](Future(loggedIn))
       types <- OptionT.liftF(storage.listActivityTypes(account.athleteId))
       _ = logger.debug(s"account ${account.displayName} did ${types.mkString(",")}")
     } yield types
@@ -244,7 +244,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
   def activityYears(activity: String): Action[AnyContent] = AuthAsyncAction(parse.default) { implicit request =>
     val storage = connectivity.getStorage
     val resultTF = for {
-      account <- OptionT(Future(loggedIn))
+      account <- OptionT[Future, Account](Future(loggedIn))
       years <- OptionT.liftF(storage.listActivityYears(account.athleteId, activity))
       _ = logger.debug(s"account ${account.displayName} for $activity has activities in ${years.mkString(",")}")
     } yield years
@@ -261,7 +261,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
       logger.debug(s"suggesting for $query")
       val storage = connectivity.getStorage
       val suggestionsTF = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         suggestions <- OptionT.liftF(storage.suggestActivities(query, account.athleteId, 10))
       } yield suggestions
 
@@ -280,7 +280,7 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
     TimedAuthAsyncAction("wordcloud")(parse.default) { implicit request =>
       val storage = connectivity.getStorage
       val wordsTF = for {
-        account <- OptionT(Future(loggedIn))
+        account <- OptionT[Future, Account](Future(loggedIn))
         words <- OptionT.liftF(storage.activityTitles(account.athleteId, 400))
         series = words
           .map(_.replace("#commutemarker.com", ""))
