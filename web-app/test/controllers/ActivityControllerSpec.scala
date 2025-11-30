@@ -18,24 +18,22 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
   "rest controller for club activity series" should {
 
     implicit val timeout: Timeout = new Timeout(10 seconds)
+    val refreshStrategyMock = mock[RefreshStrategy]
+    val settingsMock = mock[ConnectivitySettings]
+    val cacheApiMock = mock[SyncCacheApi]
 
     "return with success" in {
-      val cacheApiMock = mock[SyncCacheApi]
-      val settingsMock = mock[ConnectivitySettings]
       val storageMock = mock[Storage[Future]]
 
       when(settingsMock.getStorage).thenReturn(storageMock)
 
-      val controller = new ActivityController(settingsMock, cacheApiMock, stubControllerComponents())
+      val controller = new ActivityController(settingsMock, cacheApiMock, refreshStrategyMock, stubControllerComponents())
       val result = controller.profile("Ride", "2021").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
     }
 
     "return with forbidden when asking for activities without being logged in" in {
-      val cacheApiMock = mock[SyncCacheApi]
-      val settingsMock = mock[ConnectivitySettings]
-
-      val controller = new ActivityController(settingsMock, cacheApiMock, stubControllerComponents())
+      val controller = new ActivityController(settingsMock, cacheApiMock, refreshStrategyMock, stubControllerComponents())
       val result = controller.activity(100).apply(FakeRequest())
       Helpers.status(result) mustBe Status.FORBIDDEN
     }

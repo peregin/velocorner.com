@@ -164,38 +164,41 @@ class ActivityController @Inject() (
       val storage = connectivity.getStorage.getAchievementStorage
       loggedIn
         .map { account =>
-          // parallelization
-          val maxAverageSpeedF = storage.maxAverageSpeed(account.athleteId, activity)
-          val maxDistanceF = storage.maxDistance(account.athleteId, activity)
-          val maxTimeF = storage.maxTime(account.athleteId, activity)
-          val maxElevationF = storage.maxElevation(account.athleteId, activity)
-          val maxAveragePowerF = storage.maxAveragePower(account.athleteId, activity)
-          val maxHeartRateF = storage.maxHeartRate(account.athleteId, activity)
-          val maxAverageHeartRateF = storage.maxAverageHeartRate(account.athleteId, activity)
-          val minAverageTemperatureF = storage.minAverageTemperature(account.athleteId, activity)
-          val maxAverageTemperatureF = storage.maxAverageTemperature(account.athleteId, activity)
-          val achievements = for {
-            maxAverageSpeed <- maxAverageSpeedF
-            maxDistance <- maxDistanceF
-            maxTime <- maxTimeF
-            maxElevation <- maxElevationF
-            maxAveragePower <- maxAveragePowerF
-            maxHeartRate <- maxHeartRateF
-            maxAverageHeartRate <- maxAverageHeartRateF
-            minTemperature <- minAverageTemperatureF
-            maxTemperature <- maxAverageTemperatureF
-          } yield Achievements(
-            maxAverageSpeed = maxAverageSpeed,
-            maxDistance = maxDistance,
-            maxTimeInSec = maxTime,
-            maxElevation = maxElevation,
-            maxAveragePower = maxAveragePower,
-            maxHeartRate = maxHeartRate,
-            maxAverageHeartRate = maxAverageHeartRate,
-            minAverageTemperature = minTemperature,
-            maxAverageTemperature = maxTemperature
-          ).to(account.units())
-          achievements.map(JsonIo.write[Achievements](_)).map(Ok(_))
+          val achievementsF = (
+            storage.maxAverageSpeed(account.athleteId, activity),
+            storage.maxDistance(account.athleteId, activity),
+            storage.maxTime(account.athleteId, activity),
+            storage.maxElevation(account.athleteId, activity),
+            storage.maxAveragePower(account.athleteId, activity),
+            storage.maxHeartRate(account.athleteId, activity),
+            storage.maxAverageHeartRate(account.athleteId, activity),
+            storage.minAverageTemperature(account.athleteId, activity),
+            storage.maxAverageTemperature(account.athleteId, activity)
+          ).mapN {
+            case (
+              maxAverageSpeed,
+              maxDistance,
+              maxTime,
+              maxElevation,
+              maxAveragePower,
+              maxHeartRate,
+              maxAverageHeartRate,
+              minTemperature,
+              maxTemperature
+            ) =>
+              Achievements(
+                maxAverageSpeed = maxAverageSpeed,
+                maxDistance = maxDistance,
+                maxTimeInSec = maxTime,
+                maxElevation = maxElevation,
+                maxAveragePower = maxAveragePower,
+                maxHeartRate = maxHeartRate,
+                maxAverageHeartRate = maxAverageHeartRate,
+                minAverageTemperature = minTemperature,
+                maxAverageTemperature = maxTemperature
+              ).to(account.units())
+          }
+          achievementsF.map(JsonIo.write[Achievements](_)).map(Ok(_))
         }
         .getOrElse(Future(Unauthorized))
     }
