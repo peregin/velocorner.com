@@ -104,7 +104,7 @@ def spark = Seq(
 )
 
 def smile: Seq[ModuleID] = Seq(
-  "com.github.haifengl" % "smile-core" % "4.4.2"
+  "com.github.haifengl" % "smile-core" % "5.0.0"
 )
 
 def http4s: Seq[ModuleID] = Seq(
@@ -164,7 +164,7 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       playJsonExtensions,
       playJsonJoda,
       playWsAhcStandalone,
-      "com.beachape" %% "enumeratum" % "1.9.0",
+      "com.beachape" %% "enumeratum" % "1.9.1",
       scalaTest
     ) ++ logging ++ psqlDbClient ++ apacheCommons ++ cats ++ squants ++ catsEffect.map(_ % Test)
   )

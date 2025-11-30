@@ -2,7 +2,7 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.18"
 
-  val flywayVersion = "11.17.1"
+  val flywayVersion = "11.18.0"
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.6.3"
   val mouseVersion = "1.4.0"
@@ -15,7 +15,7 @@ object Dependencies {
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.21" // updating will cause conflict
   val doobieVersion = "1.0.0-RC11"
-  val orientDbVersion = "3.2.45"
+  val orientDbVersion = "3.2.46"
   val mongoDbVersion = "5.6.1"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.19.0"
