@@ -387,7 +387,7 @@ GET     /api/activities/:activity/years                    controllers.ActivityC
 GET     /api/activities/last                               controllers.ActivityController.last()
 
 ###
-#  summary: Retrieves the latest activities from the feed
+#  summary: Retrieves the latest activities from the external feed, like Strava
 #  tags:
 #    - activity
 #  responses:

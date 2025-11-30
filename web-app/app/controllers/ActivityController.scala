@@ -20,8 +20,12 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ActivityController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
-    extends AbstractController(components)
+class ActivityController @Inject() (
+    val connectivity: ConnectivitySettings,
+    val cache: SyncCacheApi,
+    strategy: RefreshStrategy,
+    components: ControllerComponents
+) extends AbstractController(components)
     with ActivityOps
     with AuthChecker
     with Metrics {
@@ -299,17 +303,26 @@ class ActivityController @Inject() (val connectivity: ConnectivitySettings, val 
         .map(series => Ok(JsonIo.write(series)))
     }
 
-  // refreshes the activities for an athlete
+  // refreshes the activities for an athlete, called from FE as part of the API
   // route mapped to /api/activities/refresh
   def refresh(): Action[AnyContent] =
     TimedAuthAsyncAction("refresh activities")(parse.default) { implicit request =>
-      val storage = connectivity.getStorage
       val resultTF = for {
         account <- OptionT[Future, Account](Future(loggedIn))
-        //_ <- OptionT.liftF(storage.refreshActivities(account.athleteId))
+        now = DateTime.now()
+        // if the access token is expired refresh it and store it
+        refreshAccount <- OptionT.liftF(strategy.refreshToken(account, now))
+        // retrieve latest activities
+        activities <- OptionT.liftF(strategy.refreshAccountActivities(refreshAccount, now))
+        _ = logger.info(s"found ${activities.size} new activities")
       } yield ()
-      resultTF
+      resultTF.value
         .map(_ => Ok(Json.obj("status" -> "OK")))
-        .getOrElse(Forbidden)
+        .recover {
+          case ex if ex.getMessage.toLowerCase.contains("\"code\":\"invalid\"") =>
+            // if the feed fails with expired token, then logout
+            logger.info("feed token has been expired, logging out")
+            Unauthorized
+        }
     }
 }
