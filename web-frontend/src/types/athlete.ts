@@ -41,5 +41,4 @@ export type UserStats = {
   estimate?: UserStatsBreakdown;
   progress?: UserStatsBreakdown;
   commute?: UserStatsBreakdown;
-  units?: AthleteUnits;
 };

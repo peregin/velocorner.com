@@ -287,10 +287,10 @@ const Home = () => {
                 <WordCloud words={wordCloud} />
               </Box>
               <Box flex="0 0 30%">
-                <BarChart title="Year To Date Distance (Sample)" unit={userStats?.units?.distanceLabel || 'km'}
+                <BarChart title="Year To Date Distance (Sample)" unit={athleteProfile?.unit?.distanceLabel || 'km'}
                   fetchSeries={fetchDemoYtdDistance} height={350} /></Box>
               <Box flex={1}>
-                <LineSeriesChart title="Yearly Elevation (Sample)" unit={userStats?.units?.elevationLabel || 'm'}
+                <LineSeriesChart title="Yearly Elevation (Sample)" unit={athleteProfile?.unit?.elevationLabel || 'm'}
                   fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} /></Box>
             </HStack>
 
@@ -299,7 +299,7 @@ const Home = () => {
             <Card.Root>
               <Card.Body>
                 <CalendarHeatmap title="Latest Activities (Sample)"
-                  fetchDaily={fetchDemoDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+                  fetchDaily={fetchDemoDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
               </Card.Body>
             </Card.Root>
 
@@ -424,13 +424,13 @@ const Home = () => {
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Distance</Text>
                         <Text fontSize="2xl" color="blue.500">
-                          {formatStatNumber(userStats.progress?.distance, 1)} {userStats?.units?.distanceLabel || 'km'}
+                          {formatStatNumber(userStats.progress?.distance, 1)} {athleteProfile?.unit?.distanceLabel || 'km'}
                         </Text>
                       </GridItem>
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Elevation</Text>
                         <Text fontSize="2xl" color="green.500">
-                          {formatStatNumber(userStats.progress?.elevation, 0)} {userStats?.units?.elevationLabel || 'm'}
+                          {formatStatNumber(userStats.progress?.elevation, 0)} {athleteProfile?.unit?.elevationLabel || 'm'}
                         </Text>
                       </GridItem>
                       <GridItem>
@@ -451,16 +451,16 @@ const Home = () => {
               )}
 
               {/* Charts parity to Play widgets */}
-              <LineSeriesChart title="Yearly Heatmap (Distance)" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
+              <LineSeriesChart title="Yearly Heatmap (Distance)" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={userStats?.units?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
+                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
               </HStack>
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={userStats?.units?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
+                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={athleteProfile?.unit?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={athleteProfile?.unit?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
               </HStack>
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
@@ -475,7 +475,7 @@ const Home = () => {
 
               <Card.Root>
                 <Card.Body>
-                  <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+                  <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
                 </Card.Body>
               </Card.Root>
 
