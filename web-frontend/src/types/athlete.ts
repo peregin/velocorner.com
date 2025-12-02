@@ -42,3 +42,25 @@ export type UserStats = {
   progress?: UserStatsBreakdown;
   commute?: UserStatsBreakdown;
 };
+
+export type AchievementMetric =
+  | 'maxAverageSpeed'
+  | 'maxDistance'
+  | 'maxTimeInSec'
+  | 'maxElevation'
+  | 'maxAveragePower'
+  | 'maxHeartRate'
+  | 'maxAverageHeartRate'
+  | 'minAverageTemperature'
+  | 'maxAverageTemperature';
+
+export type AchievementEntry = {
+  value?: number;
+  activityId?: number;
+  activityName?: string;
+  activityTime?: string;
+};
+
+export type AthleteAchievements = Partial<Record<AchievementMetric, AchievementEntry>> & {
+  [key: string]: AchievementEntry | undefined;
+};
