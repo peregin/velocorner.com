@@ -16,6 +16,7 @@ import {
   Card,
   Progress,
   Spinner,
+  SegmentGroup,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
@@ -384,19 +385,19 @@ const Home = () => {
               <Card.Root>
                 <Card.Body>
                   <Text fontWeight="bold" mb={4}>Activity Types</Text>
-                  <HStack gap={2} wrap="wrap">
-                    {activityTypes.map((type) => (
-                      <Button
-                        key={type}
-                        size="sm"
-                        variant={selectedActivityType === type ? "solid" : "outline"}
-                        colorPalette="blue"
-                        onClick={() => handleActivityTypeChange(type)}
-                      >
-                        {type}
-                      </Button>
-                    ))}
-                  </HStack>
+                  <SegmentGroup.Root
+                    value={selectedActivityType}
+                    onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
+                    colorPalette="green"
+                    bg="colorPalette.50"
+                    css={{
+                        "--segment-indicator-bg": "colors.green.400",
+                        "--segment-indicator-shadow": "shadows.md",
+                    }}
+                  >
+                    <SegmentGroup.Indicator />
+                    <SegmentGroup.Items items={activityTypes} />
+                  </SegmentGroup.Root>
                 </Card.Body>
               </Card.Root>
 
