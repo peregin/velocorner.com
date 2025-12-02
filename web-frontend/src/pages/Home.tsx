@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import ApiClient from "../service/ApiClient";
 import { useAuth } from "../service/auth";
 import { getInitials, formatTimestamp } from "../service/formatters";
@@ -42,6 +42,7 @@ const Home = () => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const initialLoadRef = useRef(false);
+  const statsFetchKeyRef = useRef<string | null>(null);
 
   const { isAuthenticated, authLoading, connect, logout } = useAuth();
 
@@ -56,14 +57,12 @@ const Home = () => {
           const demoWc = await ApiClient.demoWordcloud();
           setWordCloud(demoWc);
         } else {
-          const [wc, types, stats] = await Promise.all([
+          const [wc, types] = await Promise.all([
             ApiClient.wordcloud(),
-            ApiClient.activityTypes(),
-            ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString())
+            ApiClient.activityTypes()
           ]);
           setWordCloud(wc);
           setActivityTypes(types);
-          setUserStats(stats);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -76,11 +75,20 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (!initialLoadRef.current) return;
+    if (!isAuthenticated) {
+      statsFetchKeyRef.current = null;
+      setUserStats(null);
+      return;
+    }
+
+    const currentYear = new Date().getFullYear().toString();
+    const currentKey = `${selectedActivityType}-${currentYear}`;
+    if (statsFetchKeyRef.current === currentKey) return;
+    statsFetchKeyRef.current = currentKey;
+
     const fetchUserData = async () => {
-      if (!isAuthenticated) return;
       try {
-        const stats = await ApiClient.profileStatistics(selectedActivityType, new Date().getFullYear().toString());
+        const stats = await ApiClient.profileStatistics(selectedActivityType, currentYear);
         setUserStats(stats);
       } catch (error) {
         console.error('Error fetching user stats:', error);
@@ -137,16 +145,67 @@ const Home = () => {
   };
 
   // fetchers for charts
-  const fetchYearlyHeatmap = () => ApiClient.yearlyHeatmap(selectedActivityType);
-  const fetchYearlyDistance = () => ApiClient.yearlyStatistics('distance', selectedActivityType);
-  const fetchYearlyElevation = () => ApiClient.yearlyStatistics('elevation', selectedActivityType);
-  const fetchYearlyTime = () => ApiClient.yearlyStatistics('time', selectedActivityType);
-  const fetchYtdDistance = () => ApiClient.ytdStatistics('distance', selectedActivityType);
-  const fetchYtdElevation = () => ApiClient.ytdStatistics('elevation', selectedActivityType);
-  const fetchYtdTime = () => ApiClient.ytdStatistics('time', selectedActivityType);
-  const fetchHistogramDistance = () => ApiClient.yearlyHistogram('distance', selectedActivityType);
-  const fetchHistogramElevation = () => ApiClient.yearlyHistogram('elevation', selectedActivityType);
-  const fetchDailyDistance = () => ApiClient.dailyStatistics('distance');
+  const fetchYearlyHeatmap = useCallback(
+    () => ApiClient.yearlyHeatmap(selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYearlyDistance = useCallback(
+    () => ApiClient.yearlyStatistics('distance', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYearlyElevation = useCallback(
+    () => ApiClient.yearlyStatistics('elevation', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYearlyTime = useCallback(
+    () => ApiClient.yearlyStatistics('time', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYtdDistance = useCallback(
+    () => ApiClient.ytdStatistics('distance', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYtdElevation = useCallback(
+    () => ApiClient.ytdStatistics('elevation', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchYtdTime = useCallback(
+    () => ApiClient.ytdStatistics('time', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchHistogramDistance = useCallback(
+    () => ApiClient.yearlyHistogram('distance', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchHistogramElevation = useCallback(
+    () => ApiClient.yearlyHistogram('elevation', selectedActivityType),
+    [selectedActivityType]
+  );
+  const fetchDailyDistance = useCallback(
+    () => ApiClient.dailyStatistics('distance'),
+    []
+  );
+
+  const fetchDemoYtdDistance = useCallback(
+    () => ApiClient.demoYearlyStatistics('distance', 'Ride'),
+    []
+  );
+  const fetchDemoYearlyElevation = useCallback(
+    () => ApiClient.demoYearlyStatistics('elevation', 'Ride'),
+    []
+  );
+  const fetchDemoDailyDistance = useCallback(
+    () => ApiClient.demoDailyStatistics('distance'),
+    []
+  );
+  const fetchDemoHistogramDistance = useCallback(
+    () => ApiClient.demoYearlyHistogram('distance', 'Ride'),
+    []
+  );
+  const fetchDemoHistogramElevation = useCallback(
+    () => ApiClient.demoYearlyHistogram('elevation', 'Ride'),
+    []
+  );
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
@@ -214,10 +273,10 @@ const Home = () => {
               </Box>
               <Box flex="0 0 30%">
                 <BarChart title="Year To Date Distance (Sample)" unit={userStats?.units?.distanceLabel || 'km'}
-                  fetchSeries={() => ApiClient.demoYearlyStatistics('distance', 'Ride')} height={350} /></Box>
+                  fetchSeries={fetchDemoYtdDistance} height={350} /></Box>
               <Box flex={1}>
                 <LineSeriesChart title="Yearly Elevation (Sample)" unit={userStats?.units?.elevationLabel || 'm'}
-                  fetchSeries={() => ApiClient.demoYearlyStatistics('elevation', 'Ride')} seriesToShow={5} height={350} /></Box>
+                  fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} /></Box>
             </HStack>
 
             <Stats />
@@ -225,15 +284,15 @@ const Home = () => {
             <Card.Root>
               <Card.Body>
                 <CalendarHeatmap title="Latest Activities (Sample)"
-                  fetchDaily={() => ApiClient.demoDailyStatistics('distance')} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
+                  fetchDaily={fetchDemoDailyDistance} unitName={userStats?.units?.distanceLabel || 'km'} maxMonths={8} />
               </Card.Body>
             </Card.Root>
 
             <HStack align="stretch" gap={4} flexWrap="wrap">
               <Box flex={1}><HeatmapChart title="Distance Distribution (Sample)"
-                fetchHeatmap={() => ApiClient.demoYearlyHistogram('distance', 'Ride')} height={250} /></Box>
+                fetchHeatmap={fetchDemoHistogramDistance} height={250} /></Box>
               <Box flex={1}><HeatmapChart title="Elevation Distribution (Sample)"
-                fetchHeatmap={() => ApiClient.demoYearlyHistogram('elevation', 'Ride')} height={250} /></Box>
+                fetchHeatmap={fetchDemoHistogramElevation} height={250} /></Box>
             </HStack>
           </>
         )}
