@@ -35,8 +35,8 @@ const showError = (title: string, description: string) => {
 
 const Home = () => {
   const [wordCloud, setWordCloud] = useState<any[]>([]);
-  const [activityTypes, setActivityTypes] = useState<string[]>([]);
-  const [selectedActivityType, setSelectedActivityType] = useState("Ride");
+  const [activityTypes, setActivityTypes] = useState<string[]>(['Ride']);
+  const [selectedActivityType, setSelectedActivityType] = useState('Ride');
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
