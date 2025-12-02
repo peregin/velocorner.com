@@ -208,6 +208,20 @@ const Home = () => {
     []
   );
 
+  const formatStatNumber = (value?: number, fractionDigits = 0) => {
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      return "0";
+    }
+    return value.toFixed(fractionDigits);
+  };
+
+  const formatStatHours = (seconds?: number) => {
+    if (typeof seconds !== "number" || Number.isNaN(seconds)) {
+      return "0";
+    }
+    return (seconds / 3600).toFixed(1);
+  };
+
   return (
     <Box maxW="1200px" mx="auto" p={6}>
 
@@ -410,25 +424,25 @@ const Home = () => {
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Distance</Text>
                         <Text fontSize="2xl" color="blue.500">
-                          {userStats.totalDistance?.toFixed(1) || 0} km
+                          {formatStatNumber(userStats.progress?.distance, 1)} {userStats?.units?.distanceLabel || 'km'}
                         </Text>
                       </GridItem>
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Elevation</Text>
                         <Text fontSize="2xl" color="green.500">
-                          {userStats.totalElevation?.toFixed(0) || 0} m
+                          {formatStatNumber(userStats.progress?.elevation, 0)} {userStats?.units?.elevationLabel || 'm'}
                         </Text>
                       </GridItem>
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Time</Text>
                         <Text fontSize="2xl" color="purple.500">
-                          {userStats.totalTime?.toFixed(1) || 0} h
+                          {formatStatHours(userStats.progress?.movingTime)} h
                         </Text>
                       </GridItem>
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Activities</Text>
                         <Text fontSize="2xl" color="orange.500">
-                          {userStats.activityCount || 0}
+                          {userStats.progress?.rides ?? 0}
                         </Text>
                       </GridItem>
                     </Grid>

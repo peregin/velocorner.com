@@ -25,10 +25,21 @@ export type DemoStatistic = {
   total?: number;
 };
 
+export type UserStatsBreakdown = {
+  days?: number;
+  rides?: number;
+  distance?: number;
+  longestDistance?: number;
+  movingTime?: number;
+  averageSpeed?: number;
+  elevation?: number;
+  longestElevation?: number;
+};
+
 export type UserStats = {
-  totalDistance?: number;
-  totalElevation?: number;
-  totalTime?: number;
-  activityCount?: number;
+  yearlyPercentile?: number;
+  estimate?: UserStatsBreakdown;
+  progress?: UserStatsBreakdown;
+  commute?: UserStatsBreakdown;
   units?: AthleteUnits;
 };
