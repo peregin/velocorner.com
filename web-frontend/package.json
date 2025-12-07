@@ -11,12 +11,12 @@
     "highcharts": "^12.4.0",
     "highcharts-react-official": "^3.2.3",
     "next-themes": "^0.4.6",
-    "react": "^19.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.1",
     "react-apexcharts": "^1.9.0",
-    "react-dom": "^19.2.0",
     "react-ga4": "2.1.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.10.0",
     "super-tiny-icons": "^0.6.0",
     "typescript": "^5.9.3"
   },
@@ -37,11 +37,11 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
-    "@vitest/ui": "^3.2.4",
+    "vitest": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
     "jsdom": "^27.0.1",
     "vite": "^7.2.6",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "overrides": {
     "nth-check": "^2.0.1",
