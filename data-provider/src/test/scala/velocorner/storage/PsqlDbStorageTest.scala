@@ -111,6 +111,8 @@ class PsqlDbStorageTest
         logger.info("connecting to circleci psql...")
         5432
       } else {
+        // Docker 29.0.0 (which is what recent Docker Desktop releases ship) requires client API ≥ 1.44.
+        sys.props.put("api.version", "1.44")
         logger.info("starting embedded psql...")
         psqlEmbedded = EmbeddedPsqlStorage()
         psqlEmbedded.getPort
