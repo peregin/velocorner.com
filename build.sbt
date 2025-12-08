@@ -4,7 +4,6 @@ import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.*
 import com.typesafe.sbt.SbtNativePackager.autoImport.*
 import play.sbt.PlayImport.*
 
-
 // setup common keys for every service, some of them might have extra build information
 def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
   Seq[BuildInfoKey](
@@ -104,7 +103,7 @@ def spark = Seq(
 )
 
 def smile: Seq[ModuleID] = Seq(
-  "com.github.haifengl" % "smile-core" % "5.0.0"
+  "com.github.haifengl" % "smile-core" % "5.0.1"
 )
 
 def http4s: Seq[ModuleID] = Seq(
@@ -277,9 +276,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     assembly / mainClass := Some("play.core.server.ProdServerStart"),
     assembly / fullClasspath += Attributed.blank(PlayKeys.playPackageAssets.value),
     assembly / assemblyMergeStrategy := {
-      case PathList("reference.conf")               =>
+      case PathList("reference.conf") =>
         MergeStrategy.concat
-      case PathList("application.conf")             =>
+      case PathList("application.conf") =>
         MergeStrategy.last
       case manifest if manifest.contains("MANIFEST.MF") =>
         // We don't need manifest files since sbt-assembly will create
@@ -288,9 +287,9 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       case referenceOverrides if referenceOverrides.contains("reference-overrides.conf") =>
         // Keep the content for all reference-overrides.conf files
         MergeStrategy.concat
-      case PathList("META-INF", "versions", "9", "module-info.class") => 
+      case PathList("META-INF", "versions", "9", "module-info.class") =>
         MergeStrategy.discard
-      case "module-info.class"                                        => 
+      case "module-info.class" =>
         MergeStrategy.discard
       case x =>
         // For all the other files, use the default sbt-assembly merge strategy
@@ -300,7 +299,7 @@ lazy val webApp = (project in file("web-app") withId "web-app")
     // Enable SBOM generation for web-app module only
     makeBom / skip := false,
     bomFileName := "web-app.bom.json",
-    bomFormat := "json",
+    bomFormat := "json"
   )
   .enablePlugins(
     play.sbt.PlayScala,
