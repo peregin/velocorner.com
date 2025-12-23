@@ -2,26 +2,26 @@ object Dependencies {
 
   val projectScalaVersion = "2.13.18"
 
-  val flywayVersion = "11.18.0"
+  val flywayVersion = "11.20.0"
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.6.3"
   val mouseVersion = "1.4.0"
   val fs2Version = "3.12.2"
   val http4s = "0.23.33"
   val zioVersion = "2.1.23"
-  val playWsVersion = "3.0.9" // standalone version
+  val playWsVersion = "3.0.10" // standalone version
   val pekkoVersion = "1.4.0"
   val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
-  val logbackVersion = "1.5.22" // updating will cause conflict
+  val logbackVersion = "1.5.23" // updating will cause conflict
   val doobieVersion = "1.0.0-RC11"
-  val orientDbVersion = "3.2.46"
-  val mongoDbVersion = "5.6.1"
+  val orientDbVersion = "3.2.47"
+  val mongoDbVersion = "5.6.2"
   val rethinkDbVersion = "2.4.4"
   val elasticVersion = "8.19.0"
   val jwtVersion = "11.0.3"
   val squantsVersion = "1.8.3"
-  val sparkVersion = "4.0.1"
+  val sparkVersion = "4.1.0"
   val circeVersion = "0.14.15"
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.21.2"

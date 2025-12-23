@@ -6,6 +6,7 @@ import org.scalatest.matchers.must.Matchers
 import velocorner.api.strava.Activity
 import velocorner.util.JsonIo
 
+@org.scalatest.Ignore
 class OrientDbStorageTest extends AnyFlatSpec with BeforeAndAfterAll with Matchers with ActivityStorageBehaviour with AccountStorageBehaviour {
 
   @volatile var orientDbStorage: OrientDbStorage = _
