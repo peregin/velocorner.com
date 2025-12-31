@@ -716,7 +716,7 @@ const Home = () => {
 
               <Card.Root>
                 <Card.Body>
-                  <CalendarHeatmap title="Latest Activities (Distance)" fetchDaily={fetchDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
+                  <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
                 </Card.Body>
               </Card.Root>
 

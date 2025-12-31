@@ -91,10 +91,7 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
   }
 
   return (
-    <Box>
-      <Heading size="md" mb={4}>{title}</Heading>
       <HighchartsReact highcharts={Highcharts} options={options} />
-    </Box>
   );
 };
 
