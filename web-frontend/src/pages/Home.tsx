@@ -18,6 +18,7 @@ import {
   Spinner,
   SegmentGroup,
   Stat,
+  Flex,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
@@ -29,6 +30,7 @@ import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
 import type { AchievementEntry, AchievementMetric, AthleteAchievements, AthleteProfile, UserStats } from "../types/athlete";
+import { LuAmphora, LuTrophy } from "react-icons/lu";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -627,9 +629,10 @@ const Home = () => {
                 </Card.Root>
               )}
 
+              {/* Best Achievements */}
               <Card.Root>
                 <Card.Body>
-                  <Heading size="md" mb={4}>Best Achievements</Heading>
+                  <Heading size="md" mb={4}><Flex><LuTrophy/> Best Achievements</Flex></Heading>
                   {achievementsLoading ? (
                     <HStack gap={3}>
                       <Spinner />
