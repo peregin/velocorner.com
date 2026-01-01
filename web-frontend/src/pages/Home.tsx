@@ -20,6 +20,7 @@ import {
   Stat,
   Flex,
 } from "@chakra-ui/react";
+import { List } from "@chakra-ui/react"
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'
 import WordCloud from "../components/charts/WordCloud";
@@ -30,7 +31,7 @@ import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
 import type { AchievementEntry, AchievementMetric, AthleteAchievements, AthleteProfile, UserStats } from "../types/athlete";
-import { LuAmphora, LuTrophy } from "react-icons/lu";
+import { LuCircleCheck, LuCircleDashed, LuTrophy } from "react-icons/lu";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -350,52 +351,52 @@ const Home = () => {
     label: string;
     formatter: (entry?: AchievementEntry) => { value: string; unit?: string };
   }[] = [
-    {
-      key: "maxDistance",
-      label: "Longest Distance",
-      formatter: (entry) => formatDistanceValue(entry?.value),
-    },
-    {
-      key: "maxElevation",
-      label: "Maximum Elevation",
-      formatter: (entry) => formatElevationValue(entry?.value),
-    },
-    {
-      key: "maxTimeInSec",
-      label: "Longest Moving Time",
-      formatter: (entry) => ({ value: formatDurationValue(entry?.value) }),
-    },
-    {
-      key: "maxAverageSpeed",
-      label: "Fastest Average Speed",
-      formatter: (entry) => formatSpeedValue(entry?.value),
-    },
-    {
-      key: "maxAveragePower",
-      label: "Highest Average Power",
-      formatter: (entry) => formatPowerValue(entry?.value),
-    },
-    {
-      key: "maxHeartRate",
-      label: "Maximum Heart Rate",
-      formatter: (entry) => formatHeartRateValue(entry?.value),
-    },
-    {
-      key: "maxAverageHeartRate",
-      label: "Highest Average Heart Rate",
-      formatter: (entry) => formatHeartRateValue(entry?.value),
-    },
-    {
-      key: "maxAverageTemperature",
-      label: "Warmest Average Temperature",
-      formatter: (entry) => formatTemperatureValue(entry?.value),
-    },
-    {
-      key: "minAverageTemperature",
-      label: "Coldest Average Temperature",
-      formatter: (entry) => formatTemperatureValue(entry?.value),
-    },
-  ];
+      {
+        key: "maxDistance",
+        label: "Longest Distance",
+        formatter: (entry) => formatDistanceValue(entry?.value),
+      },
+      {
+        key: "maxElevation",
+        label: "Maximum Elevation",
+        formatter: (entry) => formatElevationValue(entry?.value),
+      },
+      {
+        key: "maxTimeInSec",
+        label: "Longest Moving Time",
+        formatter: (entry) => ({ value: formatDurationValue(entry?.value) }),
+      },
+      {
+        key: "maxAverageSpeed",
+        label: "Fastest Average Speed",
+        formatter: (entry) => formatSpeedValue(entry?.value),
+      },
+      {
+        key: "maxAveragePower",
+        label: "Highest Average Power",
+        formatter: (entry) => formatPowerValue(entry?.value),
+      },
+      {
+        key: "maxHeartRate",
+        label: "Maximum Heart Rate",
+        formatter: (entry) => formatHeartRateValue(entry?.value),
+      },
+      {
+        key: "maxAverageHeartRate",
+        label: "Highest Average Heart Rate",
+        formatter: (entry) => formatHeartRateValue(entry?.value),
+      },
+      {
+        key: "maxAverageTemperature",
+        label: "Warmest Average Temperature",
+        formatter: (entry) => formatTemperatureValue(entry?.value),
+      },
+      {
+        key: "minAverageTemperature",
+        label: "Coldest Average Temperature",
+        formatter: (entry) => formatTemperatureValue(entry?.value),
+      },
+    ];
 
   const visibleAchievements = achievements
     ? achievementDefinitions.filter((definition) => achievements?.[definition.key])
@@ -584,8 +585,8 @@ const Home = () => {
                     colorPalette="green"
                     bg="colorPalette.50"
                     css={{
-                        "--segment-indicator-bg": "colors.green.400",
-                        "--segment-indicator-shadow": "shadows.md",
+                      "--segment-indicator-bg": "colors.green.400",
+                      "--segment-indicator-shadow": "shadows.md",
                     }}
                   >
                     <SegmentGroup.Indicator />
@@ -632,20 +633,16 @@ const Home = () => {
               {/* Best Achievements */}
               <Card.Root>
                 <Card.Body>
-                  <Heading size="md" mb={4}><Flex><LuTrophy/> Best Achievements</Flex></Heading>
+                  <Heading size="md" mb={2}><Flex align="center" gap={2}><LuTrophy /> Best Achievements</Flex></Heading>
                   {achievementsLoading ? (
-                    <HStack gap={3}>
+                    <HStack gap={2}>
                       <Spinner />
                       <Text>Loading achievements...</Text>
                     </HStack>
                   ) : achievements ? (
-                    visibleAchievements.length ? (
-                      <Grid
-                        display="grid"
-                        gridTemplateColumns="repeat(auto-fit, minmax(220px, 1fr))"
-                        gap={5}
-                      >
-                        {visibleAchievements.map((definition) => {
+                    visibleAchievements.length ? (<>
+                      <List.Root gap="0" variant="plain" align="center">
+                      {visibleAchievements.map((definition) => {
                           const achievement = achievements?.[definition.key];
                           const formatted = definition.formatter(achievement);
                           const activityDate = formatAchievementDate(achievement?.activityTime);
@@ -680,8 +677,8 @@ const Home = () => {
                             </Stat.Root>
                           );
                         })}
-                      </Grid>
-                    ) : (
+                      </List.Root>
+                    </>) : (
                       <Text color="gray.500">
                         No achievements available yet for {selectedActivityType}.
                       </Text>
@@ -730,9 +727,9 @@ const Home = () => {
       </VStack>
 
       <Box py='1rem'>
-        <iframe 
-          width="100%" height="400" 
-          src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true" 
+        <iframe
+          width="100%" height="400"
+          src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true"
           title="Windy Map" style={{ border: 'none' }}>
         </iframe>
       </Box>
