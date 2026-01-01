@@ -642,40 +642,18 @@ const Home = () => {
                   ) : achievements ? (
                     visibleAchievements.length ? (<>
                       <List.Root gap="0" variant="plain" align="center">
-                      {visibleAchievements.map((definition) => {
+                        {visibleAchievements.map((definition) => {
                           const achievement = achievements?.[definition.key];
                           const formatted = definition.formatter(achievement);
                           const activityDate = formatAchievementDate(achievement?.activityTime);
                           const valueWithUnit = formatted.unit
                             ? `${formatted.value} ${formatted.unit}`
                             : formatted.value;
-                          return (
-                            <Stat.Root
-                              key={definition.key}
-                              borderWidth="1px"
-                              borderRadius="md"
-                              p={4}
-                              bg="gray.50"
-                              shadow="sm"
-                            >
-                              <Stat.Label fontWeight="bold" color="gray.600">
-                                {definition.label}
-                              </Stat.Label>
-                              <Stat.ValueText fontSize="2xl" color="blue.500">
-                                {valueWithUnit}
-                              </Stat.ValueText>
-                              {achievement?.activityName && (
-                                <Stat.HelpText color="gray.600" mt={2}>
-                                  {achievement.activityName}
-                                </Stat.HelpText>
-                              )}
-                              {activityDate && (
-                                <Stat.HelpText color="gray.500">
-                                  {activityDate}
-                                </Stat.HelpText>
-                              )}
-                            </Stat.Root>
-                          );
+                          return (<>
+                            <List.Item key={definition.key}>
+                              {definition.label}: {valueWithUnit} {achievement?.activityName} {activityDate}
+                            </List.Item>
+                          </>);
                         })}
                       </List.Root>
                     </>) : (
