@@ -428,7 +428,7 @@ const Home = () => {
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Active Days</Text>
                         <Text fontSize="2xl" color="orange.500">
-                          {userStats.progress?.days ?? 0}
+                          {userStats.progress?.days ?? 0} d
                         </Text>
                       </GridItem>
                     </Grid>
