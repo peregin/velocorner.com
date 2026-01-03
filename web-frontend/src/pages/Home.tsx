@@ -16,8 +16,7 @@ import {
   Card,
   Progress,
   Spinner,
-  SegmentGroup,
-  Flex,
+  SegmentGroup
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg'

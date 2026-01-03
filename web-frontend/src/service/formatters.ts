@@ -10,10 +10,16 @@ export const getInitials = (value?: string) => {
   return initials || undefined;
 };
 
-export const formatTimestamp = (timestamp?: number) => {
+export const formatTimestamp = (timestamp?: string) => {
   if (!timestamp) return null;
-  const milliseconds = timestamp > 1_000_000_000_000 ? timestamp : timestamp * 1000;
-  const date = new Date(milliseconds);
+  const date = new Date(timestamp);
   if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleString();
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 };

@@ -16,7 +16,7 @@ export type AthleteProfile = {
   displayName: string;
   displayLocation?: string;
   avatarUrl?: string;
-  lastUpdate?: number;
+  lastUpdate?: string;
   role?: AthleteRole;
   unit?: AthleteUnits;
 };
