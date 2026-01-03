@@ -400,7 +400,13 @@ const Home = () => {
                 <Card.Root>
                   <Card.Body>
                     <Heading size="md" mb={4}>Your Statistics</Heading>
-                    <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
+                    <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={6}>
+                      <GridItem>
+                        <Text fontWeight="bold" mb={2}>Activities</Text>
+                        <Text fontSize="2xl" color="orange.500">
+                          {userStats.progress?.rides ?? 0}
+                        </Text>
+                      </GridItem>
                       <GridItem>
                         <Text fontWeight="bold" mb={2}>Total Distance</Text>
                         <Text fontSize="2xl" color="blue.500">
@@ -420,9 +426,9 @@ const Home = () => {
                         </Text>
                       </GridItem>
                       <GridItem>
-                        <Text fontWeight="bold" mb={2}>Activities</Text>
+                        <Text fontWeight="bold" mb={2}>Active Days</Text>
                         <Text fontSize="2xl" color="orange.500">
-                          {userStats.progress?.rides ?? 0}
+                          {userStats.progress?.days ?? 0}
                         </Text>
                       </GridItem>
                     </Grid>
