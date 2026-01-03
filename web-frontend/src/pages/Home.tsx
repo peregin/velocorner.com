@@ -17,7 +17,6 @@ import {
   Progress,
   Spinner,
   SegmentGroup,
-  Stat,
   Flex,
 } from "@chakra-ui/react";
 import { List } from "@chakra-ui/react"
