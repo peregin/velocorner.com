@@ -354,27 +354,6 @@ const Home = () => {
                             </Box>
                           </HStack>
 
-                          {athleteProfile.unit && (
-                            <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={4}>
-                              <GridItem>
-                                <Text fontWeight="bold">Speed</Text>
-                                <Text>{athleteProfile.unit.speedLabel || '—'}</Text>
-                              </GridItem>
-                              <GridItem>
-                                <Text fontWeight="bold">Distance</Text>
-                                <Text>{athleteProfile.unit.distanceLabel || '—'}</Text>
-                              </GridItem>
-                              <GridItem>
-                                <Text fontWeight="bold">Elevation</Text>
-                                <Text>{athleteProfile.unit.elevationLabel || '—'}</Text>
-                              </GridItem>
-                              <GridItem>
-                                <Text fontWeight="bold">Temperature</Text>
-                                <Text>{athleteProfile.unit.temperatureLabel || '—'}</Text>
-                              </GridItem>
-                            </Grid>
-                          )}
-
                           <HStack justify="flex-end">
                             <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
                               Logout
