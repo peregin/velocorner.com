@@ -10,7 +10,6 @@ import {
   Image,
   Box,
   Grid,
-  GridItem,
   VStack,
   HStack,
   Card,
