@@ -28,7 +28,8 @@ import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
 import AchievementsWidget from "@/components/AchievementsWidget";
-import type { AthleteProfile, UserStats } from "../types/athlete";
+import ActivityStatsWidget from "@/components/ActivityStatsWidget";
+import type { AthleteProfile } from "../types/athlete";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -38,13 +39,11 @@ const Home = () => {
   const [wordCloud, setWordCloud] = useState<any[]>([]);
   const [activityTypes, setActivityTypes] = useState<string[]>(['Ride']);
   const [selectedActivityType, setSelectedActivityType] = useState('Ride');
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const initialLoadRef = useRef(false);
-  const statsFetchKeyRef = useRef<string | null>(null);
 
   const { isAuthenticated, authLoading, connect, logout } = useAuth();
 
@@ -75,29 +74,6 @@ const Home = () => {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      statsFetchKeyRef.current = null;
-      setUserStats(null);
-      return;
-    }
-
-    const currentYear = new Date().getFullYear().toString();
-    const currentKey = `${selectedActivityType}-${currentYear}`;
-    if (statsFetchKeyRef.current === currentKey) return;
-    statsFetchKeyRef.current = currentKey;
-
-    const fetchUserData = async () => {
-      try {
-        const stats = await ApiClient.profileStatistics(selectedActivityType, currentYear);
-        setUserStats(stats);
-      } catch (error) {
-        console.error('Error fetching user stats:', error);
-      }
-    };
-    fetchUserData();
-  }, [selectedActivityType, isAuthenticated]);
 
   const handleActivityTypeChange = (activityType: string) => {
     setSelectedActivityType(activityType);
@@ -209,19 +185,6 @@ const Home = () => {
     []
   );
 
-  const formatStatNumber = (value?: number, fractionDigits = 0) => {
-    if (typeof value !== "number" || Number.isNaN(value)) {
-      return "0";
-    }
-    return value.toFixed(fractionDigits);
-  };
-
-  const formatStatHours = (seconds?: number) => {
-    if (typeof seconds !== "number" || Number.isNaN(seconds)) {
-      return "0";
-    }
-    return (seconds / 3600).toFixed(1);
-  };
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
@@ -396,45 +359,11 @@ const Home = () => {
               </Card.Root>
 
               {/* User Statistics */}
-              {userStats && (
-                <Card.Root>
-                  <Card.Body>
-                    <Heading size="md" mb={4}>Your Statistics</Heading>
-                    <Grid templateColumns="repeat(auto-fit, minmax(150px, 1fr))" gap={6}>
-                      <GridItem>
-                        <Text fontWeight="bold" mb={2}>Activities</Text>
-                        <Text fontSize="2xl" color="orange.500">
-                          {userStats.progress?.rides ?? 0}
-                        </Text>
-                      </GridItem>
-                      <GridItem>
-                        <Text fontWeight="bold" mb={2}>Total Distance</Text>
-                        <Text fontSize="2xl" color="blue.500">
-                          {formatStatNumber(userStats.progress?.distance, 1)} {athleteProfile?.unit?.distanceLabel || 'km'}
-                        </Text>
-                      </GridItem>
-                      <GridItem>
-                        <Text fontWeight="bold" mb={2}>Total Elevation</Text>
-                        <Text fontSize="2xl" color="green.500">
-                          {formatStatNumber(userStats.progress?.elevation, 0)} {athleteProfile?.unit?.elevationLabel || 'm'}
-                        </Text>
-                      </GridItem>
-                      <GridItem>
-                        <Text fontWeight="bold" mb={2}>Total Time</Text>
-                        <Text fontSize="2xl" color="purple.500">
-                          {formatStatHours(userStats.progress?.movingTime)} h
-                        </Text>
-                      </GridItem>
-                      <GridItem>
-                        <Text fontWeight="bold" mb={2}>Active Days</Text>
-                        <Text fontSize="2xl" color="orange.500">
-                          {userStats.progress?.days ?? 0} d
-                        </Text>
-                      </GridItem>
-                    </Grid>
-                  </Card.Body>
-                </Card.Root>
-              )}
+              <ActivityStatsWidget 
+                selectedActivityType={selectedActivityType}
+                isAuthenticated={isAuthenticated}
+                athleteProfile={athleteProfile}
+              />
 
               {/* Best Achievements */}
               <AchievementsWidget
