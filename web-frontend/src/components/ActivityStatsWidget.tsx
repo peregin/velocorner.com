@@ -110,18 +110,21 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
                 width="120px"
               >
                 <Select.HiddenSelect />
-                <Select.Trigger>
-                  <Select.ValueText />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
+                <Select.Control>
+                  <Select.Trigger>
+                    <Select.ValueText />
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Trigger>
+                </Select.Control>
                 <Portal>
                   <Select.Positioner>
                     <Select.Content>
                       {availableYears.map((year) => (
                         <Select.Item key={year} item={{ value: year.toString(), label: year.toString() }}>
                           {year}
+                          <Select.ItemIndicator />
                         </Select.Item>
                       ))}
                     </Select.Content>
