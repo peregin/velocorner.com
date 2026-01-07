@@ -16,7 +16,7 @@
     "react-dom": "^19.2.3",
     "react-ga4": "2.1.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.11.0",
+    "react-router-dom": "^7.12.0",
     "super-tiny-icons": "^0.6.0",
     "typescript": "^5.9.3"
   },
