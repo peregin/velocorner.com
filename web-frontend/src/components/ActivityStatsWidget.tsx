@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Heading, Text, Grid, GridItem, Card, Box, HStack, VStack, Progress, Select, createListCollection } from "@chakra-ui/react";
+import { Heading, Text, Grid, GridItem, Card, Box, HStack, VStack, Progress, Select, createListCollection, Portal } from "@chakra-ui/react";
 import ApiClient from "../service/ApiClient";
 import type { UserStats, AthleteProfile } from "../types/athlete";
 
@@ -109,16 +109,24 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
                 size="sm"
                 width="120px"
               >
+                <Select.HiddenSelect />
                 <Select.Trigger>
                   <Select.ValueText />
                 </Select.Trigger>
-                <Select.Content>
-                  {availableYears.map((year) => (
-                    <Select.Item key={year} item={{ value: year.toString(), label: year.toString() }}>
-                      {year}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {availableYears.map((year) => (
+                        <Select.Item key={year} item={{ value: year.toString(), label: year.toString() }}>
+                          {year}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
               </Select.Root>
               <Text fontSize="sm" color="gray.500">Year To Date</Text>
             </HStack>
