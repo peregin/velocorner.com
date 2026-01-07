@@ -28,6 +28,7 @@ import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
 import Stats from "@/components/Stats";
 import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
+import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import type { AthleteProfile } from "../types/athlete";
 
 const showError = (title: string, description: string) => {
@@ -392,6 +393,25 @@ const Home = () => {
               <HStack align="stretch" gap={4} flexWrap="wrap">
                 <Box flex={1}><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
                 <Box flex={1}><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
+              </HStack>
+
+              <HStack align="stretch" gap={4} flexWrap="wrap">
+                <Box flex={1}>
+                  <TopActivitiesWidget
+                    title="Longest Activities"
+                    action="distance"
+                    selectedActivityType={selectedActivityType}
+                    athleteProfile={athleteProfile}
+                  />
+                </Box>
+                <Box flex={1}>
+                  <TopActivitiesWidget
+                    title="Most Elevation"
+                    action="elevation"
+                    selectedActivityType={selectedActivityType}
+                    athleteProfile={athleteProfile}
+                  />
+                </Box>
               </HStack>
 
               <Card.Root>
