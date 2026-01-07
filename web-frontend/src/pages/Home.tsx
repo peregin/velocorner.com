@@ -305,7 +305,7 @@ const Home = () => {
                               </Avatar.Fallback>
                             </Avatar.Root>
                             <Box>
-                              <Heading size="md">{athleteProfile.displayName}</Heading>
+                              <Heading size="md">Hello, {athleteProfile.displayName}</Heading>
                               {athleteProfile.displayLocation && (
                                 <Text color="gray.500">{athleteProfile.displayLocation}</Text>
                               )}
