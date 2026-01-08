@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import ApiClient from "../service/ApiClient";
 import { useAuth } from "../service/auth";
 import { getInitials, formatTimestamp } from "../service/formatters";
@@ -15,10 +15,14 @@ import {
   Card,
   Progress,
   Spinner,
-  SegmentGroup
+  SegmentGroup,
+  Select,
+  createListCollection,
+  Portal
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
-import strava from 'super-tiny-icons/images/svg/strava.svg'
+import strava from 'super-tiny-icons/images/svg/strava.svg';
+import { FaSync, FaSignOutAlt } from 'react-icons/fa';
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
 import LineSeriesChart from "@/components/charts/LineSeriesChart";
@@ -43,6 +47,7 @@ const Home = () => {
   const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [refreshLoading, setRefreshLoading] = useState(false);
   const initialLoadRef = useRef(false);
 
   const { isAuthenticated, authLoading, connect, logout } = useAuth();
@@ -121,6 +126,38 @@ const Home = () => {
     await logout();
     setLogoutLoading(false);
   };
+
+  const handleRefresh = async () => {
+    // Navigate to /refresh endpoint which handles the refresh and redirects back
+    // This matches the old implementation behavior
+    setRefreshLoading(true);
+    window.location.href = '/refresh';
+  };
+
+  const handleUnitsChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUnit = event.target.value;
+    try {
+      await ApiClient.updateUnits(selectedUnit);
+      // Reload the page to update the unit of measurement, similar to the old implementation
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating units:', error);
+      showError("Update Failed", "Unable to update units. Please try again.");
+    }
+  };
+
+  // Determine current unit type from distanceLabel
+  const currentUnit = athleteProfile?.unit?.distanceLabel === 'mi' ? 'imperial' : 'metric';
+
+  // Create collection for Select component
+  const unitsCollection = useMemo(() => {
+    return createListCollection({
+      items: [
+        { value: 'metric', label: 'Metric' },
+        { value: 'imperial', label: 'Imperial' }
+      ],
+    });
+  }, []);
 
   // fetchers for charts
   const fetchYearlyHeatmap = useCallback(
@@ -317,8 +354,55 @@ const Home = () => {
                             </Box>
                           </HStack>
 
-                          <HStack justify="flex-end">
+                          <HStack justify="flex-end" gap={3} flexWrap="wrap">
+                            <Button 
+                              colorPalette="orange" 
+                              onClick={handleRefresh} 
+                              loading={refreshLoading}
+                            >
+                              <FaSync style={{ marginRight: '8px' }} />
+                              Refresh
+                            </Button>
+                            <Select.Root
+                              collection={unitsCollection}
+                              value={[currentUnit]}
+                              onValueChange={(e) => {
+                                if (e.value && e.value[0]) {
+                                  const selectedUnit = e.value[0];
+                                  handleUnitsChange({
+                                    target: { value: selectedUnit }
+                                  } as React.ChangeEvent<HTMLSelectElement>);
+                                }
+                              }}
+                              size="sm"
+                              width="150px"
+                            >
+                              <Select.HiddenSelect />
+                              <Select.Control>
+                                <Select.Trigger>
+                                  <Select.ValueText />
+                                  <Select.IndicatorGroup>
+                                    <Select.Indicator />
+                                  </Select.IndicatorGroup>
+                                </Select.Trigger>
+                              </Select.Control>
+                              <Portal>
+                                <Select.Positioner>
+                                  <Select.Content>
+                                    <Select.Item item={{ value: 'metric', label: 'Metric' }}>
+                                      Metric
+                                      <Select.ItemIndicator />
+                                    </Select.Item>
+                                    <Select.Item item={{ value: 'imperial', label: 'Imperial' }}>
+                                      Imperial
+                                      <Select.ItemIndicator />
+                                    </Select.Item>
+                                  </Select.Content>
+                                </Select.Positioner>
+                              </Portal>
+                            </Select.Root>
                             <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                              <FaSignOutAlt style={{ marginRight: '8px' }} />
                               Logout
                             </Button>
                           </HStack>
