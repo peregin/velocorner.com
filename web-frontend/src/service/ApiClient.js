@@ -32,7 +32,19 @@ function request(method, path, data) {
       error.response = response;
       throw error;
     })
-    .then(r => r.json());
+    .then(async r => {
+      // Check if response has content before parsing JSON
+      const contentLength = r.headers.get('content-length');
+      
+      // If no content, return null (e.g., PUT requests with no response body)
+      if (contentLength === '0') {
+        return null;
+      }
+      
+      // Try to parse as JSON, but handle empty responses gracefully
+      const text = await r.text();
+      return text ? JSON.parse(text) : null;
+    });
 }
 
 const get = (path) => request('GET', path);
