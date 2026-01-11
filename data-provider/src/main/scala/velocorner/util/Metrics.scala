@@ -48,6 +48,6 @@ trait Metrics extends LazyLogging {
 
   protected def message(text: String, mark: Long): String = {
     val elapsed = System.currentTimeMillis() - mark
-    s"$text took $elapsed millis"
+    s"$text took \u001b[33m$elapsed millis\u001b[0m"
   }
 }

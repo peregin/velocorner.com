@@ -15,7 +15,7 @@ trait WebMetrics extends Metrics {
     fun.andThen { g =>
       g.onComplete { _ =>
         val elapsed = System.currentTimeMillis() - mark
-        logger.info(s"$text took $elapsed millis")
+        logger.info(s"$text took \u001b[33m$elapsed millis\u001b[0m")
       }
       g
     }
