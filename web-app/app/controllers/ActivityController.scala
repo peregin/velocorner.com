@@ -176,16 +176,16 @@ class ActivityController @Inject() (
             storage.maxAverageTemperature(account.athleteId, activity)
           ).mapN {
             case (
-              maxAverageSpeed,
-              maxDistance,
-              maxTime,
-              maxElevation,
-              maxAveragePower,
-              maxHeartRate,
-              maxAverageHeartRate,
-              minTemperature,
-              maxTemperature
-            ) =>
+                  maxAverageSpeed,
+                  maxDistance,
+                  maxTime,
+                  maxElevation,
+                  maxAveragePower,
+                  maxHeartRate,
+                  maxAverageHeartRate,
+                  minTemperature,
+                  maxTemperature
+                ) =>
               Achievements(
                 maxAverageSpeed = maxAverageSpeed,
                 maxDistance = maxDistance,
