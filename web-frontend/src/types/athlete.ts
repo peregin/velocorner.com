@@ -18,7 +18,21 @@ export type AthleteProfile = {
   avatarUrl?: string;
   lastUpdate?: string;
   role?: AthleteRole;
-  unit?: AthleteUnits;
+  unit?: "metric" | "imperial";
+};
+
+export const getAthleteUnits = (unit?: "metric" | "imperial"): AthleteUnits => {
+  return unit === "imperial" ? {
+    speedLabel: "mph",
+    distanceLabel: "mi",
+    elevationLabel: "ft",
+    temperatureLabel: "°F"
+  } : {
+    speedLabel: "km/h",
+    distanceLabel: "km",
+    elevationLabel: "m",
+    temperatureLabel: "°C"
+  };
 };
 
 export type DemoStatistic = {

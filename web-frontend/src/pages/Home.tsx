@@ -34,6 +34,7 @@ import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import type { AthleteProfile } from "../types/athlete";
+import { getAthleteUnits } from "../types/athlete";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -146,8 +147,8 @@ const Home = () => {
     }
   };
 
-  // Determine current unit type from distanceLabel
-  const currentUnit = athleteProfile?.unit?.distanceLabel === 'mi' ? 'imperial' : 'metric';
+  
+  const getProfileUnits = () => getAthleteUnits(athleteProfile?.unit);
 
   // Create collection for Select component
   const unitsCollection = useMemo(() => {
@@ -288,10 +289,10 @@ const Home = () => {
                 <WordCloud words={wordCloud} />
               </Box>
               <Box flex="0 0 30%">
-                <BarChart title="Year To Date Distance (Sample)" unit={athleteProfile?.unit?.distanceLabel || 'km'}
+                <BarChart title="Year To Date Distance (Sample)" unit={getProfileUnits().distanceLabel}
                   fetchSeries={fetchDemoYtdDistance} height={350} /></Box>
               <Box flex={1}>
-                <LineSeriesChart title="Yearly Elevation (Sample)" unit={athleteProfile?.unit?.elevationLabel || 'm'}
+                <LineSeriesChart title="Yearly Elevation (Sample)" unit={getProfileUnits().elevationLabel}
                   fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} /></Box>
             </HStack>
 
@@ -300,7 +301,7 @@ const Home = () => {
             <Card.Root>
               <Card.Body>
                 <CalendarHeatmap title="Latest Activities (Sample)"
-                  fetchDaily={fetchDemoDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
+                  fetchDaily={fetchDemoDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={8} />
               </Card.Body>
             </Card.Root>
 
@@ -365,7 +366,7 @@ const Home = () => {
                             </Button>
                             <Select.Root
                               collection={unitsCollection}
-                              value={[currentUnit]}
+                              value={[athleteProfile?.unit ?? 'metric']}
                               onValueChange={(e) => {
                                 if (e.value && e.value[0]) {
                                   const selectedUnit = e.value[0];
@@ -457,16 +458,16 @@ const Home = () => {
               />
 
               {/* Charts parity to Play widgets */}
-              <LineSeriesChart title="Yearly Heatmap (Distance)" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
+              <LineSeriesChart title="Yearly Heatmap (Distance)" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYtdDistance} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={athleteProfile?.unit?.distanceLabel || 'km'} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
+                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYtdDistance} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
               </HStack>
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={athleteProfile?.unit?.elevationLabel || 'm'} fetchSeries={fetchYtdElevation} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={athleteProfile?.unit?.elevationLabel || 'm'} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
+                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYtdElevation} height={350} /></Box>
+                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
               </HStack>
 
               <HStack align="stretch" gap={4} flexWrap="wrap">
@@ -500,7 +501,7 @@ const Home = () => {
 
               <Card.Root>
                 <Card.Body>
-                  <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={athleteProfile?.unit?.distanceLabel || 'km'} maxMonths={8} />
+                  <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={8} />
                 </Card.Body>
               </Card.Root>
 
