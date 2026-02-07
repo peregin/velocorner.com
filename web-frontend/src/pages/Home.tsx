@@ -337,8 +337,8 @@ const Home = () => {
                         </HStack>
                       ) : athleteProfile ? (
                         <HStack gap={4} align="stretch">
-                          <HStack gap={4} align="center">
-                            <Avatar.Root size="xl">
+                          <HStack gap={4} align="top">
+                            <Avatar.Root size="2xl">
                               {athleteProfile.avatarUrl && (
                                 <Avatar.Image
                                   src={athleteProfile.avatarUrl}
