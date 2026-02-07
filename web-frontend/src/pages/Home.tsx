@@ -33,6 +33,7 @@ import Stats from "@/components/Stats";
 import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
+import QuickStats from "@/components/QuickStats";
 import type { AthleteProfile } from "../types/athlete";
 import { getAthleteUnits } from "../types/athlete";
 import { HiRefresh } from "react-icons/hi";
@@ -336,82 +337,85 @@ const Home = () => {
                           <Text>Loading your profile...</Text>
                         </HStack>
                       ) : athleteProfile ? (
-                        <HStack gap={4} align="stretch">
-                          <HStack gap={4} align="top">
-                            <Avatar.Root size="2xl">
-                              {athleteProfile.avatarUrl && (
-                                <Avatar.Image
-                                  src={athleteProfile.avatarUrl}
-                                  alt={athleteProfile.displayName}
-                                />
-                              )}
-                              <Avatar.Fallback>
-                                {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
-                              </Avatar.Fallback>
-                            </Avatar.Root>
-                            <Box>
-                              <Heading size="lg">Hello, {athleteProfile.displayName}</Heading>
-                              {athleteProfile.displayLocation && (
-                                <Text color="gray.500">{athleteProfile.displayLocation}</Text>
-                              )}
-                              {athleteProfile?.lastUpdate && (
-                                <Text fontSize="xs" color="gray.500">
-                                  Last updated: {formatTimestamp(athleteProfile?.lastUpdate)}
-                                </Text>
-                              )}
-                            </Box>
-                          </HStack>
+                        <VStack gap={4} align="stretch">
+                          <HStack gap={4} align="stretch">
+                            <HStack gap={4} align="top">
+                              <Avatar.Root size="2xl">
+                                {athleteProfile.avatarUrl && (
+                                  <Avatar.Image
+                                    src={athleteProfile.avatarUrl}
+                                    alt={athleteProfile.displayName}
+                                  />
+                                )}
+                                <Avatar.Fallback>
+                                  {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
+                                </Avatar.Fallback>
+                              </Avatar.Root>
+                              <Box>
+                                <Heading size="lg">Hello, {athleteProfile.displayName}</Heading>
+                                {athleteProfile.displayLocation && (
+                                  <Text color="gray.500">{athleteProfile.displayLocation}</Text>
+                                )}
+                                {athleteProfile?.lastUpdate && (
+                                  <Text fontSize="xs" color="gray.500">
+                                    Last updated: {formatTimestamp(athleteProfile?.lastUpdate)}
+                                  </Text>
+                                )}
+                              </Box>
+                            </HStack>
 
-                          <VStack gap={2} align="stretch">
-                            <Button
-                              colorPalette="orange"
-                              onClick={handleRefresh}
-                              loading={refreshLoading}
-                            >
-                              <HiRefresh />Refresh
-                            </Button>
-                            <Select.Root
-                              collection={unitsCollection}
-                              value={[athleteProfile?.unit ?? 'metric']}
-                              onValueChange={(e) => {
-                                if (e.value && e.value[0]) {
-                                  const selectedUnit = e.value[0] as "metric" | "imperial";
-                                  handleUnitsChange(selectedUnit);
-                                }
-                              }}
-                              size="sm"
-                              width="150px"
-                            >
-                              <Select.HiddenSelect />
-                              <Select.Control>
-                                <Select.Trigger>
-                                  <Select.ValueText />
-                                  <Select.IndicatorGroup>
-                                    <Select.Indicator />
-                                  </Select.IndicatorGroup>
-                                </Select.Trigger>
-                              </Select.Control>
-                              <Portal>
-                                <Select.Positioner>
-                                  <Select.Content>
-                                    <Select.Item item={{ value: 'metric', label: 'Metric' }}>
-                                      Metric
-                                      <Select.ItemIndicator />
-                                    </Select.Item>
-                                    <Select.Item item={{ value: 'imperial', label: 'Imperial' }}>
-                                      Imperial
-                                      <Select.ItemIndicator />
-                                    </Select.Item>
-                                  </Select.Content>
-                                </Select.Positioner>
-                              </Portal>
-                            </Select.Root>
-                            <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
-                              <FaSignOutAlt style={{ marginRight: '8px' }} />
-                              Logout
-                            </Button>
-                          </VStack>
-                        </HStack>
+                            <VStack gap={2} align="stretch">
+                              <Button
+                                colorPalette="orange"
+                                onClick={handleRefresh}
+                                loading={refreshLoading}
+                              >
+                                <HiRefresh />Refresh
+                              </Button>
+                              <Select.Root
+                                collection={unitsCollection}
+                                value={[athleteProfile?.unit ?? 'metric']}
+                                onValueChange={(e) => {
+                                  if (e.value && e.value[0]) {
+                                    const selectedUnit = e.value[0] as "metric" | "imperial";
+                                    handleUnitsChange(selectedUnit);
+                                  }
+                                }}
+                                size="sm"
+                                width="150px"
+                              >
+                                <Select.HiddenSelect />
+                                <Select.Control>
+                                  <Select.Trigger>
+                                    <Select.ValueText />
+                                    <Select.IndicatorGroup>
+                                      <Select.Indicator />
+                                    </Select.IndicatorGroup>
+                                  </Select.Trigger>
+                                </Select.Control>
+                                <Portal>
+                                  <Select.Positioner>
+                                    <Select.Content>
+                                      <Select.Item item={{ value: 'metric', label: 'Metric' }}>
+                                        Metric
+                                        <Select.ItemIndicator />
+                                      </Select.Item>
+                                      <Select.Item item={{ value: 'imperial', label: 'Imperial' }}>
+                                        Imperial
+                                        <Select.ItemIndicator />
+                                      </Select.Item>
+                                    </Select.Content>
+                                  </Select.Positioner>
+                                </Portal>
+                              </Select.Root>
+                              <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                                <FaSignOutAlt style={{ marginRight: '8px' }} />
+                                Logout
+                              </Button>
+                            </VStack>
+                          </HStack>
+                          <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
+                        </VStack>
                       ) : (
                         <Text>No profile information available.</Text>
                       )}
