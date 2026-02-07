@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import ApiClient from "../service/ApiClient";
 import { useAuth } from "../service/auth";
 import { getInitials, formatTimestamp } from "../service/formatters";
@@ -20,9 +21,10 @@ import {
   createListCollection,
   Portal
 } from "@chakra-ui/react";
+import AutocompleteCombobox from "../components/ui/AutocompleteCombobox";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaSignOutAlt, FaSearch } from 'react-icons/fa';
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
 import LineSeriesChart from "@/components/charts/LineSeriesChart";
@@ -51,9 +53,14 @@ const Home = () => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [refreshLoading, setRefreshLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState<Array<{ value: string; label: string; activity: any }>>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const searchTimeoutRef = useRef<number | null>(null);
   const initialLoadRef = useRef(false);
 
   const { isAuthenticated, authLoading, connect, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (initialLoadRef.current) return;
@@ -155,6 +162,96 @@ const Home = () => {
       showError("Update Failed", "Unable to update units. Please try again.");
     }
   };
+
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (!query.trim() || !isAuthenticated) {
+      setSearchSuggestions([]);
+      return;
+    }
+
+    try {
+      setSuggestionsLoading(true);
+      const response = await ApiClient.suggestActivities(query);
+      // API returns { suggestions: [{ value: string, data: string (JSON) }] }
+      if (response && response.suggestions) {
+        const suggestions = response.suggestions.map((s: any) => {
+          try {
+            const activity = typeof s.data === 'string' ? JSON.parse(s.data) : s.data;
+            return {
+              value: s.value || activity.name,
+              label: s.value || activity.name,
+              activity: activity
+            };
+          } catch (e) {
+            return {
+              value: s.value,
+              label: s.value,
+              activity: null
+            };
+          }
+        });
+        setSearchSuggestions(suggestions);
+      } else {
+        // Handle case where API might return activities directly
+        setSearchSuggestions([]);
+      }
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      setSearchSuggestions([]);
+    } finally {
+      setSuggestionsLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  const handleSearchInputChange = (value: string) => {
+    setSearchQuery(value);
+    
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Debounce API calls
+    if (value.trim().length >= 2) {
+      searchTimeoutRef.current = window.setTimeout(() => {
+        fetchSuggestions(value);
+      }, 300);
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleSuggestionSelect = (selectedValue: string) => {
+    const suggestion = searchSuggestions.find(s => s.value === selectedValue);
+    if (suggestion && suggestion.activity && suggestion.activity.id) {
+      // Navigate to search page with activity ID (similar to old implementation)
+      navigate(`/search?aid=${suggestion.activity.id}`);
+    } else {
+      // Fallback to query search
+      handleSearch();
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleSearchKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
 
   const getProfileUnits = () => getAthleteUnits(athleteProfile?.unit);
@@ -415,6 +512,28 @@ const Home = () => {
                             </VStack>
                           </HStack>
                           <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
+                          <HStack gap={2} width="100%" maxW="600px">
+                            <Box flex={1}>
+                              <AutocompleteCombobox
+                                value={searchQuery}
+                                items={searchSuggestions as any}
+                                placeholder="Search for activities ..."
+                                emptyMessage={suggestionsLoading ? "Loading..." : "No activities found"}
+                                onInputValueChange={handleSearchInputChange}
+                                onSelect={handleSuggestionSelect}
+                                onKeyPress={handleSearchKeyPress}
+                                itemToString={(item: any) => item?.label || item?.value || item || ''}
+                                itemToValue={(item: any) => item?.value || item || ''}
+                              />
+                            </Box>
+                            <Button
+                              colorPalette="blue"
+                              onClick={handleSearch}
+                            >
+                              <FaSearch style={{ marginRight: '8px' }} />
+                              Search
+                            </Button>
+                          </HStack>
                         </VStack>
                       ) : (
                         <Text>No profile information available.</Text>

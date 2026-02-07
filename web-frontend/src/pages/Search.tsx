@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import ApiClient from "../service/ApiClient";
 import {
   Box,
   VStack,
   HStack,
-  Input,
   Button,
   Text,
   Card,
@@ -17,15 +17,73 @@ import {
 } from "@chakra-ui/react";
 import { LuSearch, LuClock, LuInfo } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
+import AutocompleteCombobox from "../components/ui/AutocompleteCombobox";
 
 const Search = () => {
-  const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchParams] = useSearchParams();
+  const urlQuery = searchParams.get('q') || '';
+  const urlActivityId = searchParams.get('aid') || '';
+  const [query, setQuery] = useState(urlQuery);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchSuggestions, setSearchSuggestions] = useState<Array<{ value: string; label: string; activity: any }>>([]);
   const [loading, setLoading] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const searchTimeoutRef = useRef<number | null>(null);
 
-  const handleSearch = async () => {
+  // Helper to parse API response - handles both formats
+  const parseSuggestionsResponse = (response: any): any[] => {
+    if (!response) return [];
+    
+    // Handle format: { suggestions: [{ value: string, data: string (JSON) }] }
+    if (response.suggestions && Array.isArray(response.suggestions)) {
+      return response.suggestions.map((s: any) => {
+        try {
+          const activity = typeof s.data === 'string' ? JSON.parse(s.data) : s.data;
+          return activity;
+        } catch (e) {
+          return null;
+        }
+      }).filter((a: any) => a !== null);
+    }
+    
+    // Handle format: array of activities directly
+    if (Array.isArray(response)) {
+      return response;
+    }
+    
+    return [];
+  };
+
+  const fetchSuggestions = useCallback(async (query: string) => {
     if (!query.trim()) {
+      setSearchSuggestions([]);
+      return;
+    }
+
+    try {
+      setSuggestionsLoading(true);
+      const response = await ApiClient.suggestActivities(query);
+      const suggestions = parseSuggestionsResponse(response);
+      
+      // Format for AutocompleteCombobox
+      const formattedSuggestions = suggestions.map((activity: any) => ({
+        value: activity.name || '',
+        label: activity.name || '',
+        activity: activity
+      }));
+      
+      setSearchSuggestions(formattedSuggestions);
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      setSearchSuggestions([]);
+    } finally {
+      setSuggestionsLoading(false);
+    }
+  }, []);
+
+  const performSearch = async (searchTerm: string) => {
+    if (!searchTerm.trim()) {
       toaster.create({
         title: "Search Error",
         description: "Please enter a search term",
@@ -39,7 +97,8 @@ const Search = () => {
       setLoading(true);
       setHasSearched(true);
       
-      const results = await ApiClient.suggestActivities(query);
+      const response = await ApiClient.suggestActivities(searchTerm);
+      const results = parseSuggestionsResponse(response);
       setSearchResults(results);
       
       if (results.length === 0) {
@@ -63,7 +122,93 @@ const Search = () => {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const performActivitySearch = async (activityId: string) => {
+    try {
+      setLoading(true);
+      setHasSearched(true);
+      
+      const activity = await ApiClient.getActivity(activityId);
+      if (activity) {
+        setSearchResults([activity]);
+        setQuery(activity.name || '');
+      } else {
+        setSearchResults([]);
+        toaster.create({
+          title: "Not Found",
+          description: "Activity not found",
+          status: "warning",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching activity:', error);
+      toaster.create({
+        title: "Search Error",
+        description: "Failed to load activity. Please try again.",
+        status: "error",
+        duration: 5000,
+      });
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchInputChange = (value: string) => {
+    setQuery(value);
+    
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Debounce API calls for autocomplete
+    if (value.trim().length >= 2) {
+      searchTimeoutRef.current = window.setTimeout(() => {
+        fetchSuggestions(value);
+      }, 300);
+    } else {
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleSuggestionSelect = (selectedValue: string) => {
+    const suggestion = searchSuggestions.find(s => s.value === selectedValue);
+    if (suggestion && suggestion.activity && suggestion.activity.id) {
+      // Navigate to search page with activity ID
+      window.history.replaceState({}, '', `/search?aid=${suggestion.activity.id}`);
+      performActivitySearch(suggestion.activity.id.toString());
+    } else {
+      // Fallback to query search
+      handleSearch();
+    }
+  };
+
+  const handleSearch = async () => {
+    await performSearch(query);
+  };
+
+  // Auto-search when query or activity ID parameter is present in URL
+  useEffect(() => {
+    if (urlActivityId) {
+      performActivitySearch(urlActivityId);
+    } else if (urlQuery) {
+      setQuery(urlQuery);
+      performSearch(urlQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQuery, urlActivityId]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
@@ -99,20 +244,26 @@ const Search = () => {
           <Card.Body>
             <VStack spacing={4}>
               <HStack width="100%" maxW="600px">
-                <Input
-                  placeholder="Search activities (e.g., 'morning ride', 'mountain trail')"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  size="lg"
-                />
+                <Box flex={1}>
+                  <AutocompleteCombobox
+                    value={query}
+                    items={searchSuggestions as any}
+                    placeholder="Search activities (e.g., 'morning ride', 'mountain trail')"
+                    emptyMessage={suggestionsLoading ? "Loading..." : "No activities found"}
+                    onInputValueChange={handleSearchInputChange}
+                    onSelect={handleSuggestionSelect}
+                    onKeyPress={handleKeyPress}
+                    itemToString={(item: any) => item?.label || item?.value || item || ''}
+                    itemToValue={(item: any) => item?.value || item || ''}
+                  />
+                </Box>
                 <Button
                   colorPalette="blue"
                   size="lg"
                   onClick={handleSearch}
                   isLoading={loading}
-                  leftIcon={<LuSearch />}
                 >
+                  <LuSearch style={{ marginRight: '8px' }} />
                   Search
                 </Button>
               </HStack>
