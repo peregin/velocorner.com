@@ -330,14 +330,13 @@ const Home = () => {
                 <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={4}>
                   <Box>
                     <VStack gap={4} align="stretch">
-                      <Heading size="md">Your Profile</Heading>
                       {profileLoading ? (
                         <HStack gap={3}>
                           <Spinner />
                           <Text>Loading your profile...</Text>
                         </HStack>
                       ) : athleteProfile ? (
-                        <VStack gap={4} align="stretch">
+                        <HStack gap={4} align="stretch">
                           <HStack gap={4} align="center">
                             <Avatar.Root size="xl">
                               {athleteProfile.avatarUrl && (
@@ -351,7 +350,7 @@ const Home = () => {
                               </Avatar.Fallback>
                             </Avatar.Root>
                             <Box>
-                              <Heading size="md">Hello, {athleteProfile.displayName}</Heading>
+                              <Heading size="lg">Hello, {athleteProfile.displayName}</Heading>
                               {athleteProfile.displayLocation && (
                                 <Text color="gray.500">{athleteProfile.displayLocation}</Text>
                               )}
@@ -363,7 +362,7 @@ const Home = () => {
                             </Box>
                           </HStack>
 
-                          <HStack justify="flex-end" gap={3} flexWrap="wrap">
+                          <VStack gap={2} align="stretch">
                             <Button
                               colorPalette="orange"
                               onClick={handleRefresh}
@@ -411,8 +410,8 @@ const Home = () => {
                               <FaSignOutAlt style={{ marginRight: '8px' }} />
                               Logout
                             </Button>
-                          </HStack>
-                        </VStack>
+                          </VStack>
+                        </HStack>
                       ) : (
                         <Text>No profile information available.</Text>
                       )}
