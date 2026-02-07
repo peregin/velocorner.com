@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg';
-import { FaSync, FaSignOutAlt } from 'react-icons/fa';
+import { FaSignOutAlt } from 'react-icons/fa';
 import WordCloud from "../components/charts/WordCloud";
 import Weather from "@/components/charts/Weather";
 import LineSeriesChart from "@/components/charts/LineSeriesChart";
@@ -35,6 +35,7 @@ import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import type { AthleteProfile } from "../types/athlete";
 import { getAthleteUnits } from "../types/athlete";
+import { HiRefresh } from "react-icons/hi";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -135,19 +136,26 @@ const Home = () => {
     window.location.href = '/refresh';
   };
 
-  const handleUnitsChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedUnit = event.target.value;
+  const handleUnitsChange = async (selectedUnit: "metric" | "imperial") => {
     try {
       await ApiClient.updateUnits(selectedUnit);
-      // Reload the page to update the unit of measurement, similar to the old implementation
+      if (athleteProfile) {
+        setAthleteProfile({
+          ...athleteProfile,
+          unit: selectedUnit
+        });
+      }
+      // TODO: Reload the page to update the unit of measurement, similar to the old implementation, the conversion is calculated on the BE side
+      // For now we just reload the page to get the updated units
       window.location.reload();
+
     } catch (error) {
       console.error('Error updating units:', error);
       showError("Update Failed", "Unable to update units. Please try again.");
     }
   };
 
-  
+
   const getProfileUnits = () => getAthleteUnits(athleteProfile?.unit);
 
   // Create collection for Select component
@@ -356,23 +364,20 @@ const Home = () => {
                           </HStack>
 
                           <HStack justify="flex-end" gap={3} flexWrap="wrap">
-                            <Button 
-                              colorPalette="orange" 
-                              onClick={handleRefresh} 
+                            <Button
+                              colorPalette="orange"
+                              onClick={handleRefresh}
                               loading={refreshLoading}
                             >
-                              <FaSync style={{ marginRight: '8px' }} />
-                              Refresh
+                              <HiRefresh />Refresh
                             </Button>
                             <Select.Root
                               collection={unitsCollection}
                               value={[athleteProfile?.unit ?? 'metric']}
                               onValueChange={(e) => {
                                 if (e.value && e.value[0]) {
-                                  const selectedUnit = e.value[0];
-                                  handleUnitsChange({
-                                    target: { value: selectedUnit }
-                                  } as React.ChangeEvent<HTMLSelectElement>);
+                                  const selectedUnit = e.value[0] as "metric" | "imperial";
+                                  handleUnitsChange(selectedUnit);
                                 }
                               }}
                               size="sm"
@@ -444,7 +449,7 @@ const Home = () => {
               </Card.Root>
 
               {/* User Statistics */}
-              <ActivityStatsWidget 
+              <ActivityStatsWidget
                 selectedActivityType={selectedActivityType}
                 isAuthenticated={isAuthenticated}
                 athleteProfile={athleteProfile}
