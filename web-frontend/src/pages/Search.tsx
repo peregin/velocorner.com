@@ -87,7 +87,7 @@ const Search = () => {
       toaster.create({
         title: "Search Error",
         description: "Please enter a search term",
-        status: "warning",
+        type: "warning",
         duration: 3000,
       });
       return;
@@ -105,7 +105,7 @@ const Search = () => {
         toaster.create({
           title: "No Results",
           description: "No activities found matching your search",
-          status: "info",
+          type: "info",
           duration: 3000,
         });
       }
@@ -114,7 +114,7 @@ const Search = () => {
       toaster.create({
         title: "Search Error",
         description: "Failed to search activities. Please try again.",
-        status: "error",
+        type: "error",
         duration: 5000,
       });
     } finally {
@@ -136,7 +136,7 @@ const Search = () => {
         toaster.create({
           title: "Not Found",
           description: "Activity not found",
-          status: "warning",
+          type: "warning",
           duration: 3000,
         });
       }
@@ -145,7 +145,7 @@ const Search = () => {
       toaster.create({
         title: "Search Error",
         description: "Failed to load activity. Please try again.",
-        status: "error",
+        type: "error",
         duration: 5000,
       });
       setSearchResults([]);
@@ -214,23 +214,23 @@ const Search = () => {
     }
   };
 
-  const formatDistance = (distance) => {
+  const formatDistance = (distance: number) => {
     return `${(distance / 1000).toFixed(1)} km`;
   };
 
-  const formatDuration = (duration) => {
+  const formatDuration = (duration: number) => {
     const hours = Math.floor(duration / 3600);
     const minutes = Math.floor((duration % 3600) / 60);
     return `${hours}h ${minutes}m`;
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      <VStack spacing={8} align="stretch">
+      <VStack gap={8} align="stretch">
         {/* Header */}
         <Box>
           <Heading size="lg" mb={2}>Activity Search</Heading>
@@ -242,7 +242,7 @@ const Search = () => {
         {/* Search Form */}
         <Card.Root>
           <Card.Body>
-            <VStack spacing={4}>
+            <VStack gap={4}>
               <HStack width="100%" maxW="600px">
                 <Box flex={1}>
                   <AutocompleteCombobox
@@ -261,7 +261,7 @@ const Search = () => {
                   colorPalette="blue"
                   size="lg"
                   onClick={handleSearch}
-                  isLoading={loading}
+                  loading={loading}
                 >
                   <LuSearch style={{ marginRight: '8px' }} />
                   Search
@@ -275,7 +275,7 @@ const Search = () => {
         {hasSearched && (
           <Card.Root>
             <Card.Body>
-              <VStack spacing={4} align="stretch">
+              <VStack gap={4} align="stretch">
                 <HStack justify="space-between">
                   <Heading size="md">
                     Search Results
@@ -295,12 +295,12 @@ const Search = () => {
                 )}
 
                 {searchResults.length > 0 && (
-                  <List spacing={3}>
+                  <List.Root gap={3}>
                     {searchResults.map((activity, index) => (
-                      <ListItem key={activity.id || index}>
-                        <Card variant="outline">
-                          <CardBody>
-                            <VStack align="stretch" spacing={2}>
+                      <List.Item key={activity.id || index}>
+                        <Card.Root variant="outline">
+                          <Card.Body>
+                            <VStack align="stretch" gap={2}>
                               <HStack justify="space-between">
                                 <Text fontWeight="bold" fontSize="lg">
                                   {activity.name}
@@ -314,7 +314,7 @@ const Search = () => {
                                 {activity.description || "No description available"}
                               </Text>
                               
-                              <HStack spacing={6} color="gray.500" fontSize="sm">
+                              <HStack gap={6} color="gray.500" fontSize="sm">
                                 <HStack>
                                   <LuClock />
                                   <Text>{formatDate(activity.startDate)}</Text>
@@ -339,11 +339,11 @@ const Search = () => {
                                 </Text>
                               </HStack>
                             </VStack>
-                          </CardBody>
-                        </Card>
-                      </ListItem>
+                          </Card.Body>
+                        </Card.Root>
+                      </List.Item>
                     ))}
-                  </List>
+                  </List.Root>
                 )}
               </VStack>
             </Card.Body>
