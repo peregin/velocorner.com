@@ -10,7 +10,7 @@ import {
   Flex,
   Stack
 } from '@chakra-ui/react';
-import AutocompleteCombobox from '../ui/AutocompleteCombobox.jsx';
+import AutocompleteCombobox from '../AutocompleteCombobox.jsx';
 import { HiRefresh } from "react-icons/hi";
 import Highcharts from 'highcharts';
 // needed the import to load the module

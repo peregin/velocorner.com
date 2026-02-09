@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { LuSearch, LuClock, LuInfo } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
-import AutocompleteCombobox from "../components/ui/AutocompleteCombobox";
+import AutocompleteCombobox from "../components/AutocompleteCombobox";
 
 const Search = () => {
   const [searchParams] = useSearchParams();

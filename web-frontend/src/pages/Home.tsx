@@ -21,7 +21,7 @@ import {
   createListCollection,
   Portal
 } from "@chakra-ui/react";
-import AutocompleteCombobox from "../components/ui/AutocompleteCombobox";
+import AutocompleteCombobox from "../components/AutocompleteCombobox";
 import { toaster } from "@/components/ui/toaster";
 import strava from 'super-tiny-icons/images/svg/strava.svg';
 import { FaSignOutAlt, FaSearch } from 'react-icons/fa';
