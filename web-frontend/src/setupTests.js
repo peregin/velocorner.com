@@ -103,4 +103,21 @@ beforeAll(() => {
       unobserve() {}
     },
   });
+
+  // Mock console.warn to suppress specific warnings during tests
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    // Suppress warnings about nested <p> tags and act() warnings
+    const message = args.join(' ');
+    if (
+      message.includes('cannot be a descendant of <p>') ||
+      message.includes('cannot contain a nested <p>') ||
+      message.includes('update to CarouselRoot inside a test was not wrapped in act') ||
+      message.includes('input of type text with both value and defaultValue props') ||
+      message.includes('ReactDOMTestUtils.act is deprecated')
+    ) {
+      return;
+    }
+    originalWarn(...args);
+  };
 });
