@@ -515,8 +515,8 @@ const Home = () => {
                           <Box width="100%">
                             <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
                           </Box>
-                          <HStack gap={2} width="100%" maxW="600px">
-                            <Box>
+                          <HStack gap={2} width="100%" maxW="100%">
+                            <Box width="100%">
                               <AutocompleteCombobox
                                 value={searchQuery}
                                 items={searchSuggestions as any}
