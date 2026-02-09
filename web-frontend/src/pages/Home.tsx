@@ -434,8 +434,8 @@ const Home = () => {
                           <Text>Loading your profile...</Text>
                         </HStack>
                       ) : athleteProfile ? (
-                        <VStack gap={4} align="stretch">
-                          <HStack gap={4} align="stretch">
+                        <VStack gap={4} align="stretch" width="100%">
+                          <HStack gap={4} align="stretch" width="100%">
                             <HStack gap={4} align="top">
                               <Avatar.Root size="2xl">
                                 {athleteProfile.avatarUrl && (
@@ -461,11 +461,12 @@ const Home = () => {
                               </Box>
                             </HStack>
 
-                            <VStack gap={2} align="stretch">
+                            <VStack gap={2} align="stretch" flexShrink={0}>
                               <Button
                                 colorPalette="orange"
                                 onClick={handleRefresh}
                                 loading={refreshLoading}
+                                width="100%"
                               >
                                 <HiRefresh />Refresh
                               </Button>
@@ -479,7 +480,7 @@ const Home = () => {
                                   }
                                 }}
                                 size="sm"
-                                width="150px"
+                                width="100%"
                               >
                                 <Select.HiddenSelect />
                                 <Select.Control>
@@ -505,15 +506,17 @@ const Home = () => {
                                   </Select.Positioner>
                                 </Portal>
                               </Select.Root>
-                              <Button variant="outline" onClick={handleLogout} loading={logoutLoading}>
+                              <Button variant="outline" onClick={handleLogout} loading={logoutLoading} width="100%">
                                 <FaSignOutAlt style={{ marginRight: '8px' }} />
                                 Logout
                               </Button>
                             </VStack>
                           </HStack>
-                          <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
+                          <Box width="100%">
+                            <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
+                          </Box>
                           <HStack gap={2} width="100%" maxW="600px">
-                            <Box flex={1}>
+                            <Box>
                               <AutocompleteCombobox
                                 value={searchQuery}
                                 items={searchSuggestions as any}

@@ -48,7 +48,7 @@ const QuickStats = ({ athleteProfile, selectedActivityType }: QuickStatsProps) =
             boxShadow: 'xl',
           }}
           transition="all 0.3s"
-          minW="120px"
+          minW="100px"
         >
           <Box
             display="inline-flex"
