@@ -434,6 +434,7 @@ const Home = () => {
                           <Text>Loading your profile...</Text>
                         </HStack>
                       ) : athleteProfile ? (
+                        // multiple profile entries, avatar, stats, search
                         <VStack gap={4} align="stretch" width="100%">
                           <HStack gap={4} align="stretch" width="100%">
                             <HStack gap={4} align="top">
@@ -512,9 +513,9 @@ const Home = () => {
                               </Button>
                             </VStack>
                           </HStack>
-                          <Box width="100%">
+                          <VStack width="100%">
                             <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
-                          </Box>
+                          </VStack>
                           <HStack gap={2} width="100%" maxW="100%">
                             <Box width="100%">
                               <AutocompleteCombobox

@@ -32,7 +32,7 @@ const QuickStats = ({ athleteProfile, selectedActivityType }: QuickStatsProps) =
   ];
 
   return (
-    <HStack gap={6} align="stretch" flexWrap="wrap">
+    <HStack gap={6} align="stretch" flexWrap="wrap" width="100%">
       {stats.map((stat, index) => (
         <Box
           key={index}
@@ -48,7 +48,8 @@ const QuickStats = ({ athleteProfile, selectedActivityType }: QuickStatsProps) =
             boxShadow: 'xl',
           }}
           transition="all 0.3s"
-          minW="100px"
+          flex="1"
+          minW="120px"
         >
           <Box
             display="inline-flex"
