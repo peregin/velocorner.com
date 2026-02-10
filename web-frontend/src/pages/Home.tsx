@@ -425,7 +425,7 @@ const Home = () => {
           <>
             <Card.Root>
               <Card.Body>
-                <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={4}>
+                <Grid templateColumns={{ base: "1fr", lg: "3fr 3fr" }} gap={4}>
                   <Box>
                     <VStack gap={4} align="stretch">
                       {profileLoading ? (
@@ -449,8 +449,8 @@ const Home = () => {
                                   {getInitials(athleteProfile.displayName) || athleteProfile.displayName.charAt(0).toUpperCase()}
                                 </Avatar.Fallback>
                               </Avatar.Root>
-                              <Box>
-                                <Heading size="lg">Hello, {athleteProfile.displayName}</Heading>
+                              <Box ml='1rem'>
+                                <Heading size="2xl">Hello, {athleteProfile.displayName}</Heading>
                                 {athleteProfile.displayLocation && (
                                   <Text color="gray.500">{athleteProfile.displayLocation}</Text>
                                 )}
@@ -462,7 +462,7 @@ const Home = () => {
                               </Box>
                             </HStack>
 
-                            <VStack gap={2} align="stretch" flexShrink={0}>
+                            <VStack gap={2} align="stretch" flexShrink={0} ml="auto">
                               <Button
                                 colorPalette="orange"
                                 onClick={handleRefresh}
@@ -514,7 +514,7 @@ const Home = () => {
                             </VStack>
                           </HStack>
                           <VStack width="100%">
-                            <QuickStats athleteProfile={athleteProfile} selectedActivityType={selectedActivityType} />
+                            <QuickStats selectedActivityType={selectedActivityType} />
                           </VStack>
                           <HStack gap={2} width="100%" maxW="100%">
                             <Box width="100%">

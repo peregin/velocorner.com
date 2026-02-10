@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Heading, Text, Grid, GridItem, Card, Box, HStack, VStack, Progress, Select, createListCollection, Portal } from "@chakra-ui/react";
 import ApiClient from "../service/ApiClient";
-import type { UserStats, AthleteProfile } from "../types/athlete";
+import { type UserStats, type AthleteProfile, getAthleteUnits } from "../types/athlete";
 
 interface ActivityStatsWidgetProps {
   selectedActivityType: string;
@@ -88,8 +88,8 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
     return null;
   }
 
-  const distanceUnit = athleteProfile?.unit?.distanceLabel || 'km';
-  const elevationUnit = athleteProfile?.unit?.elevationLabel || 'm';
+  const distanceUnit = getAthleteUnits(athleteProfile?.unit).distanceLabel;
+  const elevationUnit = getAthleteUnits(athleteProfile?.unit).elevationLabel;
 
   return (
     <Card.Root>

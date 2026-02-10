@@ -1,33 +1,59 @@
-import { Box, HStack, Text, Icon, Progress, VStack } from '@chakra-ui/react';
-import { LuActivity, LuTrendingUp, LuMountain } from 'react-icons/lu';
+import ApiClient from '@/service/ApiClient';
+import { UserProgress, UserStats } from '@/types/athlete';
+import { Box, HStack, Text, Icon, VStack } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { LuActivity, LuTrendingUp, LuMountain, LuCalendar } from 'react-icons/lu';
 
 interface QuickStatsProps {
-  athleteProfile: any;
   selectedActivityType: string;
 }
 
-const QuickStats = ({ athleteProfile, selectedActivityType }: QuickStatsProps) => {
+const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
+
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const stats = await ApiClient.profileStatistics(selectedActivityType, currentYear);
+        setUserStats(stats);
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [selectedActivityType]);
+
   const stats = [
     {
       icon: LuActivity,
-      value: athleteProfile?.totalActivities || 0,
+      value: userStats?.progress?.rides ?? 0,
       label: 'Total Activities',
       gradientFrom: 'blue.500',
       gradientTo: 'cyan.500',
     },
     {
       icon: LuTrendingUp,
-      value: athleteProfile?.ytdDistance || 0,
-      label: 'Yearly Distance',
+      value: userStats?.progress?.distance ?? 0,
+      label: 'Distance',
       gradientFrom: 'cyan.800',
       gradientTo: 'teal.500',
     },
     {
       icon: LuMountain,
-      value: athleteProfile?.ytdElevation || 0,
-      label: 'Yearly Elevation',
+      value: userStats?.progress?.elevation ?? 0,
+      label: 'Elevation',
       gradientFrom: 'teal.500',
       gradientTo: 'emerald.500',
+    },
+    {
+      icon: LuCalendar,
+      value: userStats?.progress?.days ?? 0,
+      label: 'Active Days',
+      gradientFrom: 'red.500',
+      gradientTo: 'orange.500',
     },
   ];
 
@@ -49,7 +75,7 @@ const QuickStats = ({ athleteProfile, selectedActivityType }: QuickStatsProps) =
           }}
           transition="all 0.3s"
           flex="1"
-          minW="120px"
+          // minW="120px"
         >
           <Box
             display="inline-flex"

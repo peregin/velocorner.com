@@ -39,7 +39,7 @@ export type DemoStatistic = {
   total?: number;
 };
 
-export type UserStatsBreakdown = {
+export type UserProgress = {
   days?: number;
   rides?: number;
   distance?: number;
@@ -52,9 +52,9 @@ export type UserStatsBreakdown = {
 
 export type UserStats = {
   yearlyPercentile?: number;
-  estimate?: UserStatsBreakdown;
-  progress?: UserStatsBreakdown;
-  commute?: UserStatsBreakdown;
+  estimate?: UserProgress;
+  progress?: UserProgress;
+  commute?: UserProgress;
 };
 
 export type AchievementMetric =
