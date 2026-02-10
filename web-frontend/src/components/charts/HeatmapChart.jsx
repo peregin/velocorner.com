@@ -14,8 +14,16 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
     xaxis: {
       type: 'category',
       labels: {
+        show: true,
+        rotate: 0,
+        rotateAlways: false,
+        hideOverlappingLabels: true,
+        showDuplicates: false,
+        trim: false,
+        maxHeight: 120,
         style: {
-          fontSize: '8px'
+          fontSize: '8px',
+          fontFamily: 'Arial, sans-serif',
         }
       }
     },
