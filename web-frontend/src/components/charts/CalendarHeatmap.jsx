@@ -31,8 +31,8 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
               {m.days.map((d, di) => (
                 <g key={di}>
                   <rect
-                    x={(di % 7) * 18}
-                    y={20 + Math.floor(di / 7) * 18}
+                    x={d.week * 18}
+                    y={20 + d.weekday * 18}
                     width={16}
                     height={16}
                     fill={color(d.value)}
@@ -41,7 +41,7 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
                     {d.value > 0 ? <title>{`${d.value.toFixed(2)} ${unitName}`}</title> : null}
                   </rect>
                   <g
-                    transform={`translate(${(di % 7) * 18 + 8}, ${20 + Math.floor(di / 7) * 18 + 11}) scale(0.6)`}
+                    transform={`translate(${d.week * 18 + 8}, ${20 + d.weekday * 18 + 11}) scale(0.6)`}
                     pointerEvents="none"
                   >
                     <text
@@ -83,14 +83,22 @@ function buildSeries(monthsToShow, byDate) {
     const label = d.toLocaleString(undefined, { month: 'short', year: 'numeric' });
     const days = [];
     const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    const firstDayWeekday = toMondayFirstWeekdayIndex(d.getDay());
     for (let day = 1; day <= daysInMonth; day++) {
       const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const value = byDate.get(iso) || 0;
-      days.push({ date: iso, value });
+      const weekday = toMondayFirstWeekdayIndex(new Date(d.getFullYear(), d.getMonth(), day).getDay());
+      const week = Math.floor((firstDayWeekday + day - 1) / 7);
+      days.push({ date: iso, value, weekday, week });
     }
     months.push({ key, label, days });
   }
   return months;
+}
+
+function toMondayFirstWeekdayIndex(jsWeekday) {
+  // JavaScript: Sunday=0..Saturday=6 -> Monday=0..Sunday=6
+  return (jsWeekday + 6) % 7;
 }
 
 function color(v) {
