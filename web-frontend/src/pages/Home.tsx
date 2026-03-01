@@ -16,7 +16,7 @@ import {
   Card,
   Progress,
   Spinner,
-  SegmentGroup,
+  Tabs,
   Select,
   createListCollection,
   Portal
@@ -161,12 +161,12 @@ const Home = () => {
 
   const handleSearchInputChange = (value: string) => {
     setSearchQuery(value);
-    
+
     // Clear existing timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
-    
+
     // Debounce API calls
     if (value.trim().length >= 2) {
       searchTimeoutRef.current = window.setTimeout(() => {
@@ -511,24 +511,21 @@ const Home = () => {
             {/* User Statistics for Authenticated Users */}
             <VStack gap={6} align="stretch">
               {/* Activity Type Tabs */}
-              <Card.Root>
-                <Card.Body>
-                  <Text fontWeight="bold" mb={4}>Activity Types</Text>
-                  <SegmentGroup.Root
-                    value={selectedActivityType}
-                    onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
-                    colorPalette="green"
-                    bg="colorPalette.50"
-                    css={{
-                      "--segment-indicator-bg": "colors.green.400",
-                      "--segment-indicator-shadow": "shadows.md",
-                    }}
-                  >
-                    <SegmentGroup.Indicator />
-                    <SegmentGroup.Items items={activityTypes} />
-                  </SegmentGroup.Root>
-                </Card.Body>
-              </Card.Root>
+
+              <Text fontWeight="bold">Activity Types</Text>
+              <Tabs.Root
+                variant="outline"
+                value={selectedActivityType}
+                onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
+              >
+                <Tabs.List bg="green.50" rounded="md">
+                  {activityTypes.map((activityType) => (
+                    <Tabs.Trigger key={activityType} value={activityType} color="gray.700" _selected={{ bg: "green.400", color: "white", boxShadow: "sm" }}>
+                      {activityType}
+                    </Tabs.Trigger>
+                  ))}
+                </Tabs.List>
+              </Tabs.Root>
 
               {/* User Statistics */}
               <ActivityStatsWidget
