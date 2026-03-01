@@ -11,6 +11,7 @@ import About from "./pages/About"
 import Search from "./pages/Search"
 import Privacy from "./pages/Privacy"
 import NotFound from "./pages/NotFound"
+import Admin from "./pages/Admin"
 
 import Header from './components/Header'
 import { Toaster } from '@/components/ui/toaster'
@@ -59,6 +60,7 @@ const App = () => {
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/about" element={<Layout><About /></Layout>} />
         <Route path="/search" element={<Layout><Search /></Layout>} />
+        <Route path="/admin" element={<Layout><Admin /></Layout>} />
         <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
         <Route path="/oauth/strava" element={<OAuth2Popup />} />
         <Route path="/health" element={<Ping />} />

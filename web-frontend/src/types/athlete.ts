@@ -21,6 +21,21 @@ export type AthleteProfile = {
   unit?: "metric" | "imperial";
 };
 
+export const isAthleteAdmin = (profile: AthleteProfile | null): boolean => {
+  if (!profile) return false;
+
+  if (typeof profile.role === "string") {
+    return profile.role.toLowerCase() === "admin";
+  }
+
+  if (profile.role && typeof profile.role === "object") {
+    const roleName = String(profile.role.name ?? "").toLowerCase();
+    return roleName === "admin";
+  }
+
+  return false;
+};
+
 export const getAthleteUnits = (unit?: "metric" | "imperial"): AthleteUnits => {
   return unit === "imperial" ? {
     speedLabel: "mph",

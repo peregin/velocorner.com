@@ -76,6 +76,7 @@ const endpoints = {
   
   // Athlete profile
   athleteProfile: () => get('/api/athletes/me'),
+  adminStatus: () => get('/api/admin/status'),
   
   // Demo endpoints
   demoWordcloud: () => get('/api/demo/wordcloud'),

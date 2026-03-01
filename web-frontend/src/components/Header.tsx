@@ -2,6 +2,8 @@ import { useAuth } from '@/service/auth';
 import { VStack, Flex, Box, Container, HStack, Image, IconButton, Text, Button, Link } from '@chakra-ui/react'
 import { LuMenu, LuX } from 'react-icons/lu';
 import strava from 'super-tiny-icons/images/svg/strava.svg'
+import { useAthleteProfile } from '@/service/useAthleteProfile';
+import { isAthleteAdmin } from '@/types/athlete';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -10,7 +12,9 @@ interface HeaderProps {
 
 const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
 
-  const { isAuthenticated, authLoading, connect, logout } = useAuth();
+  const { isAuthenticated, authLoading, connect } = useAuth();
+  const { athleteProfile } = useAthleteProfile(isAuthenticated);
+  const isAdmin = isAthleteAdmin(athleteProfile);
 
   return (
     <Box as="nav" py='1rem' boxShadow="0 2px 4px rgba(0,0,0,0.1)">
@@ -33,6 +37,11 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
             <Link href="#about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               About
             </Link>
+            {isAdmin && (
+              <Link href="/admin" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
+                Admin
+              </Link>
+            )}
             {!isAuthenticated && (<Button
               colorPalette="orange"
               size="md"
@@ -79,15 +88,23 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
             <Link href="#about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               About
             </Link>
-            <Button
-              bgGradient="to-r"
-              gradientFrom="brand.600"
-              gradientTo="cyan.600"
-              color="gray.700"
-              fontWeight="medium"
-            >
-              Connect Strava
-            </Button>
+            {isAdmin && (
+              <Link href="/admin" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
+                Admin
+              </Link>
+            )}
+            {!isAuthenticated && (
+              <Button
+                colorPalette="orange"
+                size="md"
+                fontWeight="medium"
+                onClick={connect}
+                loading={authLoading}
+              >
+                <Image src={strava} boxSize="20px" mr={2} />
+                Connect with Strava
+              </Button>
+            )}
           </VStack>
         )}
       </Container>

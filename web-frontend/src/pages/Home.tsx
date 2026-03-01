@@ -36,9 +36,9 @@ import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import QuickStats from "@/components/QuickStats";
-import type { AthleteProfile } from "../types/athlete";
 import { getAthleteUnits } from "../types/athlete";
 import { HiRefresh } from "react-icons/hi";
+import { useAthleteProfile } from "@/service/useAthleteProfile";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -49,8 +49,6 @@ const Home = () => {
   const [activityTypes, setActivityTypes] = useState<string[]>(['Ride']);
   const [selectedActivityType, setSelectedActivityType] = useState('Ride');
   const [loading, setLoading] = useState(true);
-  const [athleteProfile, setAthleteProfile] = useState<AthleteProfile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,6 +58,7 @@ const Home = () => {
   const initialLoadRef = useRef(false);
 
   const { isAuthenticated, authLoading, connect, logout } = useAuth();
+  const { athleteProfile, profileLoading } = useAthleteProfile(isAuthenticated, true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,43 +93,6 @@ const Home = () => {
     setSelectedActivityType(activityType);
   };
 
-  useEffect(() => {
-    let isActive = true;
-
-    const cleanup = () => {
-      isActive = false;
-    };
-
-    if (!isAuthenticated) {
-      setAthleteProfile(null);
-      setProfileLoading(false);
-      return cleanup;
-    }
-
-    const fetchAthleteProfile = async () => {
-      try {
-        setProfileLoading(true);
-        const profile = await ApiClient.athleteProfile();
-        if (isActive) {
-          setAthleteProfile(profile);
-        }
-      } catch (error) {
-        console.error('Error fetching athlete profile:', error);
-        if (isActive) {
-          showError("Unable to load profile", "We couldn't load your profile information right now.");
-        }
-      } finally {
-        if (isActive) {
-          setProfileLoading(false);
-        }
-      }
-    };
-
-    fetchAthleteProfile();
-
-    return cleanup;
-  }, [isAuthenticated]);
-
   const handleLogout = async () => {
     setLogoutLoading(true);
     await logout();
@@ -147,12 +109,6 @@ const Home = () => {
   const handleUnitsChange = async (selectedUnit: "metric" | "imperial") => {
     try {
       await ApiClient.updateUnits(selectedUnit);
-      if (athleteProfile) {
-        setAthleteProfile({
-          ...athleteProfile,
-          unit: selectedUnit
-        });
-      }
       // TODO: Reload the page to update the unit of measurement, similar to the old implementation, the conversion is calculated on the BE side
       // For now we just reload the page to get the updated units
       window.location.reload();
