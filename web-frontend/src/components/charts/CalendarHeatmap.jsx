@@ -29,7 +29,33 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
             <g key={m.key} transform={`translate(${mi * 140}, 0)`}>
               <text x={0} y={12} fontSize="12" fill="#666">{m.label}</text>
               {m.days.map((d, di) => (
-                <rect key={di} x={(di % 7) * 18} y={20 + Math.floor(di / 7) * 18} width={16} height={16} fill={color(d.value)} rx={3} />
+                <g key={di}>
+                  <rect
+                    x={(di % 7) * 18}
+                    y={20 + Math.floor(di / 7) * 18}
+                    width={16}
+                    height={16}
+                    fill={color(d.value)}
+                    rx={3}
+                  >
+                    {d.value > 0 ? <title>{`${d.value.toFixed(2)} ${unitName}`}</title> : null}
+                  </rect>
+                  <g
+                    transform={`translate(${(di % 7) * 18 + 8}, ${20 + Math.floor(di / 7) * 18 + 11}) scale(0.6)`}
+                    pointerEvents="none"
+                  >
+                    <text
+                      x={0}
+                      y={-2}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="8"
+                      fill="#8a8a8a"
+                    >
+                      {String(new Date(d.date).getDate()).padStart(2, "0")}
+                    </text>
+                  </g>
+                </g>
               ))}
             </g>
           ))}
@@ -76,5 +102,3 @@ function color(v) {
 }
 
 export default CalendarHeatmap;
-
-
