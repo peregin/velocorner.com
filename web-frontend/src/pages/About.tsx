@@ -14,6 +14,7 @@ import {
   Separator,
   Progress,
   Alert,
+  List,
 } from "@chakra-ui/react";
 
 interface StatusResponse {
@@ -58,14 +59,43 @@ const About = () => {
   return (
     <Box maxW="1200px" mx="auto" p={6}>
       <VStack align="stretch" gap={8}>
-        <Box>
-          <Heading size="lg" mb={2}>Welcome to the cycling site!</Heading>
-          <Text color="gray.700">
-            The site provides metrics for cycling and running activities. Compare yearly aggregated data like distance, hours, elevation,
-            and view year-to-date series. It integrates with Strava and Garmin Connect to track activities and helps you find the best
-            component prices via our product aggregator.
-          </Text>
-        </Box>
+        <Card.Root overflow="hidden">
+          <Card.Body bgGradient="to-r" gradientFrom="blue.50" gradientTo="green.50">
+            <VStack align="start" gap={3}>
+              <Heading size="xl">Welcome to Velocorner</Heading>
+              <Text color="gray.700">
+                Velocorner helps you understand your training with clear, comparable metrics for cycling, running, and other sports.
+                Track yearly progress for distance, time, and elevation, then compare your current season with past seasons through
+                year-to-date and heatmap views.
+              </Text>
+              <Text color="gray.700">
+                Activity data is synchronized from{" "}
+                <Link href="https://www.strava.com" color="blue.600" target="_blank" rel="noopener noreferrer">
+                  Strava
+                </Link>{" "}
+                and can be extended with services like{" "}
+                <Link href="https://connect.garmin.com/" color="blue.600" target="_blank" rel="noopener noreferrer">
+                  Garmin Connect
+                </Link>
+                . Velocorner also includes a product aggregator to help compare cycling component prices.
+              </Text>
+            </VStack>
+          </Card.Body>
+        </Card.Root>
+
+        <Card.Root>
+          <Card.Body>
+            <VStack align="start" gap={2}>
+              <Heading size="md">Stay Connected</Heading>
+              <Text color="gray.700">
+                Feedback shapes the roadmap. If you have ideas for new metrics, visualizations, or integrations, we would love to hear from you.
+              </Text>
+              <Text color="gray.700">
+                Thanks for visiting and riding with Velocorner.
+              </Text>
+            </VStack>
+          </Card.Body>
+        </Card.Root>
 
         {error && (
           <Alert.Root status="error">
@@ -77,7 +107,7 @@ const About = () => {
         <Card.Root>
           <Card.Body>
             <VStack align="stretch" gap={4}>
-              <Heading size="md">Build & Runtime</Heading>
+              <Heading size="md">Build and Runtime Status</Heading>
               {loading ? (
                 <HStack>
                   <Text>Loading status…</Text>
@@ -86,7 +116,6 @@ const About = () => {
                       <Progress.Range />
                     </Progress.Track>
                   </Progress.Root>
-                  {/* <Progress isIndeterminate w="200px" /> */}
                 </HStack>
               ) : (
                 status && (
@@ -98,7 +127,7 @@ const About = () => {
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Build Time</Text>
-                        <Badge colorPalette="purple">{status.buildTime}</Badge>
+                        <Badge colorPalette="cyan">{status.buildTime}</Badge>
                       </GridItem>
                       <GridItem>
                         <Text fontSize="sm" color="gray.600">Uptime</Text>
@@ -165,7 +194,6 @@ const About = () => {
                       </Progress.Track>
                       <Progress.ValueText>{status.memoryUsedPercentile}%</Progress.ValueText>
                     </Progress.Root>
-                    {/* <Progress value={status.memoryUsedPercentile} size="sm" /> */}
                   </VStack>
                 )
               )}
@@ -175,11 +203,43 @@ const About = () => {
 
         <Card.Root>
           <Card.Body>
-            <Heading size="md" mb={2}>API</Heading>
-            <Text>
-              Use the <Link href="/docs" color="blue.500">Velocorner API</Link> to access your activity statistics. The API follows OpenAPI specifications and
-              provides Swagger compatibility.
-            </Text>
+            <VStack align="start" gap={3}>
+              <Heading size="md">Developer API</Heading>
+              <Text>
+                Use the <Link href="/docs" color="blue.600">Velocorner API</Link> to retrieve activity statistics and integrate them into your own tools.
+                The API follows the{" "}
+                <Link href="https://www.openapis.org/" color="blue.600" target="_blank" rel="noopener noreferrer">
+                  OpenAPI
+                </Link>{" "}
+                standard and is{" "}
+                <Link href="https://swagger.io/" color="blue.600" target="_blank" rel="noopener noreferrer">
+                  Swagger
+                </Link>{" "}
+                compatible.
+              </Text>
+            </VStack>
+          </Card.Body>
+        </Card.Root>
+
+        <Card.Root>
+          <Card.Body>
+            <VStack align="start" gap={3}>
+              <Heading size="md">Tech Stack</Heading>
+              <Text color="gray.700">
+                Velocorner is a practical playground for building and operating a production-grade platform across multiple technologies.
+              </Text>
+              <List.Root ps={4} gap={1}>
+                <List.Item><Text as="span" fontWeight="medium">web-app:</Text> Scala, Play Framework, ZIO</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">web-frontend:</Text> React</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">crawler-service:</Text> Scala, http4s, cats-effect, circe</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">exchange-rate-service:</Text> Rust</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">data-provider:</Text> PostgreSQL and other storage backends</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">data-search:</Text> ZincSearch</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">user-service:</Text> Java, Spring Boot</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">weather-service:</Text> Kotlin</List.Item>
+                <List.Item><Text as="span" fontWeight="medium">health-check-service:</Text> Go</List.Item>
+              </List.Root>
+            </VStack>
           </Card.Body>
         </Card.Root>
       </VStack>

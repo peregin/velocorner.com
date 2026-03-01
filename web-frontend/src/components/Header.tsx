@@ -34,7 +34,7 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
             <Link href="#stats" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               Statistics
             </Link>
-            <Link href="#about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
+            <Link href="/about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               About
             </Link>
             {isAdmin && (
@@ -85,7 +85,7 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
             <Link href="#stats" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               Statistics
             </Link>
-            <Link href="#about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
+            <Link href="/about" color="gray.700" _hover={{ color: 'brand.600' }} fontWeight="medium">
               About
             </Link>
             {isAdmin && (
