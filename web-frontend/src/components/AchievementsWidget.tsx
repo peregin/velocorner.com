@@ -15,6 +15,7 @@ import type {
   AthleteAchievements,
   AthleteProfile,
 } from "../types/athlete";
+import { getAthleteUnits } from "../types/athlete";
 import { LuTrophy } from "react-icons/lu";
 
 interface AchievementsWidgetProps {
@@ -35,6 +36,7 @@ const AchievementsWidget = ({
   const [achievementsError, setAchievementsError] = useState<string | null>(
     null
   );
+  const units = getAthleteUnits(athleteProfile?.unit);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -79,9 +81,9 @@ const AchievementsWidget = ({
 
   const formatDistanceValue = (meters?: number) => {
     if (typeof meters !== "number" || Number.isNaN(meters)) {
-      return { value: "—", unit: athleteProfile?.unit?.distanceLabel || "km" };
+      return { value: "—", unit: units.distanceLabel || "km" };
     }
-    const unit = athleteProfile?.unit?.distanceLabel || "km";
+    const unit = units.distanceLabel || "km";
     const isMiles = unit.toLowerCase().includes("mi");
     const formatted = isMiles ? meters / 1609.344 : meters / 1000;
     const decimals = formatted >= 100 ? 0 : 1;
@@ -90,9 +92,9 @@ const AchievementsWidget = ({
 
   const formatElevationValue = (meters?: number) => {
     if (typeof meters !== "number" || Number.isNaN(meters)) {
-      return { value: "—", unit: athleteProfile?.unit?.elevationLabel || "m" };
+      return { value: "—", unit: units.elevationLabel || "m" };
     }
-    const unit = athleteProfile?.unit?.elevationLabel || "m";
+    const unit = units.elevationLabel || "m";
     const isFeet = unit.toLowerCase().includes("ft");
     const formatted = isFeet ? meters * 3.28084 : meters;
     return { value: formatted.toFixed(formatted >= 1000 ? 0 : 1), unit };
@@ -103,9 +105,9 @@ const AchievementsWidget = ({
       typeof metersPerSecond !== "number" ||
       Number.isNaN(metersPerSecond)
     ) {
-      return { value: "—", unit: athleteProfile?.unit?.speedLabel || "km/h" };
+      return { value: "—", unit: units.speedLabel || "km/h" };
     }
-    const unit = athleteProfile?.unit?.speedLabel || "km/h";
+    const unit = units.speedLabel || "km/h";
     const isMph = unit.toLowerCase().includes("mph");
     const formatted = isMph
       ? metersPerSecond * 2.23693629
@@ -133,10 +135,10 @@ const AchievementsWidget = ({
     if (typeof celsius !== "number" || Number.isNaN(celsius)) {
       return {
         value: "—",
-        unit: athleteProfile?.unit?.temperatureLabel || "°C",
+        unit: units.temperatureLabel || "°C",
       };
     }
-    const unit = athleteProfile?.unit?.temperatureLabel || "°C";
+    const unit = units.temperatureLabel || "°C";
     const isFahrenheit = unit.toLowerCase().includes("f");
     const formatted = isFahrenheit ? (celsius * 9) / 5 + 32 : celsius;
     return { value: formatted.toFixed(0), unit };
@@ -264,4 +266,3 @@ const AchievementsWidget = ({
 };
 
 export default AchievementsWidget;
-
