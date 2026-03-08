@@ -400,7 +400,7 @@ GET     /api/activities/last                               controllers.ActivityC
 #    500:
 #      description: Internal error
 ###
-GET     /api/activities/refresh                            controllers.ActivityController.last()
+GET     /api/activities/refresh                            controllers.ActivityController.refresh()
 
 
 ###

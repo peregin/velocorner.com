@@ -61,6 +61,7 @@ const endpoints = {
   activityTypes: () => get('/api/activities/types'),
   activityYears: (activity) => get(`/api/activities/${activity}/years`),
   lastActivity: () => get('/api/activities/last'),
+  refreshActivities: () => get('/api/activities/refresh'),
   getActivity: (id) => get(`/api/activities/${id}`),
   suggestActivities: (query) => get(`/api/activities/suggest?query=${encodeURIComponent(query)}`),
   

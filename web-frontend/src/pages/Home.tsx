@@ -100,10 +100,15 @@ const Home = () => {
   };
 
   const handleRefresh = async () => {
-    // Navigate to /refresh endpoint which handles the refresh and redirects back
-    // This matches the old implementation behavior
-    setRefreshLoading(true);
-    window.location.href = '/refresh';
+    try {
+      setRefreshLoading(true);
+      await ApiClient.refreshActivities();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error refreshing activities:", error);
+      showError("Refresh Failed", "Unable to refresh activities. Please try again.");
+      setRefreshLoading(false);
+    }
   };
 
   const handleUnitsChange = async (selectedUnit: "metric" | "imperial") => {
