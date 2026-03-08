@@ -475,7 +475,7 @@ const Home = () => {
                             </VStack>
                           </HStack>
                           <VStack width="100%">
-                            <QuickStats selectedActivityType={selectedActivityType} />
+                            <QuickStats selectedActivityType={selectedActivityType} units={getProfileUnits()} />
                           </VStack>
                           <HStack gap={2} width="100%" maxW="100%">
                             <Box width="100%">

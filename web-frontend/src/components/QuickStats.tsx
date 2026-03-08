@@ -1,14 +1,15 @@
 import ApiClient from '@/service/ApiClient';
-import { UserProgress, UserStats } from '@/types/athlete';
+import type { AthleteUnits, UserStats } from '@/types/athlete';
 import { Box, HStack, Text, Icon, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { LuActivity, LuTrendingUp, LuMountain, LuCalendar } from 'react-icons/lu';
 
 interface QuickStatsProps {
   selectedActivityType: string;
+  units: AthleteUnits;
 }
 
-const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
+const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
 
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const currentYear = new Date().getFullYear();
@@ -30,7 +31,7 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
     {
       icon: LuActivity,
       value: userStats?.progress?.rides ?? 0,
-      label: 'Total Activities',
+      label: 'Activities',
       gradientFrom: 'blue.500',
       gradientTo: 'cyan.500',
     },
@@ -38,6 +39,7 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
       icon: LuTrendingUp,
       value: userStats?.progress?.distance ?? 0,
       label: 'Distance',
+      unit: units.distanceLabel,
       gradientFrom: 'cyan.800',
       gradientTo: 'teal.500',
     },
@@ -45,6 +47,7 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
       icon: LuMountain,
       value: userStats?.progress?.elevation ?? 0,
       label: 'Elevation',
+      unit: units.elevationLabel,
       gradientFrom: 'teal.500',
       gradientTo: 'emerald.500',
     },
@@ -95,6 +98,11 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
           <VStack alignItems="flex-start" gap={1} w="full">
             <Text fontSize="2xl" fontWeight="bold" color="gray.900">
               {formatWholeNumber(stat.value)}
+              {stat.unit && (
+                <Text as="span" fontSize="sm" fontWeight="medium" color="gray.600" ml={2}>
+                  {stat.unit}
+                </Text>
+              )}
             </Text>
             <Text fontSize="sm" fontWeight="medium" color="gray.600">
               {stat.label}
