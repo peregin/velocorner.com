@@ -57,6 +57,8 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
     },
   ];
 
+  const formatWholeNumber = (value: number) => Math.round(value).toLocaleString();
+
   return (
     <HStack gap={6} align="stretch" flexWrap="wrap" width="100%">
       {stats.map((stat, index) => (
@@ -92,7 +94,7 @@ const QuickStats = ({ selectedActivityType }: QuickStatsProps) => {
 
           <VStack alignItems="flex-start" gap={1} w="full">
             <Text fontSize="2xl" fontWeight="bold" color="gray.900">
-              {stat.value}
+              {formatWholeNumber(stat.value)}
             </Text>
             <Text fontSize="sm" fontWeight="medium" color="gray.600">
               {stat.label}
