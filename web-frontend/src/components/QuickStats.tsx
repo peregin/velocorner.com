@@ -1,6 +1,6 @@
 import ApiClient from '@/service/ApiClient';
 import type { AthleteUnits, UserStats } from '@/types/athlete';
-import { Box, HStack, Text, Icon, VStack } from '@chakra-ui/react';
+import { Box, Grid, Text, Icon, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { LuActivity, LuTrendingUp, LuMountain, LuCalendar } from 'react-icons/lu';
 
@@ -63,24 +63,27 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
   const formatWholeNumber = (value: number) => Math.round(value).toLocaleString();
 
   return (
-    <HStack gap={6} align="stretch" flexWrap="wrap" width="100%">
+    <Grid
+      gap={{ base: 3, md: 4 }}
+      width="100%"
+      templateColumns={{ base: '1fr 1fr', xl: 'repeat(4, 1fr)' }}
+    >
       {stats.map((stat, index) => (
         <Box
           key={index}
-          p={4}
+          p={{ base: 3, md: 4 }}
           bgGradient="to-br"
-          gradientFrom="gray.50"
-          gradientTo="white"
+          gradientFrom="white"
+          gradientTo="gray.50"
           borderRadius="2xl"
           border="1px"
-          borderColor="gray.200"
+          borderColor="gray.100"
           _hover={{
-            borderColor: 'blue.300',
-            boxShadow: 'xl',
+            borderColor: 'teal.200',
+            boxShadow: 'lg',
+            transform: 'translateY(-2px)'
           }}
           transition="all 0.3s"
-          flex="1"
-          // minW="120px"
         >
           <Box
             display="inline-flex"
@@ -110,7 +113,7 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
           </VStack>
         </Box>
       ))}
-    </HStack>
+    </Grid>
   );
 };
 
