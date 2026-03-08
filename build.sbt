@@ -66,12 +66,6 @@ def logging = Seq(
   "org.codehaus.janino" % "janino" % "3.1.12", // conditional logback processing
   "com.papertrailapp" % "logback-syslog4j" % "1.0.0"
 )
-def elastic4s = Seq(
-  "nl.gn0s1s" %% "elastic4s-core" % Dependencies.elasticVersion,
-  "nl.gn0s1s" %% "elastic4s-client-esjava" % Dependencies.elasticVersion,
-  "nl.gn0s1s" %% "elastic4s-http-streams" % Dependencies.elasticVersion,
-  "nl.gn0s1s" %% "elastic4s-testkit" % Dependencies.elasticVersion % Test
-)
 
 def cats = Seq(
   "org.typelevel" %% "cats-core" % Dependencies.catsVersion,
@@ -90,17 +84,12 @@ def zio = Seq(
   "dev.zio" %% "zio" % Dependencies.zioVersion
 )
 
-def fs2 = Seq(
-  "co.fs2" %% "fs2-core" % Dependencies.fs2Version,
-  "co.fs2" %% "fs2-io" % Dependencies.fs2Version
-)
-
 def squants = Seq(
   "org.typelevel" %% "squants" % Dependencies.squantsVersion
 )
 
 def spark = Seq(
-  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion excludeAll ("com.google.inject")
+  "org.apache.spark" %% "spark-mllib" % Dependencies.sparkVersion excludeAll "com.google.inject"
 )
 
 def smile: Seq[ModuleID] = Seq(
@@ -180,16 +169,6 @@ lazy val dataProviderExtension = (project in file("data-provider-ext") withId "d
       playJsonJoda,
       scalaTest
     ) ++ logging ++ Seq(mongoClient, orientDbClient) ++ rethinkClient ++ cats ++ zio.map(_ % Test)
-  )
-  .dependsOn(dataProvider % "test->test;compile->compile")
-
-lazy val dataSearchElastic = (project in file("data-search-elastic") withId "data-search-elastic")
-  .settings(
-    buildSettings,
-    description := "search with classic ElasticSearch",
-    name := "data-search-elastic",
-    libraryDependencies ++=
-      elastic4s ++ catsEffect.map(_ % Test) ++ fs2.map(_ % Test)
   )
   .dependsOn(dataProvider % "test->test;compile->compile")
 
@@ -317,7 +296,6 @@ lazy val root = (project in file(".") withId "velocorner")
     crawlerService,
     dataProvider,
     dataProviderExtension,
-    dataSearchElastic,
     dataSearch,
     dataAnalytics,
     webApp

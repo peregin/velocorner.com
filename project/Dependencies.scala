@@ -6,7 +6,6 @@ object Dependencies {
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.6.3"
   val mouseVersion = "1.4.0"
-  val fs2Version = "3.12.2"
   val http4s = "0.23.33"
   val zioVersion = "2.1.24"
   val playWsVersion = "3.0.10" // standalone version
@@ -18,7 +17,6 @@ object Dependencies {
   val orientDbVersion = "3.2.50"
   val mongoDbVersion = "5.6.4"
   val rethinkDbVersion = "2.4.4"
-  val elasticVersion = "8.19.0"
   val jwtVersion = "11.0.3"
   val squantsVersion = "1.8.3"
   val sparkVersion = "4.1.1"
