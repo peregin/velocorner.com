@@ -8,6 +8,7 @@ import {
   HStack,
   Flex,
   List,
+  Link,
 } from "@chakra-ui/react";
 import type {
   AchievementEntry,
@@ -237,12 +238,28 @@ const AchievementsWidget = ({
                   const activityDate = formatAchievementDate(
                     achievement?.activityTime
                   );
+                  const stravaActivityUrl = achievement?.activityId
+                    ? `https://www.strava.com/activities/${achievement.activityId}`
+                    : null;
                   const valueWithUnit = formatted.unit
                     ? `${formatted.value} ${formatted.unit}`
                     : formatted.value;
                   return (
                     <List.Item key={definition.key}>
-                      {definition.label}: {valueWithUnit} {achievement?.activityName}{" "}
+                      {definition.label}: {valueWithUnit}{" "}
+                      {achievement?.activityName && stravaActivityUrl ? (
+                        <Link
+                          href={stravaActivityUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          colorPalette="orange"
+                          textDecoration="underline"
+                        >
+                          {achievement.activityName}
+                        </Link>
+                      ) : (
+                        achievement?.activityName
+                      )}{" "}
                       {activityDate}
                     </List.Item>
                   );
