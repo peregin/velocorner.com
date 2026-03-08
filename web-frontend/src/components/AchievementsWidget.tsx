@@ -7,7 +7,9 @@ import {
   Spinner,
   HStack,
   Flex,
-  List,
+  Box,
+  VStack,
+  SimpleGrid,
   Link,
 } from "@chakra-ui/react";
 import type {
@@ -204,11 +206,11 @@ const AchievementsWidget = ({
       label: "Warmest Average Temperature",
       formatter: (entry) => formatTemperatureValue(entry?.value),
     },
-    {
-      key: "minAverageTemperature",
-      label: "Coldest Average Temperature",
-      formatter: (entry) => formatTemperatureValue(entry?.value),
-    },
+    // {
+    //   key: "minAverageTemperature",
+    //   label: "Coldest Average Temperature",
+    //   formatter: (entry) => formatTemperatureValue(entry?.value),
+    // },
   ];
 
   const visibleAchievements = achievements
@@ -217,8 +219,8 @@ const AchievementsWidget = ({
 
   return (
     <Card.Root>
-      <Card.Body>
-        <Heading size="md" mb={2}>
+      <Card.Body p={{ base: 3, md: 4 }}>
+        <Heading size="sm" mb={3}>
           <Flex align="center" gap={2}>
             <LuTrophy /> Best Achievements
           </Flex>
@@ -230,42 +232,60 @@ const AchievementsWidget = ({
           </HStack>
         ) : achievements ? (
           visibleAchievements.length ? (
-            <>
-              <List.Root gap="0" variant="plain" align="center">
-                {visibleAchievements.map((definition) => {
-                  const achievement = achievements?.[definition.key];
-                  const formatted = definition.formatter(achievement);
-                  const activityDate = formatAchievementDate(
-                    achievement?.activityTime
-                  );
-                  const stravaActivityUrl = achievement?.activityId
-                    ? `https://www.strava.com/activities/${achievement.activityId}`
-                    : null;
-                  const valueWithUnit = formatted.unit
-                    ? `${formatted.value} ${formatted.unit}`
-                    : formatted.value;
-                  return (
-                    <List.Item key={definition.key}>
-                      {definition.label}: {valueWithUnit}{" "}
-                      {achievement?.activityName && stravaActivityUrl ? (
-                        <Link
-                          href={stravaActivityUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          colorPalette="orange"
-                          textDecoration="underline"
-                        >
-                          {achievement.activityName}
-                        </Link>
-                      ) : (
-                        achievement?.activityName
-                      )}{" "}
-                      {activityDate}
-                    </List.Item>
-                  );
-                })}
-              </List.Root>
-            </>
+            <SimpleGrid columns={{ base: 1, md: 4 }} gap={2}>
+              {visibleAchievements.map((definition) => {
+                const achievement = achievements?.[definition.key];
+                const formatted = definition.formatter(achievement);
+                const activityDate = formatAchievementDate(
+                  achievement?.activityTime
+                );
+                const stravaActivityUrl = achievement?.activityId
+                  ? `https://www.strava.com/activities/${achievement.activityId}`
+                  : null;
+                const valueWithUnit = formatted.unit
+                  ? `${formatted.value} ${formatted.unit}`
+                  : formatted.value;
+
+                return (
+                  <Box
+                    key={definition.key}
+                    p={2.5}
+                    borderWidth="1px"
+                    borderColor="gray.100"
+                    borderRadius="lg"
+                    bg="gray.50"
+                  >
+                    <VStack align="start" gap={0.5}>
+                      <Text fontSize="xs" color="gray.600" fontWeight="medium">
+                        {definition.label}
+                      </Text>
+                      <Text fontSize="sm" fontWeight="bold" color="gray.900">
+                        {valueWithUnit}
+                      </Text>
+                      {(achievement?.activityName || activityDate) && (
+                        <Text fontSize="xs" color="gray.500" lineHeight="short">
+                          {achievement?.activityName && stravaActivityUrl ? (
+                            <Link
+                              href={stravaActivityUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              color="orange.500"
+                              textDecoration="underline"
+                            >
+                              {achievement.activityName}
+                            </Link>
+                          ) : (
+                            achievement?.activityName
+                          )}
+                          {achievement?.activityName && activityDate ? " • " : ""}
+                          {activityDate}
+                        </Text>
+                      )}
+                    </VStack>
+                  </Box>
+                );
+              })}
+            </SimpleGrid>
           ) : (
             <Text color="gray.500">
               No achievements available yet for {selectedActivityType}.
