@@ -384,6 +384,22 @@ const Home = () => {
         {/* Profile Section for Authenticated Users */}
         {isAuthenticated && (
           <>
+            {/* Activity Type Tabs */}
+            {/* <Text fontWeight="bold">Activity Types</Text> */}
+            <Tabs.Root
+              variant="outline"
+              value={selectedActivityType}
+              onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
+            >
+              <Tabs.List bg="green.50" rounded="md">
+                {activityTypes.map((activityType) => (
+                  <Tabs.Trigger key={activityType} value={activityType} color="gray.700" _selected={{ bg: "green.400", color: "white", boxShadow: "sm" }}>
+                    {activityType}
+                  </Tabs.Trigger>
+                ))}
+              </Tabs.List>
+            </Tabs.Root>
+
             <Card.Root>
               <Card.Body>
                 <Grid templateColumns={{ base: "1fr", lg: "3fr 3fr" }} gap={4}>
@@ -397,6 +413,7 @@ const Home = () => {
                       ) : athleteProfile ? (
                         // multiple profile entries, avatar, stats, search
                         <VStack gap={4} align="stretch" width="100%">
+
                           <HStack gap={4} align="stretch" width="100%">
                             <HStack gap={4} align="top">
                               <Avatar.Root size="2xl">
@@ -515,23 +532,6 @@ const Home = () => {
 
             {/* User Statistics for Authenticated Users */}
             <VStack gap={6} align="stretch">
-              {/* Activity Type Tabs */}
-
-              <Text fontWeight="bold">Activity Types</Text>
-              <Tabs.Root
-                variant="outline"
-                value={selectedActivityType}
-                onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
-              >
-                <Tabs.List bg="green.50" rounded="md">
-                  {activityTypes.map((activityType) => (
-                    <Tabs.Trigger key={activityType} value={activityType} color="gray.700" _selected={{ bg: "green.400", color: "white", boxShadow: "sm" }}>
-                      {activityType}
-                    </Tabs.Trigger>
-                  ))}
-                </Tabs.List>
-              </Tabs.Root>
-
               {/* User Statistics */}
               <ActivityStatsWidget
                 selectedActivityType={selectedActivityType}
