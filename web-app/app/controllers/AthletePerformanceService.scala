@@ -36,6 +36,8 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
       sorted = recent.toList.sortBy(_.getStartDateLocal().getMillis).reverse
       context = buildContext(sorted)
       _ = logger.info(s"performance context for $who: recentActivities=${sorted.size}, hasContext=${context.nonEmpty}")
+      // it is shown only in local development
+      _ = logger.debug(s"prompt context $context")
       result <- context match {
         case None =>
           logger.info(s"no activity context for $who, trying latest cached analysis")
@@ -158,7 +160,7 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
       val avgPower = a.average_watts.map(v => f"${v}%.0f W").getOrElse("n/a")
       val distanceKm = f"${a.distance / 1000}%.1f"
       val elevationM = f"${a.total_elevation_gain}%.0f"
-      s"${ix + 1}. $localDate | ${a.`type`} | ${a.name} | $distanceKm km | $elevationM m | ${a.moving_time / 60} min | speed $avgSpeedKmh | hr $avgHr | power $avgPower"
+      s"${ix + 1}. date: $localDate | sport: ${a.`type`} | name: ${a.name} | distance: $distanceKm km | elevation: $elevationM m | duration: ${a.moving_time / 60} min | speed: $avgSpeedKmh | hr $avgHr bpm | power $avgPower W"
     }
 
     s"""You are a cycling performance coach.
@@ -167,9 +169,9 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
        |- trend assessment (improving / stable / declining) with evidence
        |- strengths
        |- one or two concrete recommendations for the next week
-       |Keep it practical, neutral, and under 120 words.
+       |Keep it practical, personalized using “you” and under 120 words.
        |
-       |Activities:
+       |List of activities:
        |${lines.mkString("\n")}
        |""".stripMargin
   }
