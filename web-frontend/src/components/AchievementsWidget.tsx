@@ -19,6 +19,7 @@ import type {
   AthleteProfile,
 } from "../types/athlete";
 import { getAthleteUnits } from "../types/athlete";
+import { Tooltip } from "@/components/ui/tooltip";
 import { LuTrophy } from "react-icons/lu";
 
 interface AchievementsWidgetProps {
@@ -247,42 +248,46 @@ const AchievementsWidget = ({
                   : formatted.value;
 
                 return (
-                  <Box
+                  <Tooltip
                     key={definition.key}
-                    p={2.5}
-                    borderWidth="1px"
-                    borderColor="gray.100"
-                    borderRadius="lg"
-                    bg="gray.50"
+                    content={`Date: ${activityDate}`}
+                    disabled={!activityDate}
+                    positioning={{ placement: "top" }}
                   >
-                    <VStack align="start" gap={0.5}>
-                      <Text fontSize="xs" color="gray.600" fontWeight="medium">
-                        {definition.label}
-                      </Text>
-                      <Text fontSize="sm" fontWeight="bold" color="gray.900">
-                        {valueWithUnit}
-                      </Text>
-                      {(achievement?.activityName || activityDate) && (
-                        <Text fontSize="xs" color="gray.500" lineHeight="short">
-                          {achievement?.activityName && stravaActivityUrl ? (
-                            <Link
-                              href={stravaActivityUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              color="orange.500"
-                              textDecoration="underline"
-                            >
-                              {achievement.activityName}
-                            </Link>
-                          ) : (
-                            achievement?.activityName
-                          )}
-                          {achievement?.activityName && activityDate ? " • " : ""}
-                          {activityDate}
+                    <Box
+                      p={2.5}
+                      borderWidth="1px"
+                      borderColor="gray.100"
+                      borderRadius="lg"
+                      bg="gray.50"
+                    >
+                      <VStack align="start" gap={0.5}>
+                        <Text fontSize="xs" color="gray.600" fontWeight="medium">
+                          {definition.label}
                         </Text>
-                      )}
-                    </VStack>
-                  </Box>
+                        <Text fontSize="sm" fontWeight="bold" color="gray.900">
+                          {valueWithUnit}
+                        </Text>
+                        {achievement?.activityName && (
+                          <Text fontSize="xs" color="gray.500" lineHeight="short">
+                            {stravaActivityUrl ? (
+                              <Link
+                                href={stravaActivityUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                color="orange.500"
+                                textDecoration="underline"
+                              >
+                                {achievement.activityName}
+                              </Link>
+                            ) : (
+                              achievement.activityName
+                            )}
+                          </Text>
+                        )}
+                      </VStack>
+                    </Box>
+                  </Tooltip>
                 );
               })}
             </SimpleGrid>
