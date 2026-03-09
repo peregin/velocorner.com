@@ -1,5 +1,12 @@
 
+
+SELECT * FROM athlete_performance_analysis apa;
+
+select data->>'start_date', * from activity a order by data->>'start_date' desc;
+
+
 show max_connections;
+
 
 select data->>'displayName' from account;
 
