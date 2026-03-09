@@ -164,7 +164,7 @@
 
     <div class="row">
         <div class="col-sm-12 sm-margin-bottom-40" style="padding-top: 10px;">
-            <div class="funny-boxes funny-boxes-top-green">
+            <div class="funny-boxes funny-boxes-top-yellow">
                 <div class="row"><h4><i class="fa fa-magic rounded"></i> AI Performance Evaluation</h4></div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -339,13 +339,14 @@
         });
     }
 
+    // TODO
     $(document).ready(function() {
         setupUnits();
         // load default activity profile and years
         let currentYear = new Date().getFullYear();
         setupYears('Ride', currentYear);
         loadProfile('Ride', currentYear);
-        loadPerformanceSummary();
+        //loadPerformanceSummary();
 
         // reload when activity type is changing
         let activityTabs = $("#activity-tabs")
@@ -354,7 +355,7 @@
             let activityYear = $("#activity-years").val();
             console.log(`profile event[${activityType}]=${activityYear}`);
             loadProfile(activityType, activityYear);
-            loadPerformanceSummary();
+            //loadPerformanceSummary();
         }, false);
     });
 //]]>
