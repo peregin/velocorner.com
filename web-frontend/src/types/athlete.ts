@@ -93,3 +93,10 @@ export type AchievementEntry = {
 export type AthleteAchievements = Partial<Record<AchievementMetric, AchievementEntry>> & {
   [key: string]: AchievementEntry | undefined;
 };
+
+export type AthletePerformanceSummary = {
+  summary?: string;
+  evaluating?: boolean;
+  basedOn?: string;
+  createdAt?: string;
+};

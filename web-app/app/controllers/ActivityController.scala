@@ -12,7 +12,7 @@ import play.api.mvc._
 import velocorner.api.chart.DailyPoint
 import velocorner.api.strava.Activity
 import velocorner.api.wordcloud.WordCloud
-import velocorner.api.{Account, Achievements, ProfileStatistics, Progress, Units}
+import velocorner.api.{Account, Achievements, AthletePerformance, ProfileStatistics, Progress, Units}
 import velocorner.model._
 import velocorner.util.{JsonIo, Metrics}
 
@@ -24,6 +24,7 @@ class ActivityController @Inject() (
     val connectivity: ConnectivitySettings,
     val cache: SyncCacheApi,
     strategy: RefreshStrategy,
+    athletePerformanceService: AthletePerformanceService,
     components: ControllerComponents
 ) extends AbstractController(components)
     with ActivityOps
@@ -201,6 +202,21 @@ class ActivityController @Inject() (
           achievementsF.map(JsonIo.write[Achievements](_)).map(Ok(_))
         }
         .getOrElse(Future(Unauthorized))
+    }
+
+  // AI generated performance summary based on the most recent activities
+  // route mapped to /api/athletes/statistics/performance
+  def performance(): Action[AnyContent] =
+    TimedAuthAsyncAction("query for ai performance summary")(parse.default) { implicit request =>
+      val result = for {
+        account <- OptionT[Future, Account](Future(loggedIn))
+        summary <- OptionT.liftF(athletePerformanceService.getPerformance(account))
+      } yield summary
+
+      result
+        .getOrElse(AthletePerformance(summary = None, evaluating = true, basedOn = "No activities", createdAt = None))
+        .map(Json.toJson(_))
+        .map(Ok(_))
     }
 
   // retrieves the activity with the given id

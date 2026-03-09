@@ -12,7 +12,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLNonBlockingQuery
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, Json, Reads, Writes}
-import velocorner.api.{Account, Achievement}
+import velocorner.api.{Account, Achievement, AthletePerformanceAnalysis}
 import velocorner.api.strava.Activity
 import velocorner.model._
 import velocorner.model.strava.Gear
@@ -250,6 +250,18 @@ class OrientDbStorage(url: Option[String], dbPassword: String) extends Storage[F
   override def getAchievementStorage: AchievementStorage[Future] = achievementStorage
 
   override def getAdminStorage: AdminStorage[Future] = ???
+
+  override def getAthletePerformanceAnalysisStorage: AthletePerformanceAnalysisStorage[Future] =
+    new AthletePerformanceAnalysisStorage[Future] {
+      override def latest(athleteId: Long): Future[Option[AthletePerformanceAnalysis]] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in OrientDB"))
+
+      override def byFingerprint(athleteId: Long, fingerprint: String): Future[Option[AthletePerformanceAnalysis]] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in OrientDB"))
+
+      override def store(analysis: AthletePerformanceAnalysis): Future[Unit] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in OrientDB"))
+    }
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

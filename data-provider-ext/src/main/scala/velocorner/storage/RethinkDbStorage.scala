@@ -7,7 +7,7 @@ import com.rethinkdb.net.{Connection, Result}
 import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.DateTime
 import org.json.simple.JSONObject
-import velocorner.api.Account
+import velocorner.api.{Account, AthletePerformanceAnalysis}
 import velocorner.api.strava.Activity
 import velocorner.model.strava.Gear
 import velocorner.model.ActionType
@@ -138,6 +138,18 @@ class RethinkDbStorage[M[_]: Monad] extends Storage[M] with LazyLogging {
   override def getAchievementStorage: AchievementStorage[M] = ???
 
   override def getAdminStorage: AdminStorage[M] = ???
+
+  override def getAthletePerformanceAnalysisStorage: AthletePerformanceAnalysisStorage[M] =
+    new AthletePerformanceAnalysisStorage[M] {
+      override def latest(athleteId: Long): M[Option[AthletePerformanceAnalysis]] =
+        throw new UnsupportedOperationException("athlete performance analysis storage is not supported in RethinkDB")
+
+      override def byFingerprint(athleteId: Long, fingerprint: String): M[Option[AthletePerformanceAnalysis]] =
+        throw new UnsupportedOperationException("athlete performance analysis storage is not supported in RethinkDB")
+
+      override def store(analysis: AthletePerformanceAnalysis): M[Unit] =
+        throw new UnsupportedOperationException("athlete performance analysis storage is not supported in RethinkDB")
+    }
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

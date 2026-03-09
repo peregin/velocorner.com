@@ -15,7 +15,7 @@ import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Reads, Writes}
-import velocorner.api.{Account, Achievement}
+import velocorner.api.{Account, Achievement, AthletePerformanceAnalysis}
 import velocorner.api.strava.Activity
 import velocorner.model.strava.Gear
 import velocorner.util.JsonIo
@@ -294,6 +294,48 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
            |where cast(data->>'lastUpdate' as timestamp) > current_date - interval '90' day
            |""".stripMargin.query[Long].unique.transactToFuture
 
+  }
+
+  override def getAthletePerformanceAnalysisStorage: AthletePerformanceAnalysisStorage[Future] = athletePerformanceAnalysisStorage
+
+  private lazy val athletePerformanceAnalysisStorage = new AthletePerformanceAnalysisStorage[Future] {
+
+    override def latest(athleteId: Long): Future[Option[AthletePerformanceAnalysis]] =
+      sql"""select athlete_id, fingerprint, based_on, summary, created_at
+           |from athlete_performance_analysis
+           |where athlete_id = $athleteId
+           |order by created_at desc
+           |limit 1
+           |"""
+        .stripMargin
+        .query[(Long, String, String, String, DateTime)]
+        .map { case (id, fingerprint, basedOn, summary, createdAt) =>
+          AthletePerformanceAnalysis(id, fingerprint, basedOn, summary, createdAt)
+        }
+        .option
+        .transactToFuture
+
+    override def byFingerprint(athleteId: Long, fingerprint: String): Future[Option[AthletePerformanceAnalysis]] =
+      sql"""select athlete_id, fingerprint, based_on, summary, created_at
+           |from athlete_performance_analysis
+           |where athlete_id = $athleteId and fingerprint = $fingerprint
+           |order by created_at desc
+           |limit 1
+           |"""
+        .stripMargin
+        .query[(Long, String, String, String, DateTime)]
+        .map { case (id, fp, basedOn, summary, createdAt) =>
+          AthletePerformanceAnalysis(id, fp, basedOn, summary, createdAt)
+        }
+        .option
+        .transactToFuture
+
+    override def store(analysis: AthletePerformanceAnalysis): Future[Unit] =
+      sql"""insert into athlete_performance_analysis (athlete_id, fingerprint, based_on, summary, created_at)
+           |values (${analysis.athleteId}, ${analysis.fingerprint}, ${analysis.basedOn}, ${analysis.summary}, ${analysis.createdAt})
+           |on conflict (athlete_id, fingerprint)
+           |do update set based_on = ${analysis.basedOn}, summary = ${analysis.summary}, created_at = ${analysis.createdAt}
+           |""".stripMargin.update.run.void.transactToFuture
   }
 
   override def initialize(): Unit = {

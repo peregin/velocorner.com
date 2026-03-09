@@ -36,6 +36,7 @@ import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import QuickStats from "@/components/QuickStats";
+import PerformanceSummaryWidget from "@/components/PerformanceSummaryWidget";
 import { getAthleteUnits } from "../types/athlete";
 import { HiRefresh } from "react-icons/hi";
 import { useAthleteProfile } from "@/service/useAthleteProfile";
@@ -545,6 +546,8 @@ const Home = () => {
                 athleteProfile={athleteProfile}
                 isAuthenticated={isAuthenticated}
               />
+
+              <PerformanceSummaryWidget isAuthenticated={isAuthenticated} />
 
               {/* Charts parity to Play widgets */}
               <LineSeriesChart title="Yearly Heatmap (Distance)" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />

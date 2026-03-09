@@ -164,6 +164,24 @@
 
     <div class="row">
         <div class="col-sm-12 sm-margin-bottom-40" style="padding-top: 10px;">
+            <div class="funny-boxes funny-boxes-top-green">
+                <div class="row"><h4><i class="fa fa-magic rounded"></i> AI Performance Evaluation</h4></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p id="performance-summary-text" style="font-size: 15px; margin-bottom: 6px;">
+                            Your performance is being evaluated. Please check back in a moment.
+                        </p>
+                        <div id="performance-summary-based-on" style="font-size: 12px; color: #666;"></div>
+                        <div id="performance-summary-updated" style="font-size: 12px; color: #666;"></div>
+                        <div id="performance-summary-status" style="font-size: 12px; color: #d58512;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 sm-margin-bottom-40" style="padding-top: 10px;">
             <div class="funny-boxes funny-boxes-top-sea">
                 <div class="row"><h4><i class="fa fa-calendar rounded"></i> Latest Activities</h4></div>
                 <div align="center">
@@ -249,6 +267,27 @@
         });
     }
 
+    function loadPerformanceSummary() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/api/athletes/statistics/performance",
+            timeout: 20000,
+            success: function(data) {
+                let summary = data.summary;
+                if (summary && summary.trim().length > 0) {
+                    $('#performance-summary-text').text(summary);
+                } else {
+                    $('#performance-summary-text').text('Your performance is being evaluated. Please check back in a moment.');
+                }
+
+                $('#performance-summary-based-on').text(data.basedOn ? ('Based on ' + data.basedOn) : '');
+                $('#performance-summary-updated').text(data.createdAt ? ('Last generated: ' + moment(data.createdAt).format('DD MMM, YYYY, ddd HH:mm A')) : '');
+                $('#performance-summary-status').text(data.evaluating ? 'Evaluation is running. Showing the latest available summary.' : '');
+            }
+        });
+    }
+
     function setupUnits() {
         // store units setup when dropdown value is changed
         let unitsSelection = $("#units-selection");
@@ -306,6 +345,7 @@
         let currentYear = new Date().getFullYear();
         setupYears('Ride', currentYear);
         loadProfile('Ride', currentYear);
+        loadPerformanceSummary();
 
         // reload when activity type is changing
         let activityTabs = $("#activity-tabs")
@@ -314,6 +354,7 @@
             let activityYear = $("#activity-years").val();
             console.log(`profile event[${activityType}]=${activityYear}`);
             loadProfile(activityType, activityYear);
+            loadPerformanceSummary();
         }, false);
     });
 //]]>

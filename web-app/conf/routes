@@ -285,6 +285,16 @@ GET     /api/athletes/statistics/top/:action/:activity           controllers.Act
 GET     /api/athletes/statistics/achievements/:activity    controllers.ActivityController.achievements(activity: String)
 
 ###
+#  summary: Retrieves AI generated performance evaluation for the logged in athlete
+#  tags:
+#    - activity
+#  responses:
+#    200:
+#      description: Returns cached or in-progress performance evaluation
+###
+GET     /api/athletes/statistics/performance            controllers.ActivityController.performance()
+
+###
 #  summary: Suggests a list of activities based on the query parameter
 #  tags:
 #    - search

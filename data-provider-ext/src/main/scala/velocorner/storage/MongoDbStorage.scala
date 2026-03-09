@@ -9,7 +9,7 @@ import org.mongodb.scala._
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.IndexOptions
-import velocorner.api.Account
+import velocorner.api.{Account, AthletePerformanceAnalysis}
 import velocorner.api.strava.Activity
 import velocorner.model._
 import velocorner.model.strava.Gear
@@ -128,6 +128,18 @@ class MongoDbStorage extends Storage[Future] with LazyLogging {
   override def getAchievementStorage: AchievementStorage[Future] = ???
 
   override def getAdminStorage: AdminStorage[Future] = ???
+
+  override def getAthletePerformanceAnalysisStorage: AthletePerformanceAnalysisStorage[Future] =
+    new AthletePerformanceAnalysisStorage[Future] {
+      override def latest(athleteId: Long): Future[Option[AthletePerformanceAnalysis]] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in MongoDB"))
+
+      override def byFingerprint(athleteId: Long, fingerprint: String): Future[Option[AthletePerformanceAnalysis]] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in MongoDB"))
+
+      override def store(analysis: AthletePerformanceAnalysis): Future[Unit] =
+        Future.failed(new UnsupportedOperationException("athlete performance analysis storage is not supported in MongoDB"))
+    }
 
   // initializes any connections, pools, resources needed to open a storage session
   override def initialize(): Unit = {

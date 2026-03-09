@@ -19,6 +19,7 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
 
     implicit val timeout: Timeout = new Timeout(10 seconds)
     val refreshStrategyMock = mock[RefreshStrategy]
+    val athletePerformanceServiceMock = mock[AthletePerformanceService]
     val settingsMock = mock[ConnectivitySettings]
     val cacheApiMock = mock[SyncCacheApi]
 
@@ -27,13 +28,25 @@ class ActivityControllerSpec extends PlaySpec with StubControllerComponentsFacto
 
       when(settingsMock.getStorage).thenReturn(storageMock)
 
-      val controller = new ActivityController(settingsMock, cacheApiMock, refreshStrategyMock, stubControllerComponents())
+      val controller = new ActivityController(
+        settingsMock,
+        cacheApiMock,
+        refreshStrategyMock,
+        athletePerformanceServiceMock,
+        stubControllerComponents()
+      )
       val result = controller.profile("Ride", "2021").apply(FakeRequest())
       Helpers.status(result) mustBe Status.OK
     }
 
     "return with forbidden when asking for activities without being logged in" in {
-      val controller = new ActivityController(settingsMock, cacheApiMock, refreshStrategyMock, stubControllerComponents())
+      val controller = new ActivityController(
+        settingsMock,
+        cacheApiMock,
+        refreshStrategyMock,
+        athletePerformanceServiceMock,
+        stubControllerComponents()
+      )
       val result = controller.activity(100).apply(FakeRequest())
       Helpers.status(result) mustBe Status.FORBIDDEN
     }

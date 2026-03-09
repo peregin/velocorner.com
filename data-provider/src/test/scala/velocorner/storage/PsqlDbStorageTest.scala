@@ -17,6 +17,7 @@ class PsqlDbStorageTest
     with Matchers
     with ActivityStorageBehaviour
     with AccountStorageBehaviour
+    with AthletePerformanceAnalysisStorageBehaviour
     with FlywaySupport
     with LazyLogging {
 
@@ -73,6 +74,8 @@ class PsqlDbStorageTest
   }
 
   "account storage" should behave like accountFragments(psqlStorage)
+
+  "athlete performance analysis storage" should behave like athletePerformanceAnalysisFragments(psqlStorage)
 
   it should "select achievements" in {
     val achievementStorage = psqlStorage.getAchievementStorage

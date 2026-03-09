@@ -64,4 +64,7 @@ case class SecretConfig(configProps: Config) {
 
   def getCrawlerUrl: String = config.getString("CRAWLER_URL")
   def getRatesUrl: String = config.getString("RATES_URL")
+
+  def getAiChatUrl: String = config.getOptAs[String]("AI_CHAT_URL").getOrElse("https://ai.peregin.com/chat")
+  def getAiChatToken: Option[String] = config.getOptAs[String]("AI_CHAT_API_TOKEN").orElse(config.getOptAs[String]("AI_API_TOKEN"))
 }

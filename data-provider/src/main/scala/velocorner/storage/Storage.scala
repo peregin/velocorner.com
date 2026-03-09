@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import velocorner.SecretConfig
 import velocorner.model._
 import velocorner.model.strava.Gear
-import velocorner.api.{Account, Achievement}
+import velocorner.api.{Account, Achievement, AthletePerformanceAnalysis}
 
 import scala.concurrent.Future
 import org.joda.time.DateTime
@@ -39,6 +39,12 @@ trait AdminStorage[M[_]] {
   def countActiveAccounts: M[Long]
 }
 
+trait AthletePerformanceAnalysisStorage[M[_]] {
+  def latest(athleteId: Long): M[Option[AthletePerformanceAnalysis]]
+  def byFingerprint(athleteId: Long, fingerprint: String): M[Option[AthletePerformanceAnalysis]]
+  def store(analysis: AthletePerformanceAnalysis): M[Unit]
+}
+
 trait Storage[M[_]] {
 
   // insert all activities, new ones are added, previous ones are overridden
@@ -71,6 +77,8 @@ trait Storage[M[_]] {
   def getAchievementStorage: AchievementStorage[M]
 
   def getAdminStorage: AdminStorage[M]
+
+  def getAthletePerformanceAnalysisStorage: AthletePerformanceAnalysisStorage[M]
 
   // initializes any connections, pools, resources needed to open a storage session
   def initialize(): Unit
