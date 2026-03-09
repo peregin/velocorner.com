@@ -36,8 +36,6 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
       sorted = recent.toList.sortBy(_.getStartDateLocal().getMillis).reverse
       context = buildContext(sorted)
       _ = logger.info(s"performance context for $who: recentActivities=${sorted.size}, hasContext=${context.nonEmpty}")
-      // it is shown only in local development
-      _ = logger.debug(s"prompt context $context")
       result <- context match {
         case None =>
           logger.info(s"no activity context for $who, trying latest cached analysis")
@@ -119,6 +117,8 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
   private def runIfNeeded(athleteId: Long, context: EvaluationContext): Unit = {
     val key = s"$athleteId:${context.fingerprint}"
     if (runningEvaluations.add(key)) {
+      logger.debug(s"prompt context $context")
+      logger.debug("---------------------------------------------------------")
       logger.info(s"starting AI performance evaluation athlete=$athleteId fingerprint=${fingerprintLabel(context.fingerprint)}")
       val analysisStorage = connectivity.getStorage.getAthletePerformanceAnalysisStorage
       generateSummary(context.prompt)
@@ -155,21 +155,26 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
   private def buildPrompt(activities: List[Activity]): String = {
     val lines = activities.zipWithIndex.map { case (a, ix) =>
       val localDate = a.getStartDateLocal().toString("yyyy-MM-dd")
-      val avgSpeedKmh = a.average_speed.map(v => f"${v * 3.6}%.1f km/h").getOrElse("n/a")
-      val avgHr = a.average_heartrate.map(v => f"${v}%.0f bpm").getOrElse("n/a")
-      val avgPower = a.average_watts.map(v => f"${v}%.0f W").getOrElse("n/a")
+      val avgSpeedKmh = a.average_speed.map(v => f"${v * 3.6}%.1f").getOrElse("n/a")
+      val avgHr = a.average_heartrate.map(v => f"$v%.0f").getOrElse("n/a")
+      val avgPower = a.average_watts.map(v => f"$v%.0f").getOrElse("n/a")
       val distanceKm = f"${a.distance / 1000}%.1f"
       val elevationM = f"${a.total_elevation_gain}%.0f"
-      s"${ix + 1}. date: $localDate | sport: ${a.`type`} | name: ${a.name} | distance: $distanceKm km | elevation: $elevationM m | duration: ${a.moving_time / 60} min | speed: $avgSpeedKmh | hr $avgHr bpm | power $avgPower W"
+      s"${ix + 1}. date: $localDate | sport: ${a.`type`} | name: ${a.name} | distance: $distanceKm km | elevation: $elevationM m | duration: ${a.moving_time / 60} min | speed: $avgSpeedKmh km/h | hr $avgHr bpm | power $avgPower W"
     }
 
     s"""You are a cycling performance coach.
        |Evaluate this athlete's recent performance based on the activities below.
-       |Write a concise summary with:
-       |- trend assessment (improving / stable / declining) with evidence
-       |- strengths
-       |- one or two concrete recommendations for the next week
-       |Keep it practical, personalized using “you” and under 120 words.
+       |
+       |Instructions:
+       |Write a concise summary with 3 sections starting in new lines:
+       |- Assessment (improving / stable / declining) with evidence
+       |- Strengths and encouragement
+       |- One or two concrete recommendations for the next week
+       |
+       |Rules:
+       |- Keep it practical, personalized using “you” and under 120 words.
+       |- Do not invent missing values.
        |
        |List of activities:
        |${lines.mkString("\n")}
