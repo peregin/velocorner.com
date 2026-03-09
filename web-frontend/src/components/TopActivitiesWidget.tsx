@@ -1,14 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ApiClient from "../service/ApiClient";
 import {
   Box,
+  Button,
+  Card,
   Heading,
-  Text,
-  Table,
-  Spinner,
   HStack,
-  Card
+  Link,
+  Separator,
+  Spinner,
+  Table,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
+import type { AthleteProfile } from "../types/athlete";
+import { getAthleteUnits } from "../types/athlete";
+import { LuArrowDown, LuArrowUp, LuArrowUpDown, LuExternalLink } from "react-icons/lu";
 
 interface Activity {
   id: number;
@@ -24,28 +31,28 @@ interface TopActivitiesWidgetProps {
   title: string;
   action: "distance" | "elevation";
   selectedActivityType: string;
-  athleteProfile: any;
+  athleteProfile: AthleteProfile | null;
 }
 
 const formatDate = (dateString: string) => {
   if (!dateString) return "";
   const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  
+
   const day = String(date.getDate()).padStart(2, '0');
   const month = months[date.getMonth()];
   const year = date.getFullYear();
   const dayName = days[date.getDay()];
-  
+
   let hours = date.getHours();
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
   hours = hours ? hours : 12;
   const hoursStr = String(hours).padStart(2, '0');
-  
-  // Format: DD MMM, YYYY, ddd HH:mm A (matching Scala moment.js format)
+
   return `${day} ${month}, ${year}, ${dayName} ${hoursStr}:${minutes} ${ampm}`;
 };
 
@@ -58,6 +65,9 @@ const formatElapsedTime = (seconds: number) => {
   return `${minutes}m`;
 };
 
+type SortKey = "start_date_local" | "name" | "distance" | "total_elevation_gain" | "moving_time";
+type SortDirection = "asc" | "desc";
+
 const TopActivitiesWidget = ({
   title,
   action,
@@ -66,6 +76,15 @@ const TopActivitiesWidget = ({
 }: TopActivitiesWidgetProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortKey, setSortKey] = useState<SortKey>(
+    action === "distance" ? "distance" : "total_elevation_gain"
+  );
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  useEffect(() => {
+    setSortKey(action === "distance" ? "distance" : "total_elevation_gain");
+    setSortDirection("desc");
+  }, [action]);
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -84,15 +103,79 @@ const TopActivitiesWidget = ({
     fetchActivities();
   }, [action, selectedActivityType]);
 
-  const distanceUnit = athleteProfile?.unit?.distanceLabel || 'km';
-  const elevationUnit = athleteProfile?.unit?.elevationLabel || 'm';
+  const units = getAthleteUnits(athleteProfile?.unit);
+  const distanceUnit = units.distanceLabel || "km";
+  const elevationUnit = units.elevationLabel || "m";
+
+  const sortableColumns: { key: SortKey; label: string; numeric?: boolean }[] = [
+    { key: "start_date_local", label: "Date" },
+    { key: "name", label: "Activity" },
+    { key: "distance", label: "Distance", numeric: true },
+    { key: "total_elevation_gain", label: "Elevation", numeric: true },
+    { key: "moving_time", label: "Moving / Elapsed", numeric: true },
+  ];
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortKey(key);
+    if (key === "name") {
+      setSortDirection("asc");
+      return;
+    }
+    setSortDirection("desc");
+  };
+
+  const sortedActivities = useMemo(() => {
+    const copy = [...activities];
+    const directionMultiplier = sortDirection === "asc" ? 1 : -1;
+
+    copy.sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortKey === "start_date_local") {
+        const left = new Date(a.start_date_local).getTime();
+        const right = new Date(b.start_date_local).getTime();
+        comparison = left - right;
+      } else {
+        comparison = (a[sortKey] as number) - (b[sortKey] as number);
+      }
+
+      return comparison * directionMultiplier;
+    });
+
+    return copy;
+  }, [activities, sortDirection, sortKey]);
+
+  const renderSortIcon = (key: SortKey) => {
+    if (sortKey !== key) {
+      return <LuArrowUpDown size={13} />;
+    }
+    return sortDirection === "asc" ? <LuArrowUp size={13} /> : <LuArrowDown size={13} />;
+  };
 
   return (
-    <Card.Root>
-      <Card.Body>
-        <Heading size="md" mb={4} textAlign="center">
-          {title}
-        </Heading>
+    <Card.Root
+      borderWidth="1px"
+      borderColor="gray.200"
+      borderRadius="lg"
+      boxShadow="sm"
+      overflow="hidden"
+    >
+      <Card.Body p={0}>
+        <VStack align="stretch" gap={0}>
+          <Box
+            px={{ base: 4, md: 5 }}
+            py={4}
+            bgGradient="linear(to-r, blue.600, cyan.500)"
+            color="white"
+          >
+            <Heading letterSpacing="0.01em" color='black'>{title}</Heading>
+          </Box>
+          <Separator />
         {loading ? (
           <HStack justify="center" py={8}>
             <Spinner />
@@ -103,75 +186,99 @@ const TopActivitiesWidget = ({
             No activities found
           </Text>
         ) : (
-          <Box overflowX="auto">
-            <Table.Root 
-              variant="outline" 
+          <Box overflowX="auto" px={{ base: 2, md: 3 }} py={3}>
+            <Table.Root
+              variant="line"
               size="sm"
-              striped={true}
+              css={{
+                "--table-border-color": "colors.gray.200",
+              }}
             >
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader fontSize="xs" py={2}>Date</Table.ColumnHeader>
-                  <Table.ColumnHeader fontSize="xs" py={2}>Name</Table.ColumnHeader>
-                  <Table.ColumnHeader fontSize="xs" py={2}>Distance</Table.ColumnHeader>
-                  <Table.ColumnHeader fontSize="xs" py={2}>Elevation</Table.ColumnHeader>
-                  <Table.ColumnHeader fontSize="xs" py={2}>Elapsed</Table.ColumnHeader>
+                  {sortableColumns.map((column) => (
+                    <Table.ColumnHeader key={column.key} py={2.5}>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onClick={() => handleSort(column.key)}
+                        fontSize="xs"
+                        fontWeight="semibold"
+                        color="gray.700"
+                        px={1.5}
+                        minH="24px"
+                      >
+                        <HStack gap={1.5}>
+                          <Text>{column.label}</Text>
+                          <Box color={sortKey === column.key ? "blue.600" : "gray.400"}>
+                            {renderSortIcon(column.key)}
+                          </Box>
+                        </HStack>
+                      </Button>
+                    </Table.ColumnHeader>
+                  ))}
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {activities.map((activity) => (
-                  <Table.Row key={activity.id}>
+                {sortedActivities.map((activity) => (
+                  <Table.Row
+                    key={activity.id}
+                    _hover={{ bg: "blue.50" }}
+                    transition="background 0.15s ease"
+                  >
                     <Table.Cell fontSize="xs" py={2}>
-                      <Box
-                        style={{
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          lineHeight: '1.25rem',
-                          maxHeight: '2.5rem',
+                      <Link
+                        href={`https://www.strava.com/activities/${activity.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        color="blue.600"
+                        textDecoration="underline"
+                        _hover={{ color: "blue.700" }}
+                        display="-webkit-box"
+                        css={{
+                          WebkitLineClamp: "2",
+                          WebkitBoxOrient: "vertical",
                         }}
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        lineHeight="1.25rem"
+                        maxHeight="2.5rem"
                       >
-                        <a
-                          href={`https://www.strava.com/activities/${activity.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: '#0066cc', textDecoration: 'underline', fontSize: '0.75rem' }}
-                        >
+                        <HStack as="span" gap={1.5} align="baseline">
                           {formatDate(activity.start_date_local)}
-                        </a>
-                      </Box>
+                          <LuExternalLink size={11} />
+                        </HStack>
+                      </Link>
                     </Table.Cell>
                     <Table.Cell fontSize="xs" py={2}>
-                      <Box
-                        style={{
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          lineHeight: '1.25rem',
-                          maxHeight: '2.5rem',
+                      <Link
+                        href={`https://www.strava.com/activities/${activity.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        color="gray.700"
+                        textDecoration="none"
+                        _hover={{ color: "blue.700", textDecoration: "underline" }}
+                        display="-webkit-box"
+                        css={{
+                          WebkitLineClamp: "2",
+                          WebkitBoxOrient: "vertical",
                         }}
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        lineHeight="1.25rem"
+                        maxHeight="2.5rem"
+                        fontWeight="medium"
                       >
-                        <a
-                          href={`https://www.strava.com/activities/${activity.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: '#0066cc', textDecoration: 'underline', fontSize: '0.75rem' }}
-                        >
-                          {activity.name}
-                        </a>
-                      </Box>
+                        {activity.name}
+                      </Link>
                     </Table.Cell>
-                    <Table.Cell fontSize="xs" py={2}>
+                    <Table.Cell fontSize="xs" py={2} fontWeight="semibold" color="gray.700">
                       {(activity.distance / 1000).toFixed(1)} {distanceUnit}
                     </Table.Cell>
-                    <Table.Cell fontSize="xs" py={2}>
+                    <Table.Cell fontSize="xs" py={2} fontWeight="semibold" color="gray.700">
                       {Math.round(activity.total_elevation_gain)} {elevationUnit}
                     </Table.Cell>
-                    <Table.Cell fontSize="xs" py={2}>
+                    <Table.Cell fontSize="xs" py={2} color="gray.600">
                       {formatElapsedTime(activity.moving_time)} / {formatElapsedTime(activity.elapsed_time)}
                     </Table.Cell>
                   </Table.Row>
@@ -180,10 +287,10 @@ const TopActivitiesWidget = ({
             </Table.Root>
           </Box>
         )}
+        </VStack>
       </Card.Body>
     </Card.Root>
   );
 };
 
 export default TopActivitiesWidget;
-
