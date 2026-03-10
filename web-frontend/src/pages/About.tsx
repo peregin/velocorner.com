@@ -146,10 +146,6 @@ const About = () => {
                         <Badge>{status.osVersion}</Badge>
                       </GridItem>
                       <GridItem>
-                        <Text fontSize="sm" color="gray.600">Docker Image</Text>
-                        <Badge>{status.dockerBaseImage}</Badge>
-                      </GridItem>
-                      <GridItem>
                         <Text fontSize="sm" color="gray.600">Java</Text>
                         <Badge>{status.javaVersion}</Badge>
                       </GridItem>
