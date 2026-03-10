@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Card, Heading, HStack, List, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Card, Heading, HStack, List, Spinner, Text, VStack } from "@chakra-ui/react";
 import { LuSparkles } from "react-icons/lu";
 import ApiClient from "@/service/ApiClient";
 import type { AthletePerformanceSummary } from "@/types/athlete";
@@ -125,9 +125,9 @@ const PerformanceSummaryWidget = ({ isAuthenticated }: PerformanceSummaryWidgetP
   const updatedLabel = data?.createdAt ? new Date(data.createdAt).toLocaleString() : null;
 
   return (
-    <Card.Root>
-      <Card.Body p={{ base: 3, md: 4 }}>
-        <Heading size="sm" mb={3}>
+    <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+      <Card.Body p={{ base: 5, md: 6 }}>
+        <Heading size="sm" mb={4}>
           <HStack gap={2}>
             <LuSparkles /> AI Performance Evaluation
           </HStack>
@@ -139,53 +139,57 @@ const PerformanceSummaryWidget = ({ isAuthenticated }: PerformanceSummaryWidgetP
             <Text>Loading performance summary...</Text>
           </HStack>
         ) : (
-          <VStack align="stretch" gap={2} fontSize='sm'>
+          <VStack align="stretch" gap={4} fontSize='sm'>
             {parsedSummary?.trend?.label && (
-              <HStack gap={2} align="start">
-                <Badge colorPalette={trendColorPalette(parsedSummary.trend.label)} variant="subtle">
+              <HStack gap={3} align="start">
+                <Badge colorPalette={trendColorPalette(parsedSummary.trend.label)} variant="solid" borderRadius="full" px={3} py={1}>
                   {parsedSummary.trend.label}
                 </Badge>
-                <Text color="gray.700">{parsedSummary.trend.evidence || ""}</Text>
+                <Text color="slate.600">{parsedSummary.trend.evidence || ""}</Text>
               </HStack>
             )}
             {parsedSummary?.strengths.length ? (
-              <VStack align="stretch" gap={1}>
-                <Text fontWeight="semibold" color="gray.700">
+              <Box p={4} borderRadius="2xl" bg="white" border="1px solid" borderColor="rgba(20, 32, 51, 0.06)">
+                <VStack align="stretch" gap={1}>
+                  <Text fontWeight="semibold" color="slate.700">
                   Strengths
-                </Text>
-                <List.Root ps={4}>
-                  {parsedSummary.strengths.map((strength) => (
-                    <List.Item key={strength} color="gray.700">
-                      {strength}
-                    </List.Item>
-                  ))}
-                </List.Root>
-              </VStack>
+                  </Text>
+                  <List.Root ps={4}>
+                    {parsedSummary.strengths.map((strength) => (
+                      <List.Item key={strength} color="slate.600">
+                        {strength}
+                      </List.Item>
+                    ))}
+                  </List.Root>
+                </VStack>
+              </Box>
             ) : null}
             {parsedSummary?.recommendations.length ? (
-              <VStack align="stretch" gap={1}>
-                <Text fontWeight="semibold" color="gray.700">
+              <Box p={4} borderRadius="2xl" bg="rgba(23, 166, 133, 0.06)" border="1px solid" borderColor="rgba(23, 166, 133, 0.12)">
+                <VStack align="stretch" gap={1}>
+                  <Text fontWeight="semibold" color="slate.700">
                   Recommendations
-                </Text>
-                <List.Root ps={4}>
-                  {parsedSummary.recommendations.map((recommendation) => (
-                    <List.Item key={recommendation} color="gray.700">
-                      {recommendation}
-                    </List.Item>
-                  ))}
-                </List.Root>
-              </VStack>
+                  </Text>
+                  <List.Root ps={4}>
+                    {parsedSummary.recommendations.map((recommendation) => (
+                      <List.Item key={recommendation} color="slate.600">
+                        {recommendation}
+                      </List.Item>
+                    ))}
+                  </List.Root>
+                </VStack>
+              </Box>
             ) : null}
-            <Text color={summaryText ? "gray.700" : "gray.500"}>
+            <Text color={summaryText ? "slate.700" : "slate.500"} lineHeight="1.8">
               {summaryText || "Your performance is being evaluated. Please check back in a moment."}
             </Text>
             {data?.basedOn && (
-              <Text fontSize="xs" color="gray.500">
+              <Text fontSize="xs" color="slate.500">
                 Based on {data.basedOn}
               </Text>
             )}
             {updatedLabel && (
-              <Text fontSize="xs" color="gray.500">
+              <Text fontSize="xs" color="slate.500">
                 Last generated: {updatedLabel}
               </Text>
             )}

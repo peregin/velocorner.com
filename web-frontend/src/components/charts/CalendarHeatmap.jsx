@@ -24,10 +24,10 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
     <Box>
       <Heading size="md" mb={4}>{title}</Heading>
       <Box overflowX="auto">
-        <svg width={monthsToShow * 140} height={140}>
+        <svg width={monthsToShow * 140} height={150}>
           {points.map((m, mi) => (
             <g key={m.key} transform={`translate(${mi * 140}, 0)`}>
-              <text x={0} y={12} fontSize="12" fill="#666">{m.label}</text>
+              <text x={0} y={12} fontSize='12' fill="#666">{m.label}</text>
               {m.days.map((d, di) => (
                 <g key={di}>
                   <rect

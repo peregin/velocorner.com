@@ -53,10 +53,15 @@ const ImageCarousel = ({ items = [
             maxW="100%"
             mx="auto"
             gap="4"
-            pt='.5rem'
             position="relative"
             colorPalette="white"
             autoplay={{ delay: 8000 }}
+            borderRadius="28px"
+            overflow="hidden"
+            border="1px solid"
+            borderColor="rgba(20, 32, 51, 0.08)"
+            boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
+            bg="rgba(255,255,255,0.76)"
         >
             <Carousel.Control gap="4" width="full" position="relative">
                 <Carousel.PrevTrigger asChild>
@@ -68,19 +73,21 @@ const ImageCarousel = ({ items = [
                 <Carousel.ItemGroup width="full">
                     {items.map((item, index) => (
                         <Carousel.Item key={index} index={index}>
-                            <AspectRatio ratio={25 / 3} maxH="72vh" w="full" position="relative">
+                            <AspectRatio ratio={25 / 3} maxH="72vh" w="full" position="relative" overflow="hidden">
                                 <>
                                     <Image
                                         src={item.image}
                                         alt={item.label}
-                                        objectFit="contain"
+                                        objectFit="cover"
+                                        borderRadius="28px"
                                     />
                                     <Box
                                         position="absolute"
                                         right="0"
                                         top="0"
                                         transform="translateX(20%)"
-                                        // bg="blackAlpha.700"
+                                        borderTopLeftRadius="20px"
+                                        borderBottomLeftRadius="20px"
                                         color="white"
                                         px={4}
                                         py={3}
@@ -117,4 +124,3 @@ const ImageCarousel = ({ items = [
 };
 
 export default ImageCarousel;
-

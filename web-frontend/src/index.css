@@ -1,13 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  --vc-bg: #f4f7fb;
+  --vc-text: #142033;
+  --vc-muted: #5d6b82;
+  --vc-surface: rgba(255, 255, 255, 0.8);
+  --vc-border: rgba(20, 32, 51, 0.08);
+  --vc-shadow: 0 24px 60px rgba(18, 38, 63, 0.09);
+}
+
 html {
   scroll-behavior: smooth;
+  background:
+    radial-gradient(circle at top left, rgba(44, 152, 240, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(23, 166, 133, 0.16), transparent 28%),
+    linear-gradient(180deg, #f8fbff 0%, var(--vc-bg) 100%);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  margin: 0;
+  color: var(--vc-text);
+  font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: transparent;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(20, 32, 51, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 32, 51, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 85%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 @keyframes blob {
@@ -33,4 +71,3 @@ body {
     opacity: 0.5;
   }
 }
-

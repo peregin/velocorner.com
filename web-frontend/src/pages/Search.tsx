@@ -18,6 +18,7 @@ import {
 import { LuSearch, LuClock, LuInfo } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
 import AutocompleteCombobox from "../components/AutocompleteCombobox";
+import ImageCarousel from "@/components/ImageCarousel";
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -230,7 +231,8 @@ const Search = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      <VStack gap={8} align="stretch">
+      <ImageCarousel />
+      <VStack gap={8} align="stretch" mt='2rem'>
         {/* Header */}
         <Box>
           <Heading size="lg" mb={2}>Activity Search</Heading>
@@ -240,7 +242,7 @@ const Search = () => {
         </Box>
 
         {/* Search Form */}
-        <Card.Root>
+        <Card.Root borderRadius='20px'>
           <Card.Body>
             <VStack gap={4}>
               <HStack width="100%" maxW="600px">
@@ -273,7 +275,7 @@ const Search = () => {
 
         {/* Search Results */}
         {hasSearched && (
-          <Card.Root>
+          <Card.Root borderRadius='20px'>
             <Card.Body>
               <VStack gap={4} align="stretch">
                 <HStack justify="space-between">

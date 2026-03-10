@@ -5,6 +5,7 @@ import { useAuth } from "../service/auth";
 import { getInitials, formatTimestamp } from "../service/formatters";
 import {
   Avatar,
+  Badge,
   Button,
   Heading,
   Text,
@@ -16,6 +17,7 @@ import {
   Card,
   Progress,
   Spinner,
+  Separator,
   Tabs,
   Select,
   createListCollection,
@@ -293,20 +295,137 @@ const Home = () => {
 
 
   return (
-    <Box maxW="1200px" mx="auto" p={6}>
+    <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 14, md: 20 }}>
+      <VStack gap={{ base: 6, md: 8 }} align="stretch">
+        <Card.Root
+          borderRadius="32px"
+          border="1px solid"
+          borderColor="rgba(20, 32, 51, 0.08)"
+          bg="rgba(255,255,255,0.76)"
+          boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
+          overflow="hidden"
+        >
+          <Card.Body p={{ base: 6, md: 8 }}>
+            <Grid templateColumns={{ base: "1fr", lg: "1.35fr 0.9fr" }} gap={{ base: 8, lg: 10 }} alignItems="center">
+              <VStack align="start" gap={5}>
+                <Badge colorPalette="green" borderRadius="full" px={3} py={1}>
+                  Modern endurance analytics
+                </Badge>
+                <VStack align="start" gap={3}>
+                  <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="12ch">
+                    Train with a sharper view of your season.
+                  </Heading>
+                  <Text color="slate.600" fontSize={{ base: "md", md: "lg" }} maxW="2xl" lineHeight="1.8">
+                    Velocorner turns Strava activity history into a concise performance cockpit with year-over-year comparisons,
+                    standout efforts, and search that gets you back to the ride you want in seconds.
+                  </Text>
+                </VStack>
+                <HStack gap={3} flexWrap="wrap">
+                  {!isAuthenticated ? (
+                    <Button
+                      colorPalette="orange"
+                      size="lg"
+                      borderRadius="full"
+                      fontWeight="700"
+                      px={6}
+                      boxShadow="0 14px 28px rgba(252, 121, 52, 0.24)"
+                      onClick={connect}
+                      loading={authLoading}
+                    >
+                      <Image src={strava} boxSize="20px" mr={2} />
+                      Connect with Strava
+                    </Button>
+                  ) : (
+                    <Button
+                      colorPalette="green"
+                      size="lg"
+                      borderRadius="full"
+                      fontWeight="700"
+                      px={6}
+                      onClick={handleRefresh}
+                      loading={refreshLoading}
+                    >
+                      <HiRefresh />
+                      Refresh activities
+                    </Button>
+                  )}
+                  <Button asChild variant="outline" size="lg" borderRadius="full" px={6}>
+                    <a href="#stats">Explore dashboard</a>
+                  </Button>
+                </HStack>
+                <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={3} width="100%">
+                  {[
+                    { value: "YTD", label: "Progress against prior seasons" },
+                    { value: "AI", label: "Performance summary and recommendations" },
+                    { value: "Fast", label: "Activity search with suggestions" },
+                  ].map((item) => (
+                    <Box
+                      key={item.label}
+                      p={4}
+                      borderRadius="2xl"
+                      bg="white"
+                      border="1px solid"
+                      borderColor="rgba(20, 32, 51, 0.06)"
+                    >
+                      <Text fontWeight="800" color="slate.900" mb={1}>
+                        {item.value}
+                      </Text>
+                      <Text fontSize="sm" color="slate.600">
+                        {item.label}
+                      </Text>
+                    </Box>
+                  ))}
+                </Grid>
+              </VStack>
 
-      <VStack gap={8} align="stretch">
-
-        <Card.Root>
-          <Card.Body>
-            <Weather />
+              <Box
+                p={{ base: 5, md: 6 }}
+                borderRadius="28px"
+                bg="linear-gradient(180deg, #0f172a 0%, #16263f 100%)"
+                color="white"
+                boxShadow="inset 0 1px 0 rgba(255,255,255,0.08)"
+              >
+                <VStack align="stretch" gap={4}>
+                  <HStack justify="space-between">
+                    <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">
+                      What you get
+                    </Text>
+                    <Badge colorPalette="green" borderRadius="full">
+                      {isAuthenticated ? "Live data" : "Demo preview"}
+                    </Badge>
+                  </HStack>
+                  <VStack align="stretch" gap={3}>
+                    {[
+                      "See yearly distance, elevation, and moving time without digging through separate Strava views.",
+                      "Spot trends, top rides, and personal bests in one place.",
+                      "Keep the interface focused on decisions, not chart clutter.",
+                    ].map((line) => (
+                      <Box key={line} p={4} borderRadius="2xl" bg="rgba(255,255,255,0.06)" border="1px solid" borderColor="whiteAlpha.100">
+                        <Text color="whiteAlpha.900" lineHeight="1.7">
+                          {line}
+                        </Text>
+                      </Box>
+                    ))}
+                  </VStack>
+                  <Separator borderColor="whiteAlpha.200" />
+                  <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
+                </VStack>
+              </Box>
+            </Grid>
           </Card.Body>
         </Card.Root>
 
-        {/* Mandatory Strava logo */}
-        <Box display="flex" justifyContent="flex-end">
-          <Image width='169px' height='31px' src='/images/powered-by-strava1.png' />
-        </Box>
+        <Card.Root
+          borderRadius="28px"
+          border="1px solid"
+          borderColor="rgba(20, 32, 51, 0.08)"
+          bg="rgba(255,255,255,0.76)"
+          boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
+        >
+          <Card.Body p={{ base: 4, md: 6 }}>
+            <Weather />
+          </Card.Body>
+        </Card.Root>
 
         {loading && (
           <Box textAlign="center" py={10}>
@@ -322,63 +441,63 @@ const Home = () => {
         {/* Authentication Section */}
         {!isAuthenticated && (
           <>
-            <Card.Root>
-              <Card.Body>
-                <VStack gap={4}>
-                  <Text fontSize="lg" textAlign="center">
-                    Login with your Strava account to see your personal statistics.
-                    <Text fontSize="sm" color="gray.600" textAlign="center">
-                      See your cycling data come to life with interactive charts and insights that help you understand your performance.
-                    </Text>
+            <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+              <Card.Body p={{ base: 6, md: 8 }}>
+                <VStack gap={4} align="start">
+                  <Badge colorPalette="cyan" borderRadius="full" px={3} py={1}>
+                    Demo mode
+                  </Badge>
+                  <Heading size="xl" maxW="18ch">
+                    Sign in once. See your season instantly.
+                  </Heading>
+                  <Text fontSize="md" color="slate.600" maxW="3xl" lineHeight="1.8">
+                    Connect Strava to unlock your own activity archive, year-to-date comparisons, route heatmaps, top performances,
+                    and AI-generated summaries. Until then, the widgets below show a representative sample.
                   </Text>
                   <Button
                     colorPalette="orange"
-                    size="md"
-                    fontWeight="medium"
-                    _hover={{ boxShadow: 'lg', transform: 'scale(1.05)' }}
-                    transition="all 0.2s"
+                    size="lg"
+                    borderRadius="full"
+                    fontWeight="700"
                     onClick={connect}
                     loading={authLoading}
                   >
                     <Image src={strava} boxSize="20px" mr={2} />
                     Connect with Strava
                   </Button>
-                  <Text fontSize="sm" color="gray.600" textAlign="center">
-                    You will be able to see various statistics of your activities such as year to date progress,
-                    yearly achievements, daily heatmap based on distance and elevation and much more!
-                  </Text>
                 </VStack>
               </Card.Body>
             </Card.Root>
 
-
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex="0 0 30%">
+            <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr 1.2fr" }} alignItems="stretch" gap={4}>
+              <Box>
                 <WordCloud words={wordCloud} />
               </Box>
-              <Box flex="0 0 30%">
+              <Box>
                 <BarChart title="Year To Date Distance (Sample)" unit={getProfileUnits().distanceLabel}
-                  fetchSeries={fetchDemoYtdDistance} height={350} /></Box>
-              <Box flex={1}>
+                  fetchSeries={fetchDemoYtdDistance} height={350} />
+              </Box>
+              <Box>
                 <LineSeriesChart title="Yearly Elevation (Sample)" unit={getProfileUnits().elevationLabel}
-                  fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} /></Box>
-            </HStack>
+                  fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} />
+              </Box>
+            </Grid>
 
             <Stats />
 
-            <Card.Root>
-              <Card.Body>
+            <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+              <Card.Body p={{ base: 4, md: 6 }}>
                 <CalendarHeatmap title="Latest Activities (Sample)"
                   fetchDaily={fetchDemoDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={8} />
               </Card.Body>
             </Card.Root>
 
-            <HStack align="stretch" gap={4} flexWrap="wrap">
-              <Box flex={1}><HeatmapChart title="Distance Distribution (Sample)"
+            <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={4}>
+              <Box><HeatmapChart title="Distance Distribution (Sample)"
                 fetchHeatmap={fetchDemoHistogramDistance} height={250} /></Box>
-              <Box flex={1}><HeatmapChart title="Elevation Distribution (Sample)"
+              <Box><HeatmapChart title="Elevation Distribution (Sample)"
                 fetchHeatmap={fetchDemoHistogramElevation} height={250} /></Box>
-            </HStack>
+            </Grid>
           </>
         )}
 
@@ -392,18 +511,26 @@ const Home = () => {
               value={selectedActivityType}
               onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
             >
-              <Tabs.List bg="green.50" rounded="md">
+              <Tabs.List bg="rgba(255,255,255,0.72)" rounded="full" p={1} border="1px solid" borderColor="rgba(20, 32, 51, 0.08)">
                 {activityTypes.map((activityType) => (
-                  <Tabs.Trigger key={activityType} value={activityType} color="gray.700" _selected={{ bg: "green.400", color: "white", boxShadow: "sm" }}>
+                  <Tabs.Trigger
+                    key={activityType}
+                    value={activityType}
+                    color="slate.700"
+                    px={5}
+                    py={2}
+                    borderRadius="full"
+                    _selected={{ bg: "slate.900", color: "white", boxShadow: "sm" }}
+                  >
                     {activityType}
                   </Tabs.Trigger>
                 ))}
               </Tabs.List>
             </Tabs.Root>
 
-            <Card.Root>
-              <Card.Body>
-                <Grid templateColumns={{ base: "1fr", lg: "3fr 3fr" }} gap={4}>
+            <Card.Root borderRadius="32px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+              <Card.Body p={{ base: 6, md: 8 }}>
+                <Grid templateColumns={{ base: "1fr", lg: "1.6fr 0.9fr" }} gap={6}>
                   <Box>
                     <VStack gap={4} align="stretch">
                       {profileLoading ? (
@@ -414,9 +541,8 @@ const Home = () => {
                       ) : athleteProfile ? (
                         // multiple profile entries, avatar, stats, search
                         <VStack gap={4} align="stretch" width="100%">
-
-                          <HStack gap={4} align="stretch" width="100%">
-                            <HStack gap={4} align="top">
+                          <HStack gap={4} align="stretch" width="100%" flexDirection={{ base: "column", xl: "row" }}>
+                            <HStack gap={4} align="top" flex="1">
                               <Avatar.Root size="2xl">
                                 {athleteProfile.avatarUrl && (
                                   <Avatar.Image
@@ -429,24 +555,31 @@ const Home = () => {
                                 </Avatar.Fallback>
                               </Avatar.Root>
                               <Box ml='1rem'>
+                                <Badge colorPalette="green" borderRadius="full" px={3} py={1} mb={3}>
+                                  Dashboard ready
+                                </Badge>
                                 <Heading size="2xl">Hello, {athleteProfile.displayName}</Heading>
                                 {athleteProfile.displayLocation && (
-                                  <Text color="gray.500">{athleteProfile.displayLocation}</Text>
+                                  <Text color="slate.500">{athleteProfile.displayLocation}</Text>
                                 )}
                                 {athleteProfile?.lastUpdate && (
-                                  <Text fontSize="xs" color="gray.500">
+                                  <Text fontSize="xs" color="slate.500">
                                     Last updated: {formatTimestamp(athleteProfile?.lastUpdate)}
                                   </Text>
                                 )}
+                                <Text mt={3} color="slate.600" maxW="2xl">
+                                  Keep the dashboard focused: refresh data, adjust units, or jump directly to a ride from search.
+                                </Text>
                               </Box>
                             </HStack>
 
-                            <VStack gap={2} align="stretch" flexShrink={0} ml="auto">
+                            <VStack gap={2} align="stretch" flexShrink={0} ml="auto" minW={{ base: "100%", xl: "220px" }}>
                               <Button
                                 colorPalette="orange"
                                 onClick={handleRefresh}
                                 loading={refreshLoading}
                                 width="100%"
+                                borderRadius="full"
                               >
                                 <HiRefresh />Refresh
                               </Button>
@@ -486,7 +619,7 @@ const Home = () => {
                                   </Select.Positioner>
                                 </Portal>
                               </Select.Root>
-                              <Button variant="outline" onClick={handleLogout} loading={logoutLoading} width="100%">
+                              <Button variant="outline" borderRadius="full" onClick={handleLogout} loading={logoutLoading} width="100%">
                                 <FaSignOutAlt style={{ marginRight: '8px' }} />
                                 Logout
                               </Button>
@@ -512,6 +645,7 @@ const Home = () => {
                             <Button
                               colorPalette="blue"
                               onClick={handleSearch}
+                              borderRadius="full"
                             >
                               <FaSearch style={{ marginRight: '8px' }} />
                               Search
@@ -532,7 +666,7 @@ const Home = () => {
             </Card.Root>
 
             {/* User Statistics for Authenticated Users */}
-            <VStack gap={6} align="stretch">
+            <VStack gap={6} align="stretch" id="stats">
               {/* User Statistics */}
               <ActivityStatsWidget
                 selectedActivityType={selectedActivityType}
@@ -552,28 +686,28 @@ const Home = () => {
               {/* Charts parity to Play widgets */}
               <LineSeriesChart title="Yearly Heatmap (Distance)" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyHeatmap} seriesToShow={2} height={400} />
 
-              <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYtdDistance} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
-              </HStack>
+              <Grid templateColumns={{ base: "1fr", xl: "0.8fr 1.4fr" }} gap={4}>
+                <Box><BarChart title="Year To Date Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYtdDistance} height={350} /></Box>
+                <Box><LineSeriesChart title="Yearly Distance" unit={getProfileUnits().distanceLabel} fetchSeries={fetchYearlyDistance} seriesToShow={4} height={350} /></Box>
+              </Grid>
 
-              <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYtdElevation} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
-              </HStack>
+              <Grid templateColumns={{ base: "1fr", xl: "0.8fr 1.4fr" }} gap={4}>
+                <Box><BarChart title="Year To Date Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYtdElevation} height={350} /></Box>
+                <Box><LineSeriesChart title="Yearly Elevation" unit={getProfileUnits().elevationLabel} fetchSeries={fetchYearlyElevation} seriesToShow={4} height={350} /></Box>
+              </Grid>
 
-              <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex="0 0 30%"><BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} /></Box>
-                <Box flex={1}><LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} /></Box>
-              </HStack>
+              <Grid templateColumns={{ base: "1fr", xl: "0.8fr 1.4fr" }} gap={4}>
+                <Box><BarChart title="Year To Date Time" unit={'h'} fetchSeries={fetchYtdTime} height={350} /></Box>
+                <Box><LineSeriesChart title="Yearly Time" unit={'h'} fetchSeries={fetchYearlyTime} seriesToShow={4} height={350} /></Box>
+              </Grid>
 
-              <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex={1}><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
-                <Box flex={1}><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
-              </HStack>
+              <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4}>
+                <Box><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
+                <Box><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
+              </Grid>
 
-              <HStack align="stretch" gap={4} flexWrap="wrap">
-                <Box flex={1}>
+              <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4}>
+                <Box>
                   <TopActivitiesWidget
                     title="Longest Activities"
                     action="distance"
@@ -581,7 +715,7 @@ const Home = () => {
                     athleteProfile={athleteProfile}
                   />
                 </Box>
-                <Box flex={1}>
+                <Box>
                   <TopActivitiesWidget
                     title="Most Elevation"
                     action="elevation"
@@ -589,10 +723,10 @@ const Home = () => {
                     athleteProfile={athleteProfile}
                   />
                 </Box>
-              </HStack>
+              </Grid>
 
-              <Card.Root>
-                <Card.Body>
+              <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+                <Card.Body p={{ base: 4, md: 6 }}>
                   <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={7} />
                 </Card.Body>
               </Card.Root>
@@ -607,7 +741,7 @@ const Home = () => {
         <iframe
           width="100%" height="400"
           src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=47.31&lon=8.527&detailLat=47.31&detailLon=8.527000000000044&marker=true"
-          title="Windy Map" style={{ border: 'none' }}>
+          title="Windy Map" style={{ border: 'none', borderRadius: '28px', boxShadow: '0 24px 60px rgba(18, 38, 63, 0.09)' }}>
         </iframe>
       </Box>
     </Box>

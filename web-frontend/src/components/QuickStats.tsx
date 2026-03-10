@@ -33,7 +33,7 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
       value: userStats?.progress?.rides ?? 0,
       label: 'Activities',
       gradientFrom: 'blue.500',
-      gradientTo: 'cyan.500',
+      gradientTo: 'cyan.300',
     },
     {
       icon: LuTrendingUp,
@@ -41,22 +41,22 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
       label: 'Distance',
       unit: units.distanceLabel,
       gradientFrom: 'cyan.800',
-      gradientTo: 'teal.500',
+      gradientTo: 'teal.300',
     },
     {
       icon: LuMountain,
       value: userStats?.progress?.elevation ?? 0,
       label: 'Elevation',
       unit: units.elevationLabel,
-      gradientFrom: 'teal.500',
-      gradientTo: 'emerald.500',
+      gradientFrom: 'red.500',
+      gradientTo: 'yellow.300',
     },
     {
       icon: LuCalendar,
       value: userStats?.progress?.days ?? 0,
       label: 'Active Days',
-      gradientFrom: 'red.500',
-      gradientTo: 'orange.500',
+      gradientFrom: 'green.500',
+      gradientTo: 'green.200',
     },
   ];
 
@@ -71,16 +71,15 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
       {stats.map((stat, index) => (
         <Box
           key={index}
-          p={{ base: 3, md: 4 }}
-          bgGradient="to-br"
-          gradientFrom="white"
-          gradientTo="gray.50"
-          borderRadius="2xl"
+          p={{ base: 4, md: 5 }}
+          bg="rgba(255,255,255,0.92)"
+          borderRadius="28px"
           border="1px"
-          borderColor="gray.100"
+          borderColor="rgba(20, 32, 51, 0.08)"
+          boxShadow="0 18px 40px rgba(18, 38, 63, 0.08)"
           _hover={{
-            borderColor: 'teal.200',
-            boxShadow: 'lg',
+            borderColor: 'brand.200',
+            boxShadow: '0 22px 48px rgba(18, 38, 63, 0.1)',
             transform: 'translateY(-2px)'
           }}
           transition="all 0.3s"
@@ -91,23 +90,23 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
             bgGradient="to-br"
             gradientFrom={stat.gradientFrom}
             gradientTo={stat.gradientTo}
-            borderRadius="xl"
-            mb={2}
-            boxShadow="lg"
+            borderRadius="2xl"
+            mb={3}
+            boxShadow="0 14px 28px rgba(20, 32, 51, 0.12)"
           >
-            <Icon as={stat.icon} fontSize="20px" color="gray" strokeWidth={2.5} />
+            <Icon as={stat.icon} fontSize="20px" color="white" strokeWidth={2.5} />
           </Box>
 
           <VStack alignItems="flex-start" gap={1} w="full">
-            <Text fontSize="2xl" fontWeight="bold" color="gray.900">
+            <Text fontSize="2xl" fontWeight="800" color="slate.900">
               {formatWholeNumber(stat.value)}
               {stat.unit && (
-                <Text as="span" fontSize="sm" fontWeight="medium" color="gray.600" ml={2}>
+                <Text as="span" fontSize="sm" fontWeight="700" color="slate.500" ml={2}>
                   {stat.unit}
                 </Text>
               )}
             </Text>
-            <Text fontSize="sm" fontWeight="medium" color="gray.600">
+            <Text fontSize="sm" fontWeight="700" color="slate.500" textTransform="uppercase" letterSpacing="0.08em">
               {stat.label}
             </Text>
           </VStack>

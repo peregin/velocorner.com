@@ -19,8 +19,6 @@ import { Toaster } from '@/components/ui/toaster'
 import './App.css'
 import Ping from './components/Ping';
 import Footer from './components/Footer.js';
-import ImageCarousel from './components/ImageCarousel.js';
-import Hero from './components/Hero.js';
 
 ReactGA.initialize([
   { trackingId: 'G-1GNXX7WZHH' }
@@ -35,10 +33,27 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <Box minH="100vh" bgGradient="to-br" gradientFrom="gray.50" gradientVia="white" gradientTo="blue.50">
+    <Box minH="100vh" position="relative" overflow="clip">
+      <Box
+        position="absolute"
+        insetX="0"
+        top="-12rem"
+        h="28rem"
+        bgGradient="radial(circle, rgba(44,152,240,0.2) 0%, rgba(44,152,240,0) 68%)"
+        pointerEvents="none"
+      />
+      <Box
+        position="absolute"
+        right="-8rem"
+        top="18rem"
+        h="22rem"
+        w="22rem"
+        borderRadius="full"
+        bg="rgba(23, 166, 133, 0.12)"
+        filter="blur(80px)"
+        pointerEvents="none"
+      />
       <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen}/>
-      {/* <Hero /> */}
-      <ImageCarousel />
       {children}
       <Footer />
       <Toaster />
