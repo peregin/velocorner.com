@@ -346,7 +346,7 @@
         let currentYear = new Date().getFullYear();
         setupYears('Ride', currentYear);
         loadProfile('Ride', currentYear);
-        //loadPerformanceSummary();
+        loadPerformanceSummary();
 
         // reload when activity type is changing
         let activityTabs = $("#activity-tabs")
@@ -355,7 +355,7 @@
             let activityYear = $("#activity-years").val();
             console.log(`profile event[${activityType}]=${activityYear}`);
             loadProfile(activityType, activityYear);
-            //loadPerformanceSummary();
+            loadPerformanceSummary();
         }, false);
     });
 //]]>

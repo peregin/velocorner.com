@@ -65,6 +65,35 @@ case class SecretConfig(configProps: Config) {
   def getCrawlerUrl: String = config.getString("CRAWLER_URL")
   def getRatesUrl: String = config.getString("RATES_URL")
 
+  def getAiChatProvider: String =
+    config
+      .getOptAs[String]("AI_CHAT_PROVIDER")
+      .orElse(config.getOptAs[String]("AI_PROVIDER"))
+      .map(_.trim.toLowerCase)
+      .filter(_.nonEmpty)
+      .getOrElse("openrouter")
+
   def getAiChatUrl: String = config.getOptAs[String]("AI_CHAT_URL").getOrElse("https://ai.peregin.com/chat")
   def getAiChatToken: Option[String] = config.getOptAs[String]("AI_CHAT_API_TOKEN").orElse(config.getOptAs[String]("AI_API_TOKEN"))
+  def getAiGeminiModel: String = config.getOptAs[String]("AI_GEMINI_MODEL").getOrElse("gemini-2.0-flash-lite")
+  def getAiGeminiBaseUrl: String =
+    config.getOptAs[String]("AI_GEMINI_BASE_URL").getOrElse("https://generativelanguage.googleapis.com/v1beta/models")
+  def getAiGeminiApiKey: Option[String] =
+    config
+      .getOptAs[String]("AI_GEMINI_API_KEY")
+      .orElse(config.getOptAs[String]("GEMINI_API_KEY"))
+      .orElse(config.getOptAs[String]("AI_API_TOKEN"))
+  def getAiOpenRouterUrl: String =
+    config.getOptAs[String]("AI_OPENROUTER_URL").getOrElse("https://openrouter.ai/api/v1/chat/completions")
+  def getAiOpenRouterModel: String =
+    config.getOptAs[String]("AI_OPENROUTER_MODEL").getOrElse("google/gemini-2.0-flash-001")
+  def getAiOpenRouterApiKey: Option[String] =
+    config
+      .getOptAs[String]("AI_OPENROUTER_API_KEY")
+      .orElse(config.getOptAs[String]("OPENROUTER_API_KEY"))
+      .orElse(config.getOptAs[String]("AI_API_TOKEN"))
+  def getAiOpenRouterReferer: Option[String] =
+    config.getOptAs[String]("AI_OPENROUTER_REFERER").orElse(config.getOptAs[String]("OPENROUTER_REFERER"))
+  def getAiOpenRouterTitle: Option[String] =
+    config.getOptAs[String]("AI_OPENROUTER_TITLE").orElse(config.getOptAs[String]("OPENROUTER_TITLE"))
 }

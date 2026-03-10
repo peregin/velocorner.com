@@ -163,25 +163,63 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
       s"${ix + 1}. date: $localDate | sport: ${a.`type`} | name: ${a.name} | distance: $distanceKm km | elevation: $elevationM m | duration: ${a.moving_time / 60} min | speed: $avgSpeedKmh km/h | hr $avgHr bpm | power $avgPower W"
     }
 
-    s"""You are a cycling performance coach.
-       |Evaluate this athlete's recent performance based on the activities below.
+    s"""You are a cycling performance coach writing a short direct message to the athlete.
+       |
+       |Task:
+       |Review the recent activities provided below and assess the athlete’s current performance trend.
        |
        |Instructions:
-       |Write a concise summary with 3 sections starting in new lines:
-       |- Assessment (improving / stable / declining) with evidence
-       |- Strengths and encouragement
-       |- One or two concrete recommendations for the next week
+       |- Base the assessment only on the supplied activities.
+       |- Compare recency, duration, elevation, speed, heart rate, and power when available.
+       |- If data is insufficient or mixed across sports, say so explicitly and avoid overclaiming.
+       |- Treat non-cycling activities as supporting fitness, but give priority to cycling-specific evidence.
+       |- Keep the tone practical, and personalized using “you”.
+       |- Keep the message body under 120 words.
+       |
+       |Return your answer in this exact JSON format:
+       |{
+       |  "trend": {
+       |    "label": "improving | stable | declining | inconclusive",
+       |    "evidence": "1-2 sentence explanation"
+       |  },
+       |  "strengths": [
+       |    "strength 1",
+       |    "strength 2"
+       |  ],
+       |  "recommendations": [
+       |    "recommendation 1",
+       |    "recommendation 2"
+       |  ],
+       |  "message": "A short direct message to the athlete in under 120 words."
+       |}
        |
        |Rules:
-       |- Keep it practical, personalized using “you” and under 120 words.
+       |- Always return valid JSON only.
+       |- Use short, concrete strings in strengths and recommendations.
+       |- Include 1 to 2 recommendations only with encouragement.
        |- Do not invent missing values.
+       |- If only one cycling activity is available, set trend.label to "inconclusive" unless the evidence is unusually strong.
        |
-       |List of activities:
+       |Activities:
        |${lines.mkString("\n")}
        |""".stripMargin
   }
 
   private def generateSummary(prompt: String): Future[Option[String]] = {
+    connectivity.secretConfig.getAiChatProvider match {
+      case "gemini" | "google" =>
+        generateGeminiSummary(prompt)
+      case "openrouter" =>
+        generateOpenRouterSummary(prompt)
+      case "peregin" =>
+        generatePereginSummary(prompt)
+      case provider =>
+        logger.warn(s"Unknown AI chat provider '$provider', falling back to peregin")
+        generatePereginSummary(prompt)
+    }
+  }
+
+  private def generatePereginSummary(prompt: String): Future[Option[String]] = {
     val url = connectivity.secretConfig.getAiChatUrl
     val token = connectivity.secretConfig.getAiChatToken
     val reqBody = Json.obj("message" -> prompt).toString()
@@ -195,7 +233,69 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
     token.foreach(t => requestBuilder.header("Authorization", s"Bearer $t"))
 
     val request = requestBuilder.POST(HttpRequest.BodyPublishers.ofString(reqBody, StandardCharsets.UTF_8)).build()
+    executeSummaryRequest(request, "AI chat endpoint")
+  }
 
+  private def generateGeminiSummary(prompt: String): Future[Option[String]] = {
+    val baseUrl = connectivity.secretConfig.getAiGeminiBaseUrl.stripSuffix("/")
+    val model = connectivity.secretConfig.getAiGeminiModel
+    val apiKey = connectivity.secretConfig.getAiGeminiApiKey
+    val url = s"$baseUrl/$model:generateContent"
+    val reqBody = Json
+      .obj(
+        "contents" -> Json.arr(
+          Json.obj(
+            "parts" -> Json.arr(
+              Json.obj("text" -> prompt)
+            )
+          )
+        )
+      )
+      .toString()
+
+    val requestBuilder = HttpRequest
+      .newBuilder()
+      .uri(URI.create(url))
+      .header("Content-Type", "application/json")
+      .header("Accept", "application/json")
+
+    apiKey.foreach(key => requestBuilder.header("x-goog-api-key", key))
+
+    val request = requestBuilder.POST(HttpRequest.BodyPublishers.ofString(reqBody, StandardCharsets.UTF_8)).build()
+    executeSummaryRequest(request, "Gemini API")
+  }
+
+  private def generateOpenRouterSummary(prompt: String): Future[Option[String]] = {
+    val url = connectivity.secretConfig.getAiOpenRouterUrl
+    val apiKey = connectivity.secretConfig.getAiOpenRouterApiKey
+    val model = connectivity.secretConfig.getAiOpenRouterModel
+    val reqBody = Json
+      .obj(
+        "model" -> model,
+        "messages" -> Json.arr(
+          Json.obj(
+            "role" -> "user",
+            "content" -> prompt
+          )
+        )
+      )
+      .toString()
+
+    val requestBuilder = HttpRequest
+      .newBuilder()
+      .uri(URI.create(url))
+      .header("Content-Type", "application/json")
+      .header("Accept", "application/json")
+
+    apiKey.foreach(key => requestBuilder.header("Authorization", s"Bearer $key"))
+    connectivity.secretConfig.getAiOpenRouterReferer.foreach(value => requestBuilder.header("HTTP-Referer", value))
+    connectivity.secretConfig.getAiOpenRouterTitle.foreach(value => requestBuilder.header("X-Title", value))
+
+    val request = requestBuilder.POST(HttpRequest.BodyPublishers.ofString(reqBody, StandardCharsets.UTF_8)).build()
+    executeSummaryRequest(request, "OpenRouter API")
+  }
+
+  private def executeSummaryRequest(request: HttpRequest, endpointLabel: String): Future[Option[String]] = {
     httpClient
       .sendAsync(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
       .asScala
@@ -204,32 +304,50 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
           val text = extractText(response.body())
           text.filter(_.nonEmpty)
         } else {
-          logger.warn(s"AI chat endpoint returned ${response.statusCode()}")
+          val headers = response.headers().map().asScala.toSeq
+            .sortBy(_._1)
+            .map { case (name, values) => s"$name=${values.asScala.mkString("[", ", ", "]")}" }
+            .mkString(", ")
+          logger.warn(
+            s"$endpointLabel returned ${response.statusCode()} headers={$headers} body=${response.body()}"
+          )
           None
         }
       }
       .recover {
         case NonFatal(ex) =>
-          logger.warn("AI chat request failed", ex)
+          logger.warn(s"$endpointLabel request failed", ex)
           None
       }
   }
 
   private def extractText(rawBody: String): Option[String] = {
     def fromJson(js: JsValue): Option[String] =
-      (js \ "response").asOpt[String]
+      (js \ "candidates").asOpt[JsArray]
+        .flatMap(_.value.headOption)
+        .flatMap(candidate => (candidate \ "content" \ "parts").asOpt[JsArray])
+        .flatMap(_.value.headOption)
+        .flatMap(part => (part \ "text").asOpt[String])
+        .orElse((js \ "response").asOpt[String])
         .orElse((js \ "text").asOpt[String])
         .orElse((js \ "content").asOpt[String])
         .orElse((js \ "message").asOpt[String])
-        .orElse(((js \ "choices")(0) \ "message" \ "content").asOpt[String])
-        .orElse(((js \ "choices")(0) \ "text").asOpt[String])
+        .orElse(
+          (js \ "choices").asOpt[JsArray]
+            .flatMap(_.value.headOption)
+            .flatMap(choice => (choice \ "message" \ "content").asOpt[String])
+        )
+        .orElse(
+          (js \ "choices").asOpt[JsArray]
+            .flatMap(_.value.headOption)
+            .flatMap(choice => (choice \ "text").asOpt[String])
+        )
         .orElse(js match {
           case JsObject(fields) =>
             fields.values.toList.flatMap(fromJson).headOption
           case JsArray(values) =>
             values.toList.flatMap(fromJson).headOption
-          case JsString(value) =>
-            Some(value)
+          case JsString(value) => Option(value)
           case _ =>
             None
         })
