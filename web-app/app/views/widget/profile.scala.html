@@ -168,6 +168,18 @@
                 <div class="row"><h4><i class="fa fa-magic rounded"></i> AI Performance Evaluation</h4></div>
                 <div class="row">
                     <div class="col-sm-12">
+                        <div id="performance-summary-trend" style="margin-bottom: 8px; display: none;">
+                            <span id="performance-summary-trend-label" class="label label-default" style="text-transform: capitalize;"></span>
+                            <span id="performance-summary-trend-evidence" style="margin-left: 8px; color: #555;"></span>
+                        </div>
+                        <div id="performance-summary-strengths-section" style="display: none; margin-bottom: 8px;">
+                            <div style="font-weight: 600;">Strengths</div>
+                            <ul id="performance-summary-strengths" style="margin-bottom: 0;"></ul>
+                        </div>
+                        <div id="performance-summary-recommendations-section" style="display: none; margin-bottom: 8px;">
+                            <div style="font-weight: 600;">Recommendations</div>
+                            <ul id="performance-summary-recommendations" style="margin-bottom: 0;"></ul>
+                        </div>
                         <p id="performance-summary-text" style="font-size: 15px; margin-bottom: 6px;">
                             Your performance is being evaluated. Please check back in a moment.
                         </p>
@@ -275,8 +287,95 @@
             timeout: 20000,
             success: function(data) {
                 let summary = data.summary;
+                let parsed = null;
+
+                const normalizeSummaryText = function(value) {
+                    if (!value || value.trim().length === 0) {
+                        return value;
+                    }
+
+                    const trimmed = value.trim();
+                    const lines = trimmed.split('\n');
+                    const firstLine = lines[0] ? lines[0].trim().toLowerCase() : '';
+                    const lastLine = lines.length > 0 ? lines[lines.length - 1].trim() : '';
+
+                    if (firstLine === '```json' && lastLine === '```') {
+                        return lines.slice(1, -1).join('\n').trim();
+                    }
+
+                    return trimmed;
+                };
+
+                const hideStructuredSummary = function() {
+                    $('#performance-summary-trend').hide();
+                    $('#performance-summary-strengths-section').hide();
+                    $('#performance-summary-recommendations-section').hide();
+                    $('#performance-summary-trend-label').removeClass('label-success label-info label-danger label-warning label-default').text('');
+                    $('#performance-summary-trend-evidence').text('');
+                    $('#performance-summary-strengths').empty();
+                    $('#performance-summary-recommendations').empty();
+                };
+
+                const trendLabelClass = function(label) {
+                    switch ((label || '').toLowerCase()) {
+                        case 'improving':
+                            return 'label-success';
+                        case 'stable':
+                            return 'label-info';
+                        case 'declining':
+                            return 'label-danger';
+                        case 'inconclusive':
+                            return 'label-warning';
+                        default:
+                            return 'label-default';
+                    }
+                };
+
+                hideStructuredSummary();
+                summary = normalizeSummaryText(summary);
+
                 if (summary && summary.trim().length > 0) {
-                    $('#performance-summary-text').text(summary);
+                    try {
+                        parsed = JSON.parse(summary);
+                    } catch (error) {
+                        parsed = null;
+                    }
+                }
+
+                if (parsed && parsed.trend && parsed.trend.label) {
+                    $('#performance-summary-trend-label')
+                        .addClass(trendLabelClass(parsed.trend.label))
+                        .text(parsed.trend.label);
+                    $('#performance-summary-trend-evidence').text(parsed.trend.evidence || '');
+                    $('#performance-summary-trend').show();
+                }
+
+                if (parsed && Array.isArray(parsed.strengths) && parsed.strengths.length > 0) {
+                    parsed.strengths.forEach(function(strength) {
+                        if (typeof strength === 'string' && strength.trim().length > 0) {
+                            $('#performance-summary-strengths').append($('<li></li>').text(strength.trim()));
+                        }
+                    });
+                    if ($('#performance-summary-strengths').children().length > 0) {
+                        $('#performance-summary-strengths-section').show();
+                    }
+                }
+
+                if (parsed && Array.isArray(parsed.recommendations) && parsed.recommendations.length > 0) {
+                    parsed.recommendations.forEach(function(recommendation) {
+                        if (typeof recommendation === 'string' && recommendation.trim().length > 0) {
+                            $('#performance-summary-recommendations').append($('<li></li>').text(recommendation.trim()));
+                        }
+                    });
+                    if ($('#performance-summary-recommendations').children().length > 0) {
+                        $('#performance-summary-recommendations-section').show();
+                    }
+                }
+
+                if (parsed && typeof parsed.message === 'string' && parsed.message.trim().length > 0) {
+                    $('#performance-summary-text').text(parsed.message.trim());
+                } else if (summary && summary.trim().length > 0) {
+                    $('#performance-summary-text').text(summary.trim());
                 } else {
                     $('#performance-summary-text').text('Your performance is being evaluated. Please check back in a moment.');
                 }
