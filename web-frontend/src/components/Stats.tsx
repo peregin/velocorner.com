@@ -38,7 +38,7 @@ export default function Stats() {
   ];
 
   return (
-    <Box as="section" id="stats" py='.2rem' bg="white">
+    <Box as="section" id="stats" py='.2rem' bg="white" borderRadius="2xl">
       <Container maxW="container.xl">
         <Grid templateColumns={{ base: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
           {stats.map((stat, index) => (

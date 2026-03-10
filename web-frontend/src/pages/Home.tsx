@@ -444,15 +444,12 @@ const Home = () => {
             <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
               <Card.Body p={{ base: 6, md: 8 }}>
                 <VStack gap={4} align="start">
-                  <Badge colorPalette="cyan" borderRadius="full" px={3} py={1}>
-                    Demo mode
-                  </Badge>
-                  <Heading size="xl" maxW="18ch">
-                    Sign in once. See your season instantly.
+                  <Heading size="xl" >
+                    Login with your Strava account to see your personal statistics.
                   </Heading>
-                  <Text fontSize="md" color="slate.600" maxW="3xl" lineHeight="1.8">
-                    Connect Strava to unlock your own activity archive, year-to-date comparisons, route heatmaps, top performances,
-                    and AI-generated summaries. Until then, the widgets below show a representative sample.
+                  <Text fontSize="md" color="slate.600"  lineHeight="1.8">
+                    See your cycling data come to life with interactive charts and insights that help you understand your performance.
+                    You will be able to see various statistics of your activities such as year to date progress, yearly achievements, daily heatmap based on distance and elevation and much more!
                   </Text>
                   <Button
                     colorPalette="orange"
