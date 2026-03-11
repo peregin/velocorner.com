@@ -20,6 +20,15 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
     with ActivityOps
     with WebMetrics {
 
+  private val DemoNoStoreHeaders = Seq(
+    CACHE_CONTROL -> "no-store, no-cache, must-revalidate, max-age=0",
+    PRAGMA -> "no-cache",
+    EXPIRES -> "0"
+  )
+
+  private def noStore(result: play.api.mvc.Result) =
+    result.withHeaders(DemoNoStoreHeaders: _*)
+
   // demo ytd data
   // route mapped to /api/demo/statistics/ytd/:action/:activity
   def ytdStatistics(action: String, activity: String): Action[AnyContent] = Action.async {
@@ -27,7 +36,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
       val activities = DemoActivityUtils.generate()
       val now = LocalDate.now()
       val series = toSumYtdSeries(activities, now, action, Units.Metric)
-      Future(Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series))))
+      Future(noStore(Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))))
     }
   }
 
@@ -36,7 +45,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
   def yearlyStatistics(action: String, activity: String): Action[AnyContent] = Action.async {
     val activities = DemoActivityUtils.generate()
     val series = toYearlySeries(activities, action, Units.Metric)
-    Future(Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series))))
+    Future(noStore(Ok(Json.obj("status" -> "OK", "series" -> Json.toJson(series)))))
   }
 
   // all daily activity list for the last 12 months, shown in the calendar heatmap
@@ -49,7 +58,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
       case "elevation" => dailyProgress.map(dp => DailyPoint(dp.day, dp.progress.to(Units.Metric).elevation))
       case other       => sys.error(s"not supported action: $other")
     }
-    Future(Ok(Json.toJson(series)))
+    Future(noStore(Ok(Json.toJson(series))))
   }
 
   // word cloud titles and descriptions with occurrences
@@ -67,7 +76,7 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
       .sortBy(_.weight)
       .reverse
 
-    Ok(JsonIo.write(wcs))
+    noStore(Ok(JsonIo.write(wcs)))
   }
 
   // route mapped to /api/demo/statistics/histogram/:action/:activity
@@ -78,6 +87,6 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
       case "elevation" => apexcharts.toElevationHeatmap(activities, Units.Metric)
       case other       => sys.error(s"not supported action: $other")
     }
-    Ok(Json.toJson(series))
+    noStore(Ok(Json.toJson(series)))
   }
 }
