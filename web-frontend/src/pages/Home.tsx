@@ -430,10 +430,11 @@ const Home = () => {
             </Card.Root>
 
             <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={4}>
-              <Box><HeatmapChart title="Distance Distribution (Sample)"
-                fetchHeatmap={fetchDemoHistogramDistance} height={250} /></Box>
-              <Box><HeatmapChart title="Elevation Distribution (Sample)"
-                fetchHeatmap={fetchDemoHistogramElevation} height={250} /></Box>
+              <Box borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+                <HeatmapChart title="Distance Distribution (Sample)" fetchHeatmap={fetchDemoHistogramDistance} height={250} /></Box>
+              <Box borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+                <HeatmapChart title="Elevation Distribution (Sample)" fetchHeatmap={fetchDemoHistogramElevation} height={250} />
+              </Box>
             </Grid>
           </>
         )}

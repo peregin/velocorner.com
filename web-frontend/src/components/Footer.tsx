@@ -11,11 +11,11 @@ import { LuHeart } from 'react-icons/lu';
 
 export default function Footer() {
   return (
-    <Box as="footer" id="about" pt={12} pb={16}>
+    <Box as="footer" id="about" py={4}>
       <Container maxW="container.xl">
         <Box
           px={{ base: 6, md: 8 }}
-          py={{ base: 8, md: 10 }}
+          py={{ base: 4, md: 8 }}
           border="1px solid"
           borderColor="rgba(20, 32, 51, 0.08)"
           bg="rgba(17, 24, 39, 0.94)"

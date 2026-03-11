@@ -41,7 +41,7 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
 
   return (
     <Box>
-      <Heading size="md" mb={4}>{title}</Heading>
+      <Heading size="md" mt='1rem' ml='1rem'>{title}</Heading>
       <Chart options={options} series={series} type="heatmap" height={height} />
     </Box>
   );
