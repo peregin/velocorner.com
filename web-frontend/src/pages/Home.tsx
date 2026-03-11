@@ -711,7 +711,7 @@ const Home = () => {
                 </Box>
               </Grid>
 
-              <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4}>
+              <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4} hideBelow='md'>
                 <Box>
                   <TopActivitiesWidget
                     title="Longest Activities"
