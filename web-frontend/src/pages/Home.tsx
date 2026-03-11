@@ -724,7 +724,7 @@ const Home = () => {
 
               <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
                 <Card.Body p={{ base: 4, md: 6 }}>
-                  <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={7} />
+                  <CalendarHeatmap title="All Activities" fetchDaily={fetchDailyDistance} unitName={getProfileUnits().distanceLabel} maxMonths={8} />
                 </Card.Body>
               </Card.Root>
 
