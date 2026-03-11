@@ -12,12 +12,12 @@ import {
   Image,
   Box,
   Grid,
+  Stack,
   VStack,
   HStack,
   Card,
   Progress,
   Spinner,
-  Separator,
   Tabs,
   Select,
   createListCollection,
@@ -506,8 +506,8 @@ const Home = () => {
                                     Last updated: {formatTimestamp(athleteProfile?.lastUpdate)}
                                   </Text>
                                 )}
-                                <Text mt={3} color="slate.600" maxW="2xl">
-                                  Keep the dashboard focused: refresh data, adjust units, or jump directly to a ride from search.
+                                <Text mt={3} color="slate.600" maxW="2xl" hideBelow='md'>
+                                  Spot trends, top rides, and personal bests in one place.
                                 </Text>
                               </Box>
                             </HStack>
@@ -567,7 +567,12 @@ const Home = () => {
                           <VStack width="100%">
                             <QuickStats selectedActivityType={selectedActivityType} units={getProfileUnits()} />
                           </VStack>
-                          <HStack gap={2} width="100%" maxW="100%">
+                          <Stack
+                            direction={{ base: "column", md: "row" }}
+                            gap={2}
+                            width="100%"
+                            maxW="100%"
+                          >
                             <Box width="100%">
                               <AutocompleteCombobox
                                 value={searchQuery}
@@ -585,11 +590,12 @@ const Home = () => {
                               colorPalette="blue"
                               onClick={handleSearch}
                               borderRadius="full"
+                              width={{ base: "100%", md: "auto" }}
                             >
                               <FaSearch style={{ marginRight: '8px' }} />
                               Search
                             </Button>
-                          </HStack>
+                          </Stack>
                         </VStack>
                       ) : (
                         <Text>No profile information available.</Text>
