@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Box, Card, Heading, HStack, List, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Card, Grid, Heading, HStack, List, Spinner, Text, VStack } from "@chakra-ui/react";
 import { LuSparkles } from "react-icons/lu";
 import ApiClient from "@/service/ApiClient";
 import type { AthletePerformanceSummary } from "@/types/athlete";
@@ -148,51 +148,55 @@ const PerformanceSummaryWidget = ({ isAuthenticated }: PerformanceSummaryWidgetP
                 <Text color="slate.600">{parsedSummary.trend.evidence || ""}</Text>
               </HStack>
             )}
-            {parsedSummary?.strengths.length ? (
-              <Box p={4} borderRadius="2xl" bg="white" border="1px solid" borderColor="rgba(20, 32, 51, 0.06)">
-                <VStack align="stretch" gap={1}>
-                  <Text fontWeight="semibold" color="slate.700">
-                  Strengths
-                  </Text>
-                  <List.Root ps={4}>
-                    {parsedSummary.strengths.map((strength) => (
-                      <List.Item key={strength} color="slate.600">
-                        {strength}
-                      </List.Item>
-                    ))}
-                  </List.Root>
-                </VStack>
-              </Box>
-            ) : null}
-            {parsedSummary?.recommendations.length ? (
-              <Box p={4} borderRadius="2xl" bg="rgba(23, 166, 133, 0.06)" border="1px solid" borderColor="rgba(23, 166, 133, 0.12)">
-                <VStack align="stretch" gap={1}>
-                  <Text fontWeight="semibold" color="slate.700">
-                  Recommendations
-                  </Text>
-                  <List.Root ps={4}>
-                    {parsedSummary.recommendations.map((recommendation) => (
-                      <List.Item key={recommendation} color="slate.600">
-                        {recommendation}
-                      </List.Item>
-                    ))}
-                  </List.Root>
-                </VStack>
-              </Box>
+            {parsedSummary?.strengths.length || parsedSummary?.recommendations.length ? (
+              <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4} alignItems="stretch">
+                {parsedSummary?.strengths.length ? (
+                  <Box p={4} borderRadius="2xl" bg="white" border="1px solid" borderColor="rgba(20, 32, 51, 0.06)">
+                    <VStack align="stretch" gap={1}>
+                      <Text fontWeight="semibold" color="slate.700">
+                      Strengths
+                      </Text>
+                      <List.Root ps={4}>
+                        {parsedSummary.strengths.map((strength) => (
+                          <List.Item key={strength} color="slate.600">
+                            {strength}
+                          </List.Item>
+                        ))}
+                      </List.Root>
+                    </VStack>
+                  </Box>
+                ) : null}
+                {parsedSummary?.recommendations.length ? (
+                  <Box p={4} borderRadius="2xl" bg="rgba(23, 166, 133, 0.06)" border="1px solid" borderColor="rgba(23, 166, 133, 0.12)">
+                    <VStack align="stretch" gap={1}>
+                      <Text fontWeight="semibold" color="slate.700">
+                      Recommendations
+                      </Text>
+                      <List.Root ps={4}>
+                        {parsedSummary.recommendations.map((recommendation) => (
+                          <List.Item key={recommendation} color="slate.600">
+                            {recommendation}
+                          </List.Item>
+                        ))}
+                      </List.Root>
+                    </VStack>
+                  </Box>
+                ) : null}
+              </Grid>
             ) : null}
             <Text color={summaryText ? "slate.700" : "slate.500"} lineHeight="1.8">
               {summaryText || "Your performance is being evaluated. Please check back in a moment."}
             </Text>
-            {data?.basedOn && (
-              <Text fontSize="xs" color="slate.500">
-                Based on {data.basedOn}
-              </Text>
-            )}
-            {updatedLabel && (
-              <Text fontSize="xs" color="slate.500">
-                Last generated: {updatedLabel}
-              </Text>
-            )}
+            {data?.basedOn || updatedLabel ? (
+              <HStack justify="space-between" align="start" gap={4} flexWrap="wrap">
+                <Text fontSize="xs" color="slate.500">
+                  {data?.basedOn ? `Based on ${data.basedOn}` : ""}
+                </Text>
+                <Text fontSize="xs" color="slate.500" textAlign="right" ml="auto">
+                  {updatedLabel ? `Last generated: ${updatedLabel}` : ""}
+                </Text>
+              </HStack>
+            ) : null}
             {data?.evaluating && (
               <Text fontSize="xs" color="orange.600">
                 Evaluation is running. Showing the latest available summary.
