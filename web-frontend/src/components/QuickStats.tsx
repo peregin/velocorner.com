@@ -79,16 +79,17 @@ const QuickStats = ({ selectedActivityType, units, demo = false }: QuickStatsPro
 
   return (
     <Grid
-      gap={{ base: 2, md: 4 }}
+      gap={{ base: 1.5, md: 4 }}
       width="100%"
       templateColumns={{ base: '1fr 1fr', xl: 'repeat(4, 1fr)' }}
     >
       {stats.map((stat, index) => (
         <Box
           key={index}
-          p={{ base: 4, md: 5 }}
+          minW={0}
+          p={{ base: 3, md: 5 }}
           bg="rgba(255,255,255,0.92)"
-          borderRadius="28px"
+          borderRadius={{ base: "20px", md: "28px" }}
           border="1px"
           borderColor="rgba(20, 32, 51, 0.08)"
           boxShadow="0 18px 40px rgba(18, 38, 63, 0.08)"
@@ -101,27 +102,27 @@ const QuickStats = ({ selectedActivityType, units, demo = false }: QuickStatsPro
         >
           <Box
             display="inline-flex"
-            p={2}
+            p={{ base: 1.5, md: 2 }}
             bgGradient="to-br"
             gradientFrom={stat.gradientFrom}
             gradientTo={stat.gradientTo}
             borderRadius="2xl"
-            mb={3}
+            mb={{ base: 2, md: 3 }}
             boxShadow="0 14px 28px rgba(20, 32, 51, 0.12)"
           >
-            <Icon as={stat.icon} fontSize="20px" color='white' strokeWidth={2.5} />
+            <Icon as={stat.icon} fontSize={{ base: "16px", md: "20px" }} color='white' strokeWidth={2.5} />
           </Box>
 
-          <VStack alignItems="flex-start" gap={1} w="full">
-            <Text fontSize="2xl" fontWeight="800" color="slate.900">
+          <VStack alignItems="flex-start" gap={{ base: 0.5, md: 1 }} w="full">
+            <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="800" color="slate.900" lineHeight="1.1">
               {formatWholeNumber(stat.value)}
               {stat.unit && (
-                <Text as="span" fontSize="sm" fontWeight="700" color="slate.500" ml={2}>
+                <Text as="span" fontSize={{ base: "xs", md: "sm" }} fontWeight="700" color="slate.500" ml={{ base: 1, md: 2 }}>
                   {stat.unit}
                 </Text>
               )}
             </Text>
-            <Text fontSize="sm" fontWeight="700" color="slate.500" textTransform="uppercase" letterSpacing="0.08em">
+            <Text fontSize={{ base: "xs", md: "sm" }} fontWeight="700" color="slate.500" textTransform="uppercase" letterSpacing={{ base: "0.05em", md: "0.08em" }}>
               {stat.label}
             </Text>
           </VStack>
