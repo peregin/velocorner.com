@@ -172,14 +172,14 @@ const Weather = ({ defaultLocation = '' }) => {
             </Stack>
 
             {/* Current Weather Display */}
-            <HStack textAlign="center" align="center" pt='1rem' gap='2rem'>
+            <HStack textAlign="center" align="center" pt='1rem' gap='2rem' color="slate.900">
               <Flex justify="center" align="center" gap='.5rem'>
-                <LuSun size='1.5rem' />
-                <Text fontSize="2xl">{new Date(currentWeather?.sunriseSunset?.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                <LuSun size='1.5rem' color='orange' />
+                <Text fontSize="2xl" color="slate.900">{new Date(currentWeather?.sunriseSunset?.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
               </Flex>
               <Flex justify="center" align="center" gap='.5rem'>
-                <LuMoonStar size='1.5rem' />
-                <Text fontSize="2xl">{new Date(currentWeather?.sunriseSunset?.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                <LuMoonStar size='1.5rem' color='var(--chakra-colors-slate-700)' />
+                <Text fontSize="2xl" color="slate.900">{new Date(currentWeather?.sunriseSunset?.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
               </Flex>
             </HStack>
 
@@ -218,7 +218,7 @@ const Weather = ({ defaultLocation = '' }) => {
                 </Flex>
                 <Flex justify="center" align="end">
                   <Box display="inline-flex" alignItems="flex-end" lineHeight="1" color="slate.800">
-                    <LuThermometerSun color="var(--chakra-colors-orange-500)" />
+                    <LuThermometerSun color="var(--chakra-colors-red-500)" />
                     <Text fontSize="md" ml='.2rem'>{currentWeather?.info?.temp_max?.toFixed(0)}°C</Text>
                     <Text fontSize="sm" ml='.2rem'>max</Text>
                   </Box>
