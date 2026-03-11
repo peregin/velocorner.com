@@ -1,5 +1,6 @@
 # ToDo
 - !!! check what happens when the DB is empty, is the page loading? 
+  - ressurect papertrail or an alternative
 
 - user service in Java/SpringBoot
 - health service in Go
