@@ -3,7 +3,7 @@ import { Box, Heading, Text, VStack, Card } from "@chakra-ui/react";
 const Privacy = () => {
   return (
     <Box maxW="1200px" mx="auto" p={6}>
-      <VStack spacing={8} align="stretch">
+      <VStack gap={8} align="stretch">
         <Heading size="lg">Privacy Policy</Heading>
 
         <Card.Root>
