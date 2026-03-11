@@ -39,6 +39,7 @@ GET     /api/admin/status                                  controllers.AdminCont
 
 #AUTH
 ### NoDocs ###
++nocsrf
 POST    /api/token/strava                                  controllers.auth.StravaController.feToken
 
 ### NoDocs ###
