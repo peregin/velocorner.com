@@ -53,6 +53,10 @@ const AutocompleteCombobox = ({
         <Combobox.Input
           placeholder={placeholder}
           value={value}
+          color="slate.900"
+          bg="whiteAlpha.950"
+          borderColor="blackAlpha.200"
+          _placeholder={{ color: 'slate.500' }}
           onKeyDown={(event) => {
             if (allowFreeText && event.key === 'Enter') {
               const enteredValue = event.currentTarget.value;
@@ -73,10 +77,22 @@ const AutocompleteCombobox = ({
       </Combobox.Control>
       <Portal>
         <Combobox.Positioner>
-          <Combobox.Content>
-            <Combobox.Empty>{emptyMessage}</Combobox.Empty>
+          <Combobox.Content
+            bg="white"
+            color="slate.900"
+            border="1px solid"
+            borderColor="blackAlpha.200"
+            boxShadow="lg"
+          >
+            <Combobox.Empty color="slate.600">{emptyMessage}</Combobox.Empty>
             {items.map((item, idx) => (
-              <Combobox.Item key={idx} item={item}>
+              <Combobox.Item
+                key={idx}
+                item={item}
+                color="slate.900"
+                _hover={{ bg: 'slate.100' }}
+                _highlighted={{ bg: 'slate.100', color: 'slate.900' }}
+              >
                 {itemToString(item)}
                 <Combobox.ItemIndicator />
               </Combobox.Item>

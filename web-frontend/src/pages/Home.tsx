@@ -349,7 +349,16 @@ const Home = () => {
                         Refresh activities
                       </Button>
                     )}
-                    <Button asChild variant="outline" size="lg" borderRadius="full" px={6}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="lg"
+                      borderRadius="full"
+                      px={6}
+                      color="slate.900"
+                      borderColor="blackAlpha.300"
+                      _hover={{ bg: "whiteAlpha.900", color: "slate.900" }}
+                    >
                       <a href="#stats">Explore dashboard</a>
                     </Button>
                   </HStack>
