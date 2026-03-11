@@ -29,7 +29,7 @@ export default function Footer() {
                 Built for riding more intentionally
               </Badge>
               <HStack gap={3} mb={4}>
-              <Image boxSize="40px" src='/images/logo50-gray.png' alt="Velocorner Logo" />
+              <Image boxSize="40px" src='/images/logo50.png' alt="Velocorner Logo" />
               <Text fontSize="xl" fontWeight="bold" color="white" textTransform="uppercase">
                 Velocorner
               </Text>
