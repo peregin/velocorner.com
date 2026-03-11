@@ -184,7 +184,7 @@ const Weather = ({ defaultLocation = '' }) => {
             </HStack>
 
 
-            <Box textAlign="center">
+            <Box textAlign="center" color="slate.900">
               <HStack justify="center" align="center" gap={2}>
                 {currentWeather?.reactIcon && (() => {
                   const iconComponent = typeof currentWeather.reactIcon === 'string' 
@@ -193,7 +193,8 @@ const Weather = ({ defaultLocation = '' }) => {
                   return iconComponent && (
                     <Icon 
                       as={iconComponent} 
-                      boxSize="4rem" 
+                      boxSize="4rem"
+                      color="cyan.600"
                     />
                   );
                 })()}
@@ -204,20 +205,20 @@ const Weather = ({ defaultLocation = '' }) => {
                   °C
                 </Text>
               </HStack>
-              <Text fontSize="sm">
+              <Text fontSize="sm" color="slate.700">
                 {currentWeather?.current?.description}
               </Text>
               <HStack textAlign="center" align="center" pt='1rem' gap='2rem'>
                 <Flex justify="center" align="end">
-                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1">
-                    <LuThermometerSnowflake />
+                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1" color="slate.800">
+                    <LuThermometerSnowflake color="var(--chakra-colors-cyan-600)" />
                     <Text fontSize="md" ml='.2rem'>{currentWeather?.info?.temp_min?.toFixed(0)}°C</Text>
                     <Text fontSize="sm" ml='.2rem'>min</Text>
                   </Box>
                 </Flex>
                 <Flex justify="center" align="end">
-                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1">
-                    <LuThermometerSun />
+                  <Box display="inline-flex" alignItems="flex-end" lineHeight="1" color="slate.800">
+                    <LuThermometerSun color="var(--chakra-colors-orange-500)" />
                     <Text fontSize="md" ml='.2rem'>{currentWeather?.info?.temp_max?.toFixed(0)}°C</Text>
                     <Text fontSize="sm" ml='.2rem'>max</Text>
                   </Box>
