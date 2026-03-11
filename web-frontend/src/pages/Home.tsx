@@ -38,6 +38,7 @@ import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
 import QuickStats from "@/components/QuickStats";
 import PerformanceSummaryWidget from "@/components/PerformanceSummaryWidget";
+import MarketingWidget from "@/components/MarketingWidget";
 import { getAthleteUnits } from "../types/athlete";
 import { HiRefresh } from "react-icons/hi";
 import { useAthleteProfile } from "@/service/useAthleteProfile";
@@ -320,7 +321,13 @@ const Home = () => {
                       standout efforts, and search that gets you back to the ride you want in seconds.
                     </Text>
                   </VStack>
-                  <HStack gap={3} flexWrap="wrap">
+                  <HStack
+                    gap={3}
+                    flexWrap="wrap"
+                    width="100%"
+                    align="stretch"
+                    flexDirection={{ base: "column", md: "row" }}
+                  >
                     {!isAuthenticated ? (
                       <Button
                         colorPalette="orange"
@@ -328,6 +335,7 @@ const Home = () => {
                         borderRadius="full"
                         fontWeight="700"
                         px={6}
+                        width={{ base: "100%", md: "auto" }}
                         boxShadow="0 14px 28px rgba(252, 121, 52, 0.24)"
                         onClick={connect}
                         loading={authLoading}
@@ -342,6 +350,7 @@ const Home = () => {
                         borderRadius="full"
                         fontWeight="700"
                         px={6}
+                        width={{ base: "100%", md: "auto" }}
                         onClick={handleRefresh}
                         loading={refreshLoading}
                       >
@@ -355,6 +364,7 @@ const Home = () => {
                       size="lg"
                       borderRadius="full"
                       px={6}
+                      width={{ base: "100%", md: "auto" }}
                       color="slate.900"
                       borderColor="blackAlpha.300"
                       _hover={{ bg: "whiteAlpha.900", color: "slate.900" }}
@@ -366,35 +376,7 @@ const Home = () => {
                   <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')} demo={true}/>
                 </VStack>
 
-                <Box
-                  p={{ base: 5, md: 6 }}
-                  borderRadius="28px"
-                  bg="linear-gradient(180deg, #0f172a 0%, #16263f 100%)"
-                  color="white"
-                  boxShadow="inset 0 1px 0 rgba(255,255,255,0.08)"
-                >
-                  <VStack align="stretch" gap={4}>
-                    <HStack justify="space-between">
-                      <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">What you get</Text>
-                      <Badge colorPalette="green" borderRadius="full">Live data</Badge>
-                    </HStack>
-                    <VStack align="stretch" gap={3}>
-                      {[
-                        "See yearly distance, elevation, achievements, year to date progress, heatmaps and much more!",
-                        "Spot trends, top rides, and personal bests in one place.",
-                        "Keep the interface focused on decisions, not chart clutter.",
-                      ].map((line) => (
-                        <Box key={line} p={4} borderRadius="2xl" bg="rgba(255,255,255,0.06)" border="1px solid" borderColor="whiteAlpha.100">
-                          <Text color="whiteAlpha.900" lineHeight="1.7">
-                            {line}
-                          </Text>
-                        </Box>
-                      ))}
-                    </VStack>
-                    <Separator borderColor="whiteAlpha.200" />
-                    <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
-                  </VStack>
-                </Box>
+                <MarketingWidget />
               </Grid>
             </Card.Body>
           </Card.Root>
