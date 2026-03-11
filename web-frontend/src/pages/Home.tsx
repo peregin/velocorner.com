@@ -603,7 +603,7 @@ const Home = () => {
                     </VStack>
                   </Box>
 
-                  <Box>
+                  <Box hideBelow='md'>
                     <WordCloud words={wordCloud} />
                   </Box>
                 </Grid>
@@ -612,7 +612,7 @@ const Home = () => {
 
             {/* User Statistics for Authenticated Users */}
             <VStack gap={6} align="stretch" id="stats">
-              <Grid templateColumns={{ base: "1fr", xl: "1.5fr 1fr" }} gap={4} alignItems="stretch">
+              <Grid templateColumns={{ base: "1fr", xl: "1.5fr 1fr" }} gap={4} alignItems="stretch" hideBelow='md'>
                 <Box h="100%">
                   <ActivityStatsWidget
                     selectedActivityType={selectedActivityType}
