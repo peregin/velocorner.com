@@ -17,7 +17,7 @@ import Header from './components/Header'
 import { Toaster } from '@/components/ui/toaster'
 
 import './App.css'
-import Ping from './components/Ping';
+import Health from './pages/Health.js';
 import Footer from './components/Footer.js';
 
 ReactGA.initialize([
@@ -78,7 +78,7 @@ const App = () => {
         <Route path="/admin" element={<Layout><Admin /></Layout>} />
         <Route path="/privacy" element={<Layout><Privacy /></Layout>} />
         <Route path="/oauth/strava" element={<OAuth2Popup />} />
-        <Route path="/health" element={<Ping />} />
+        <Route path="/health" element={<Health />} />
         <Route path="*" element={<Layout><NotFound /></Layout>} />
       </Routes>
     </BrowserRouter>

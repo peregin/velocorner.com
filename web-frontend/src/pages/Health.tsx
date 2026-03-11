@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, HStack, Icon } from "@chakra-ui/react";
 import { FaCheckCircle } from 'react-icons/fa'
 
-const Ping = () => {
+const Health = () => {
     const [date, setDate] = useState(new Date());
 
     useEffect(() => {
@@ -24,4 +24,4 @@ const Ping = () => {
     )
 }
 
-export default Ping;
+export default Health;

@@ -10,8 +10,6 @@ GET     /refresh                                           controllers.WebContro
 ### NoDocs ###
 GET     /search                                            controllers.WebController.search
 ### NoDocs ###
-GET     /best                                              controllers.WebController.best
-### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
 ### NoDocs ###
 GET     /about                                             controllers.WebController.about

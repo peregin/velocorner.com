@@ -61,11 +61,7 @@ class WebController @Inject() (
   def search = AuthAction(parse.default) { implicit request =>
     Ok(views.html.search(getPageContext("Search")))
   }
-
-  def best = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.best(getPageContext("Best")))
-  }
-
+  
   def marketing = AuthAction(parse.default) { implicit request =>
     Redirect("https://leventes-initial-project-936798.webflow.io/")
   }
