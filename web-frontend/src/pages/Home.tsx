@@ -312,7 +312,7 @@ const Home = () => {
                     Modern endurance analytics
                   </Badge>
                   <VStack align="start" gap={3}>
-                    <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="12ch">
+                    <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="15ch">
                       Train with a sharper view of your season.
                     </Heading>
                     <Text color="slate.600" fontSize={{ base: "md", md: "lg" }} maxW="2xl" lineHeight="1.8">
