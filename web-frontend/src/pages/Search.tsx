@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ApiClient from "../service/ApiClient";
 import {
   Box,
+  SimpleGrid,
   VStack,
   HStack,
   Button,
@@ -15,7 +16,7 @@ import {
   Badge,
   Separator
 } from "@chakra-ui/react";
-import { LuSearch, LuClock, LuInfo } from "react-icons/lu";
+import { LuSearch, LuClock } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
 import AutocompleteCombobox from "../components/AutocompleteCombobox";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -30,34 +31,17 @@ const getString = (...values: any[]) => {
   return typeof value === "string" ? value.trim() : "";
 };
 
-const formatLocation = (activity: any) => {
-  const directLocation = getString(activity.location, activity.locationName);
-  if (directLocation) return directLocation;
-
-  const parts = [
-    getString(activity.location_city, activity.locationCity, activity.city),
-    getString(activity.location_state, activity.locationState, activity.state),
-    getString(activity.location_country, activity.locationCountry, activity.country),
-  ].filter(Boolean);
-
-  if (parts.length) return parts.join(", ");
-
-  const latLng = activity.start_latlng || activity.startLatlng;
-  if (Array.isArray(latLng) && latLng.length >= 2) {
-    return `${latLng[0].toFixed(3)}, ${latLng[1].toFixed(3)}`;
-  }
-
-  return "Unknown location";
-};
-
 const normalizeActivity = (activity: any) => ({
   ...activity,
   startDate: getString(activity.startDate, activity.start_date, activity.start_date_local),
-  locationLabel: formatLocation(activity),
   distanceValue: getNumber(activity.distance),
   movingTimeValue: getNumber(activity.movingTime, activity.moving_time),
   elapsedTimeValue: getNumber(activity.elapsedTime, activity.elapsed_time),
   elevationValue: getNumber(activity.totalElevationGain, activity.total_elevation_gain),
+  averageSpeedValue: getNumber(activity.averageSpeed, activity.average_speed),
+  averagePowerValue: getNumber(activity.averagePower, activity.average_power, activity.averageWatts, activity.average_watts),
+  averageHeartRateValue: getNumber(activity.averageHeartRate, activity.average_heart_rate, activity.averageHeartrate, activity.average_heartrate),
+  averageTemperatureValue: getNumber(activity.averageTemperature, activity.average_temperature, activity.averageTemp, activity.average_temp),
 });
 
 const Search = () => {
@@ -279,6 +263,16 @@ const Search = () => {
     return date.toLocaleString();
   };
 
+  const formatMetric = (value: number, unit: string, digits = 0) => {
+    if (!value) return "n/a";
+    return `${value.toFixed(digits)} ${unit}`;
+  };
+
+  const formatSpeed = (metersPerSecond: number) => {
+    if (!metersPerSecond) return "n/a";
+    return `${(metersPerSecond * 3.6).toFixed(1)} km/h`;
+  };
+
   return (
     <Box maxW="1200px" mx="auto" p={6}>
       <ImageCarousel />
@@ -361,34 +355,45 @@ const Search = () => {
                                   {activity.type}
                                 </Badge>
                               </HStack>
-                              
-                              <Text color="gray.600">
-                                {activity.description || "No description available"}
-                              </Text>
-                              
-                              <HStack gap={6} color="gray.500" fontSize="sm">
-                                <HStack>
-                                  <LuClock />
-                                  <Text>{formatDate(activity.startDate)}</Text>
-                                </HStack>
-                                <HStack>
-                                  <LuInfo />
-                                  <Text>{activity.locationLabel}</Text>
-                                </HStack>
-                              </HStack>
+
+                              <SimpleGrid columns={{ base: 2, md: 5 }} gap={3}>
+                                <Box>
+                                  <Text fontSize="xs" color="gray.500" textTransform="uppercase">Elevation</Text>
+                                  <Text fontSize="sm" fontWeight="semibold">{formatMetric(activity.elevationValue, "m")}</Text>
+                                </Box>
+                                <Box>
+                                  <Text fontSize="xs" color="gray.500" textTransform="uppercase">Avg speed</Text>
+                                  <Text fontSize="sm" fontWeight="semibold">{formatSpeed(activity.averageSpeedValue)}</Text>
+                                </Box>
+                                <Box>
+                                  <Text fontSize="xs" color="gray.500" textTransform="uppercase">Avg power</Text>
+                                  <Text fontSize="sm" fontWeight="semibold">{formatMetric(activity.averagePowerValue, "W")}</Text>
+                                </Box>
+                                <Box>
+                                  <Text fontSize="xs" color="gray.500" textTransform="uppercase">Avg heart rate</Text>
+                                  <Text fontSize="sm" fontWeight="semibold">{formatMetric(activity.averageHeartRateValue, "bpm")}</Text>
+                                </Box>
+                                <Box>
+                                  <Text fontSize="xs" color="gray.500" textTransform="uppercase">Temperature</Text>
+                                  <Text fontSize="sm" fontWeight="semibold">{formatMetric(activity.averageTemperatureValue, "°C")}</Text>
+                                </Box>
+                              </SimpleGrid>
                               
                               <Separator />
                               
                               <HStack justify="space-between" fontSize="sm">
+                                 <HStack>
+                                  <LuClock />
+                                  <Text>{formatDate(activity.startDate)}</Text>
+                                </HStack>
                                 <Text>
                                   <strong>Distance:</strong> {formatDistance(activity.distanceValue)}
                                 </Text>
                                 <Text>
-                                  <strong>Duration:</strong> {formatDuration(activity.movingTimeValue)}
-                                  {activity.elapsedTimeValue > 0 ? ` / ${formatDuration(activity.elapsedTimeValue)}` : ""}
+                                  <strong>Moving Time:</strong> {formatDuration(activity.movingTimeValue)}
                                 </Text>
                                 <Text>
-                                  <strong>Elevation:</strong> {activity.elevationValue.toFixed(0)}m
+                                  <strong>Duration:</strong> {activity.elapsedTimeValue > 0 ? formatDuration(activity.elapsedTimeValue) : ""}
                                 </Text>
                               </HStack>
                             </VStack>
