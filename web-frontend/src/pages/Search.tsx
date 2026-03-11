@@ -20,6 +20,46 @@ import { toaster } from "@/components/ui/toaster";
 import AutocompleteCombobox from "../components/AutocompleteCombobox";
 import ImageCarousel from "@/components/ImageCarousel";
 
+const getNumber = (...values: any[]) => {
+  const value = values.find((entry) => typeof entry === "number" && !Number.isNaN(entry));
+  return typeof value === "number" ? value : 0;
+};
+
+const getString = (...values: any[]) => {
+  const value = values.find((entry) => typeof entry === "string" && entry.trim().length > 0);
+  return typeof value === "string" ? value.trim() : "";
+};
+
+const formatLocation = (activity: any) => {
+  const directLocation = getString(activity.location, activity.locationName);
+  if (directLocation) return directLocation;
+
+  const parts = [
+    getString(activity.location_city, activity.locationCity, activity.city),
+    getString(activity.location_state, activity.locationState, activity.state),
+    getString(activity.location_country, activity.locationCountry, activity.country),
+  ].filter(Boolean);
+
+  if (parts.length) return parts.join(", ");
+
+  const latLng = activity.start_latlng || activity.startLatlng;
+  if (Array.isArray(latLng) && latLng.length >= 2) {
+    return `${latLng[0].toFixed(3)}, ${latLng[1].toFixed(3)}`;
+  }
+
+  return "Unknown location";
+};
+
+const normalizeActivity = (activity: any) => ({
+  ...activity,
+  startDate: getString(activity.startDate, activity.start_date, activity.start_date_local),
+  locationLabel: formatLocation(activity),
+  distanceValue: getNumber(activity.distance),
+  movingTimeValue: getNumber(activity.movingTime, activity.moving_time),
+  elapsedTimeValue: getNumber(activity.elapsedTime, activity.elapsed_time),
+  elevationValue: getNumber(activity.totalElevationGain, activity.total_elevation_gain),
+});
+
 const Search = () => {
   const [searchParams] = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
@@ -41,6 +81,7 @@ const Search = () => {
       return response.suggestions.map((s: any) => {
         try {
           const activity = typeof s.data === 'string' ? JSON.parse(s.data) : s.data;
+          //console.log("Activity from API:", JSON.stringify(activity))
           return activity;
         } catch (e) {
           return null;
@@ -99,7 +140,7 @@ const Search = () => {
       setHasSearched(true);
       
       const response = await ApiClient.suggestActivities(searchTerm);
-      const results = parseSuggestionsResponse(response);
+      const results = parseSuggestionsResponse(response).map(normalizeActivity);
       setSearchResults(results);
       
       if (results.length === 0) {
@@ -130,8 +171,9 @@ const Search = () => {
       
       const activity = await ApiClient.getActivity(activityId);
       if (activity) {
-        setSearchResults([activity]);
-        setQuery(activity.name || '');
+        const normalizedActivity = normalizeActivity(activity);
+        setSearchResults([normalizedActivity]);
+        setQuery(normalizedActivity.name || '');
       } else {
         setSearchResults([]);
         toaster.create({
@@ -221,13 +263,20 @@ const Search = () => {
   };
 
   const formatDuration = (duration: number) => {
+    if (!duration) return "0m";
     const hours = Math.floor(duration / 3600);
     const minutes = Math.floor((duration % 3600) / 60);
-    return `${hours}h ${minutes}m`;
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+    return `${minutes}m`;
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
+    if (!dateString) return "Unknown date";
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return "Unknown date";
+    return date.toLocaleString();
   };
 
   return (
@@ -324,7 +373,7 @@ const Search = () => {
                                 </HStack>
                                 <HStack>
                                   <LuInfo />
-                                  <Text>{activity.location || "Unknown location"}</Text>
+                                  <Text>{activity.locationLabel}</Text>
                                 </HStack>
                               </HStack>
                               
@@ -332,13 +381,14 @@ const Search = () => {
                               
                               <HStack justify="space-between" fontSize="sm">
                                 <Text>
-                                  <strong>Distance:</strong> {formatDistance(activity.distance)}
+                                  <strong>Distance:</strong> {formatDistance(activity.distanceValue)}
                                 </Text>
                                 <Text>
-                                  <strong>Duration:</strong> {formatDuration(activity.movingTime)}
+                                  <strong>Duration:</strong> {formatDuration(activity.movingTimeValue)}
+                                  {activity.elapsedTimeValue > 0 ? ` / ${formatDuration(activity.elapsedTimeValue)}` : ""}
                                 </Text>
                                 <Text>
-                                  <strong>Elevation:</strong> {activity.totalElevationGain?.toFixed(0) || 0}m
+                                  <strong>Elevation:</strong> {activity.elevationValue.toFixed(0)}m
                                 </Text>
                               </HStack>
                             </VStack>
