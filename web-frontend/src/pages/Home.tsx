@@ -294,7 +294,7 @@ const Home = () => {
 
 
   return (
-    <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 14, md: 20 }}>
+    <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 2, md: 4 }}>
       <VStack gap={{ base: 6, md: 8 }} align="stretch">
         {!isAuthenticated && (
           <Card.Root
