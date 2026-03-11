@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Box, Card, Grid, Heading, HStack, List, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Card, Grid, Heading, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
 import { LuSparkles } from "react-icons/lu";
 import ApiClient from "@/service/ApiClient";
 import type { AthletePerformanceSummary } from "@/types/athlete";
@@ -88,6 +88,43 @@ const trendColorPalette = (label?: string) => {
   }
 };
 
+const trendAccent = (label?: string) => {
+  switch ((label || "").toLowerCase()) {
+    case "improving":
+      return {
+        bg: "linear-gradient(135deg, rgba(34,197,94,0.16), rgba(16,185,129,0.08))",
+        borderColor: "rgba(34,197,94,0.18)",
+        textColor: "green.700"
+      };
+    case "stable":
+      return {
+        bg: "linear-gradient(135deg, rgba(59,130,246,0.14), rgba(14,165,233,0.06))",
+        borderColor: "rgba(59,130,246,0.18)",
+        textColor: "blue.700"
+      };
+    case "declining":
+      return {
+        bg: "linear-gradient(135deg, rgba(239,68,68,0.14), rgba(249,115,22,0.06))",
+        borderColor: "rgba(239,68,68,0.18)",
+        textColor: "red.700"
+      };
+    case "inconclusive":
+      return {
+        bg: "linear-gradient(135deg, rgba(245,158,11,0.14), rgba(251,191,36,0.06))",
+        borderColor: "rgba(245,158,11,0.18)",
+        textColor: "orange.700"
+      };
+    default:
+      return {
+        bg: "linear-gradient(135deg, rgba(148,163,184,0.12), rgba(226,232,240,0.08))",
+        borderColor: "rgba(148,163,184,0.18)",
+        textColor: "gray.700"
+      };
+  }
+};
+
+const conciseItems = (items: string[], limit = 3) => items.slice(0, limit);
+
 const PerformanceSummaryWidget = ({ isAuthenticated }: PerformanceSummaryWidgetProps) => {
   const [data, setData] = useState<AthletePerformanceSummary | null>(null);
   const [loading, setLoading] = useState(false);
@@ -123,87 +160,152 @@ const PerformanceSummaryWidget = ({ isAuthenticated }: PerformanceSummaryWidgetP
   const parsedSummary = parsePerformanceSummary(data?.summary);
   const summaryText = parsedSummary?.message || parsedSummary?.fallbackText;
   const updatedLabel = data?.createdAt ? new Date(data.createdAt).toLocaleString() : null;
+  const trendStyle = trendAccent(parsedSummary?.trend?.label);
+  const strengths = conciseItems(parsedSummary?.strengths || []);
+  const recommendations = conciseItems(parsedSummary?.recommendations || []);
 
   return (
-    <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+    <Card.Root
+      borderRadius="28px"
+      border="1px solid"
+      borderColor="rgba(15, 23, 42, 0.08)"
+      bg="linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,250,252,0.88))"
+      boxShadow="0 24px 60px rgba(15, 23, 42, 0.08)"
+      overflow="hidden"
+    >
       <Card.Body p={{ base: 5, md: 6 }}>
-        <Heading size="sm" mb={4}>
-          <HStack gap={2}>
-            <LuSparkles /> AI Performance Evaluation
-          </HStack>
-        </Heading>
-
-        {loading ? (
-          <HStack gap={2}>
-            <Spinner size="sm" />
-            <Text>Loading performance summary...</Text>
-          </HStack>
-        ) : (
-          <VStack align="stretch" gap={4} fontSize='sm'>
-            {parsedSummary?.trend?.label && (
-              <HStack gap={3} align="start">
-                <Badge colorPalette={trendColorPalette(parsedSummary.trend.label)} variant="solid" borderRadius="full" px={3} py={1}>
-                  {parsedSummary.trend.label}
-                </Badge>
-                <Text color="slate.600">{parsedSummary.trend.evidence || ""}</Text>
+        <VStack align="stretch" gap={4}>
+          <HStack justify="space-between" align="start" gap={4}>
+            <VStack align="stretch" gap={1}>
+              <HStack gap={2} color="slate.800">
+                <Box
+                  p={2}
+                  borderRadius="xl"
+                  bg="rgba(59, 130, 246, 0.08)"
+                  color="blue.600"
+                >
+                  <LuSparkles />
+                </Box>
+                <Heading size="sm">Performance Pulse</Heading>
               </HStack>
-            )}
-            {parsedSummary?.strengths.length || parsedSummary?.recommendations.length ? (
-              <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4} alignItems="stretch">
-                {parsedSummary?.strengths.length ? (
-                  <Box p={4} borderRadius="2xl" bg="white" border="1px solid" borderColor="rgba(20, 32, 51, 0.06)">
-                    <VStack align="stretch" gap={1}>
-                      <Text fontWeight="semibold" color="slate.700">
-                      Strengths
-                      </Text>
-                      <List.Root ps={4}>
-                        {parsedSummary.strengths.map((strength) => (
-                          <List.Item key={strength} color="slate.600">
-                            {strength}
-                          </List.Item>
-                        ))}
-                      </List.Root>
-                    </VStack>
-                  </Box>
-                ) : null}
-                {parsedSummary?.recommendations.length ? (
-                  <Box p={4} borderRadius="2xl" bg="rgba(23, 166, 133, 0.06)" border="1px solid" borderColor="rgba(23, 166, 133, 0.12)">
-                    <VStack align="stretch" gap={1}>
-                      <Text fontWeight="semibold" color="slate.700">
-                      Recommendations
-                      </Text>
-                      <List.Root ps={4}>
-                        {parsedSummary.recommendations.map((recommendation) => (
-                          <List.Item key={recommendation} color="slate.600">
-                            {recommendation}
-                          </List.Item>
-                        ))}
-                      </List.Root>
-                    </VStack>
-                  </Box>
-                ) : null}
-              </Grid>
-            ) : null}
-            <Text color={summaryText ? "slate.700" : "slate.500"} lineHeight="1.8">
-              {summaryText || "Your performance is being evaluated. Please check back in a moment."}
-            </Text>
-            {data?.basedOn || updatedLabel ? (
-              <HStack justify="space-between" align="start" gap={4} flexWrap="wrap">
-                <Text fontSize="xs" color="slate.500">
-                  {data?.basedOn ? `Based on ${data.basedOn}` : ""}
-                </Text>
-                <Text fontSize="xs" color="slate.500" textAlign="right" ml="auto">
-                  {updatedLabel ? `Last generated: ${updatedLabel}` : ""}
-                </Text>
-              </HStack>
-            ) : null}
-            {data?.evaluating && (
-              <Text fontSize="xs" color="orange.600">
-                Evaluation is running. Showing the latest available summary.
+              <Text fontSize="sm" color="slate.500">
+                Quick read on momentum, strengths and next gains.
               </Text>
-            )}
-          </VStack>
-        )}
+            </VStack>
+            {data?.evaluating ? (
+              <Badge colorPalette="orange" variant="subtle" borderRadius="full" px={3} py={1}>
+                Refreshing
+              </Badge>
+            ) : null}
+          </HStack>
+
+          {loading ? (
+            <HStack gap={2}>
+              <Spinner size="sm" />
+              <Text fontSize="sm" color="slate.600">Loading pulse...</Text>
+            </HStack>
+          ) : (
+            <VStack align="stretch" gap={4} fontSize="sm">
+              {parsedSummary?.trend?.label && (
+                <Box
+                  p={4}
+                  borderRadius="2xl"
+                  bg={trendStyle.bg}
+                  border="1px solid"
+                  borderColor={trendStyle.borderColor}
+                >
+                  <VStack align="stretch" gap={2}>
+                    <HStack gap={3} flexWrap="wrap">
+                      <Badge
+                        colorPalette={trendColorPalette(parsedSummary.trend.label)}
+                        variant="solid"
+                        borderRadius="full"
+                        px={3}
+                        py={1}
+                      >
+                        {parsedSummary.trend.label}
+                      </Badge>
+                      <Text fontSize="xs" fontWeight="semibold" color={trendStyle.textColor} textTransform="uppercase" letterSpacing="0.08em">
+                        Current signal
+                      </Text>
+                    </HStack>
+                    {parsedSummary.trend.evidence ? (
+                      <Text color="slate.700" lineHeight="1.6">
+                        {parsedSummary.trend.evidence}
+                      </Text>
+                    ) : null}
+                  </VStack>
+                </Box>
+              )}
+
+              {(strengths.length > 0 || recommendations.length > 0) && (
+                <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={3}>
+                  {strengths.length > 0 ? (
+                    <Box p={4} borderRadius="2xl" bg="white" border="1px solid" borderColor="rgba(15, 23, 42, 0.07)">
+                      <VStack align="stretch" gap={3}>
+                        <Text fontSize="xs" fontWeight="bold" color="slate.500" textTransform="uppercase" letterSpacing="0.08em">
+                          Working well
+                        </Text>
+                        <VStack align="stretch" gap={2}>
+                          {strengths.map((strength) => (
+                            <Box key={strength} px={3} py={2.5} borderRadius="xl" bg="rgba(15, 23, 42, 0.03)">
+                              <Text color="slate.700">{strength}</Text>
+                            </Box>
+                          ))}
+                        </VStack>
+                      </VStack>
+                    </Box>
+                  ) : null}
+                  {recommendations.length > 0 ? (
+                    <Box
+                      p={4}
+                      borderRadius="2xl"
+                      bg="linear-gradient(180deg, rgba(236, 253, 245, 0.9), rgba(240, 253, 250, 0.72))"
+                      border="1px solid"
+                      borderColor="rgba(16, 185, 129, 0.14)"
+                    >
+                      <VStack align="stretch" gap={3}>
+                        <Text fontSize="xs" fontWeight="bold" color="green.700" textTransform="uppercase" letterSpacing="0.08em">
+                          Next edge
+                        </Text>
+                        <VStack align="stretch" gap={2}>
+                          {recommendations.map((recommendation) => (
+                            <Box key={recommendation} px={3} py={2.5} borderRadius="xl" bg="rgba(255,255,255,0.7)">
+                              <Text color="slate.700">{recommendation}</Text>
+                            </Box>
+                          ))}
+                        </VStack>
+                      </VStack>
+                    </Box>
+                  ) : null}
+                </Grid>
+              )}
+
+              <Box px={4} py={3.5} borderRadius="2xl" bg="rgba(15, 23, 42, 0.03)">
+                <Text color={summaryText ? "slate.700" : "slate.500"} lineHeight="1.7">
+                  {summaryText || "Your latest activities are still being analyzed."}
+                </Text>
+              </Box>
+
+              {data?.basedOn || updatedLabel ? (
+                <Grid templateColumns={{ base: "1fr", md: "1fr auto" }} gap={2}>
+                  <Text fontSize="xs" color="slate.500">
+                    {data?.basedOn ? `Based on ${data.basedOn}` : ""}
+                  </Text>
+                  <Text fontSize="xs" color="slate.500" textAlign={{ base: "left", md: "right" }}>
+                    {updatedLabel ? `Updated ${updatedLabel}` : ""}
+                  </Text>
+                </Grid>
+              ) : null}
+
+              {data?.evaluating && (
+                <Text fontSize="xs" color="orange.700">
+                  A fresh summary is running. Latest available snapshot shown for now.
+                </Text>
+              )}
+            </VStack>
+          )}
+        </VStack>
       </Card.Body>
     </Card.Root>
   );
