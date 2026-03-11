@@ -33,7 +33,6 @@ import LineSeriesChart from "@/components/charts/LineSeriesChart";
 import BarChart from "@/components/charts/BarChart";
 import HeatmapChart from "@/components/charts/HeatmapChart";
 import CalendarHeatmap from "@/components/charts/CalendarHeatmap";
-import Stats from "@/components/Stats";
 import AchievementsWidget from "@/components/AchievementsWidget";
 import ActivityStatsWidget from "@/components/ActivityStatsWidget";
 import TopActivitiesWidget from "@/components/TopActivitiesWidget";
@@ -355,31 +354,7 @@ const Home = () => {
                     </Button>
                   </HStack>
 
-                  <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')}/>
-
-                  <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={3} width="100%">
-                    {[
-                      { value: "YTD", label: "Progress against prior seasons" },
-                      { value: "AI", label: "Performance summary and recommendations" },
-                      { value: "Fast", label: "Activity search with suggestions" },
-                    ].map((item) => (
-                      <Box
-                        key={item.label}
-                        p={4}
-                        borderRadius="2xl"
-                        bg="white"
-                        border="1px solid"
-                        borderColor="rgba(20, 32, 51, 0.06)"
-                      >
-                        <Text fontWeight="800" color="slate.900" mb={1}>
-                          {item.value}
-                        </Text>
-                        <Text fontSize="sm" color="slate.600">
-                          {item.label}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Grid>
+                  <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')} demo={true}/>
                 </VStack>
 
                 <Box

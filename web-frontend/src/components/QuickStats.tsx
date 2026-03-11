@@ -7,14 +7,29 @@ import { LuActivity, LuTrendingUp, LuMountain, LuCalendar } from 'react-icons/lu
 interface QuickStatsProps {
   selectedActivityType: string;
   units: AthleteUnits;
+  demo?: boolean;
 }
 
-const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
+const demoStats: UserStats = {
+  progress: {
+    rides: 218,
+    distance: 18432,
+    elevation: 98126,
+    days: 186,
+  },
+};
+
+const QuickStats = ({ selectedActivityType, units, demo = false }: QuickStatsProps) => {
 
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
+    if (demo) {
+      setUserStats(demoStats);
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
         const stats = await ApiClient.profileStatistics(selectedActivityType, currentYear);
@@ -25,7 +40,7 @@ const QuickStats = ({ selectedActivityType, units }: QuickStatsProps) => {
     };
 
     fetchUserData();
-  }, [selectedActivityType]);
+  }, [currentYear, demo, selectedActivityType]);
 
   const stats = [
     {
