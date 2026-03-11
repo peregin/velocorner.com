@@ -408,7 +408,7 @@ const Home = () => {
         {/* Authentication Section */}
         {!isAuthenticated && (
           <>
-            <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr 1.2fr" }} alignItems="stretch" gap={4}>
+            <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr 1.2fr" }} alignItems="stretch" gap={4} id="stats">
               <Box>
                 <WordCloud words={wordCloud} height={350} />
               </Box>
