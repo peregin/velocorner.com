@@ -354,6 +354,9 @@ const Home = () => {
                       <a href="#stats">Explore dashboard</a>
                     </Button>
                   </HStack>
+
+                  <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')}/>
+
                   <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={3} width="100%">
                     {[
                       { value: "YTD", label: "Progress against prior seasons" },
@@ -456,8 +459,6 @@ const Home = () => {
                   fetchSeries={fetchDemoYearlyElevation} seriesToShow={5} height={350} />
               </Box>
             </Grid>
-
-            <Stats />
 
             <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
               <Card.Body p={{ base: 4, md: 6 }}>
