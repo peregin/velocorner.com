@@ -1,5 +1,6 @@
 const apiHost = import.meta.env.VITE_API_HOST || 'https://velocorner.com';
-const webHost = import.meta.env.VITE_WEB_HOST || 'https://dev.velocorner.com';
+// it is the host where the OAuth2 client is calling back, can differ from the main one if is a different subdomain for testing
+const webHost = import.meta.env.VITE_WEB_HOST || 'https://velocorner.com';
 console.info('api host:', apiHost);
 console.info('web host:', webHost);
 
