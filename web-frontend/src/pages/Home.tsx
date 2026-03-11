@@ -373,7 +373,7 @@ const Home = () => {
                     </Button>
                   </HStack>
 
-                  <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')} demo={true}/>
+                  <QuickStats selectedActivityType='Ride' units={getAthleteUnits('metric')} demo={true} />
                 </VStack>
 
                 <MarketingWidget />
@@ -442,7 +442,7 @@ const Home = () => {
         {/* Profile Section for Authenticated Users */}
         {isAuthenticated && (
           <>
-          <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
+            <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
             {/* Activity Type Tabs */}
             {/* <Text fontWeight="bold">Activity Types</Text> */}
             <Tabs.Root
@@ -645,8 +645,12 @@ const Home = () => {
               </Grid>
 
               <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4}>
-                <Box><HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} /></Box>
-                <Box><HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} /></Box>
+                <Box borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+                  <HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} />
+                </Box>
+                <Box borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
+                  <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
+                </Box>
               </Grid>
 
               <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={4}>

@@ -158,11 +158,8 @@ const TopActivitiesWidget = ({
   };
 
   return (
-    <Card.Root
-      borderWidth="1px"
-      borderColor="gray.200"
-      borderRadius="lg"
-      boxShadow="sm"
+    <Card.Root 
+      borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
       overflow="hidden"
     >
       <Card.Body p={0}>
@@ -256,7 +253,7 @@ const TopActivitiesWidget = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         color="gray.700"
-                        textDecoration="none"
+                        textDecoration="underline"
                         _hover={{ color: "blue.700", textDecoration: "underline" }}
                         display="-webkit-box"
                         css={{
