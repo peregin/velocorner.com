@@ -68,7 +68,7 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
 function useResponsiveMonths(maxMonths) {
   // rough responsivity similar to Play view
   const size = useBreakpointValue({ base: 'base', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl' });
-  if (size === 'base') return Math.min(1, maxMonths);
+  if (size === 'base') return Math.min(2, maxMonths);
   if (size === 'sm') return Math.min(3, maxMonths);
   if (size === 'md') return Math.min(5, maxMonths);
   return maxMonths;
