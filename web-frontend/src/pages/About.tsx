@@ -148,7 +148,7 @@ const About = () => {
                   <List.Item><Text as="span" fontWeight="700">web-frontend:</Text> React, Chakra UI</List.Item>
                   <List.Item><Text as="span" fontWeight="700">crawler-service:</Text> Scala, http4s, cats-effect</List.Item>
                   <List.Item><Text as="span" fontWeight="700">exchange-rate-service:</Text> Rust</List.Item>
-                  <List.Item><Text as="span" fontWeight="700">data-provider:</Text> PostgreSQL and storage backends</List.Item>
+                  <List.Item><Text as="span" fontWeight="700">data-provider:</Text> PostgreSQL</List.Item>
                   <List.Item><Text as="span" fontWeight="700">data-search:</Text> ZincSearch</List.Item>
                   <List.Item><Text as="span" fontWeight="700">user-service:</Text> Java, Spring Boot</List.Item>
                   <List.Item><Text as="span" fontWeight="700">weather-service:</Text> Kotlin</List.Item>
