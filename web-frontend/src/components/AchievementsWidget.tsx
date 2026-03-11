@@ -233,7 +233,7 @@ const AchievementsWidget = ({
           </HStack>
         ) : achievements ? (
           visibleAchievements.length ? (
-            <SimpleGrid columns={{ base: 1, md: 4 }} gap={2}>
+            <SimpleGrid columns={{ base: 2, md: 4 }} gap={2}>
               {visibleAchievements.map((definition) => {
                 const achievement = achievements?.[definition.key];
                 const formatted = definition.formatter(achievement);
