@@ -230,6 +230,15 @@ const Home = () => {
     });
   }, []);
 
+  const activityTypeCollection = useMemo(() => {
+    return createListCollection({
+      items: activityTypes.map((activityType) => ({
+        value: activityType,
+        label: activityType
+      })),
+    });
+  }, [activityTypes]);
+
   // fetchers for charts
   const fetchYearlyHeatmap = useCallback(
     () => ApiClient.yearlyHeatmap(selectedActivityType),
@@ -445,27 +454,70 @@ const Home = () => {
             <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
             {/* Activity Type Tabs */}
             {/* <Text fontWeight="bold">Activity Types</Text> */}
-            <Tabs.Root
-              variant="outline"
-              value={selectedActivityType}
-              onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
-            >
-              <Tabs.List bg="rgba(255,255,255,0.72)" rounded="full" p={1} border="1px solid" borderColor="rgba(20, 32, 51, 0.08)">
-                {activityTypes.map((activityType) => (
-                  <Tabs.Trigger
-                    key={activityType}
-                    value={activityType}
-                    color="slate.700"
-                    px={5}
-                    py={2}
+            <Box display={{ base: "block", md: "none" }} width="100%">
+              <Select.Root
+                collection={activityTypeCollection}
+                value={[selectedActivityType]}
+                onValueChange={(e) => {
+                  if (e.value?.[0]) {
+                    handleActivityTypeChange(e.value[0]);
+                  }
+                }}
+                size="md"
+                width="100%"
+              >
+                <Select.HiddenSelect />
+                <Select.Control>
+                  <Select.Trigger
                     borderRadius="full"
-                    _selected={{ bg: "slate.900", color: "white", boxShadow: "sm" }}
+                    bg="rgba(255,255,255,0.72)"
+                    border="1px solid"
+                    borderColor="rgba(20, 32, 51, 0.08)"
                   >
-                    {activityType}
-                  </Tabs.Trigger>
-                ))}
-              </Tabs.List>
-            </Tabs.Root>
+                    <Select.ValueText placeholder="Select activity type" />
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Trigger>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {activityTypes.map((activityType) => (
+                        <Select.Item key={activityType} item={{ value: activityType, label: activityType }}>
+                          {activityType}
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
+            </Box>
+
+            <Box display={{ base: "none", md: "block" }}>
+              <Tabs.Root
+                variant="outline"
+                value={selectedActivityType}
+                onValueChange={(e) => e.value && handleActivityTypeChange(e.value)}
+              >
+                <Tabs.List bg="rgba(255,255,255,0.72)" rounded="full" p={1} border="1px solid" borderColor="rgba(20, 32, 51, 0.08)">
+                  {activityTypes.map((activityType) => (
+                    <Tabs.Trigger
+                      key={activityType}
+                      value={activityType}
+                      color="slate.700"
+                      px={5}
+                      py={2}
+                      borderRadius="full"
+                      _selected={{ bg: "slate.900", color: "white", boxShadow: "sm" }}
+                    >
+                      {activityType}
+                    </Tabs.Trigger>
+                  ))}
+                </Tabs.List>
+              </Tabs.Root>
+            </Box>
 
             <Card.Root borderRadius="32px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
               <Card.Body p={{ base: 6, md: 8 }}>
