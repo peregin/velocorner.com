@@ -219,8 +219,8 @@ const AchievementsWidget = ({
     : [];
 
   return (
-    <Card.Root>
-      <Card.Body p={{ base: 3, md: 4 }}>
+    <Card.Root h="100%" borderRadius="28px">
+      <Card.Body p={{ base: 3, md: 4 }} h="100%">
         <Heading size="sm" mb={3}>
           <Flex align="center" gap={2}>
             <LuTrophy /> Best Achievements

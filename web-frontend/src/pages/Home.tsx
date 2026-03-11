@@ -664,19 +664,23 @@ const Home = () => {
 
             {/* User Statistics for Authenticated Users */}
             <VStack gap={6} align="stretch" id="stats">
-              {/* User Statistics */}
-              <ActivityStatsWidget
-                selectedActivityType={selectedActivityType}
-                isAuthenticated={isAuthenticated}
-                athleteProfile={athleteProfile}
-              />
+              <Grid templateColumns={{ base: "1fr", xl: "1.5fr 1fr" }} gap={4} alignItems="stretch">
+                <Box h="100%">
+                  <ActivityStatsWidget
+                    selectedActivityType={selectedActivityType}
+                    isAuthenticated={isAuthenticated}
+                    athleteProfile={athleteProfile}
+                  />
+                </Box>
 
-              {/* Best Achievements */}
-              <AchievementsWidget
-                selectedActivityType={selectedActivityType}
-                athleteProfile={athleteProfile}
-                isAuthenticated={isAuthenticated}
-              />
+                <Box h="100%">
+                  <AchievementsWidget
+                    selectedActivityType={selectedActivityType}
+                    athleteProfile={athleteProfile}
+                    isAuthenticated={isAuthenticated}
+                  />
+                </Box>
+              </Grid>
 
               <PerformanceSummaryWidget isAuthenticated={isAuthenticated} />
 

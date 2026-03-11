@@ -92,9 +92,9 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
   const elevationUnit = getAthleteUnits(athleteProfile?.unit).elevationLabel;
 
   return (
-    <Card.Root>
-      <Card.Body>
-        <VStack align="stretch" gap={4}>
+    <Card.Root h="100%" borderRadius="28px">
+      <Card.Body h="100%">
+        <VStack align="stretch" gap={4} h="100%">
           <HStack justify="space-between" align="center">
             <Heading size="md">Your Statistics</Heading>
             <HStack gap={2}>
@@ -136,7 +136,7 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
           </HStack>
 
           {/* Main Statistics */}
-          <Grid templateColumns="repeat(auto-fit, minmax(120px, 1fr))" gap={4}>
+          <Grid templateColumns="repeat(auto-fit, minmax(120px, 1fr))" gap={1}>
             <GridItem>
               <Text fontWeight="bold" mb={2} fontSize="sm">Activities</Text>
               <Text fontSize="2xl" color="orange.500">
@@ -254,4 +254,3 @@ const ActivityStatsWidget = ({ selectedActivityType, isAuthenticated, athletePro
 };
 
 export default ActivityStatsWidget;
-
