@@ -186,7 +186,7 @@ lazy val crawlerService = (project in file("crawler-service") withId "crawler-se
     name := "crawler-service",
     description := "product crawler with an up-to-date data feed",
     libraryDependencies ++= catsEffect ++ http4s ++ circe ++ scalacache ++ Seq(
-      "org.typelevel" %% "log4cats-slf4j" % "2.7.1",
+      "org.typelevel" %% "log4cats-slf4j" % "2.8.0",
       "org.jsoup" % "jsoup" % Dependencies.jsoupVersion
     ) ++ catsEffectTest.map(_ % Test),
     BuildInfoKeys.buildInfoKeys := buildInfoKeys().value,
