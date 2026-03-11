@@ -79,7 +79,7 @@ const QuickStats = ({ selectedActivityType, units, demo = false }: QuickStatsPro
 
   return (
     <Grid
-      gap={{ base: 3, md: 4 }}
+      gap={{ base: 2, md: 4 }}
       width="100%"
       templateColumns={{ base: '1fr 1fr', xl: 'repeat(4, 1fr)' }}
     >
@@ -109,7 +109,7 @@ const QuickStats = ({ selectedActivityType, units, demo = false }: QuickStatsPro
             mb={3}
             boxShadow="0 14px 28px rgba(20, 32, 51, 0.12)"
           >
-            <Icon as={stat.icon} fontSize="20px" color="white" strokeWidth={2.5} />
+            <Icon as={stat.icon} fontSize="20px" color='white' strokeWidth={2.5} />
           </Box>
 
           <VStack alignItems="flex-start" gap={1} w="full">
