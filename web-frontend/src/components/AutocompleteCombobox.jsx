@@ -17,6 +17,7 @@ const defaultItemToValue = (item) => (item && item.value) || item || '';
  * - onKeyPress: (event) => void
  * - itemToString: (item) => string
  * - itemToValue: (item) => string
+ * - allowFreeText: boolean - keep arbitrary typed text instead of auto-selecting a suggestion
  */
 const AutocompleteCombobox = ({
   value,
@@ -28,6 +29,7 @@ const AutocompleteCombobox = ({
   onKeyPress,
   itemToString = defaultItemToString,
   itemToValue = defaultItemToValue,
+  allowFreeText = true,
 }) => {
   const collection = createListCollection({
     items,
@@ -45,14 +47,24 @@ const AutocompleteCombobox = ({
         const v = details?.value?.[0];
         if (v != null && onSelect) onSelect(v);
       }}
-      inputBehavior="autohighlight"
-      // width={width}
+      inputBehavior={allowFreeText ? "none" : "autohighlight"}
     >
       <Combobox.Control>
         <Combobox.Input
           placeholder={placeholder}
           value={value}
-          onKeyPress={onKeyPress}
+          onKeyDown={(event) => {
+            if (allowFreeText && event.key === 'Enter') {
+              const enteredValue = event.currentTarget.value;
+              if (enteredValue?.trim() && onSelect) {
+                event.preventDefault();
+                onSelect(enteredValue);
+              }
+              return;
+            }
+
+            onKeyPress && onKeyPress(event);
+          }}
         />
         <Combobox.IndicatorGroup>
           <Combobox.ClearTrigger />

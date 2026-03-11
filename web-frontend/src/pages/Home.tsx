@@ -192,7 +192,7 @@ const Home = () => {
       navigate(`/search?aid=${suggestion.activity.id}`);
     } else {
       // Fallback to query search
-      handleSearch();
+      navigate(`/search?q=${encodeURIComponent(selectedValue.trim())}`);
     }
   };
 

@@ -181,7 +181,8 @@ const Search = () => {
       performActivitySearch(suggestion.activity.id.toString());
     } else {
       // Fallback to query search
-      handleSearch();
+      setQuery(selectedValue);
+      void performSearch(selectedValue);
     }
   };
 
