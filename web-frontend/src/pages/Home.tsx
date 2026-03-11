@@ -297,123 +297,125 @@ const Home = () => {
   return (
     <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 14, md: 20 }}>
       <VStack gap={{ base: 6, md: 8 }} align="stretch">
-        <Card.Root
-          borderRadius="32px"
-          border="1px solid"
-          borderColor="rgba(20, 32, 51, 0.08)"
-          bg="rgba(255,255,255,0.76)"
-          boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
-          overflow="hidden"
-        >
-          <Card.Body p={{ base: 6, md: 8 }}>
-            <Grid templateColumns={{ base: "1fr", lg: "1.35fr 0.9fr" }} gap={{ base: 8, lg: 10 }} alignItems="center">
-              <VStack align="start" gap={5}>
-                <Badge colorPalette="green" borderRadius="full" px={3} py={1}>
-                  Modern endurance analytics
-                </Badge>
-                <VStack align="start" gap={3}>
-                  <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="12ch">
-                    Train with a sharper view of your season.
-                  </Heading>
-                  <Text color="slate.600" fontSize={{ base: "md", md: "lg" }} maxW="2xl" lineHeight="1.8">
-                    Velocorner turns Strava activity history into a concise performance cockpit with year-over-year comparisons,
-                    standout efforts, and search that gets you back to the ride you want in seconds.
-                  </Text>
-                </VStack>
-                <HStack gap={3} flexWrap="wrap">
-                  {!isAuthenticated ? (
-                    <Button
-                      colorPalette="orange"
-                      size="lg"
-                      borderRadius="full"
-                      fontWeight="700"
-                      px={6}
-                      boxShadow="0 14px 28px rgba(252, 121, 52, 0.24)"
-                      onClick={connect}
-                      loading={authLoading}
-                    >
-                      <Image src={strava} boxSize="20px" mr={2} />
-                      Connect with Strava
-                    </Button>
-                  ) : (
-                    <Button
-                      colorPalette="green"
-                      size="lg"
-                      borderRadius="full"
-                      fontWeight="700"
-                      px={6}
-                      onClick={handleRefresh}
-                      loading={refreshLoading}
-                    >
-                      <HiRefresh />
-                      Refresh activities
-                    </Button>
-                  )}
-                  <Button asChild variant="outline" size="lg" borderRadius="full" px={6}>
-                    <a href="#stats">Explore dashboard</a>
-                  </Button>
-                </HStack>
-                <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={3} width="100%">
-                  {[
-                    { value: "YTD", label: "Progress against prior seasons" },
-                    { value: "AI", label: "Performance summary and recommendations" },
-                    { value: "Fast", label: "Activity search with suggestions" },
-                  ].map((item) => (
-                    <Box
-                      key={item.label}
-                      p={4}
-                      borderRadius="2xl"
-                      bg="white"
-                      border="1px solid"
-                      borderColor="rgba(20, 32, 51, 0.06)"
-                    >
-                      <Text fontWeight="800" color="slate.900" mb={1}>
-                        {item.value}
-                      </Text>
-                      <Text fontSize="sm" color="slate.600">
-                        {item.label}
-                      </Text>
-                    </Box>
-                  ))}
-                </Grid>
-              </VStack>
-
-              <Box
-                p={{ base: 5, md: 6 }}
-                borderRadius="28px"
-                bg="linear-gradient(180deg, #0f172a 0%, #16263f 100%)"
-                color="white"
-                boxShadow="inset 0 1px 0 rgba(255,255,255,0.08)"
-              >
-                <VStack align="stretch" gap={4}>
-                  <HStack justify="space-between">
-                    <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">
-                      What you get
+        {!isAuthenticated && (
+          <Card.Root
+            borderRadius="32px"
+            border="1px solid"
+            borderColor="rgba(20, 32, 51, 0.08)"
+            bg="rgba(255,255,255,0.76)"
+            boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)"
+            overflow="hidden"
+          >
+            <Card.Body p={{ base: 6, md: 8 }}>
+              <Grid templateColumns={{ base: "1fr", lg: "1.35fr 0.9fr" }} gap={{ base: 8, lg: 10 }} alignItems="center">
+                <VStack align="start" gap={5}>
+                  <Badge colorPalette="green" borderRadius="full" px={3} py={1}>
+                    Modern endurance analytics
+                  </Badge>
+                  <VStack align="start" gap={3}>
+                    <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="12ch">
+                      Train with a sharper view of your season.
+                    </Heading>
+                    <Text color="slate.600" fontSize={{ base: "md", md: "lg" }} maxW="2xl" lineHeight="1.8">
+                      Velocorner turns Strava activity history into a concise performance cockpit with year-over-year comparisons,
+                      standout efforts, and search that gets you back to the ride you want in seconds.
                     </Text>
-                    <Badge colorPalette="green" borderRadius="full">
-                      {isAuthenticated ? "Live data" : "Demo preview"}
-                    </Badge>
+                  </VStack>
+                  <HStack gap={3} flexWrap="wrap">
+                    {!isAuthenticated ? (
+                      <Button
+                        colorPalette="orange"
+                        size="lg"
+                        borderRadius="full"
+                        fontWeight="700"
+                        px={6}
+                        boxShadow="0 14px 28px rgba(252, 121, 52, 0.24)"
+                        onClick={connect}
+                        loading={authLoading}
+                      >
+                        <Image src={strava} boxSize="20px" mr={2} />
+                        Connect with Strava
+                      </Button>
+                    ) : (
+                      <Button
+                        colorPalette="green"
+                        size="lg"
+                        borderRadius="full"
+                        fontWeight="700"
+                        px={6}
+                        onClick={handleRefresh}
+                        loading={refreshLoading}
+                      >
+                        <HiRefresh />
+                        Refresh activities
+                      </Button>
+                    )}
+                    <Button asChild variant="outline" size="lg" borderRadius="full" px={6}>
+                      <a href="#stats">Explore dashboard</a>
+                    </Button>
                   </HStack>
-                  <VStack align="stretch" gap={3}>
+                  <Grid templateColumns={{ base: "1fr", sm: "repeat(3, 1fr)" }} gap={3} width="100%">
                     {[
-                      "See yearly distance, elevation, achievements, year to date progress, heatmaps and much more!",
-                      "Spot trends, top rides, and personal bests in one place.",
-                      "Keep the interface focused on decisions, not chart clutter.",
-                    ].map((line) => (
-                      <Box key={line} p={4} borderRadius="2xl" bg="rgba(255,255,255,0.06)" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="whiteAlpha.900" lineHeight="1.7">
-                          {line}
+                      { value: "YTD", label: "Progress against prior seasons" },
+                      { value: "AI", label: "Performance summary and recommendations" },
+                      { value: "Fast", label: "Activity search with suggestions" },
+                    ].map((item) => (
+                      <Box
+                        key={item.label}
+                        p={4}
+                        borderRadius="2xl"
+                        bg="white"
+                        border="1px solid"
+                        borderColor="rgba(20, 32, 51, 0.06)"
+                      >
+                        <Text fontWeight="800" color="slate.900" mb={1}>
+                          {item.value}
+                        </Text>
+                        <Text fontSize="sm" color="slate.600">
+                          {item.label}
                         </Text>
                       </Box>
                     ))}
-                  </VStack>
-                  <Separator borderColor="whiteAlpha.200" />
-                  <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
+                  </Grid>
                 </VStack>
-              </Box>
-            </Grid>
-          </Card.Body>
-        </Card.Root>
+
+                <Box
+                  p={{ base: 5, md: 6 }}
+                  borderRadius="28px"
+                  bg="linear-gradient(180deg, #0f172a 0%, #16263f 100%)"
+                  color="white"
+                  boxShadow="inset 0 1px 0 rgba(255,255,255,0.08)"
+                >
+                  <VStack align="stretch" gap={4}>
+                    <HStack justify="space-between">
+                      <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">
+                        What you get
+                      </Text>
+                      <Badge colorPalette="green" borderRadius="full">
+                        {isAuthenticated ? "Live data" : "Demo preview"}
+                      </Badge>
+                    </HStack>
+                    <VStack align="stretch" gap={3}>
+                      {[
+                        "See yearly distance, elevation, achievements, year to date progress, heatmaps and much more!",
+                        "Spot trends, top rides, and personal bests in one place.",
+                        "Keep the interface focused on decisions, not chart clutter.",
+                      ].map((line) => (
+                        <Box key={line} p={4} borderRadius="2xl" bg="rgba(255,255,255,0.06)" border="1px solid" borderColor="whiteAlpha.100">
+                          <Text color="whiteAlpha.900" lineHeight="1.7">
+                            {line}
+                          </Text>
+                        </Box>
+                      ))}
+                    </VStack>
+                    <Separator borderColor="whiteAlpha.200" />
+                    <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
+                  </VStack>
+                </Box>
+              </Grid>
+            </Card.Body>
+          </Card.Root>
+        )}
 
         <Card.Root
           borderRadius="28px"
@@ -476,6 +478,7 @@ const Home = () => {
         {/* Profile Section for Authenticated Users */}
         {isAuthenticated && (
           <>
+          <Image alignSelf="flex-end" width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" />
             {/* Activity Type Tabs */}
             {/* <Text fontWeight="bold">Activity Types</Text> */}
             <Tabs.Root
