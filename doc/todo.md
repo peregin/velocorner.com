@@ -1,19 +1,20 @@
 # ToDo
+- !!! check what happens when the DB is empty, is the page loading? 
+
 - user service in Java/SpringBoot
 - health service in Go
+- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 - add toppreise, and check other aggregators
 - suggestions when searching products
 - add throttling
 - marketing campaign FB/G
 - restart service for changed images only - or publish image from ci conditionally - orb filter
-- caching: add for forecast - generates way too many entries - and remove existing entries
 - show last ride and similar ones (+/-15% distance, elevation)
 - upgrade postgres (multirange types)
-- health check, tiny go service connect uptimerobot with statuspage with a tiny go app
 - recommendation for the week and month based on previous or other activities
 - caching: setup ActivityStorage with ScalaCache - component search is already cached
 - variation of the greeting, instead of Hello
-- add QR code to the About page 
+- add QR code to the About page
 - add JMH benchmarks http://openjdk.java.net/projects/xrender/benchmarks.html
 - compass rose - wind direction
 - show consecutive sport days
@@ -25,10 +26,11 @@
 - PubSub (pusher or alternative) for updates
 
 # InProgress
-- move FE completely to React
-- weather service in Kotlin
 
 # Done
+- caching: add for forecast - generates way too many entries - and remove existing entries
+- move FE completely to React
+- weather service in Kotlin
 - update About and Github readme with the tech stack details
 - https://exchangerate.host/#/ to spot prices, and align prices in the output
 - badge for new, available, sales, lead times
