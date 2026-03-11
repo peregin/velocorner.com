@@ -47,7 +47,15 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            - .git
+            - build.sbt
+            - Dockerfile
+            - deploy.sh
+            - project
+            - data-provider
+            - crawler-service
+            - web-app
+            - web-frontend
 
   deploy_web-backend:
     executor: ci-deploy-executor
