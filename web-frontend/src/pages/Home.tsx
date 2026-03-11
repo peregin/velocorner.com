@@ -370,7 +370,8 @@ const Home = () => {
                         What you get
                       </Text>
                       <Badge colorPalette="green" borderRadius="full">
-                        {isAuthenticated ? "Live data" : "Demo preview"}
+//                          {isAuthenticated ? "Live data" : "Demo preview"}
+                        Live data
                       </Badge>
                     </HStack>
                     <VStack align="stretch" gap={3}>

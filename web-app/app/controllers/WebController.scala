@@ -32,7 +32,7 @@ class WebController @Inject() (
     with AuthChecker {
 
   def index = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.index(getPageContext("Home")))
+    Ok(views.html.index())
   }
 
   def refresh = AuthAsyncAction(parse.default) { implicit request =>
@@ -57,25 +57,8 @@ class WebController @Inject() (
       }
   }
 
-  // activity search results
-  def search = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.search(getPageContext("Search")))
-  }
-  
   def marketing = AuthAction(parse.default) { implicit request =>
     Redirect("https://leventes-initial-project-936798.webflow.io/")
-  }
-
-  def about = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.about(getPageContext("About")))
-  }
-
-  def privacy = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.privacy(getPageContext("Privacy")))
-  }
-
-  def admin = AuthAction(parse.default) { implicit request =>
-    Ok(views.html.admin(getPageContext("Admin")))
   }
 
   def sitemap = Action { _ =>
@@ -109,20 +92,5 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
   </url>
 </urlset>
     Ok(xml.toString()).as("application/xml")
-  }
-
-  private def getPageContext(title: String)(implicit request: Request[AnyContent]) = {
-    val maybeAccount = loggedIn
-    val windyEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Windy)
-    val context = PageContext(
-      title,
-      maybeAccount,
-      isWithingsEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Withings),
-      isWindyEnabled = windyEnabled,
-      windyApiKey = if (windyEnabled) connectivity.secretConfig.getAuthToken(ServiceProvider.Windy) else "",
-      isCrawlerEnabled = connectivity.secretConfig.isServiceEnabled(ServiceProvider.Crawler)
-    )
-    logger.info(s"rendering ${title.toLowerCase} page for $maybeAccount")
-    context
   }
 }

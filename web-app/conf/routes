@@ -8,15 +8,7 @@ GET     /                                                  controllers.WebContro
 ### NoDocs ###
 GET     /refresh                                           controllers.WebController.refresh
 ### NoDocs ###
-GET     /search                                            controllers.WebController.search
-### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
-### NoDocs ###
-GET     /about                                             controllers.WebController.about
-### NoDocs ###
-GET     /privacy                                           controllers.WebController.privacy
-### NoDocs ###
-GET     /admin                                             controllers.WebController.admin
 ### NoDocs ###
 GET     /sitemap.xml                                       controllers.WebController.sitemap
 
@@ -27,12 +19,6 @@ GET     /login/strava                                      controllers.auth.Stra
 GET     /authorize/strava                                  controllers.auth.StravaController.authorize
 ### NoDocs ###
 GET     /logout/strava                                     controllers.auth.StravaController.logout
-
-# WITHINGS AUTH
-### NoDocs ###
-GET     /login/withings                                    controllers.auth.WithingsController.login(scope: String)
-### NoDocs ###
-GET     /authorize/withings                                controllers.auth.WithingsController.authorize
 
 ### NoDocs ###
 GET     /api/admin/status                                  controllers.AdminController.status
@@ -505,8 +491,6 @@ GET     /docs                                              controllers.Assets.at
 # Map static resources from the /public folder to the /assets URL path
 ### NoDocs ###
 GET     /robots.txt                                        controllers.Assets.at(path="/public", file="html/robots.txt")
-### NoDocs ###
-GET     /counter                                           controllers.Assets.at(path="/public", file="html/counter.html")
 ### NoDocs ###
 GET     /googlea6d3ef59293b5121.html                       controllers.Assets.at(path="/public", file="html/googlea6d3ef59293b5121.html")
 ### NoDocs ###

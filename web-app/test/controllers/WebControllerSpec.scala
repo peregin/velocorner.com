@@ -40,19 +40,7 @@ class WebControllerSpec extends PlaySpec with StubControllerComponentsFactory wi
       )(assetsFinder)
       val result = controller.index.apply(FakeRequest())
       val content = Helpers.contentAsString(result)
-      content must include("Login with your Strava account")
-    }
-
-    "render about page" in {
-      val controller = new WebController(
-        stubControllerComponents(),
-        cacheApiMock,
-        settingsMock,
-        refreshStrategyMock
-      )(assetsFinder)
-      val result = controller.about.apply(FakeRequest())
-      val content = Helpers.contentAsString(result)
-      content must include("Welcome to the cycling site")
+      content must include("Welcome")
     }
   }
 }

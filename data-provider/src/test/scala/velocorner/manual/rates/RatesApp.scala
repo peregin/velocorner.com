@@ -5,6 +5,7 @@ import squants.market.{CHF, EUR, USD}
 import velocorner.SecretConfig
 import velocorner.feed.{ExchangeRatesFeed, HUF, HttpFeed}
 import velocorner.manual.MyLocalConfig
+
 object RatesApp extends IOApp.Simple with MyLocalConfig {
 
   override def run: IO[Unit] = for {
