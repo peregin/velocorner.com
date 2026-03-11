@@ -366,13 +366,8 @@ const Home = () => {
                 >
                   <VStack align="stretch" gap={4}>
                     <HStack justify="space-between">
-                      <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">
-                        What you get
-                      </Text>
-                      <Badge colorPalette="green" borderRadius="full">
-//                          {isAuthenticated ? "Live data" : "Demo preview"}
-                        Live data
-                      </Badge>
+                      <Text textTransform="uppercase" letterSpacing="0.16em" fontSize="xs" color="whiteAlpha.700">What you get</Text>
+                      <Badge colorPalette="green" borderRadius="full">Live data</Badge>
                     </HStack>
                     <VStack align="stretch" gap={3}>
                       {[
