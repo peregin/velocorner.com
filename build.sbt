@@ -20,12 +20,6 @@ def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
   ) ++ extraKeys
 )
 
-val rethinkClient = Seq(
-  "com.rethinkdb" % "rethinkdb-driver" % Dependencies.rethinkDbVersion,
-  "com.googlecode.json-simple" % "json-simple" % "1.1.1"
-)
-val mongoClient = "org.mongodb.scala" %% "mongo-scala-driver" % Dependencies.mongoDbVersion
-val orientDbClient = "com.orientechnologies" % "orientdb-client" % Dependencies.orientDbVersion
 val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-core" % Dependencies.doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % Dependencies.doobieVersion,
@@ -77,10 +71,6 @@ def catsEffect = Seq(
 
 def catsEffectTest = Seq(
   "org.typelevel" %% "cats-effect-testing-scalatest" % Dependencies.catsEffectTestVersion
-)
-
-def zio = Seq(
-  "dev.zio" %% "zio" % Dependencies.zioVersion
 )
 
 def squants = Seq(
@@ -156,20 +146,6 @@ lazy val dataProvider = (project in file("data-provider") withId "data-provider"
       scalaTest
     ) ++ logging ++ psqlDbClient ++ apacheCommons ++ cats ++ squants ++ catsEffect.map(_ % Test)
   )
-
-lazy val dataProviderExtension = (project in file("data-provider-ext") withId "data-provider-ext")
-  .settings(
-    buildSettings,
-    name := "data-provider-ext",
-    description := "Extensions for data-provider with various storage providers (OrientDb, RethinkDb, MongoDb, etc.)",
-    libraryDependencies ++= Seq(
-      playJson,
-      playJsonExtensions,
-      playJsonJoda,
-      scalaTest
-    ) ++ logging ++ Seq(mongoClient, orientDbClient) ++ rethinkClient ++ cats ++ zio.map(_ % Test)
-  )
-  .dependsOn(dataProvider % "test->test;compile->compile")
 
 lazy val dataSearch = (project in file("data-search") withId "data-search")
   .settings(
@@ -294,7 +270,6 @@ lazy val root = (project in file(".") withId "velocorner")
   .aggregate(
     crawlerService,
     dataProvider,
-    dataProviderExtension,
     dataSearch,
     dataAnalytics,
     webApp
