@@ -396,7 +396,7 @@ const Home = () => {
                   </HStack>
                   <VStack align="stretch" gap={3}>
                     {[
-                      "See yearly distance, elevation, and moving time without digging through separate Strava views.",
+                      "See yearly distance, elevation, achievements, year to date progress, heatmaps and much more!",
                       "Spot trends, top rides, and personal bests in one place.",
                       "Keep the interface focused on decisions, not chart clutter.",
                     ].map((line) => (
@@ -441,34 +441,9 @@ const Home = () => {
         {/* Authentication Section */}
         {!isAuthenticated && (
           <>
-            <Card.Root borderRadius="28px" border="1px solid" borderColor="rgba(20, 32, 51, 0.08)" bg="rgba(255,255,255,0.76)" boxShadow="0 24px 60px rgba(18, 38, 63, 0.09)">
-              <Card.Body p={{ base: 6, md: 8 }}>
-                <VStack gap={4} align="start">
-                  <Heading size="xl" >
-                    Login with your Strava account to see your personal statistics.
-                  </Heading>
-                  <Text fontSize="md" color="slate.600"  lineHeight="1.8">
-                    See your cycling data come to life with interactive charts and insights that help you understand your performance.
-                    You will be able to see various statistics of your activities such as year to date progress, yearly achievements, daily heatmap based on distance and elevation and much more!
-                  </Text>
-                  <Button
-                    colorPalette="orange"
-                    size="lg"
-                    borderRadius="full"
-                    fontWeight="700"
-                    onClick={connect}
-                    loading={authLoading}
-                  >
-                    <Image src={strava} boxSize="20px" mr={2} />
-                    Connect with Strava
-                  </Button>
-                </VStack>
-              </Card.Body>
-            </Card.Root>
-
             <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr 1.2fr" }} alignItems="stretch" gap={4}>
               <Box>
-                <WordCloud words={wordCloud} />
+                <WordCloud words={wordCloud} height={350} />
               </Box>
               <Box>
                 <BarChart title="Year To Date Distance (Sample)" unit={getProfileUnits().distanceLabel}

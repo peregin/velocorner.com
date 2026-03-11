@@ -99,7 +99,7 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
   }, [fetchSeries, unit]);
 
   return (
-    <Box>
+    <Box borderRadius="28px" overflow="hidden">
       {/* <Heading size="md" mb={4}>{title}</Heading> */}
       <HighchartsReact highcharts={Highcharts} options={options} />
     </Box>

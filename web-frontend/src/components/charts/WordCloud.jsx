@@ -4,10 +4,11 @@ import HighchartsReact from 'highcharts-react-official';
 import Wordcloud from 'highcharts/modules/wordcloud';
 import { Box } from "@chakra-ui/react";
 
-
-
-const WordCloud = ({ words }) => {
+const WordCloud = ({ words, height = 400 }) => {
     const wordOptions = {
+        chart: {
+            height
+        },
         accessibility: {
             screenReaderSection: {
                 beforeChartFormat: '<h5>{chartTitle}</h5>>' +
@@ -45,7 +46,7 @@ const WordCloud = ({ words }) => {
     };
 
     return (
-        <Box>
+        <Box borderRadius="28px" overflow="hidden">
             <HighchartsReact
                 highcharts={Highcharts}
                 options={wordOptions}

@@ -83,7 +83,7 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
 
   if (loading) {
     return (
-      <Box>
+      <Box borderRadius="28px" overflow="hidden">
         <Heading size="md" mb={4}>{title}</Heading>
         <div>Loading {title} Data...</div>
       </Box>
@@ -91,7 +91,9 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
   }
 
   return (
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Box borderRadius="28px" overflow="hidden">
+        <HighchartsReact highcharts={Highcharts} options={options} />
+      </Box>
   );
 };
 
