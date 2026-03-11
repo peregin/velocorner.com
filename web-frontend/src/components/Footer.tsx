@@ -23,8 +23,8 @@ export default function Footer() {
           borderRadius="32px"
           boxShadow="0 24px 60px rgba(11, 18, 31, 0.24)"
         >
-          <Grid templateColumns={{ base: '1fr', md: '1.7fr 1fr 1fr' }} gap={10} mb={10}>
-            <GridItem>
+          <Grid templateColumns={{ base: 'repeat(2, minmax(0, 1fr))', md: '1.7fr 1fr 1fr' }} gap={{ base: 6, md: 10 }} mb={10}>
+            <GridItem colSpan={{ base: 2, md: 1 }}>
               <Badge colorPalette="green" borderRadius="full" px={3} py={1} mb={4}>
                 Built for riding more intentionally
               </Badge>
@@ -52,7 +52,7 @@ export default function Footer() {
               <Text color="white" fontWeight="semibold" mb={4}>
                 Explore
               </Text>
-              <VStack alignItems="flex-start" gap={3}>
+              <VStack alignItems="flex-start" gap={1}>
                 <Link href="/#stats" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                   Dashboard
                 </Link>
@@ -72,7 +72,7 @@ export default function Footer() {
               <Text color="white" fontWeight="semibold" mb={4}>
                 Resources
               </Text>
-              <VStack alignItems="flex-start" gap={3}>
+              <VStack alignItems="flex-start" gap={1}>
                 <Link href="/docs" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                   API docs
                 </Link>
@@ -86,7 +86,7 @@ export default function Footer() {
             </GridItem>
           </Grid>
 
-          <Box borderTop="1px" borderColor="whiteAlpha.200" pt={8}>
+          <Box borderTop="1px" borderColor="whiteAlpha.200">
             <Flex
               flexDirection={{ base: 'column', md: 'row' }}
               alignItems="center"
