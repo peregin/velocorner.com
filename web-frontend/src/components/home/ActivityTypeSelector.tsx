@@ -45,7 +45,7 @@ const ActivityTypeSelector = ({
               border="1px solid"
               borderColor="rgba(20, 32, 51, 0.08)"
             >
-              <Select.ValueText placeholder="Select activity type" />
+              <Select.ValueText placeholder="Select activity type" ml='1rem'/>
               <Select.IndicatorGroup>
                 <Select.Indicator />
               </Select.IndicatorGroup>
@@ -53,11 +53,11 @@ const ActivityTypeSelector = ({
           </Select.Control>
           <Portal>
             <Select.Positioner>
-              <Select.Content>
+              <Select.Content bg='white' color='black'>
                 {activityTypes.map((activityType) => (
                   <Select.Item key={activityType} item={{ value: activityType, label: activityType }}>
                     {activityType}
-                    <Select.ItemIndicator />
+                    <Select.ItemIndicator color='blue'/>
                   </Select.Item>
                 ))}
               </Select.Content>

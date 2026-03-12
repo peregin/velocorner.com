@@ -92,7 +92,7 @@ const ProfileOverview = ({
                         <Badge colorPalette="green" borderRadius="full" px={3} py={1} mb={3}>
                           Dashboard ready
                         </Badge>
-                        <Heading size="2xl">Hello, {athleteProfile.displayName}</Heading>
+                        <Heading size="2xl" color='black'>Hello, {athleteProfile.displayName}</Heading>
                         {athleteProfile.displayLocation && (
                           <Text color="slate.500">{athleteProfile.displayLocation}</Text>
                         )}
@@ -125,8 +125,12 @@ const ProfileOverview = ({
                       >
                         <Select.HiddenSelect />
                         <Select.Control>
-                          <Select.Trigger>
-                            <Select.ValueText />
+                          <Select.Trigger
+                            borderRadius="full"
+                            bg="rgba(255,255,255,0.72)"
+                            border="1px solid"
+                            borderColor="rgba(20, 32, 51, 0.08)">
+                            <Select.ValueText ml='1rem'/>
                             <Select.IndicatorGroup>
                               <Select.Indicator />
                             </Select.IndicatorGroup>
@@ -134,10 +138,10 @@ const ProfileOverview = ({
                         </Select.Control>
                         <Portal>
                           <Select.Positioner>
-                            <Select.Content>
+                            <Select.Content bg='white' color='black'>
                               <Select.Item item={{ value: "metric", label: "Metric" }}>
                                 Metric
-                                <Select.ItemIndicator />
+                                <Select.ItemIndicator color='blue'/>
                               </Select.Item>
                               <Select.Item item={{ value: "imperial", label: "Imperial" }}>
                                 Imperial
@@ -147,7 +151,7 @@ const ProfileOverview = ({
                           </Select.Positioner>
                         </Portal>
                       </Select.Root>
-                      <Button variant="outline" borderRadius="full" onClick={onLogout} loading={logoutLoading} width="100%">
+                      <Button color='black' variant="outline" borderRadius="full" onClick={onLogout} loading={logoutLoading} width="100%">
                         <FaSignOutAlt style={{ marginRight: "8px" }} />
                         Logout
                       </Button>
