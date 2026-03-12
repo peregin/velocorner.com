@@ -10,21 +10,43 @@
         </encoder>
     </appender>
 
-    <appender name="PAPERTRAIL" class="ch.qos.logback.classic.net.SyslogAppender">
-        <syslogHost>logs.papertrailapp.com</syslogHost>
-        <port>11477</port>
-        <facility>USER</facility>
-        <suffixPattern>velocorner: %logger %msg</suffixPattern>
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <labels>
+            app = velocorner-web
+            host = ${HOSTNAME:-unknown}
+            environment = ${LOKI_ENVIRONMENT:-local}
+        </labels>
+        <structuredMetadata>
+            level = %level
+            logger = %logger
+            thread = %thread
+        </structuredMetadata>
+        <message>
+            <pattern>%date{ISO8601} %coloredLevel [%-15.15thread]  %logger{36} - %msg%n</pattern>
+        </message>
+        <http>
+            <url>${LOKI_URL:-https://logs-prod-XXX.grafana.net/loki/api/v1/push}</url>
+            <auth>
+                <username>${LOKI_USERNAME:-}</username>
+                <password>${LOKI_PASSWORD:-}</password>
+            </auth>
+            <requestTimeoutMs>15000</requestTimeoutMs>
+        </http>
+        <batch>
+            <maxItems>1000</maxItems>
+            <maxBytes>65536</maxBytes>
+            <timeoutMs>60000</timeoutMs>
+        </batch>
     </appender>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
 
-        <if condition='p("log.mode").contains("papertrail")'>
+        <!-- <if condition='p("log.mode").contains("loki") || p("log.mode").contains("grafana")'>
         <then>
-            <appender-ref ref="PAPERTRAIL" />
+            <appender-ref ref="LOKI" />
         </then>
-        </if>
+        </if> -->
     </root>
 
     <logger name="play.shaded.ahc.org" level="INFO"/>

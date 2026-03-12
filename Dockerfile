@@ -36,4 +36,4 @@ ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75" \
 EXPOSE 9000
 
 # Use absolute path (no shell in Distroless; PATH lookup isn’t used by Docker exec)
-ENTRYPOINT ["/jre/bin/java", "-Dlog.mode=papertrail", "-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC", "-jar", "/app/web-app-all.jar"]
+ENTRYPOINT ["/jre/bin/java", "-Dlog.mode=grafana", "-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC", "-jar", "/app/web-app-all.jar"]
