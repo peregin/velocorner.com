@@ -14,7 +14,7 @@
         <labels>
             app = velocorner-web
             host = ${HOSTNAME:-unknown}
-            environment = ${LOKI_ENVIRONMENT:-local}
+            environment = ${LOKI_ENVIRONMENT:-prod}
         </labels>
         <structuredMetadata>
             level = %level
@@ -25,7 +25,7 @@
             <pattern>%date{ISO8601} %coloredLevel [%-15.15thread]  %logger{36} - %msg%n</pattern>
         </message>
         <http>
-            <url>${LOKI_URL:-https://logs-prod-XXX.grafana.net/loki/api/v1/push}</url>
+            <url>https://logs-prod-039.grafana.net/loki/api/v1/push</url>
             <auth>
                 <username>${LOKI_USERNAME:-}</username>
                 <password>${LOKI_PASSWORD:-}</password>
@@ -42,11 +42,11 @@
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
 
-        <!-- <if condition='p("log.mode").contains("loki") || p("log.mode").contains("grafana")'>
+        <if condition='p("log.mode").contains("loki") || p("log.mode").contains("grafana")'>
         <then>
             <appender-ref ref="LOKI" />
         </then>
-        </if> -->
+        </if>
     </root>
 
     <logger name="play.shaded.ahc.org" level="INFO"/>
