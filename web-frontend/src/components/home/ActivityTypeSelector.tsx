@@ -45,7 +45,7 @@ const ActivityTypeSelector = ({
               border="1px solid"
               borderColor="rgba(20, 32, 51, 0.08)"
             >
-              <Select.ValueText placeholder="Select activity type" ml='1rem'/>
+              <Select.ValueText placeholder="Select activity type" ml='1rem' color='black'/>
               <Select.IndicatorGroup>
                 <Select.Indicator />
               </Select.IndicatorGroup>

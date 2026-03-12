@@ -130,7 +130,7 @@ const ProfileOverview = ({
                             bg="rgba(255,255,255,0.72)"
                             border="1px solid"
                             borderColor="rgba(20, 32, 51, 0.08)">
-                            <Select.ValueText ml='1rem'/>
+                            <Select.ValueText ml='1rem' color='black'/>
                             <Select.IndicatorGroup>
                               <Select.Indicator />
                             </Select.IndicatorGroup>
