@@ -1,6 +1,5 @@
 # ToDo
-- !!! check what happens when the DB is empty, is the page loading? 
-  - ressurect papertrail or an alternative
+- check what happens when the DB is empty, is the page loading? - it working byt would be nice to have some instructions or automation in place
 
 - user service in Java/SpringBoot
 - health service in Go
@@ -29,6 +28,7 @@
 # InProgress
 
 # Done
+- resurect papertrail or an alternative - grafana
 - caching: add for forecast - generates way too many entries - and remove existing entries
 - move FE completely to React
 - weather service in Kotlin
