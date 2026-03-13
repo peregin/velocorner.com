@@ -1,6 +1,7 @@
 # ToDo
 - check what happens when the DB is empty, is the page loading? - it working byt would be nice to have some instructions or automation in place
-
+- load activities when not updated for the first time and make sure concurrency is handled
+- make it visual that is loading with feedback
 - user service in Java/SpringBoot
 - health service in Go
 - health check, tiny go service connect uptimerobot with statuspage with a tiny go app
