@@ -1,6 +1,6 @@
 object Dependencies {
 
-  val projectScalaVersion = "3.8.2"
+  val projectScalaVersion = "3.8.3"
 
   val flywayVersion = "12.2.0"
   val catsVersion = "2.13.0"
