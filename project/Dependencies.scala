@@ -17,7 +17,7 @@ object Dependencies {
   val doobieVersion = "1.0.0-RC12"
   val jwtVersion = "11.0.4"
   val squantsVersion = "1.8.3"
-  val sparkVersion = "4.1.1"
+  val sparkVersion = "4.1.2"
   val circeVersion = "0.14.15"
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.22.2"
