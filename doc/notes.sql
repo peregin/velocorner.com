@@ -1,5 +1,8 @@
 
 
+select * from organizations;
+
+
 select * from activity_route ar;
 
 SELECT * FROM athlete_performance_analysis apa;

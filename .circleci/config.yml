@@ -80,28 +80,6 @@ jobs:
           name: deploy backend
           command: ./web-app/deploy.sh
 
-  deploy_crawler-backend:
-    executor: ci-deploy-executor
-    steps:
-      - attach_workspace:
-          at: .
-      - setup_remote_docker:
-          docker_layer_caching: false
-      - run:
-          name: trust github host key
-          command: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-      - run:
-          name: dockerhub login
-          command: docker login -u peregin -p $DOCKERHUB_PASSWORD docker.io
-      - run:
-          name: build fat jar
-          command: sbt "project crawler-service" assembly
-      - run:
-          name: deploy crawler-backend
-          command: ./crawler-service/deploy.sh
-
   deploy_web-frontend:
     executor: ci-min
     resource_class: arm.medium
@@ -139,13 +117,6 @@ workflows:
           filters:
             branches:
               only: /^master.*/
-      - deploy_crawler-backend:
-          context: peregin
-          requires:
-            - build
-          filters:
-            branches:
-              only: /^master.*/
       - deploy_web-frontend:
           context: peregin
           requires:
@@ -158,4 +129,3 @@ workflows:
           requires:
             - deploy_web-backend
             - deploy_web-frontend
-            - deploy_crawler-backend
