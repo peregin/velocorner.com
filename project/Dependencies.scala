@@ -14,7 +14,7 @@ object Dependencies {
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.5.34"
   val lokiLogbackVersion = "2.0.3"
-  val doobieVersion = "1.0.0-RC12"
+  val doobieVersion = "1.0.0-RC13"
   val jwtVersion = "11.0.4"
   val squantsVersion = "1.8.3"
   val sparkVersion = "4.1.1"
