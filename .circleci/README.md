@@ -14,7 +14,7 @@ docker push peregin/circleci:latest
 docker buildx inspect multi-arch-builder
 docker buildx create --name multi-arch-builder
 docker buildx use multi-arch-builder
-docker buildx build --platform linux/amd64,linux/arm64 -t peregin/circleci:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t peregin/circleci:2.0.0 -t peregin/circleci:latest --push .
 ```
 
 Cleanup old docker images in a batch
