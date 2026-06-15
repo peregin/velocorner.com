@@ -88,7 +88,7 @@ case class SecretConfig(configProps: Config) {
   def getAiOpenRouterUrl: String =
     config.getOptAs[String]("AI_OPENROUTER_URL").getOrElse("https://openrouter.ai/api/v1/chat/completions")
   def getAiOpenRouterModel: String =
-    config.getOptAs[String]("AI_OPENROUTER_MODEL").getOrElse("google/gemini-2.0-flash-001")
+    config.getOptAs[String]("AI_OPENROUTER_MODEL").getOrElse("google/gemini-2.5-flash")
   def getAiOpenRouterApiKey: Option[String] =
     config
       .getOptAs[String]("AI_OPENROUTER_API_KEY")
