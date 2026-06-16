@@ -3,6 +3,8 @@ package velocorner
 import com.typesafe.config.{Config, ConfigFactory}
 import velocorner.SecretConfig.PimpMyConfig
 
+import scala.util.Try
+
 /**
  * Created by levi on 29/03/15.
  * Read configs from environment variables and merge it with the default application.conf
@@ -28,6 +30,15 @@ object SecretConfig {
 case class SecretConfig(configProps: Config) {
 
   private val config = ConfigFactory.systemEnvironment().withFallback(configProps).resolve()
+
+  private def getOptString(path: String): Option[String] =
+    Option.when(config.hasPath(path))(config.getAnyRef(path).toString.trim).filter(_.nonEmpty)
+
+  private def getOptInt(path: String): Option[Int] =
+    getOptString(path).flatMap(value => Try(value.toInt).toOption)
+
+  private def getOptDouble(path: String): Option[Double] =
+    getOptString(path).flatMap(value => Try(value.toDouble).toOption)
 
   def isServiceEnabled(application: ServiceProvider.Value): Boolean = config.getOptBoolean(s"${application.toString.toUpperCase}_ENABLED", default = false)
 
@@ -88,7 +99,11 @@ case class SecretConfig(configProps: Config) {
   def getAiOpenRouterUrl: String =
     config.getOptAs[String]("AI_OPENROUTER_URL").getOrElse("https://openrouter.ai/api/v1/chat/completions")
   def getAiOpenRouterModel: String =
-    config.getOptAs[String]("AI_OPENROUTER_MODEL").getOrElse("google/gemini-2.5-flash")
+    config.getOptAs[String]("AI_OPENROUTER_MODEL").getOrElse("openai/gpt-4o-mini")
+  def getAiOpenRouterMaxTokens: Int =
+    getOptInt("AI_OPENROUTER_MAX_TOKENS").filter(_ > 0).getOrElse(600)
+  def getAiOpenRouterTemperature: Double =
+    getOptDouble("AI_OPENROUTER_TEMPERATURE").filter(value => value >= 0d && value <= 2d).getOrElse(0.2d)
   def getAiOpenRouterApiKey: Option[String] =
     config
       .getOptAs[String]("AI_OPENROUTER_API_KEY")

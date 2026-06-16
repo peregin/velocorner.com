@@ -268,9 +268,13 @@ class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(i
     val url = connectivity.secretConfig.getAiOpenRouterUrl
     val apiKey = connectivity.secretConfig.getAiOpenRouterApiKey
     val model = connectivity.secretConfig.getAiOpenRouterModel
+    val maxTokens = connectivity.secretConfig.getAiOpenRouterMaxTokens
+    val temperature = connectivity.secretConfig.getAiOpenRouterTemperature
     val reqBody = Json
       .obj(
         "model" -> model,
+        "max_tokens" -> maxTokens,
+        "temperature" -> temperature,
         "messages" -> Json.arr(
           Json.obj(
             "role" -> "user",
