@@ -49,9 +49,12 @@ class SecretConfigSpec extends AnyWordSpec with Matchers {
       conf.isServiceEnabled(ServiceProvider.Crawler) mustBe false
     }
 
-    "default AI chat provider to peregin" in {
+    "default AI chat provider to OpenRouter" in {
       val conf = new SecretConfig(ConfigFactory.parseString(""))
       conf.getAiChatProvider mustBe "openrouter"
+      conf.getAiOpenRouterModel mustBe "openai/gpt-4o-mini"
+      conf.getAiOpenRouterMaxTokens mustBe 600
+      conf.getAiOpenRouterTemperature mustBe 0.2d
     }
 
     "read Gemini AI chat settings" in {
@@ -72,6 +75,8 @@ class SecretConfigSpec extends AnyWordSpec with Matchers {
         """
           |AI_CHAT_PROVIDER=openrouter
           |AI_OPENROUTER_MODEL=google/gemini-2.5-flash
+          |AI_OPENROUTER_MAX_TOKENS=500
+          |AI_OPENROUTER_TEMPERATURE=0.1
           |AI_OPENROUTER_API_KEY=test-key
           |AI_OPENROUTER_REFERER="https://velocorner.com"
           |AI_OPENROUTER_TITLE="Velocorner"
@@ -79,6 +84,8 @@ class SecretConfigSpec extends AnyWordSpec with Matchers {
       val conf = new SecretConfig(ConfigFactory.parseString(testConfig))
       conf.getAiChatProvider mustBe "openrouter"
       conf.getAiOpenRouterModel mustBe "google/gemini-2.5-flash"
+      conf.getAiOpenRouterMaxTokens mustBe 500
+      conf.getAiOpenRouterTemperature mustBe 0.1d
       conf.getAiOpenRouterApiKey mustBe Some("test-key")
       conf.getAiOpenRouterReferer mustBe Some("https://velocorner.com")
       conf.getAiOpenRouterTitle mustBe Some("Velocorner")
