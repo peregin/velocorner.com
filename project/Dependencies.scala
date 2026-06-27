@@ -12,7 +12,7 @@ object Dependencies {
   val pekkoVersion = "1.6.0"
   val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
-  val logbackVersion = "1.5.34"
+  val logbackVersion = "1.5.37"
   val lokiLogbackVersion = "2.0.3"
   val doobieVersion = "1.0.0-RC12"
   val jwtVersion = "11.0.4"
