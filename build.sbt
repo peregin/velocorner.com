@@ -268,6 +268,8 @@ lazy val webApp = (project in file("web-app") withId "web-app")
       case referenceOverrides if referenceOverrides.contains("reference-overrides.conf") =>
         // Keep the content for all reference-overrides.conf files
         MergeStrategy.concat
+      case PathList("META-INF", "FastDoubleParser-LICENSE") =>
+        MergeStrategy.discard
       case PathList("META-INF", "versions", "9", "module-info.class") =>
         MergeStrategy.discard
       case "module-info.class" =>
