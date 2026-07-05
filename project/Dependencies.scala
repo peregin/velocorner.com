@@ -7,8 +7,8 @@ object Dependencies {
   val catsEffectVersion = "3.7.0"
   val mouseVersion = "1.4.0"
   val http4s = "0.23.34"
-  val tapirVersion = "1.13.23"
-  val playWsVersion = "3.0.12" // standalone version
+  val tapirVersion = "1.13.25"
+  val playWsVersion = "3.0.13" // standalone version
   val pekkoVersion = "1.6.0"
   val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
@@ -18,7 +18,7 @@ object Dependencies {
   val jwtVersion = "11.0.4"
   val squantsVersion = "1.8.3"
   val sparkVersion = "4.1.2"
-  val circeVersion = "0.14.15"
+  val circeVersion = "0.14.16"
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.22.2"
   val scalaTestVersion = "3.2.20"
