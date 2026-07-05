@@ -25,8 +25,8 @@ FROM debian:bookworm-slim AS wget-builder
 RUN apt-get update && \
     apt-get install --no-install-recommends -y wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /wget-root && \
-    cp -v /usr/bin/wget /wget-root/ && \
+    mkdir -p /wget-root/usr/bin && \
+    cp -v /usr/bin/wget /wget-root/usr/bin/wget && \
     for lib in $(ldd /usr/bin/wget | grep -o '/[^ ]*' | sort -u); do \
         mkdir -p "/wget-root$(dirname $lib)" && \
         cp -vn "$lib" "/wget-root$lib"; \
@@ -51,7 +51,7 @@ EXPOSE 9000
 
 # Health check (exec form — Distroless has no shell)
 HEALTHCHECK --interval=60s --timeout=3s --start-period=5s --retries=3 \
-    CMD ["wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9000/api/ping"]
+    CMD ["/usr/bin/wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:9000/api/ping"]
 
 # Use absolute path (no shell in Distroless; PATH lookup isn’t used by Docker exec)
 ENTRYPOINT ["/jre/bin/java", "-Dlog.mode=grafana", "-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC", "-jar", "/app/web-app-all.jar"]
