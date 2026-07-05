@@ -35,5 +35,9 @@ ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75" \
 
 EXPOSE 9000
 
+# Health check
+HEALTHCHECK --interval=60s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:9000/api/ping || exit 1
+
 # Use absolute path (no shell in Distroless; PATH lookup isn’t used by Docker exec)
 ENTRYPOINT ["/jre/bin/java", "-Dlog.mode=grafana", "-Dplay.server.pidfile.path=/dev/null", "-Duser.timezone=UTC", "-jar", "/app/web-app-all.jar"]
