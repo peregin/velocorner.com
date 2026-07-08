@@ -43,7 +43,7 @@ export default function Footer() {
                 <Social href="https://www.strava.com/clubs/velocorner" image={strava} alt="Strava" />
                 <Social href="https://www.youtube.com/channel/UCekBQAfLHviXTvB1kVjzBZQ" image={youtube} alt="YouTube" />
                 <Social href="https://twitter.com/velocorner_com" image={twitter} alt="Twitter" />
-                <Social href="mailto:velocorner.com@gmail.com" image={email} alt="Email" />
+                <Social href="mailto:hello@peregin.com" image={email} alt="Email" />
                 <Social href="https://www.facebook.com/101313662146829" image={facebook} alt="Facebook" />
               </HStack>
             </GridItem>
@@ -79,7 +79,7 @@ export default function Footer() {
                 <Link href="https://github.com/velocorner" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                   Source code
                 </Link>
-                <Link href="mailto:velocorner.com@gmail.com" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
+                <Link href="mailto:hello@peregin.com" color="gray.400" _hover={{ color: 'white' }} transition="colors 0.2s">
                   Contact
                 </Link>
               </VStack>

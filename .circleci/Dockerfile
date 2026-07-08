@@ -1,6 +1,6 @@
 FROM cimg/openjdk:25.0.1
 
-LABEL maintainer="velocorner.com@gmail.com"
+LABEL maintainer="hello@peregin.com"
 
 ENV SHELL="/bin/bash"
 ENV LANG="C.UTF-8"
