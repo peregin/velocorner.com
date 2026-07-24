@@ -26,4 +26,4 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.7")
 // generate bill of materials
 addSbtPlugin("com.github.sbt" %% "sbt-sbom" % "0.5.0")
 // to generate fat jar and individual Dockerfile with a smaller image
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.3.1")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.4.1")
