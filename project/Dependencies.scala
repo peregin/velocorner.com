@@ -20,7 +20,7 @@ object Dependencies {
   val sparkVersion = "4.1.2"
   val circeVersion = "0.14.16"
   val scalacacheVersion = "0.28.0"
-  val jsoupVersion = "1.22.2"
+  val jsoupVersion = "1.23.1"
   val scalaTestVersion = "3.2.20"
   val mockitoVersion = "5.23.0"
   val catsEffectTestVersion = "1.8.0"
