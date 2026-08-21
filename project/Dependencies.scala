@@ -9,7 +9,7 @@ object Dependencies {
   val http4s = "0.23.36"
   val tapirVersion = "1.13.31"
   val playWsVersion = "3.0.13" // standalone version
-  val pekkoVersion = "1.6.0"
+  val pekkoVersion = "1.7.0"
   val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
   val logbackVersion = "1.6.3"
