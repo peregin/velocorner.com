@@ -12,7 +12,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.7.0")
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.1")
 // Generate swagger doc from the routes
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.1.5")
+addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.1.6")
 // Report the licenses used in the project
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 // Show the hash of the current version
