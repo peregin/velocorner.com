@@ -139,10 +139,10 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
-    "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
+    "org.scala-lang.modules" %% "scala-xml" % "2.5.0"
   ),
   dependencyOverrides ++= Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.5.0"
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
   dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
