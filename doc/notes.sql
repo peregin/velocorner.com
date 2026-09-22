@@ -1,6 +1,12 @@
 
 
-select * from organizations;
+
+-- top users
+select data->>'lastUpdate', data->>'displayName', * from account
+where cast(data->>'lastUpdate' as timestamp) > current_date - interval '90' day
+order by data->>'lastUpdate' desc
+;
+
 
 
 select * from activity_route ar;
