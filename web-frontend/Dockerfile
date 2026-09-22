@@ -11,9 +11,8 @@ WORKDIR /app
 # Copy package files for better layer caching
 COPY package*.json ./
 
-# Install dependencies with optimizations
-RUN npm i --only=production --no-audit --no-fund \
-    && npm install --no-audit --no-fund vite \
+# Install dependencies, including the build and SBOM tools
+RUN npm install --include=dev --no-audit --no-fund \
     && npm cache clean --force
 
 # Copy source files

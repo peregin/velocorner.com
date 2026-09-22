@@ -26,7 +26,7 @@ val psqlDbClient = Seq(
   "org.tpolecat" %% "doobie-hikari" % Dependencies.doobieVersion,
   "org.flywaydb" % "flyway-core" % Dependencies.flywayVersion,
   "org.flywaydb" % "flyway-database-postgresql" % Dependencies.flywayVersion,
-  "com.opentable.components" % "otj-pg-embedded" % "1.1.1" % "test"
+  "com.opentable.components" % "otj-pg-embedded" % "1.1.3" % "test"
 )
 
 val playJson = "org.playframework" %% "play-json" % Dependencies.playJsonVersion
@@ -88,7 +88,7 @@ def spark = Seq(
 )
 
 def smile: Seq[ModuleID] = Seq(
-  "com.github.haifengl" % "smile-core" % "6.2.5"
+  "com.github.haifengl" % "smile-core" % "6.3.0"
 )
 
 def http4s: Seq[ModuleID] = Seq(
@@ -139,10 +139,10 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   ),
   libraryDependencies ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
-    "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
+    "org.scala-lang.modules" %% "scala-xml" % "2.5.0"
   ),
   dependencyOverrides ++= Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.5.0"
   ),
   // because of: missing method in the newer ones, this is needed just for the Java 11 support
   dependencyUpdatesFilter -= moduleFilter(organization = "com.google.inject", name = "guice")
