@@ -10,7 +10,7 @@ addDependencyTreePlugin
 // check latest updates form maven
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.7.0")
 // generates build information, timestamp
-addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.1")
+addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.2")
 // Generate swagger doc from the routes
 addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.1.5")
 // Report the licenses used in the project
