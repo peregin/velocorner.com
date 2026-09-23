@@ -72,7 +72,6 @@ const endpoints = {
   activityYears: (activity) => get(`/api/activities/${activity}/years`),
   lastActivity: () => get('/api/activities/last'),
   activityRoute: (id) => get(`/api/activities/${id}/route`),
-  activityTerrain: (id) => get(`/api/activities/${id}/terrain`),
   refreshActivities: () => get('/api/activities/refresh'),
   getActivity: (id) => get(`/api/activities/${id}`),
   suggestActivities: (query) => get(`/api/activities/suggest?query=${encodeURIComponent(query)}`),

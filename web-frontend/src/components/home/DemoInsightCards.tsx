@@ -1,6 +1,9 @@
-import { Badge, Box, Card, Grid, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { lazy, Suspense } from "react";
+import { Box, Card, Grid, Heading, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
 import { LuGauge, LuMap, LuMountain, LuRoute, LuSparkles, LuTarget } from "react-icons/lu";
 import { dashboardCardProps } from "./shared";
+
+const ActivityTerrainMap = lazy(() => import("./ActivityTerrainMap"));
 
 type DemoInsightCardsProps = {
   distanceLabel: string;
@@ -53,88 +56,23 @@ const getProfileGradientBand = (grade: number) => {
   };
 };
 
-const DEMO_TERRAIN_CONTROL_ROWS: DemoPoint[][] = [
-  [
-    { x: 82, y: 382 },
-    { x: 166, y: 366 },
-    { x: 248, y: 324 },
-    { x: 332, y: 210 },
-    { x: 422, y: 142 },
-    { x: 514, y: 224 },
-    { x: 610, y: 152 },
-    { x: 704, y: 236 },
-  ],
-  [
-    { x: 114, y: 408 },
-    { x: 198, y: 390 },
-    { x: 282, y: 346 },
-    { x: 370, y: 234 },
-    { x: 462, y: 164 },
-    { x: 556, y: 246 },
-    { x: 648, y: 174 },
-    { x: 736, y: 258 },
-  ],
-  [
-    { x: 148, y: 434 },
-    { x: 234, y: 414 },
-    { x: 322, y: 370 },
-    { x: 412, y: 262 },
-    { x: 506, y: 192 },
-    { x: 600, y: 270 },
-    { x: 688, y: 198 },
-    { x: 772, y: 282 },
-  ],
-  [
-    { x: 186, y: 460 },
-    { x: 274, y: 440 },
-    { x: 364, y: 396 },
-    { x: 456, y: 294 },
-    { x: 550, y: 226 },
-    { x: 642, y: 294 },
-    { x: 726, y: 220 },
-    { x: 806, y: 308 },
-  ],
-  [
-    { x: 224, y: 486 },
-    { x: 316, y: 466 },
-    { x: 408, y: 422 },
-    { x: 502, y: 332 },
-    { x: 596, y: 270 },
-    { x: 686, y: 326 },
-    { x: 768, y: 250 },
-    { x: 846, y: 336 },
-  ],
-  [
-    { x: 258, y: 512 },
-    { x: 352, y: 494 },
-    { x: 446, y: 454 },
-    { x: 540, y: 376 },
-    { x: 634, y: 320 },
-    { x: 722, y: 366 },
-    { x: 804, y: 288 },
-    { x: 860, y: 370 },
-  ],
-];
-
-const DEMO_ROUTE_CONTROL_POINTS: DemoPoint[] = [
-  { x: 122, y: 416 },
-  { x: 168, y: 408 },
-  { x: 214, y: 398 },
-  { x: 262, y: 382 },
-  { x: 310, y: 346 },
-  { x: 350, y: 286 },
-  { x: 390, y: 226 },
-  { x: 430, y: 186 },
-  { x: 470, y: 206 },
-  { x: 506, y: 252 },
-  { x: 540, y: 282 },
-  { x: 574, y: 244 },
-  { x: 612, y: 200 },
-  { x: 650, y: 184 },
-  { x: 688, y: 206 },
-  { x: 724, y: 244 },
-  { x: 758, y: 286 },
-];
+const DEMO_ROUTE_POINTS = [
+  { lat: 46.6244, lon: 8.0414 },
+  { lat: 46.6312, lon: 8.0272 },
+  { lat: 46.6414, lon: 8.0174 },
+  { lat: 46.6519, lon: 8.0207 },
+  { lat: 46.6607, lon: 8.0349 },
+  { lat: 46.6648, lon: 8.0527 },
+  { lat: 46.6611, lon: 8.0726 },
+  { lat: 46.6548, lon: 8.0958 },
+  { lat: 46.6453, lon: 8.1071 },
+  { lat: 46.6344, lon: 8.0993 },
+  { lat: 46.6256, lon: 8.0842 },
+  { lat: 46.6178, lon: 8.0671 },
+  { lat: 46.6148, lon: 8.0502 },
+  { lat: 46.6192, lon: 8.0419 },
+  { lat: 46.6248, lon: 8.0432 },
+] as const;
 
 const DEMO_PROFILE_CONTROL_POINTS: DemoPoint[] = [
   { x: 16, y: 84 },
@@ -154,8 +92,6 @@ const DEMO_PROFILE_CONTROL_POINTS: DemoPoint[] = [
   { x: 800, y: 60 },
   { x: 844, y: 74 },
 ];
-
-const toPointString = (points: DemoPoint[]) => points.map((point) => `${point.x},${point.y}`).join(" ");
 
 const interpolatePoint = (start: DemoPoint, end: DemoPoint, ratio: number): DemoPoint => ({
   x: start.x + (end.x - start.x) * ratio,
@@ -177,59 +113,7 @@ const densifyPolyline = (points: DemoPoint[], segmentsPerStep: number) => {
   return dense;
 };
 
-const densifyTerrainRows = (rows: DemoPoint[][], horizontalSegments: number, verticalSegments: number) => {
-  const denseBaseRows = rows.map((row) => densifyPolyline(row, horizontalSegments));
-  const denseRows: DemoPoint[][] = [];
-
-  for (let rowIndex = 0; rowIndex < denseBaseRows.length - 1; rowIndex += 1) {
-    const currentRow = denseBaseRows[rowIndex];
-    const nextRow = denseBaseRows[rowIndex + 1];
-    for (let segment = 0; segment < verticalSegments; segment += 1) {
-      const ratio = segment / verticalSegments;
-      denseRows.push(currentRow.map((point, pointIndex) => interpolatePoint(point, nextRow[pointIndex], ratio)));
-    }
-  }
-
-  denseRows.push(denseBaseRows[denseBaseRows.length - 1]);
-  return denseRows;
-};
-
-const DEMO_TERRAIN_ROWS = densifyTerrainRows(DEMO_TERRAIN_CONTROL_ROWS, 4, 3);
-const DEMO_ROUTE_POINTS = densifyPolyline(DEMO_ROUTE_CONTROL_POINTS, 3);
 const DEMO_PROFILE_POINTS = densifyPolyline(DEMO_PROFILE_CONTROL_POINTS, 3);
-
-const demoTerrainCells = DEMO_TERRAIN_ROWS.slice(0, -1).flatMap((row, rowIndex) => {
-  const nextRow = DEMO_TERRAIN_ROWS[rowIndex + 1];
-
-  return row.slice(0, -1).map((point, colIndex) => {
-    const topLeft = point;
-    const topRight = row[colIndex + 1];
-    const bottomLeft = nextRow[colIndex];
-    const bottomRight = nextRow[colIndex + 1];
-    const rowRatio = rowIndex / Math.max(DEMO_TERRAIN_ROWS.length - 2, 1);
-    const colRatio = colIndex / Math.max(row.length - 2, 1);
-    const ridgeBias = 1 - Math.min(Math.abs(colRatio - 0.58) / 0.58, 1);
-    const summitBias = Math.max(0, 1 - Math.abs(rowRatio - 0.18) / 0.2) * Math.max(0, 1 - Math.abs(colRatio - 0.62) / 0.18);
-    const hue = 142 - rowRatio * 58 - colRatio * 18;
-    const saturation = 18 + ridgeBias * 12 + (1 - rowRatio) * 8 - summitBias * 6;
-    const lightness = 24 + (1 - rowRatio) * 18 + ridgeBias * 12 + summitBias * 12;
-
-    return {
-      key: `${rowIndex}-${colIndex}`,
-      points: toPointString([topLeft, topRight, bottomRight, bottomLeft]),
-      fill: `hsla(${hue}, ${saturation}%, ${lightness}%, 0.96)`,
-      stroke: `hsla(${hue - 8}, ${Math.max(18, saturation - 8)}%, ${Math.max(14, lightness - 16)}%, 0.28)`,
-    };
-  });
-});
-
-const demoContourLines = DEMO_TERRAIN_ROWS.map((row) => toPointString(row));
-const demoVerticalContourLines = DEMO_TERRAIN_ROWS[0].map((_, colIndex) => toPointString(DEMO_TERRAIN_ROWS.map((row) => row[colIndex])));
-const demoSnowCaps = demoTerrainCells.filter((cell) => {
-  const [rowIndex, colIndex] = cell.key.split("-").map(Number);
-  return rowIndex < 6 && ((colIndex > 10 && colIndex < 15) || (colIndex > 18 && colIndex < 23));
-});
-const demoRoutePath = toPointString(DEMO_ROUTE_POINTS);
 const demoProfileLinePath = DEMO_PROFILE_POINTS.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
 const demoProfileBaselineY = 90;
 const demoProfileSegments: ProfileSegment[] = DEMO_PROFILE_POINTS.slice(0, -1).map((point, index) => {
@@ -265,60 +149,9 @@ const DemoTerrainModelCard = ({ distanceLabel, elevationLabel }: DemoInsightCard
       <Card.Body p={{ base: 4, md: 4.5 }}>
         <Grid templateColumns={{ base: "1fr", xl: "minmax(0, 1.28fr) minmax(250px, 0.72fr)" }} gap={{ base: 3, md: 4 }} alignItems="stretch">
           <VStack align="stretch" gap={2}>
-            <Box
-              borderRadius="24px"
-              overflow="hidden"
-              minH={{ base: "190px", md: "210px" }}
-              bg="linear-gradient(180deg, #76a8c8 0%, #d8ebf5 28%, #6f9168 100%)"
-              position="relative"
-            >
-              <Box
-                position="absolute"
-                inset={0}
-                bg="radial-gradient(circle at 18% 12%, rgba(255,255,255,0.42), transparent 22%), linear-gradient(180deg, rgba(255,255,255,0.1), transparent 40%)"
-              />
-              <VStack position="absolute" top={{ base: 3, md: 4 }} left={{ base: 3, md: 4 }} align="start" gap={2} zIndex={2}>
-                <Badge colorPalette="green" borderRadius="full" px={2.5} py={0.5} fontSize="0.68rem">
-                  Terrain model
-                </Badge>
-              </VStack>
-              <Box position="absolute" inset={0}>
-                <svg viewBox="0 0 860 520" width="100%" height="100%" role="img" aria-label="Sample 3D terrain model and route preview">
-                  <defs>
-                    <filter id="demo-route-glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="rgba(255,255,255,0.45)" />
-                    </filter>
-                    <filter id="demo-terrain-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="0" dy="14" stdDeviation="12" floodColor="rgba(15, 23, 42, 0.24)" />
-                    </filter>
-                  </defs>
-                  <g filter="url(#demo-terrain-shadow)">
-                    {demoTerrainCells.map((cell) => (
-                      <polygon key={cell.key} points={cell.points} fill={cell.fill} stroke={cell.stroke} strokeWidth="0.55" />
-                    ))}
-                  </g>
-
-                  {demoSnowCaps.map((cell) => (
-                    <polygon key={`snow-${cell.key}`} points={cell.points} fill="rgba(255,255,255,0.18)" stroke="none" />
-                  ))}
-
-                  {demoContourLines.filter((_, index) => index % 2 === 0).map((points) => (
-                    <polyline key={points} points={points} fill="none" stroke="rgba(30, 41, 59, 0.12)" strokeWidth="0.8" strokeDasharray="4 7" />
-                  ))}
-                  {demoVerticalContourLines.filter((_, index) => index % 3 === 0).map((points) => (
-                    <polyline key={`vertical-${points}`} points={points} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.7" />
-                  ))}
-
-                  <polyline points={demoRoutePath} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" filter="url(#demo-route-glow)" />
-                  <polyline points={demoRoutePath} fill="none" stroke="#b91c1c" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-                  <polyline points={demoRoutePath} fill="none" stroke="#fde68a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx={DEMO_ROUTE_POINTS[0].x} cy={DEMO_ROUTE_POINTS[0].y} r="9" fill="#22c55e" stroke="#f8fafc" strokeWidth="4" />
-                  <circle cx={DEMO_ROUTE_POINTS[DEMO_ROUTE_POINTS.length - 1].x} cy={DEMO_ROUTE_POINTS[DEMO_ROUTE_POINTS.length - 1].y} r="10" fill="#f97316" stroke="#ffffff" strokeWidth="4" />
-                  <text x={DEMO_ROUTE_POINTS[0].x - 16} y={DEMO_ROUTE_POINTS[0].y - 25} fill="rgba(248,250,252,0.98)" fontSize="20" fontWeight="700">Start</text>
-                  <text x={DEMO_ROUTE_POINTS[DEMO_ROUTE_POINTS.length - 1].x + 18} y={DEMO_ROUTE_POINTS[DEMO_ROUTE_POINTS.length - 1].y - 22} fill="rgba(255,247,237,0.98)" fontSize="20" fontWeight="700">Finish</text>
-                </svg>
-              </Box>
-            </Box>
+            <Suspense fallback={<Box minH="320px" display="grid" placeItems="center"><Spinner size="sm" /></Box>}>
+              <ActivityTerrainMap points={DEMO_ROUTE_POINTS} />
+            </Suspense>
 
             <Box borderRadius="18px" p={2} bg="linear-gradient(180deg, rgba(12, 31, 46, 0.06), rgba(12, 31, 46, 0.02))" border="1px solid rgba(18, 38, 63, 0.06)">
               <HStack justify="space-between" mb={1.25}>

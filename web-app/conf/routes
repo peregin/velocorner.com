@@ -408,22 +408,6 @@ GET     /api/activities/last                               controllers.ActivityC
 GET     /api/activities/:id/route                          controllers.ActivityController.route(id: Long)
 
 ###
-#  summary: Retrieves terrain samples around an activity route
-#  tags:
-#    - activity
-#  responses:
-#    200:
-#      description: Returns DEM grid samples around the given activity route
-#    403:
-#      description: Forbidden
-#    404:
-#      description: Not found
-#    500:
-#      description: Internal error
-###
-GET     /api/activities/:id/terrain                        controllers.ActivityController.terrain(id: Long)
-
-###
 #  summary: Retrieves the latest activities from the external feed, like Strava
 #  tags:
 #    - activity

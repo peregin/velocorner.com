@@ -10,7 +10,7 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.api.chart.DailyPoint
-import velocorner.api.{ActivityRoute, ActivityTerrain}
+import velocorner.api.ActivityRoute
 import velocorner.api.strava.Activity
 import velocorner.api.wordcloud.WordCloud
 import velocorner.api.{Account, Achievements, AthletePerformance, ClimbingInsights, ProfileStatistics, Progress, Units}
@@ -26,7 +26,6 @@ class ActivityController @Inject() (
     val cache: SyncCacheApi,
     strategy: RefreshStrategy,
     activityRouteService: ActivityRouteService,
-    activityTerrainService: ActivityTerrainService,
     athletePerformanceService: AthletePerformanceService,
     components: ControllerComponents
 ) extends AbstractController(components)
@@ -276,21 +275,6 @@ class ActivityController @Inject() (
         account <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
         route <- EitherT[Future, Status, ActivityRoute](activityRouteService.routeFor(account, id).map(_.toRight(NotFound)))
       } yield route
-
-      resultET
-        .map(Json.toJson(_))
-        .map(Ok(_))
-        .merge
-    }
-
-  // retrieves DEM terrain around the route geometry with external fallback interpolation
-  // route mapped to /api/activities/:id/terrain
-  def terrain(id: Long): Action[AnyContent] =
-    TimedAuthAsyncAction(s"query for activity terrain $id")(parse.default) { implicit request =>
-      val resultET = for {
-        account <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
-        terrain <- EitherT[Future, Status, ActivityTerrain](activityTerrainService.terrainFor(account, id).map(_.toRight(NotFound)))
-      } yield terrain
 
       resultET
         .map(Json.toJson(_))

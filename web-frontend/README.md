@@ -140,6 +140,19 @@ docker buildx build --platform linux/amd64 -t peregin/velocorner.frontend:latest
 
 ## Backend Integration
 
+### Activity terrain
+
+The latest activity card lazy-loads MapLibre GL JS and displays shaded 3D terrain
+from [Mapterhorn](https://mapterhorn.com/), with the activity route draped over it.
+No API key is needed. Tiles are fetched directly from `tiles.mapterhorn.com`;
+the map retains the provider's attribution. Public tile availability is an
+external dependency. WebGL and tile failures show a retry message while the
+activity details and elevation profile remain available.
+
+The card uses `/api/activities/:id/route`. High/low values describe route
+elevations, not surrounding terrain.
+The terrain has 1.3× vertical exaggeration; Reset view frames the entire route.
+
 This frontend is designed to work with the Scala Play backend (`web-app` module). The backend provides:
 
 - REST API endpoints
