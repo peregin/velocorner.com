@@ -18,7 +18,7 @@ addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 // Show the hash of the current version
 addSbtPlugin("com.github.sbt" % "sbt-git" % "2.2.0")
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.11")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.12")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 // refactoring and linting
