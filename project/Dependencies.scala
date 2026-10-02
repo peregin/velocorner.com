@@ -2,17 +2,17 @@ object Dependencies {
 
   val projectScalaVersion = "3.8.2"
 
-  val flywayVersion = "13.8.1"
+  val flywayVersion = "13.9.0"
   val catsVersion = "2.13.0"
   val catsEffectVersion = "3.7.1"
   val mouseVersion = "1.4.0"
-  val http4s = "0.23.37"
+  val http4s = "0.23.38"
   val tapirVersion = "1.13.32"
   val playWsVersion = "3.0.14" // standalone version
   val pekkoVersion = "1.7.0"
   val playJsonVersion = "3.0.6"
   val shapelessVersion = "2.3.12"
-  val logbackVersion = "1.6.4"
+  val logbackVersion = "1.6.5"
   val lokiLogbackVersion = "2.1.0"
   val doobieVersion = "1.0.0-RC12"
   val jwtVersion = "11.0.4"
@@ -22,6 +22,6 @@ object Dependencies {
   val scalacacheVersion = "0.28.0"
   val jsoupVersion = "1.23.2"
   val scalaTestVersion = "3.2.20"
-  val mockitoVersion = "5.23.0"
+  val mockitoVersion = "5.24.0"
   val catsEffectTestVersion = "1.8.0"
 }
