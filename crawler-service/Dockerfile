@@ -2,7 +2,7 @@
 FROM eclipse-temurin:21-jdk-jammy AS jre-builder
 
 WORKDIR /work
-COPY target/scala-3.8.2/crawler-service-all.jar /work/app.jar
+COPY target/scala-3.9.0/crawler-service-all.jar /work/app.jar
 
 RUN jdeps \
       --multi-release 21 \
@@ -38,7 +38,7 @@ WORKDIR /app
 
 COPY --from=jre-builder /customjre /jre
 COPY --from=playwright-deps /work/playwright/node_modules /app/crawler-service/playwright/node_modules
-COPY target/scala-3.8.2/crawler-service-all.jar /app/crawler-service-all.jar
+COPY target/scala-3.9.0/crawler-service-all.jar /app/crawler-service-all.jar
 COPY playwright/package.json /app/crawler-service/playwright/package.json
 COPY playwright/bike24-fetch.mjs /app/crawler-service/playwright/bike24-fetch.mjs
 COPY playwright/bike-discount-fetch.mjs /app/crawler-service/playwright/bike-discount-fetch.mjs

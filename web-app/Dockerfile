@@ -2,7 +2,7 @@
 FROM eclipse-temurin:21-jdk-jammy AS jre-builder
 
 WORKDIR /work
-COPY target/scala-3.8.2/web-app-all.jar /work/app.jar
+COPY target/scala-3.9.0/web-app-all.jar /work/app.jar
 
 # Inspect module deps, then build a trimmed JRE.
 # Add jdk.crypto.ec for TLS and jdk.unsupported for sun.misc.Unsafe (often needed by Scala/Play).
@@ -41,7 +41,7 @@ USER 65532:65532
 WORKDIR /app
 COPY --from=jre-builder /customjre /jre
 COPY --from=wget-builder /wget-root/ /
-COPY target/scala-3.8.2/web-app-all.jar /app/web-app-all.jar
+COPY target/scala-3.9.0/web-app-all.jar /app/web-app-all.jar
 
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75" \
     TZ=UTC \
