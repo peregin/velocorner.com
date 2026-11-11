@@ -22,7 +22,7 @@ addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.12")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 // refactoring and linting
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.9")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.10")
 // generate bill of materials
 addSbtPlugin("com.github.sbt" %% "sbt-sbom" % "0.7.0")
 // to generate fat jar and individual Dockerfile with a smaller image
