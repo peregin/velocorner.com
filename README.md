@@ -22,7 +22,7 @@ with the `Play Framework` exposing the contract with Swagger.
 Services are communicating via `http` with each other, exploring various languages and technologies:
 - web-app with `Scala` and `Play Framework`, `ZIO`
 - web-frontend with `React`
-- crawler-service with `Scala`, `http4s`, `cats-effect`, `circe` (Typelevel stack)
+- crawler-service with `Scala`, `http4s`, `cats-effect` (Typelevel stack)
 - exchange-rate-service with `Rust` (has been extracted in a separate repository)
 - data-provider with various database support `postgresql`, `orientdb`, `rethinkdb`, etc
 - data-search - with `zinc-search` a lightweight replacement for elasticsearch
