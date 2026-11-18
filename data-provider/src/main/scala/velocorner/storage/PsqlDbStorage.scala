@@ -5,7 +5,7 @@ import cats.data.OptionT
 import cats.effect.IO
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
-import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import com.zaxxer.hikari.HikariDataSource
 import doobie._
 import doobie.implicits._
 // needed for sql interpolator when filtering on start date on activity (or DateTime in general)
@@ -31,25 +31,23 @@ import mouse.all._
 //noinspection TypeAnnotation
 class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLocation: String = "psql/migration") extends Storage[Future] with LazyLogging {
 
-  private val config = new HikariConfig()
-  config.setDriverClassName("org.postgresql.Driver")
-  config.setJdbcUrl(dbUrl)
-  config.setUsername(dbUser)
-  config.setPassword(dbPassword)
-  config.setMaximumPoolSize(5)
-  config.setMinimumIdle(2)
-  config.setPoolName("hikari-db-pool")
-  config.setAutoCommit(true)
-  // config.validate() // for debugging connection details
+  private[storage] val dataSource = new HikariDataSource()
+  dataSource.setDriverClassName("org.postgresql.Driver")
+  dataSource.setJdbcUrl(dbUrl)
+  dataSource.setUsername(dbUser)
+  dataSource.setPassword(dbPassword)
+  dataSource.setMaximumPoolSize(5)
+  dataSource.setMinimumIdle(2)
+  dataSource.setPoolName("hikari-db-pool")
+  dataSource.setAutoCommit(true)
 
-  private lazy val connectEC = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(
-      5,
-      (r: Runnable) => new Thread(r, "connect ec") <| (_.setDaemon(true))
-    )
+  private[storage] val connectExecutor = Executors.newFixedThreadPool(
+    5,
+    (r: Runnable) => new Thread(r, "connect ec") <| (_.setDaemon(true))
   )
+  private val connectEC = ExecutionContext.fromExecutor(connectExecutor)
   private lazy val transactor = Transactor.fromDataSource[IO](
-    dataSource = new HikariDataSource(config),
+    dataSource = dataSource,
     connectEC = connectEC
   )
 
@@ -359,5 +357,7 @@ class PsqlDbStorage(dbUrl: String, dbUser: String, dbPassword: String, flywayLoc
     flyway.migrate()
   }
 
-  override def destroy(): Unit = {}
+  override def destroy(): Unit =
+    try dataSource.close()
+    finally connectExecutor.shutdown()
 }

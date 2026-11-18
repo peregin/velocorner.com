@@ -3,11 +3,10 @@ package controllers.auth
 import cats.data.OptionT
 
 import java.util.UUID
-import java.util.concurrent.Executors
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import controllers.ConnectivitySettings
-import controllers.auth.StravaController.{ec, OAuth2StateKey}
+import controllers.auth.StravaController.OAuth2StateKey
 
 import javax.inject.Inject
 import play.api.cache.SyncCacheApi
@@ -33,9 +32,6 @@ object StravaController {
   // verifies the code between the session and submitted form
   val OAuth2StateKey = "velocorner.oauth2.state"
 
-  implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(5, (r: Runnable) => new Thread(r, "play worker") <| (_.setDaemon(true)))
-  )
 }
 
 class StravaController @Inject() (val connectivity: ConnectivitySettings, val cache: SyncCacheApi, components: ControllerComponents)
@@ -43,6 +39,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
     with AuthChecker
     with LazyLogging {
 
+  private implicit val ec: ExecutionContext = components.executionContext
   protected val authenticator: StravaAuthenticator = new StravaAuthenticator(connectivity)
 
   // called from Play Framework FE web-app ONLY

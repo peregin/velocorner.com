@@ -2,6 +2,7 @@ package velocorner.feed
 
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSResponse
+import org.apache.pekko.stream.Materializer
 import velocorner.{SecretConfig, ServiceProvider}
 import velocorner.api.strava.Activity
 import velocorner.model.strava.Athlete
@@ -36,7 +37,11 @@ object StravaActivityFeed extends LazyLogging {
   }
 }
 
-class StravaActivityFeed(maybeToken: Option[String], override val config: SecretConfig) extends HttpFeed with ActivityFeed with LazyLogging {
+class StravaActivityFeed(
+    maybeToken: Option[String],
+    override val config: SecretConfig,
+    override val materializer: Materializer = HttpFeed.materializer
+) extends HttpFeed with ActivityFeed with LazyLogging {
 
   private val token =
     maybeToken.getOrElse(config.getAuthToken(ServiceProvider.Strava)) // dedicated token after authentication or application generic

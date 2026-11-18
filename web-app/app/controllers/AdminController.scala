@@ -7,7 +7,6 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import play.api.mvc._
 import velocorner.api.AdminInfo
-import velocorner.feed.ProductCrawlerFeed
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,7 +16,6 @@ class AdminController @Inject() (val connectivity: ConnectivitySettings, val cac
     extends AbstractController(components)
     with AuthChecker {
 
-  lazy val productFeed = new ProductCrawlerFeed(connectivity.secretConfig)
   private lazy val adminStorage = connectivity.getStorage.getAdminStorage
 
   // def mapped to /api/admin/status

@@ -1,6 +1,6 @@
 package controllers.auth
 
-import StravaController.{ec, AuthenticityToken, Id, ResultUpdater, User}
+import StravaController.{AuthenticityToken, Id, ResultUpdater, User}
 import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import controllers.ConnectivitySettings
@@ -26,13 +26,12 @@ object AuthChecker {
 // supports authentication based on:
 // - session cookie
 // - JWT headers
-trait AuthChecker extends WebMetrics {
-  // because of the body parser
-  this: AbstractController =>
-
+trait AuthChecker extends BaseController with WebMetrics {
   val cache: SyncCacheApi
 
   val connectivity: ConnectivitySettings
+
+  private implicit def ec: ExecutionContext = controllerComponents.executionContext
 
   val sessionTimeoutInSeconds: Int = (7 days).toSeconds.toInt
 

@@ -1,6 +1,7 @@
 package velocorner.feed
 
 import com.typesafe.scalalogging.LazyLogging
+import org.apache.pekko.stream.Materializer
 import velocorner.api.brand.{Marketplace, ProductDetails}
 import velocorner.SecretConfig
 import velocorner.util.JsonIo
@@ -16,7 +17,8 @@ trait ProductFeed {
   def search(term: String): Future[List[ProductDetails]]
 }
 
-class ProductCrawlerFeed(override val config: SecretConfig) extends HttpFeed with LazyLogging with ProductFeed {
+class ProductCrawlerFeed(override val config: SecretConfig, override val materializer: Materializer = HttpFeed.materializer)
+    extends HttpFeed with LazyLogging with ProductFeed {
 
   lazy val baseUrl = config.getCrawlerUrl
 

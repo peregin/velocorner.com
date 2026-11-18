@@ -145,7 +145,10 @@ class PsqlDbStorageTest
     }
 
   override def afterAll(): Unit = {
-    psqlStorage.destroy()
-    Option(psqlEmbedded).foreach(_.close())
+    try {
+      psqlStorage.destroy()
+      psqlStorage.dataSource.isClosed mustBe true
+      psqlStorage.connectExecutor.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS) mustBe true
+    } finally Option(psqlEmbedded).foreach(_.close())
   }
 }

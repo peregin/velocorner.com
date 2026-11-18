@@ -1,8 +1,8 @@
 package velocorner.feed
 
 import java.io.Closeable
-import java.util.concurrent.Executors
 import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import com.typesafe.scalalogging.LazyLogging
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
@@ -17,13 +17,11 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 object HttpFeed extends LazyLogging {
 
-  implicit private val system: ActorSystem = ActorSystem.create("ws-feed")
-  private val processors = sys.runtime.availableProcessors()
-  logger.info(s"available processors $processors")
-  implicit private val executors: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newWorkStealingPool(processors.min(5)))
+  private lazy val system: ActorSystem = ActorSystem.create("ws-feed")
+  lazy val materializer: Materializer = Materializer(system)
 
   def shutdown(): Future[Unit] =
-    system.terminate().map(_ => ())
+    system.terminate().map(_ => ())(using ExecutionContext.parasitic)
 }
 
 /**
@@ -31,11 +29,10 @@ object HttpFeed extends LazyLogging {
  */
 trait HttpFeed extends Closeable {
 
-  import HttpFeed._
-
   val config: SecretConfig
 
-  lazy implicit val executors: ExecutionContextExecutor = HttpFeed.executors
+  def materializer: Materializer = HttpFeed.materializer
+  lazy implicit val executors: ExecutionContextExecutor = materializer.executionContext
   lazy protected val timeout: FiniteDuration = 10 seconds
   private val httpConfigBuilder = new DefaultAsyncHttpClientConfig.Builder()
 
@@ -52,16 +49,9 @@ trait HttpFeed extends Closeable {
   }
 
   private val asyncHttpClient = new DefaultAsyncHttpClient(httpConfigBuilder.build())
-  private val wsClient = new StandaloneAhcWSClient(asyncHttpClient)
+  private val wsClient = new StandaloneAhcWSClient(asyncHttpClient)(using materializer)
 
-  def ws[T](func: StandaloneWSClient => T): T = {
-    val client = wsClient
-    try
-      func(client)
-    finally {
-      // cleanup any resources here
-    }
-  }
+  def ws[T](func: StandaloneWSClient => T): T = func(wsClient)
 
   def close(): Unit = wsClient.close()
 }

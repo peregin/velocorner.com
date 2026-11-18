@@ -1,6 +1,7 @@
 package velocorner.feed
 
 import com.typesafe.scalalogging.LazyLogging
+import org.apache.pekko.stream.Materializer
 import squants.market._
 import velocorner.SecretConfig
 import play.api.libs.json._
@@ -50,7 +51,8 @@ object ExchangeRatesFeed {
   )
 }
 
-class ExchangeRatesFeed(override val config: SecretConfig) extends HttpFeed with LazyLogging with RatesFeed {
+class ExchangeRatesFeed(override val config: SecretConfig, override val materializer: Materializer = HttpFeed.materializer)
+    extends HttpFeed with LazyLogging with RatesFeed {
 
   lazy val baseUrl = config.getRatesUrl
 

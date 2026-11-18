@@ -1,6 +1,7 @@
 package controllers
 
 import play.Logger
+import org.apache.pekko.stream.Materializer
 import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import play.filters.hosts.AllowedHostsConfig
@@ -12,7 +13,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configuration: Configuration) {
+class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configuration: Configuration, val materializer: Materializer) {
 
   val secretConfig = SecretConfig(configuration.underlying)
 
@@ -24,9 +25,9 @@ class ConnectivitySettings @Inject() (lifecycle: ApplicationLifecycle, configura
 
   def getStorage: Storage[Future] = storage
 
-  def getStravaFeed = new StravaActivityFeed(None, secretConfig)
+  def getStravaFeed = new StravaActivityFeed(None, secretConfig, materializer)
 
-  def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig)
+  def getStravaFeed(token: String) = new StravaActivityFeed(Some(token), secretConfig, materializer)
 
   private def disconnect(): Unit = {
     logger.info("releasing storage connections...")

@@ -2,10 +2,11 @@ package controllers
 
 import controllers.util.WebMetrics
 import play.api.{Environment, Mode}
+import play.api.inject.ApplicationLifecycle
 import play.api.libs.json.{JsArray, JsString, Json}
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents, Request}
 import squants.market.USD
-import velocorner.feed.{ExchangeRatesFeed, ProductCrawlerFeed, ProductFeed, RatesFeed, WeatherFeed, WeatherLocationFeed}
+import velocorner.feed.{ExchangeRatesFeed, ProductCrawlerFeed, WeatherLocationFeed}
 import velocorner.util.{CountryUtils, JsonIo}
 
 import javax.inject.Inject
@@ -13,13 +14,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.math.BigDecimal.RoundingMode
 
-class ProductsController @Inject() (val connectivity: ConnectivitySettings, environment: Environment, components: ControllerComponents)
+class ProductsController @Inject() (
+    val connectivity: ConnectivitySettings,
+    environment: Environment,
+    components: ControllerComponents,
+    lifecycle: ApplicationLifecycle
+)
     extends AbstractController(components)
     with WebMetrics {
 
-  private val productFeed: ProductFeed = new ProductCrawlerFeed(connectivity.secretConfig)
-  private val ratesFeed: RatesFeed = new ExchangeRatesFeed(connectivity.secretConfig)
-  private val weatherFeed: WeatherFeed = new WeatherLocationFeed(connectivity.secretConfig)
+  private[controllers] val productFeed = new ProductCrawlerFeed(connectivity.secretConfig, connectivity.materializer)
+  private[controllers] val ratesFeed = new ExchangeRatesFeed(connectivity.secretConfig, connectivity.materializer)
+  private[controllers] val weatherFeed = new WeatherLocationFeed(connectivity.secretConfig, connectivity.materializer)
+
+  List(productFeed, ratesFeed, weatherFeed).foreach(feed => lifecycle.addStopHook(() => Future(feed.close())))
 
   // wip - from elastic or live from marketplaces
   // route mapped to /api/products/suggest

@@ -1,6 +1,7 @@
 package controllers
 
 import play.Logger
+import play.api.inject.ApplicationLifecycle
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
 import velocorner.api.strava.Activity
 import velocorner.api.{Account, AthletePerformance, AthletePerformanceAnalysis}
@@ -17,11 +18,13 @@ import scala.jdk.FutureConverters._
 import scala.util.control.NonFatal
 
 @Singleton
-class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings)(implicit ec: ExecutionContext) {
+class AthletePerformanceService @Inject() (connectivity: ConnectivitySettings, lifecycle: ApplicationLifecycle)(implicit ec: ExecutionContext) {
 
   private val logger = Logger.of(this.getClass)
   private val runningEvaluations = ConcurrentHashMap.newKeySet[String]().asScala
-  private val httpClient = HttpClient.newBuilder().build()
+  private[controllers] val httpClient = HttpClient.newBuilder().build()
+
+  lifecycle.addStopHook(() => Future(httpClient.shutdownNow()))
 
   private val maxRecentActivities = 40
 
