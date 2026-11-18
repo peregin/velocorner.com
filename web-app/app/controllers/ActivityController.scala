@@ -257,8 +257,10 @@ class ActivityController @Inject() (
   def activity(id: Long): Action[AnyContent] =
     TimedAuthAsyncAction(s"query for activity $id")(parse.default) { implicit request =>
       val resultET = for {
-        _ <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
-        activity <- EitherT[Future, Status, Activity](connectivity.getStorage.getActivity(id).map(_.toRight(NotFound)))
+        account <- EitherT[Future, Status, Account](Future(loggedIn.toRight(Forbidden)))
+        activity <- EitherT[Future, Status, Activity](
+          connectivity.getStorage.getActivity(id).map(_.filter(_.athlete.id == account.athleteId).toRight(NotFound))
+        )
       } yield activity
 
       resultET

@@ -1,5 +1,4 @@
 # ToDo
-- in LastActivityRoute3D add an elevation chart as well - can be extracted with the same data
 - check what happens when the DB is empty, is the page loading? - it working byt would be nice to have some instructions or automation in place
 - load activities when not updated for the first time and make sure concurrency is handled
 - make it visual that is loading with feedback
@@ -30,6 +29,7 @@
 # InProgress
 
 # Done
+- in LastActivityRoute3D add an elevation chart as well - can be extracted with the same data
 - resurect papertrail or an alternative - grafana
 - caching: add for forecast - generates way too many entries - and remove existing entries
 - move FE completely to React
