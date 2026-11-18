@@ -14,7 +14,6 @@ import velocorner.ServiceProvider
 import velocorner.feed.OAuth2._
 import velocorner.feed.StravaActivityFeed
 import velocorner.model.strava.Athlete
-import velocorner.util.Metrics
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -47,7 +46,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   }
 
   def retrieveAccessToken(code: String)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
-    logger.info(s"retrieve token for code[$code]")
+    logger.info("exchanging Strava authorization code")
     val feed = connectivity.getStravaFeed
     val resp = feed
       .ws(_.url(accessTokenUrl))
@@ -59,7 +58,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
 
   // invoked when accessing Strava API but the current token is expired
   def refreshAccessToken(refreshToken: RefreshToken)(implicit ctx: ExecutionContext): Future[OAuth2TokenResponse] = {
-    logger.info(s"refreshing token with[$refreshToken]")
+    logger.info("refreshing Strava access token")
     val feed = connectivity.getStravaFeed
     val resp = feed
       .ws(_.url(accessTokenUrl))
@@ -77,7 +76,7 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
   }
 
   def parseAccessTokenResponse(response: StandaloneWSResponse): OAuth2TokenResponse = {
-    logger.info(s"parsing token from $response")
+    logger.info(s"parsing Strava token response with status ${response.status}")
     try {
       val json = response.body[JsValue]
       val athlete = (json \ "athlete").asOpt[Athlete]
@@ -87,12 +86,16 @@ class StravaAuthenticator(connectivity: ConnectivitySettings) {
       val refreshToken = (json \ "refresh_token").as[String]
       // access token expires in seconds
       val expiresInSec = (json \ "expires_in").as[Int]
-      logger.info(s"accessToken valid for ${Metrics.elapsedTimeText(expiresInSec * 1000)}")
       val expiresAt = DateTime.now().plusSeconds(expiresInSec)
-      logger.info(s"got token[$accessToken] until $expiresAt for athlete $athlete")
+      logger.info(s"received Strava token valid until $expiresAt for athlete ${athlete.map(_.id)}")
       OAuth2TokenResponse(accessToken, expiresAt, refreshToken, athlete)
     } catch {
-      case NonFatal(e) => throw new IllegalArgumentException(s"Failed to parse access token: ${response.body}", e)
+      case NonFatal(e) =>
+        // Preserve the refresh callers' invalid-code marker without leaking parser messages, causes, or response data.
+        val reason =
+          if (response.body.toLowerCase.contains("\"code\":\"invalid\"")) """{"code":"invalid"}"""
+          else e.getClass.getSimpleName
+        throw new IllegalArgumentException(s"Failed to parse Strava token response (status ${response.status}, $reason)")
     }
   }
 }

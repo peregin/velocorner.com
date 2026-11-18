@@ -27,7 +27,7 @@ object JwtUser {
         val json = Json.parse(claim.content)
         (json \ "user").get.validate[JwtUser] match {
           case JsSuccess(that, _) => that
-          case JsError(errors)    => throw new SecurityException(s"unable to parse token because $errors from $json")
+          case JsError(_)         => throw new SecurityException("unable to parse token user")
         }
       case Failure(exception) => throw exception
     }

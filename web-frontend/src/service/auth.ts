@@ -28,8 +28,8 @@ export const useAuth = () => {
       showSuccess('Connected to Strava', 'Successfully connected your Strava account!');
       window.location.reload();
     },
-    onError: (error_) => {
-      console.error('Error', error_);
+    onError: () => {
+      console.error('Strava authentication failed');
       showError('Connection Failed', 'Failed to connect to Strava. Please try again.');
     }
   });

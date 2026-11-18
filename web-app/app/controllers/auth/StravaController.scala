@@ -73,7 +73,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
         "state" -> nonEmptyText.verifying(s => request.session.get(OAuth2StateKey).contains(s))
       )
     ).bindFromRequest()
-    logger.info(s"authorize ${form.data}")
+    logger.info("processing Strava authorization callback")
 
     def formSuccess(v: (String, String)): Future[Result] = {
       val (code, _) = v
@@ -98,7 +98,6 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   def feToken: Action[AnyContent] = Action.async { implicit request =>
     (for {
       code <- OptionT[Future, String](Future.successful(request.getQueryString("code")))
-      _ = logger.info(s"requesting token $code")
       resp <- OptionT.liftF(authenticator.retrieveAccessToken(code))
       athlete <- OptionT.liftF(login(resp, none))
       jwt = JwtUser.toJwtUser(athlete)
@@ -126,13 +125,13 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
   // the provider user is the Strava Athlete here
   // consumer user is the account
   def retrieveProviderUser(token: AccessToken): Future[ProviderUser] = {
-    logger.info(s"retrieve provider user for $token")
+    logger.info("retrieving Strava athlete")
     val feed = connectivity.getStravaFeed(token)
     feed.getAthlete <| (_.onComplete(_ => feed.close()))
   }
 
   def onOAuthLinkSucceeded(resp: OAuth2TokenResponse, consumerUser: ConsumerUser): Future[Result] = {
-    logger.info(s"oauth LINK succeeded with token[${resp.accessToken}] and user[${consumerUser.athleteId}]")
+    logger.info(s"oauth LINK succeeded for user[${consumerUser.athleteId}]")
     for {
       _ <- login(resp, consumerUser.some)
     } yield Redirect(controllers.routes.WebController.index)
@@ -140,7 +139,7 @@ class StravaController @Inject() (val connectivity: ConnectivitySettings, val ca
 
   // matches the provider and consumer users
   def onOAuthLoginSucceeded(resp: OAuth2TokenResponse): Future[Result] = {
-    logger.info(s"oauth LOGIN succeeded with token[${resp.accessToken}]")
+    logger.info("oauth LOGIN succeeded")
     for {
       athlete <- login(resp, none)
       token <- idContainer.startNewSession(athlete.id, sessionTimeoutInSeconds)

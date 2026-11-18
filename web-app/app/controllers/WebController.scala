@@ -37,7 +37,7 @@ class WebController @Inject() (
 
   def refresh = AuthAsyncAction(parse.default) { implicit request =>
     val maybeAccount = loggedIn
-    logger.info(s"refreshing page for $maybeAccount")
+    logger.info(s"refreshing page for athlete ${maybeAccount.map(_.athleteId)}")
     val result = for {
       account <- OptionT[Future, Account](Future(maybeAccount))
       now = DateTime.now()
