@@ -12,17 +12,17 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.7.1")
 // generates build information, timestamp
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.14.0")
 // Generate swagger doc from the routes
-addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.1.7")
+addSbtPlugin("io.github.play-swagger" % "sbt-play-swagger" % "3.2.0")
 // Report the licenses used in the project
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.9.0")
 // Show the hash of the current version
-addSbtPlugin("com.github.sbt" % "sbt-git" % "2.2.0")
+addSbtPlugin("com.github.sbt" % "sbt-git" % "3.0.0")
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.12")
 // format scala classes and generated file, see ScalafmtExtensionPlugin
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.5")
 // refactoring and linting
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.9")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.10")
 // generate bill of materials
 addSbtPlugin("com.github.sbt" %% "sbt-sbom" % "0.7.0")
 // to generate fat jar and individual Dockerfile with a smaller image

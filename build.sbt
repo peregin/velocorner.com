@@ -21,9 +21,9 @@ def buildInfoKeys(extraKeys: Seq[BuildInfoKey] = Seq.empty) = Def.setting(
 )
 
 val psqlDbClient = Seq(
-  "org.tpolecat" %% "doobie-core" % Dependencies.doobieVersion,
-  "org.tpolecat" %% "doobie-postgres" % Dependencies.doobieVersion,
-  "org.tpolecat" %% "doobie-hikari" % Dependencies.doobieVersion,
+  "org.typelevel" %% "doobie-core" % Dependencies.doobieVersion,
+  "org.typelevel" %% "doobie-postgres" % Dependencies.doobieVersion,
+  "org.typelevel" %% "doobie-hikari" % Dependencies.doobieVersion,
   "org.flywaydb" % "flyway-core" % Dependencies.flywayVersion,
   "org.flywaydb" % "flyway-database-postgresql" % Dependencies.flywayVersion,
   "com.opentable.components" % "otj-pg-embedded" % "1.1.3" % "test"
@@ -84,6 +84,7 @@ def spark = Seq(
       .exclude("org.scala-lang.modules", "scala-xml_2.13")
       .exclude("org.scala-lang.modules", "scala-parser-combinators_2.13")
       .exclude("org.typelevel", "cats-kernel_2.13")
+      .exclude("org.typelevel", "algebra_2.13")
   )
 )
 
