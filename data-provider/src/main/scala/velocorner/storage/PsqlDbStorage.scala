@@ -6,10 +6,10 @@ import cats.effect.IO
 import cats.implicits._
 import com.typesafe.scalalogging.LazyLogging
 import com.zaxxer.hikari.HikariDataSource
-import doobie._
-import doobie.implicits._
+import org.typelevel.doobie._
+import org.typelevel.doobie.implicits._
 // needed for sql interpolator when filtering on start date on activity (or DateTime in general)
-import doobie.postgres.implicits._
+import org.typelevel.doobie.postgres.implicits._
 import velocorner.model.ActionType
 import org.flywaydb.core.Flyway
 import org.joda.time.DateTime
