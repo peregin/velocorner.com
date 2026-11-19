@@ -84,6 +84,7 @@ def spark = Seq(
       .exclude("org.scala-lang.modules", "scala-xml_2.13")
       .exclude("org.scala-lang.modules", "scala-parser-combinators_2.13")
       .exclude("org.typelevel", "cats-kernel_2.13")
+      .exclude("org.typelevel", "algebra_2.13")
   )
 )
 
