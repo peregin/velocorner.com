@@ -14,7 +14,7 @@ trait ActivityFeed {
 
   // activities - page starts from 1 and pageSize cannot be greater than StravaActivityFeed.maxItemsPerPage
   def listAthleteActivities(page: Int, pageSize: Int): Future[List[Activity]]
-  def exportRouteGpx(id: Long): Future[String]
+  def fetchRouteStreams(id: Long): Future[String]
 
   // athlete, of the authenticated user
   def getAthlete: Future[Athlete]

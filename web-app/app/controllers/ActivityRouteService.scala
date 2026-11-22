@@ -46,7 +46,7 @@ class ActivityRouteService @Inject() (connectivity: ConnectivitySettings, strate
     val feed = connectivity.getStravaFeed(accessToken)
 
     val result = feed
-      .exportRouteGpx(activityId)
+      .fetchRouteStreams(activityId)
       .map { rawStreams =>
         RouteGeometrySupport.fromStreams(activityId, rawStreams)
       }

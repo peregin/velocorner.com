@@ -85,7 +85,8 @@ def spark = Seq(
       .exclude("org.scala-lang.modules", "scala-parser-combinators_2.13")
       .exclude("org.typelevel", "cats-kernel_2.13")
       .exclude("org.typelevel", "algebra_2.13")
-  )
+  ),
+  "org.scala-lang.modules" %% "scala-xml" % "2.5.0"
 )
 
 def smile: Seq[ModuleID] = Seq(
@@ -138,10 +139,7 @@ lazy val buildSettings = Defaults.coreDefaultSettings ++ Seq(
   libraryDependencySchemes ++= Seq(
     "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always
   ),
-  libraryDependencies ++= Seq(
-    "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
-    "org.scala-lang.modules" %% "scala-xml" % "2.5.0"
-  ),
+  libraryDependencies += "org.scala-lang.modules" %% "scala-java8-compat" % "1.0.2",
   dependencyOverrides ++= Seq(
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.5.0"
   ),

@@ -99,7 +99,7 @@ class ActivityRouteServiceSpec extends AnyWordSpec with Matchers {
       when(storage.getActivity(244993130L)).thenReturn(Future.successful(Some(activity)))
       when(strategy.refreshToken(any[Account], any[DateTime])).thenReturn(Future.successful(account))
       when(connectivity.getStravaFeed("token")).thenReturn(feed)
-      when(feed.exportRouteGpx(244993130L)).thenReturn(Future.successful(rawStreams))
+      when(feed.fetchRouteStreams(244993130L)).thenReturn(Future.successful(rawStreams))
       when(storage.storeActivityRoute(any[ActivityRoute], eqTo(432909L))).thenReturn(Future.successful(()))
 
       val service = new ActivityRouteService(connectivity, strategy)

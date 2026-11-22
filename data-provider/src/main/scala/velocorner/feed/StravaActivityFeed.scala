@@ -67,7 +67,7 @@ class StravaActivityFeed(
       .get()
   } yield extractActivities(response)
 
-  override def exportRouteGpx(id: Long): Future[String] = for {
+  override def fetchRouteStreams(id: Long): Future[String] = for {
     response <- ws(_.url(s"${StravaActivityFeed.baseUrl}/activities/$id/streams").withHttpHeaders(("Authorization", authHeader)))
       .withQueryStringParameters(
         ("keys", "latlng,time,altitude"),
