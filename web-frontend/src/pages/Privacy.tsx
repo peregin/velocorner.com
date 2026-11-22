@@ -10,7 +10,7 @@ const Privacy = () => {
         canonical="https://velocorner.com/privacy"
       />
       <VStack gap={8} align="stretch">
-        <Heading size="lg">Privacy Policy</Heading>
+        <Heading as="h1" size="lg">Privacy Policy</Heading>
 
         <Card.Root>
           <Card.Body>

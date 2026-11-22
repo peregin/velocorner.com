@@ -6,7 +6,7 @@ export default function Hero() {
     <Box as="header" position="relative" overflow="hidden">
       <Container maxW="container.xl" py={{ base: 20, lg: 32 }}>
         
-        <Image width='169px' height='31px' src='/images/powered-by-strava1.png' mx="auto" display="block" />
+        <Image width='169px' height='31px' src='/images/powered-by-strava1.png' alt="Powered by Strava" mx="auto" display="block" />
         <VStack maxW="4xl" mx="auto" textAlign="center" gap={6}>
           <VStack gap={6}>
             <Box>

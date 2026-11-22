@@ -91,7 +91,7 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
                   onClick={connect}
                   loading={authLoading}
                 >
-                  <Image src={strava} boxSize="20px" mr={2} />
+                  <Image src={strava} boxSize="20px" mr={2} alt="Strava" />
                   Connect Strava
                 </Button>
               )}
@@ -153,7 +153,7 @@ const Header = ({ isMenuOpen, setIsMenuOpen }: HeaderProps) => {
                 onClick={connect}
                 loading={authLoading}
               >
-                <Image src={strava} boxSize="20px" mr={2} />
+                <Image src={strava} boxSize="20px" mr={2} alt="Strava" />
                 Connect with Strava
               </Button>
             )}

@@ -97,7 +97,7 @@ const Admin = () => {
               <Heading size="lg">Admin</Heading>
               <Text>Please connect your Strava account to continue.</Text>
               <Button colorPalette="orange" onClick={connect}>
-                <Image src={strava} boxSize="20px" mr={2} />
+                <Image src={strava} boxSize="20px" mr={2} alt="Strava" />
                 Connect with Strava
               </Button>
             </VStack>

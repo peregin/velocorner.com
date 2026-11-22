@@ -98,7 +98,7 @@ const About = () => {
                 <Badge colorPalette="green" borderRadius="full" px={3} py={1}>
                   About Velocorner
                 </Badge>
-                <Heading size="2xl" lineHeight="1.05" maxW="14ch" color='black'>
+                <Heading as="h1" size="2xl" lineHeight="1.05" maxW="14ch" color='black'>
                   Clearer training insight, less dashboard noise.
                 </Heading>
                 <Text color="slate.600" fontSize="lg" lineHeight="1.8" maxW="3xl">

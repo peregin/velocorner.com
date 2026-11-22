@@ -21,7 +21,7 @@ const GuestHero = ({ authLoading, onConnect, demoUnits }: HomeGuestHeroProps) =>
               Modern endurance analytics
             </Badge>
             <VStack align="start" gap={3}>
-              <Heading size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="15ch" color="black">
+              <Heading as="h1" size={{ base: "2xl", md: "3xl" }} lineHeight="1.05" letterSpacing="-0.03em" maxW="15ch" color="black">
                 Train with a sharper view of your season.
               </Heading>
               <Text color="slate.600" fontSize={{ base: "md", md: "lg" }} maxW="2xl" lineHeight="1.8">
@@ -41,7 +41,7 @@ const GuestHero = ({ authLoading, onConnect, demoUnits }: HomeGuestHeroProps) =>
                 onClick={onConnect}
                 loading={authLoading}
               >
-                <Image src={strava} boxSize="20px" mr={2} />
+                <Image src={strava} boxSize="20px" mr={2} alt="Strava" />
                 Connect with Strava
               </Button>
               <Button

@@ -285,7 +285,7 @@ const Search = () => {
       <VStack gap={8} align="stretch" mt='2rem'>
         {/* Header */}
         <Box>
-          <Heading size="lg" mb={2}>Activity Search</Heading>
+          <Heading as="h1" size="lg" mb={2}>Activity Search</Heading>
           <Text color="gray.600">
             Search through your activities by title, description, or location
           </Text>

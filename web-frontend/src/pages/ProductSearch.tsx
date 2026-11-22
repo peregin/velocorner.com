@@ -179,7 +179,7 @@ const ProductSearch = () => {
       />
       <VStack gap={8} align="stretch">
         <Box>
-          <Heading size="lg" mb={2}>Product Search</Heading>
+          <Heading as="h1" size="lg" mb={2}>Product Search</Heading>
           <Text color="gray.600">
             Search cycling products across markets and compare pricing, availability, and offers.
           </Text>
