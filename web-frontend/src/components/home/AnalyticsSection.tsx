@@ -89,7 +89,7 @@ const AnalyticsSection = ({
             <HeatmapChart title="Activity Distribution for Distance" fetchHeatmap={fetchHistogramDistance} height={250} />
           </Box>
           <Box {...dashboardCardProps}>
-            <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} />
+            <HeatmapChart title="Activity Distribution for Elevation" fetchHeatmap={fetchHistogramElevation} height={250} palette="green" />
           </Box>
         </Grid>
 

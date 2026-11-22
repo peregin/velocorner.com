@@ -1,18 +1,6 @@
 // src/setupTests.js
 import { beforeAll, vi } from 'vitest';
 
-// Mock ApexCharts to prevent SVG bbox errors
-vi.mock('apexcharts', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    render: vi.fn(),
-    updateOptions: vi.fn(),
-    updateSeries: vi.fn(),
-    destroy: vi.fn(),
-    toggleDataPointSelection: vi.fn(),
-    resetSeries: vi.fn(),
-  }))
-}));
-
 // Mock Highcharts
 vi.mock('highcharts', () => ({
   default: new Proxy({
@@ -33,6 +21,8 @@ vi.mock('highcharts', () => ({
 }));
 
 // Mock highcharts modules to prevent initialization errors
+vi.mock('highcharts/modules/heatmap', () => ({}));
+
 vi.mock('highcharts/modules/wordcloud', () => ({
   default: vi.fn()
 }));
@@ -59,10 +49,6 @@ vi.mock('highcharts/highcharts-3d', () => ({
 
 // Mock React charting libraries
 vi.mock('highcharts-react-official', () => ({
-  default: () => null
-}));
-
-vi.mock('react-apexcharts', () => ({
   default: () => null
 }));
 

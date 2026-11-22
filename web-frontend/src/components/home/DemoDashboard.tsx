@@ -51,7 +51,7 @@ const HomeDemoDashboard = ({
           <HeatmapChart title="Distance Distribution (Sample)" fetchHeatmap={fetchDemoHistogramDistance} height={250} />
         </Box>
         <Box {...dashboardCardProps}>
-          <HeatmapChart title="Elevation Distribution (Sample)" fetchHeatmap={fetchDemoHistogramElevation} height={250} />
+          <HeatmapChart title="Elevation Distribution (Sample)" fetchHeatmap={fetchDemoHistogramElevation} height={250} palette="green" />
         </Box>
       </Grid>
     </>

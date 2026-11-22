@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import Chart from 'react-apexcharts';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import 'highcharts/modules/heatmap';
 import { Box, Heading, Text } from '@chakra-ui/react';
 
 const normalizeHeatmapSeries = (payload) => {
@@ -15,7 +17,7 @@ const normalizeHeatmapSeries = (payload) => {
         ? entry.data
             .map((point) => ({
               x: typeof point?.x === 'string' ? point.x : String(point?.x ?? ''),
-              y: Number(point?.y),
+              y: point?.y == null || point.y === '' ? NaN : Number(point.y),
             }))
             .filter((point) => point.x && Number.isFinite(point.y))
         : [];
@@ -28,33 +30,40 @@ const normalizeHeatmapSeries = (payload) => {
     .filter((entry) => entry.data.length > 0);
 };
 
-const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
+const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' }) => {
   const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const options = useMemo(() => ({
-    chart: { type: 'heatmap', toolbar: { show: false } },
-    dataLabels: { enabled: true, style: { colors: ['#888888'] } },
-    plotOptions: { heatmap: { radius: 3, enableShades: true, distributed: true, shadeIntensity: 0.9 } },
-    grid: { padding: { right: 20 } },
-    noData: { text: `Loading ${title} Data...` },
-    xaxis: {
-      type: 'category',
-      labels: {
-        show: true,
-        rotate: 0,
-        rotateAlways: false,
-        hideOverlappingLabels: true,
-        showDuplicates: false,
-        trim: false,
-        maxHeight: 120,
-        style: {
-          fontSize: '8px',
-          fontFamily: 'Arial, sans-serif',
-        }
-      }
-    },
-  }), [title]);
+  const options = useMemo(() => {
+    const buckets = [...new Set(series.flatMap(({ data }) => data.map(({ x }) => x)))];
+    return {
+      chart: { type: 'heatmap', height: height + series.length * 10 },
+      title: { text: null },
+      credits: { enabled: false },
+      accessibility: { enabled: false },
+      xAxis: { categories: buckets },
+      yAxis: { categories: series.map(({ name }) => name), reversed: true, title: { text: null } },
+      colorAxis: {
+        min: 0,
+        stops: palette === 'green'
+          ? [[0, '#f0fdf4'], [0.5, '#86efac'], [1, '#166534']]
+          : [[0, '#fff7ed'], [0.5, '#fdba74'], [1, '#9a3412']],
+      },
+      tooltip: { headerFormat: '', pointFormat: '{point.name}<br/><b>{point.value}</b> activities' },
+      series: [{
+        name: title,
+        borderWidth: 1,
+        borderColor: '#ffffff',
+        dataLabels: { enabled: true },
+        data: series.flatMap(({ name, data }, row) => data.map(({ x, y }) => ({
+          x: buckets.indexOf(x),
+          y: row,
+          value: y,
+          name: `${name} · ${x}`,
+        }))),
+      }],
+    };
+  }, [height, palette, series, title]);
 
   useEffect(() => {
     let mounted = true;
@@ -88,7 +97,7 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250 }) => {
       {loading ? (
         <Text px='1rem' py='1.5rem'>Loading {title} Data...</Text>
       ) : hasData ? (
-        <Chart options={options} series={series} type="heatmap" height={height} />
+        <HighchartsReact highcharts={Highcharts} options={options} />
       ) : (
         <Text px='1rem' py='1.5rem'>No data available for {title}.</Text>
       )}
