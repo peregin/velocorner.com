@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import 'highcharts/modules/heatmap';
-import { Box, Heading, Text } from '@chakra-ui/react';
+import 'highcharts/modules/accessibility';
+import { Box, Heading, Table, Text } from '@chakra-ui/react';
 
 const normalizeHeatmapSeries = (payload) => {
   const rawSeries = Array.isArray(payload?.series)
@@ -38,9 +39,13 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' })
     const buckets = [...new Set(series.flatMap(({ data }) => data.map(({ x }) => x)))];
     return {
       chart: { type: 'heatmap', height: height + series.length * 10 },
-      title: { text: null },
+      title: { text: title, align: 'left', style: { fontSize: '1rem' } },
       credits: { enabled: false },
-      accessibility: { enabled: false },
+      accessibility: {
+        description: 'Activity counts by year and range.',
+        series: { pointDescriptionEnabledThreshold: false },
+        point: { valueDescriptionFormat: '{point.name}, {point.value} activities.' },
+      },
       xAxis: { categories: buckets },
       yAxis: { categories: series.map(({ name }) => name), reversed: true, title: { text: null } },
       colorAxis: {
@@ -59,7 +64,7 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' })
           x: buckets.indexOf(x),
           y: row,
           value: y,
-          name: `${name} · ${x}`,
+          name: `${name}, ${x}`,
         }))),
       }],
     };
@@ -93,11 +98,44 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' })
 
   return (
     <Box>
-      <Heading size="md" mt='1rem' ml='1rem'>{title}</Heading>
+      {(loading || !hasData) && <Heading size="md" mt="1rem" ml="1rem">{title}</Heading>}
       {loading ? (
         <Text px='1rem' py='1.5rem'>Loading {title} Data...</Text>
       ) : hasData ? (
-        <HighchartsReact highcharts={Highcharts} options={options} />
+        <>
+          <HighchartsReact highcharts={Highcharts} options={options} />
+          <Box as="details" px={4} pb={4}>
+            <Box as="summary" aria-label={`View data for ${title}`} cursor="pointer" width="fit-content" py={2}>
+              View data
+            </Box>
+            <Table.ScrollArea>
+              <Table.Root size="sm">
+                <Table.Caption captionSide="top" textAlign="start">{title} (activity counts)</Table.Caption>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader scope="col">Year</Table.ColumnHeader>
+                    {options.xAxis.categories.map(bucket => (
+                      <Table.ColumnHeader key={bucket} scope="col">{bucket}</Table.ColumnHeader>
+                    ))}
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {series.map(({ name, data }) => {
+                    const counts = new Map(data.map(({ x, y }) => [x, y]));
+                    return (
+                      <Table.Row key={name}>
+                        <Box as="th" scope="row" px={3} py={2} textAlign="start">{name}</Box>
+                        {options.xAxis.categories.map(bucket => (
+                          <Table.Cell key={bucket}>{counts.get(bucket) ?? 'No data'}</Table.Cell>
+                        ))}
+                      </Table.Row>
+                    );
+                  })}
+                </Table.Body>
+              </Table.Root>
+            </Table.ScrollArea>
+          </Box>
+        </>
       ) : (
         <Text px='1rem' py='1.5rem'>No data available for {title}.</Text>
       )}

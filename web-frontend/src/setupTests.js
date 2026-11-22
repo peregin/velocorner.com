@@ -22,6 +22,7 @@ vi.mock('highcharts', () => ({
 
 // Mock highcharts modules to prevent initialization errors
 vi.mock('highcharts/modules/heatmap', () => ({}));
+vi.mock('highcharts/modules/accessibility', () => ({}));
 
 vi.mock('highcharts/modules/wordcloud', () => ({
   default: vi.fn()

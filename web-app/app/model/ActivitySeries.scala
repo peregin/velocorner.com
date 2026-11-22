@@ -4,7 +4,7 @@ import velocorner.api.{chart, Progress, Units}
 import velocorner.api.chart.{DailyPoint, DailySeries}
 import velocorner.model.YearlyProgress
 
-object highcharts {
+object ActivitySeries {
 
   def toDistanceSeries(items: Iterable[YearlyProgress], unit: Units.Entry): List[DailySeries] =
     toSeries(items, _.to(unit).distance)
