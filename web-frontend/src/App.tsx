@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { useState, useEffect, ReactNode } from 'react';
 import OAuth2Popup from './components/OAuth2Popup.js'
 
@@ -63,16 +63,21 @@ const Layout = ({ children }: { children: ReactNode }) => {
   );
 }
 
-const App = () => {
+const AnalyticsTracker = () => {
+  const location = useLocation();
 
   useEffect(() => {
-    const page = window.location.pathname + window.location.search;
-    //console.log(`sending pageview for ${page}`);
+    const page = location.pathname + location.search;
     ReactGA.send({ hitType: "pageview", page: page });
-  }, []);
+  }, [location]);
 
+  return null;
+};
+
+const App = () => {
   return (
     <BrowserRouter>
+      <AnalyticsTracker />
       <Routes>
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/about" element={<Layout><About /></Layout>} />

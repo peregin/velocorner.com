@@ -1,8 +1,14 @@
 import { Box, Heading, Text, VStack, Card } from "@chakra-ui/react";
+import PageMeta from "@/components/PageMeta";
 
 const Privacy = () => {
   return (
     <Box maxW="1200px" mx="auto" p={6}>
+      <PageMeta
+        title="Privacy Policy | Velocorner"
+        description="Velocorner privacy policy and data protection principles for Strava activity data."
+        canonical="https://velocorner.com/privacy"
+      />
       <VStack gap={8} align="stretch">
         <Heading size="lg">Privacy Policy</Heading>
 

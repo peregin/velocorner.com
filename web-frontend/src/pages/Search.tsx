@@ -20,6 +20,7 @@ import { LuSearch, LuClock } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
 import AutocompleteCombobox from "../components/AutocompleteCombobox";
 import ImageCarousel from "@/components/ImageCarousel";
+import PageMeta from "@/components/PageMeta";
 
 const getNumber = (...values: any[]) => {
   const value = values.find((entry) => typeof entry === "number" && !Number.isNaN(entry));
@@ -275,6 +276,11 @@ const Search = () => {
 
   return (
     <Box maxW="1200px" mx="auto" p={6}>
+      <PageMeta
+        title="Activity Search & History | Velocorner"
+        description="Search your Strava activities and cycling training history with real-time keyword suggestions."
+        canonical="https://velocorner.com/search"
+      />
       <ImageCarousel />
       <VStack gap={8} align="stretch" mt='2rem'>
         {/* Header */}

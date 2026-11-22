@@ -15,6 +15,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import PageMeta from "../components/PageMeta";
 
 interface StatusResponse {
   appVersion?: string;
@@ -78,6 +79,11 @@ const About = () => {
 
   return (
     <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 14, md: 20 }}>
+      <PageMeta
+        title="About Velocorner | Multi-service Endurance Analytics"
+        description="Learn about Velocorner's mission, multi-language architecture (Scala, React, Rust, Go), principles, and developer API."
+        canonical="https://velocorner.com/about"
+      />
       <VStack align="stretch" gap={{ base: 6, md: 8 }}>
         <Card.Root
           borderRadius="32px"

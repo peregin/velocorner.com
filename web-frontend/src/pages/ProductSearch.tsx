@@ -22,6 +22,7 @@ import {
 import { LuExternalLink, LuPackage, LuSearch, LuStar, LuStore } from "react-icons/lu";
 import ApiClient from "@/service/ApiClient";
 import { toaster } from "@/components/ui/toaster";
+import PageMeta from "@/components/PageMeta";
 
 interface ProductSearchResult {
   market?: {
@@ -171,6 +172,11 @@ const ProductSearch = () => {
 
   return (
     <Box maxW="1200px" mx="auto" px={{ base: 4, md: 6 }} py={6}>
+      <PageMeta
+        title="Product Search & Price Comparison | Velocorner"
+        description="Search and compare cycling components, apparel, and accessories across major bike marketplaces."
+        canonical="https://velocorner.com/product-search"
+      />
       <VStack gap={8} align="stretch">
         <Box>
           <Heading size="lg" mb={2}>Product Search</Heading>

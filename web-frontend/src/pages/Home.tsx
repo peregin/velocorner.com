@@ -15,6 +15,7 @@ import AnalyticsSection from "@/components/home/AnalyticsSection";
 import LastActivityRoute3D from "@/components/home/LastActivityRoute3D";
 import WindyMap from "@/components/home/WindyMap";
 import { dashboardCardProps } from "@/components/home/shared";
+import PageMeta from "@/components/PageMeta";
 
 const showError = (title: string, description: string) => {
   toaster.create({ title, description, type: "error", duration: 5000 });
@@ -191,6 +192,11 @@ const Home = () => {
 
   return (
     <Box maxW="1280px" mx="auto" px={{ base: 4, md: 6 }} pb={{ base: 2, md: 4 }}>
+      <PageMeta
+        title="Velocorner | Endurance Cycling Analytics & Strava Cockpit"
+        description="Velocorner turns your Strava activity history into a concise performance cockpit with season comparisons, elevation heatmaps, and cycling statistics."
+        canonical="https://velocorner.com/"
+      />
       <VStack gap={{ base: 6, md: 8 }} align="stretch">
         {!isAuthenticated && (
           <GuestHero authLoading={authLoading} onConnect={connect} demoUnits={demoUnits} />

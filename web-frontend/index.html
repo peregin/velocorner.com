@@ -5,18 +5,83 @@
   <!-- Meta -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="The Cycling Platform">
+  <title>Velocorner | Endurance Cycling Analytics & Strava Cockpit</title>
+  <meta name="description" content="Velocorner turns your Strava activity history into a concise performance cockpit with season comparisons, elevation heatmaps, and cycling statistics.">
+  <meta name="keywords" content="cycling analytics, strava statistics, endurance training, cycling heatmap, bike log, year-over-year cycling stats">
   <meta name="author" content="velocorner.com">
   <meta name="theme-color" content="#ffffff" />
+  <link rel="canonical" href="https://velocorner.com/">
 
-  <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://velocorner.com/">
+  <meta property="og:site_name" content="Velocorner">
+  <meta property="og:title" content="Velocorner | Endurance Cycling Analytics & Strava Cockpit">
+  <meta property="og:description" content="Clearer training insight, less dashboard noise. Turn Strava activity history into a concise performance cockpit.">
+  <meta property="og:image" content="https://velocorner.com/images/applelogo.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@velocorner_com">
+  <meta name="twitter:creator" content="@velocorner_com">
+  <meta name="twitter:title" content="Velocorner | Endurance Cycling Analytics & Strava Cockpit">
+  <meta name="twitter:description" content="Clearer training insight, less dashboard noise. Turn Strava activity history into a concise performance cockpit.">
+  <meta name="twitter:image" content="https://velocorner.com/images/applelogo.png">
+
+  <!-- Manifest & Icons -->
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/images/applelogo.png">
-  <title>Velocorner</title>
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://velocorner.com/#website",
+        "url": "https://velocorner.com/",
+        "name": "Velocorner",
+        "description": "Endurance cycling analytics and Strava performance cockpit",
+        "publisher": {
+          "@id": "https://velocorner.com/#organization"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://velocorner.com/#application",
+        "name": "Velocorner",
+        "applicationCategory": "SportsApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Concise endurance analytics platform for cyclists and runners integrating with Strava.",
+        "author": {
+          "@id": "https://velocorner.com/#organization"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://velocorner.com/#organization",
+        "name": "Velocorner",
+        "url": "https://velocorner.com/",
+        "logo": "https://velocorner.com/images/logo50.png",
+        "sameAs": [
+          "https://github.com/velocorner",
+          "https://twitter.com/velocorner_com",
+          "https://www.strava.com/clubs/velocorner",
+          "https://www.youtube.com/channel/UCekBQAfLHviXTvB1kVjzBZQ",
+          "https://www.instagram.com/peregin",
+          "https://www.facebook.com/101313662146829"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
