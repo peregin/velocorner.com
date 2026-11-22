@@ -18,7 +18,7 @@ RUN npm install --include=dev --no-audit --no-fund \
 # Copy source files
 COPY src/ ./src/
 COPY public/ ./public/
-COPY index.html vite.config.js tsconfig.json ./
+COPY index.html vite.config.mjs tsconfig.json ./
 
 # Build the application
 RUN npm run build \
