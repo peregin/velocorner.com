@@ -21,7 +21,7 @@ class HistogramSpec extends AnyWordSpec with Matchers {
         2018 -> List(5L, 8L, 80L),
         2020 -> List(25L, 22L, 180L, 210L)
       )
-      val histogram = apexcharts.toYearlyHeatmap(entries, ranges)
+      val histogram = ActivityHistogram.toYearlyHeatmap(entries, ranges)
       histogram must have size 2
       val first = histogram(0)
       first.name === "2020"

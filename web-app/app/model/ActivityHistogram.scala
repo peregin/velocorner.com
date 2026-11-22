@@ -5,7 +5,7 @@ import velocorner.api.Units
 import velocorner.api.heatmap.{HeatmapPoint, HeatmapSeries}
 import velocorner.api.strava.Activity
 
-object apexcharts {
+object ActivityHistogram {
 
   private val metricElevationRange = List(
     HeatmapPoint("0-300m", 300),

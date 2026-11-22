@@ -4,7 +4,7 @@ import cats.data.{EitherT, OptionT}
 import cats.implicits._
 import controllers.auth.AuthChecker
 import controllers.util.ActivityOps
-import model.apexcharts
+import model.ActivityHistogram
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
@@ -139,8 +139,8 @@ class ActivityController @Inject() (
         storage = connectivity.getStorage
         activities <- OptionT.liftF(storage.listAllActivities(account.athleteId, activity))
         series = action.toLowerCase match {
-          case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, account.units())
-          case "elevation" => apexcharts.toElevationHeatmap(activities, account.units())
+          case "distance"  => ActivityHistogram.toDistanceHeatmap(activities, activity, account.units())
+          case "elevation" => ActivityHistogram.toElevationHeatmap(activities, account.units())
           case other       => sys.error(s"not supported action: $other")
         }
       } yield series

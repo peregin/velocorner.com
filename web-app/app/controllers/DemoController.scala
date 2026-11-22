@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.util.{ActivityOps, WebMetrics}
-import model.apexcharts
+import model.ActivityHistogram
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
@@ -85,8 +85,8 @@ class DemoController @Inject() (val connectivity: ConnectivitySettings, componen
   def yearlyHistogram(action: String, activity: String): Action[AnyContent] = Action { implicit request =>
     val activities = DemoActivityUtils.generate()
     val series = action.toLowerCase match {
-      case "distance"  => apexcharts.toDistanceHeatmap(activities, activity, Units.Metric)
-      case "elevation" => apexcharts.toElevationHeatmap(activities, Units.Metric)
+      case "distance"  => ActivityHistogram.toDistanceHeatmap(activities, activity, Units.Metric)
+      case "elevation" => ActivityHistogram.toElevationHeatmap(activities, Units.Metric)
       case other       => sys.error(s"not supported action: $other")
     }
     noStore(Ok(Json.toJson(series)))
