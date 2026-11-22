@@ -1,5 +1,9 @@
 User-agent: *
+Allow: /
 Disallow: /admin
-Disallow: /api
+Disallow: /oauth/
+Disallow: /health
+Disallow: /api/
 Disallow: /assets/unify
+
 Sitemap: https://velocorner.com/sitemap.xml

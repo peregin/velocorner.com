@@ -9,8 +9,6 @@ GET     /                                                  controllers.WebContro
 GET     /refresh                                           controllers.WebController.refresh
 ### NoDocs ###
 GET     /marketing                                         controllers.WebController.marketing
-### NoDocs ###
-GET     /sitemap.xml                                       controllers.WebController.sitemap
 
 # STRAVA AUTH
 ### NoDocs ###
