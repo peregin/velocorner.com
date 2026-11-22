@@ -5,6 +5,13 @@
         output stdout
     }
 
+    # Security and SEO headers
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
     # Cache immutable hashed assets for 1 year
     @immutable {
         path /assets/*

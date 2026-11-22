@@ -45,6 +45,17 @@ const normalizeActivity = (activity: any) => ({
   averageTemperatureValue: getNumber(activity.averageTemperature, activity.average_temperature, activity.averageTemp, activity.average_temp),
 });
 
+const quickSearches = [
+  "Morning Ride",
+  "Commute",
+  "Gravel",
+  "Climb",
+  "Intervals",
+  "Gran Fondo",
+  "Workout",
+  "Long Ride"
+];
+
 const Search = () => {
   const [searchParams] = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
@@ -243,6 +254,11 @@ const Search = () => {
     }
   };
 
+  const handleQuickSearch = (term: string) => {
+    setQuery(term);
+    void performSearch(term);
+  };
+
   const formatDistance = (distance: number) => {
     return `${(distance / 1000).toFixed(1)} km`;
   };
@@ -318,6 +334,23 @@ const Search = () => {
                   <LuSearch style={{ marginRight: '8px' }} />
                   Search
                 </Button>
+              </HStack>
+              <HStack gap={2} flexWrap="wrap" justify="center" mt={1}>
+                <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                  Popular searches:
+                </Text>
+                {quickSearches.map((term) => (
+                  <Button
+                    key={term}
+                    size="xs"
+                    variant="subtle"
+                    borderRadius="full"
+                    colorPalette="blue"
+                    onClick={() => handleQuickSearch(term)}
+                  >
+                    {term}
+                  </Button>
+                ))}
               </HStack>
             </VStack>
           </Card.Body>
