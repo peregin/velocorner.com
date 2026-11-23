@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import Highcharts from 'highcharts';
 import { Provider } from '../ui/provider';
@@ -31,10 +31,56 @@ it.each(['array', 'wrapped'])('renders distribution counts from a %s response', 
     expect(screen.getByRole('region', { name: /Distance distribution/ })).toBeTruthy();
   });
 
-  screen.getByText('View data', { selector: 'summary' }).closest('details').open = true;
-  const table = await screen.findByRole('table', { name: 'Distance distribution (activity counts)' });
-  const [, currentYear, priorYear] = within(table).getAllByRole('row');
-  expect(within(currentYear).getByRole('rowheader', { name: '2026' })).toBeTruthy();
-  expect(within(currentYear).getAllByRole('cell').map(cell => cell.textContent)).toEqual(['0', '3']);
-  expect(within(priorYear).getAllByRole('cell').map(cell => cell.textContent)).toEqual(['No data', '2']);
+  expect(screen.queryByText('View data', { exact: true })).toBeNull();
+});
+
+it('announces request states and retries only the failed chart', async () => {
+  const distance = vi.fn()
+    .mockRejectedValueOnce(new Error('Request failed'))
+    .mockResolvedValueOnce([{ name: '2026', data: [{ x: '0–10 km', y: 2 }] }]);
+  const elevation = vi.fn().mockResolvedValue([]);
+  render(
+    <Provider>
+      <HeatmapChart title="Distance distribution" fetchHeatmap={distance} />
+      <HeatmapChart title="Elevation distribution" fetchHeatmap={elevation} />
+    </Provider>
+  );
+  const distanceChart = screen.getByRole('group', { name: 'Distance distribution' });
+  const elevationChart = screen.getByRole('group', { name: 'Elevation distribution' });
+  const distanceStatus = within(distanceChart).getByRole('status');
+  const elevationStatus = within(elevationChart).getByRole('status');
+  expect(distanceStatus.textContent).toBe('Loading chart data for Distance distribution.');
+
+  const retry = await within(distanceChart).findByRole('button', { name: 'Retry loading Distance distribution' });
+  expect(distanceStatus.textContent).toBe('Could not load chart data for Distance distribution.');
+  expect(elevationStatus.textContent).toBe('No activities to chart for this selection.');
+  expect(within(elevationChart).queryByRole('button')).toBeNull();
+
+  retry.focus();
+  fireEvent.click(retry);
+  expect(document.activeElement).toBe(distanceChart);
+  expect(distanceStatus.textContent).toBe('Loading chart data for Distance distribution.');
+  await within(distanceChart).findByRole('region', { name: /Distance distribution/ });
+  expect(distanceStatus.textContent).toBe('Chart data loaded for Distance distribution.');
+  expect(distance).toHaveBeenCalledTimes(2);
+  expect(elevation).toHaveBeenCalledTimes(1);
+});
+
+it('ignores a response for a previous activity selection', async () => {
+  let resolvePrevious;
+  const previousRequest = () => new Promise(resolve => { resolvePrevious = resolve; });
+  const currentRequest = async () => [];
+  const { rerender } = render(
+    <Provider><HeatmapChart title="Distance distribution" fetchHeatmap={previousRequest} /></Provider>
+  );
+  rerender(
+    <Provider><HeatmapChart title="Distance distribution" fetchHeatmap={currentRequest} /></Provider>
+  );
+  await screen.findByText('No activities to chart for this selection.');
+
+  await act(async () => {
+    resolvePrevious([{ name: '2026', data: [{ x: '0–10 km', y: 2 }] }]);
+  });
+  expect(screen.getByRole('status').textContent).toBe('No activities to chart for this selection.');
+  expect(screen.queryByRole('region', { name: /Distance distribution/ })).toBeNull();
 });

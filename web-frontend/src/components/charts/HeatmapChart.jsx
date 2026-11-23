@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import 'highcharts/modules/heatmap';
 import 'highcharts/modules/accessibility';
-import { Box, Heading, Table, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, Text, VisuallyHidden } from '@chakra-ui/react';
 
 const normalizeHeatmapSeries = (payload) => {
   const rawSeries = Array.isArray(payload?.series)
@@ -32,8 +32,9 @@ const normalizeHeatmapSeries = (payload) => {
 };
 
 const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' }) => {
-  const [series, setSeries] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [{ status, series }, setResult] = useState({ status: 'loading', series: [] });
+  const [attempt, setAttempt] = useState(0);
+  const chartGroup = useRef(null);
 
   const options = useMemo(() => {
     const buckets = [...new Set(series.flatMap(({ data }) => data.map(({ x }) => x)))];
@@ -73,71 +74,54 @@ const HeatmapChart = ({ title, fetchHeatmap, height = 250, palette = 'orange' })
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      setLoading(true);
+      setResult({ status: 'loading', series: [] });
       try {
         const data = await fetchHeatmap();
         if (mounted) {
-          setSeries(normalizeHeatmapSeries(data));
+          const nextSeries = normalizeHeatmapSeries(data);
+          setResult({ status: nextSeries.length ? 'ready' : 'empty', series: nextSeries });
         }
       } catch (error) {
-        console.error(`Failed to load heatmap data for ${title}:`, error);
         if (mounted) {
-          setSeries([]);
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
+          console.error(`Failed to load heatmap data for ${title}:`, error);
+          setResult({ status: 'error', series: [] });
         }
       }
     };
     load();
     return () => { mounted = false };
-  }, [fetchHeatmap, title]);
+  }, [attempt, fetchHeatmap, title]);
 
-  const hasData = series.length > 0;
+  const statusMessage = {
+    loading: `Loading chart data for ${title}.`,
+    empty: 'No activities to chart for this selection.',
+    error: `Could not load chart data for ${title}.`,
+  }[status];
 
   return (
-    <Box>
-      {(loading || !hasData) && <Heading size="md" mt="1rem" ml="1rem">{title}</Heading>}
-      {loading ? (
-        <Text px='1rem' py='1.5rem'>Loading {title} Data...</Text>
-      ) : hasData ? (
-        <>
-          <HighchartsReact highcharts={Highcharts} options={options} />
-          <Box as="details" px={4} pb={4}>
-            <Box as="summary" aria-label={`View data for ${title}`} cursor="pointer" width="fit-content" py={2}>
-              View data
-            </Box>
-            <Table.ScrollArea>
-              <Table.Root size="sm">
-                <Table.Caption captionSide="top" textAlign="start">{title} (activity counts)</Table.Caption>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.ColumnHeader scope="col">Year</Table.ColumnHeader>
-                    {options.xAxis.categories.map(bucket => (
-                      <Table.ColumnHeader key={bucket} scope="col">{bucket}</Table.ColumnHeader>
-                    ))}
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {series.map(({ name, data }) => {
-                    const counts = new Map(data.map(({ x, y }) => [x, y]));
-                    return (
-                      <Table.Row key={name}>
-                        <Box as="th" scope="row" px={3} py={2} textAlign="start">{name}</Box>
-                        {options.xAxis.categories.map(bucket => (
-                          <Table.Cell key={bucket}>{counts.get(bucket) ?? 'No data'}</Table.Cell>
-                        ))}
-                      </Table.Row>
-                    );
-                  })}
-                </Table.Body>
-              </Table.Root>
-            </Table.ScrollArea>
-          </Box>
-        </>
-      ) : (
-        <Text px='1rem' py='1.5rem'>No data available for {title}.</Text>
+    <Box ref={chartGroup} role="group" aria-label={title} tabIndex={-1} minH={`${height}px`}>
+      {status !== 'ready' && <Heading size="md" pt={4} px={4}>{title}</Heading>}
+      <Box role="status">
+        {status === 'ready'
+          ? <VisuallyHidden>Chart data loaded for {title}.</VisuallyHidden>
+          : <Text px={4} pt={4}>{statusMessage}</Text>}
+      </Box>
+      {status === 'error' && (
+        <Button
+          size="sm"
+          mx={4}
+          mt={3}
+          aria-label={`Retry loading ${title}`}
+          onClick={() => {
+            chartGroup.current.focus();
+            setAttempt(value => value + 1);
+          }}
+        >
+          Retry
+        </Button>
+      )}
+      {status === 'ready' && (
+        <HighchartsReact highcharts={Highcharts} options={options} />
       )}
     </Box>
   );
