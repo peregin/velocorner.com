@@ -60,10 +60,10 @@ The frontend communicates with the Scala Play backend through a comprehensive AP
 
 ### Installation
 
-2. Set up environment variables:
+Run from `web-frontend/`.
+
 ```bash
-# Create .env file
-VITE_API_HOST=https://velocorner.com
+npm ci
 ```
 
 ### Development
@@ -84,10 +84,12 @@ npm run build
 
 ### Environment Configuration
 
-The frontend can be configured for different environments:
+- `npm start` runs Vite locally and defaults both hosts to `https://velocorner.com`.
+- `npm run local` runs Vite locally with the production API and a local web origin.
+- `npm run local_all` uses the API at `http://localhost:9000` and the web origin at
+  `http://localhost:3000`.
 
-- **Production**: `npm start` - Uses remote backend
-- **Local**: `npm run local` - Uses localhost:9001 backend
+Set `VITE_API_HOST` and `VITE_WEB_HOST` before building for a different origin.
 
 ## Authentication Flow
 
@@ -116,27 +118,9 @@ The frontend can be configured for different environments:
 
 ## Deployment
 
-The frontend is designed to be deployed as a static application:
-
-1. Build the production bundle
-2. Serve static files from a web server
-3. Configure API proxy or CORS for backend communication
-
-### Docker Deployment
-
-A Dockerfile is included for containerized deployment:
-
-```bash
-# for Intel
-docker build -t velocorner.frontend .
-# for ARM
-docker build -t velocorner.frontend --platform linux/arm64 .
-
-# Intel/ARM
-docker run -p 8080:3000 peregin/velocorner.frontend:latest
-# ARM - build and push
-docker buildx build --platform linux/amd64 -t peregin/velocorner.frontend:latest --cache-from "type=registry,ref=peregin/velocorner.frontend:latest" --cache-to "type=inline" --push .
-```
+Vite writes the production bundle to `dist/`. The production image serves it
+with Caddy on port 3000. See the [deployment guide](../DEPLOYMENT_GUIDE.md) for
+local image builds and the CircleCI release workflow.
 
 ## Backend Integration
 

@@ -1,7 +1,9 @@
 # How to run the web application
-The main configuration file is not part of the source code, should include the application.conf and the private data, such as Strava API token
+Use a private configuration file that includes the checked-in `application.conf`
+and supplies the local database and Strava settings. Run from the repository root.
+
 ```shell script
-sbt -Dconfig.file=/Users/levi/Downloads/velo/velocorner/local.conf -Dlog.mode=papertrail 'project web-app' run
+sbt -Dconfig.file=/absolute/path/to/local.conf "web-app/run"
 ```
 
 ## Convert images to webp format
@@ -26,17 +28,10 @@ update account SET data = jsonb_set(data, '{role}', '"admin"'::jsonb) where athl
 select data->>'role' from account where athlete_id = 432909;
 ```
 
-# Release
-```shell script
-sbt web-app/assembly
-```
+# Release and Docker builds
 
-# Docker
-```shell script
-web-app/deploy.sh
-docker run --env-file local.env -e DB_URL=jdbc:postgresql://host.docker.internal:5492/velocorner -p 9000:9000 peregin/velocorner.com:latest
-docker run -p 9011:9011 peregin/velocorner.crawler:latest
-```
+See the [deployment guide](../DEPLOYMENT_GUIDE.md) for local image builds, the
+production release workflow, and smoke checks.
 
 ## Images
 Free for commercial use

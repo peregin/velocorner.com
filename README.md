@@ -35,6 +35,8 @@ ___
 Visit the page at [http://velocorner.com](http://velocorner.com), I'd love to hear your feedback!
 
 ## CI/CD Flow
+[Production deployment guide](DEPLOYMENT_GUIDE.md)
+
 ![CI/CD](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/cicd.png "CI/CD")
 
 ## Infrastructure
@@ -42,8 +44,8 @@ Follows the infrastructure as code approach.
 ![Infrastructure](https://raw.github.com/peregin/velocorner.com/master/doc/graphics/infra.png "Infrastructure")
 
 ## Local Setup
-### Mirror Infrastructure
-Start local infrastructure and deploy the stack
+
+[Local backend setup](doc/setup.md) · [Frontend development](web-frontend/README.md)
 
 ## Code
 Some useful plugins
