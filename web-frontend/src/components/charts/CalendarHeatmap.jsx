@@ -1,30 +1,24 @@
-import { useEffect, useState } from 'react';
-import { Box, Heading, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Heading, NativeSelect, useBreakpointValue } from '@chakra-ui/react';
+import ChartRequest, { useChartData } from './ChartRequest';
+
+const activeDays = data => (data ?? []).filter(({ value }) => Number.isFinite(value) && value > 0);
 
 // Lightweight calendar heatmap using simple SVG rects for last N months
 const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) => {
-  const [points, setPoints] = useState([]);
+  const { status, data, retry } = useChartData(fetchDaily, activeDays);
   const monthsToShow = useResponsiveMonths(maxMonths);
-
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      const data = await fetchDaily();
-      // data is array of { day: yyyy-MM-dd, value }
-      if (!Array.isArray(data)) return;
-      const byDate = new Map(data.map(d => [d.day, d.value]));
-      const series = buildSeries(monthsToShow, byDate);
-      if (mounted) setPoints(series);
-    };
-    load();
-    return () => { mounted = false };
-  }, [fetchDaily, monthsToShow]);
+  const points = buildSeries(monthsToShow, new Map(data.map(({ day, value }) => [day, value])));
+  const displayedDays = points.flatMap(month => month.days.filter(day => day.value > 0));
+  const calendarStatus = status === 'ready' && !displayedDays.length ? 'empty' : status;
 
   return (
-    <Box>
+    <ChartRequest
+      title={title} height={150} status={calendarStatus} retry={retry}
+      emptyMessage="No recorded distance in the displayed months."
+    >
       <Heading size="md" mb={4}>{title}</Heading>
       <Box overflowX="auto">
-        <svg width={monthsToShow * 140} height={150}>
+        <svg width={monthsToShow * 140} height={150} aria-hidden="true">
           {points.map((m, mi) => (
             <g key={m.key} transform={`translate(${mi * 140}, 0)`}>
               <text x={0} y={12} fontSize='12' fill="#666">{m.label}</text>
@@ -52,7 +46,7 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
                       fontSize="8"
                       fill="#8a8a8a"
                     >
-                      {String(new Date(d.date).getDate()).padStart(2, "0")}
+                      {d.date.slice(-2)}
                     </text>
                   </g>
                 </g>
@@ -61,7 +55,15 @@ const CalendarHeatmap = ({ title, fetchDaily, unitName = 'km', maxMonths = 8 }) 
           ))}
         </svg>
       </Box>
-    </Box>
+      <NativeSelect.Root size="sm" maxW="20rem" mt={2}>
+        <NativeSelect.Field aria-label={`Daily distances for ${title}`} placeholder="Browse daily distances">
+          {displayedDays.map(day => (
+            <option key={day.date} value={day.date}>{day.date} · {day.value.toFixed(2)} {unitName}</option>
+          ))}
+        </NativeSelect.Field>
+        <NativeSelect.Indicator />
+      </NativeSelect.Root>
+    </ChartRequest>
   );
 };
 

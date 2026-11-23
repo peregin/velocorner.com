@@ -243,7 +243,7 @@ const ElevationProfile = ({ samples, units }: { samples: ElevationSample[]; unit
         </Text>
       </HStack>
       <Box borderRadius="14px" overflow="hidden" bg="linear-gradient(180deg, rgba(186, 230, 253, 0.28), rgba(255,255,255,0.76))">
-        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="110" role="img" aria-label="Elevation profile of the latest activity">
+        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="110" role="img" aria-label={`Elevation profile of the latest activity. Over ${formatDistance(maxDistance, units)}, elevation ranges from ${formatElevation(minElevation, units)} to ${formatElevation(maxElevation, units)}.`}>
           {[0.25, 0.5, 0.75].map((ratio) => (
             <line
               key={ratio}

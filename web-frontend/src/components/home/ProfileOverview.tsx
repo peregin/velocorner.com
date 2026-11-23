@@ -4,6 +4,7 @@ import { FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { HiRefresh } from "react-icons/hi";
 import AutocompleteCombobox from "@/components/AutocompleteCombobox";
 import QuickStats from "@/components/QuickStats";
+import ApiClient from "@/service/ApiClient";
 import WordCloud from "@/components/charts/WordCloud";
 import { heroCardProps } from "./shared";
 import { getInitials, formatTimestamp } from "@/service/formatters";
@@ -20,7 +21,6 @@ interface ProfileOverviewProps {
   profileLoading: boolean;
   selectedActivityType: string;
   units: AthleteUnits;
-  wordCloud: any[];
   refreshLoading: boolean;
   logoutLoading: boolean;
   searchQuery: string;
@@ -40,7 +40,6 @@ const ProfileOverview = ({
   profileLoading,
   selectedActivityType,
   units,
-  wordCloud,
   refreshLoading,
   logoutLoading,
   searchQuery,
@@ -189,7 +188,7 @@ const ProfileOverview = ({
           </Box>
 
           <Box hideBelow="md">
-            <WordCloud words={wordCloud} height={340} />
+            <WordCloud title="Activity Titles" fetchWords={ApiClient.wordcloud} height={340} />
           </Box>
         </Grid>
       </Card.Body>

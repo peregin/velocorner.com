@@ -22,7 +22,6 @@ const showError = (title: string, description: string) => {
 };
 
 const Home = () => {
-  const [wordCloud, setWordCloud] = useState<any[]>([]);
   const [activityTypes, setActivityTypes] = useState<string[]>(["Ride"]);
   const [selectedActivityType, setSelectedActivityType] = useState("Ride");
   const [loading, setLoading] = useState(true);
@@ -37,34 +36,18 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (authLoading) return;
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        if (!isAuthenticated) {
-          const demoWordCloud = await ApiClient.demoWordcloud();
-          setWordCloud(demoWordCloud);
-          return;
-        }
-
-        const [fetchedWordCloud, fetchedActivityTypes] = await Promise.all([
-          ApiClient.wordcloud(),
-          ApiClient.activityTypes(),
-        ]);
-
-        setWordCloud(fetchedWordCloud);
-        setActivityTypes(fetchedActivityTypes);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        showError("Error", "Failed to load data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    if (authLoading || !isAuthenticated) return;
+    let current = true;
+    setLoading(true);
+    ApiClient.activityTypes()
+      .then((types: string[]) => { if (current) setActivityTypes(types); })
+      .catch((error: unknown) => {
+        if (!current) return;
+        console.error("Error fetching activity types:", error);
+        showError("Error", "Failed to load activity types. Please try again.");
+      })
+      .finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
   }, [authLoading, isAuthenticated]);
 
   const handleActivityTypeChange = (activityType: string) => {
@@ -210,7 +193,6 @@ const Home = () => {
 
         {!isAuthenticated && (
           <HomeDemoDashboard
-            wordCloud={wordCloud}
             units={profileUnits}
           />
         )}
@@ -249,7 +231,6 @@ const Home = () => {
               profileLoading={profileLoading}
               selectedActivityType={selectedActivityType}
               units={profileUnits}
-              wordCloud={wordCloud}
               refreshLoading={refreshLoading}
               logoutLoading={logoutLoading}
               searchQuery={searchQuery}

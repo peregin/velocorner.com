@@ -11,12 +11,10 @@ import { useCallback } from "react";
 import ApiClient from "@/service/ApiClient";
 
 interface HomeDemoDashboardProps {
-  wordCloud: any[];
   units: AthleteUnits;
 }
 
 const HomeDemoDashboard = ({
-  wordCloud,
   units,
 }: HomeDemoDashboardProps) => {
   const fetchDemoYtdDistance = useCallback(() => ApiClient.demoYearlyStatistics("distance", "Ride"), []);
@@ -28,7 +26,7 @@ const HomeDemoDashboard = ({
     <>
       <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr 1.2fr" }} alignItems="stretch" gap={4} id="stats">
         <Box>
-          <WordCloud words={wordCloud} height={350} />
+          <WordCloud title="Activity Titles (Sample)" fetchWords={ApiClient.demoWordcloud} height={350} />
         </Box>
         <Box>
           <BarChart title="Year To Date Distance (Sample)" unit={units.distanceLabel} fetchSeries={fetchDemoYtdDistance} height={350} />

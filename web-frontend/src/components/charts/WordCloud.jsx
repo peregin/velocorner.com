@@ -1,58 +1,40 @@
+import { useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-// needed the import to load the module
-import Wordcloud from 'highcharts/modules/wordcloud';
-import { Box } from "@chakra-ui/react";
+import 'highcharts/modules/wordcloud';
+import 'highcharts/modules/accessibility';
+import ChartRequest, { useChartData } from './ChartRequest';
 
-const WordCloud = ({ words, height = 400 }) => {
-    const wordOptions = {
-        chart: {
-            height
-        },
-        accessibility: {
-            screenReaderSection: {
-                beforeChartFormat: '<h5>{chartTitle}</h5>>' +
-                    '<div>{chartSubtitle}</div>' +
-                    '<div>{chartLongdesc}</div>' +
-                    '<div>{viewTableButton}</div>'
-            },
-            enabled: false
-        },
-        series: [{
-            type: 'wordcloud',
-            rotation: {
-                from: 0,
-                to: 0,
-            },
-            name: '#',
-            minFontSize: 8,
-            data: words
-        }],
-        title: {
-            text: ''
-        },
-        exporting: {
-            buttons: {
-                contextButtons: {
-                    enabled: false,
-                    menuItems: null
-                }
-            },
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-    };
+const toWords = response => (response ?? []).filter(({ name, weight }) => name && Number.isFinite(weight));
 
-    return (
-        <Box borderRadius="28px" overflow="hidden">
-            <HighchartsReact
-                highcharts={Highcharts}
-                options={wordOptions}
-            />
-        </Box>
-    );
+const WordCloud = ({ title, fetchWords, height = 400 }) => {
+  const { status, data, retry } = useChartData(fetchWords, toWords);
+  const options = useMemo(() => ({
+    chart: { height },
+    title: { text: title },
+    accessibility: {
+      description: 'Repeated activity titles and their counts.',
+      series: { pointDescriptionEnabledThreshold: false },
+      point: { descriptionFormat: '{name}, {weight} activities.' },
+    },
+    series: [{
+      type: 'wordcloud',
+      rotation: { from: 0, to: 0 },
+      minFontSize: 8,
+      data,
+    }],
+    exporting: { enabled: false },
+    credits: { enabled: false },
+  }), [data, height, title]);
+
+  return (
+    <ChartRequest
+      title={title} height={height} status={status} retry={retry}
+      emptyMessage="No repeated activity titles yet." borderRadius="28px" overflow="hidden"
+    >
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </ChartRequest>
+  );
 };
 
 export default WordCloud;

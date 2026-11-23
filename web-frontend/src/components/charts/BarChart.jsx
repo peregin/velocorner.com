@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import 'highcharts/highcharts-3d';
-import { Box, Heading } from '@chakra-ui/react';
+import 'highcharts/modules/accessibility';
+import ChartRequest, { useChartData } from './ChartRequest';
+
+const toBars = response => (response?.series ?? response ?? []).flatMap(item => {
+  const value = item.series?.[0]?.value;
+  return Number.isFinite(value) ? [{ name: item.name, y: value }] : [];
+});
 
 const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
-  const [options, setOptions] = useState({
+  const { status, data, retry } = useChartData(fetchSeries, toBars);
+  const options = useMemo(() => ({
     chart: {
       type: 'bar',
       height,
-      options3d: {
-        enabled: false,
-        alpha: 45,
-      },
       zoomType: 'x',
-      // backgroundColor: '#FFFADE',
       borderRadius: 20
     },
     accessibility: {
-      enabled: false
+      point: { valueSuffix: unit ? ' ' + unit : '', valueDecimals: 0 }
     },
     title: {
       text: title
@@ -30,7 +31,7 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
       enabled: false
     },
     xAxis: {
-      categories: []
+      categories: data.map(point => point.name)
     },
     yAxis: {
       min: 0,
@@ -60,49 +61,21 @@ const BarChart = ({ title, unit, fetchSeries, height = 400 }) => {
     },
     tooltip: {
       formatter: function() {
-        return '<b>' + this.x + '</b>: ' + Highcharts.numberFormat(this.y, 0) + ' ' + unit;
+        return '<b>' + this.name + '</b>: ' + Highcharts.numberFormat(this.y, 0) + ' ' + unit;
       }
     },
-    series: []
-  });
-
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      const resp = await fetchSeries();
-      // expected { status, series: [{ name, series: [{day, value}]}] }
-      const bag = resp.series || resp;
-      const data = bag.map(item => (item.series && item.series[0] && item.series[0].value) || 0);
-      const names = bag.map(item => item.name);
-      if (mounted) {
-        setOptions(prev => ({
-          ...prev,
-          series: [{
-            name: 'Years',
-            dataLabels: {
-              formatter: function() {
-                return '<b>' + Highcharts.numberFormat(this.y, 0) + '</b> ' + unit;
-              }
-            },
-            showInLegend: false,
-            colorByPoint: true,
-            data
-          }],
-          xAxis: {
-            categories: names
-          }
-        }));
-      }
-    };
-    load();
-    return () => { mounted = false };
-  }, [fetchSeries, unit]);
+    series: [{
+      dataLabels: { format: '{point.y:.0f} ' + unit },
+      showInLegend: false,
+      colorByPoint: true,
+      data
+    }]
+  }), [data, height, title, unit]);
 
   return (
-    <Box borderRadius="28px" overflow="hidden">
-      {/* <Heading size="md" mb={4}>{title}</Heading> */}
+    <ChartRequest title={title} height={height} status={status} retry={retry} borderRadius="28px" overflow="hidden">
       <HighchartsReact highcharts={Highcharts} options={options} />
-    </Box>
+    </ChartRequest>
   );
 };
 

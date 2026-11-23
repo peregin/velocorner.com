@@ -4,31 +4,33 @@ import {
   Text,
   VStack,
   HStack,
-  Progress,
   Box,
   Icon,
   Flex,
-  Stack
+  Stack,
+  VisuallyHidden
 } from '@chakra-ui/react';
 import AutocompleteCombobox from '../AutocompleteCombobox.jsx';
 import { HiRefresh } from "react-icons/hi";
 import Highcharts from 'highcharts';
-// needed the import to load the module
-import HighchartsReact from 'highcharts-react-official';
-import Datagrouping from 'highcharts/modules/datagrouping';
-import Windbarb from 'highcharts/modules/windbarb';
-import Patternfill from 'highcharts/modules/pattern-fill';
-import Data from 'highcharts/modules/data';
+import 'highcharts/modules/datagrouping';
+import 'highcharts/modules/windbarb';
+import 'highcharts/modules/pattern-fill';
+import 'highcharts/modules/accessibility';
 import { LuMoonStar, LuSun, LuThermometerSnowflake, LuThermometerSun } from 'react-icons/lu';
 import * as WiIcons from 'react-icons/wi';
 
 const Weather = ({ defaultLocation = '' }) => {
   const [location, setLocation] = useState(defaultLocation);
-  const [isLoading, setIsLoading] = useState(false);
+  const [forecastStatus, setForecastStatus] = useState('loading');
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecastData, setForecastData] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const chartGroup = useRef(null);
   const chartRef = useRef(null);
+  const request = useRef(0);
+  const requestedPlace = useRef('');
+  const isLoading = forecastStatus === 'loading';
 
   // Helper functions for cookie management
   const getCookie = (name) => {
@@ -44,68 +46,80 @@ const Weather = ({ defaultLocation = '' }) => {
     document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
   };
 
-  // Initialize weather on component mount
   useEffect(() => {
-    if (!location && !defaultLocation) {
-      const savedLocation = getCookie('weather_location');
-      if (savedLocation) {
-        setLocation(savedLocation);
-        loadWeather(savedLocation);
-      } else {
-        detectLocation();
-      }
-    } else if (location || defaultLocation) {
-      loadWeather(location || defaultLocation);
+    const savedLocation = defaultLocation || getCookie('weather_location');
+    if (savedLocation) {
+      setLocation(savedLocation);
+      loadWeather(savedLocation);
+    } else {
+      detectLocation();
     }
+    return () => { request.current += 1; };
   }, []);
 
+  useEffect(() => {
+    if (!forecastData || !chartRef.current) return;
+    try {
+      const meteogram = new Meteogram(forecastData, chartRef.current);
+      setForecastStatus('ready');
+      return () => meteogram.chart?.destroy();
+    } catch (error) {
+      console.error('Failed to render the forecast:', error);
+      setForecastData(null);
+      setForecastStatus('error');
+    }
+  }, [forecastData]);
+
   const detectLocation = async () => {
+    const id = ++request.current;
+    setForecastStatus('loading');
     try {
       const response = await fetch('https://weather.velocorner.com/location/ip');
-      const data = await response.json();
-      console.info(`location data is ${JSON.stringify(data)}`);
-      const detectedLocation = `${data.city}, ${data.country}`;
+      if (!response.ok) throw new Error('Location detection failed');
+      const { city, country } = await response.json();
+      if (id !== request.current) return;
+      if (!city || !country) {
+        setForecastStatus('location');
+        return;
+      }
+      const detectedLocation = `${city}, ${country}`;
       setLocation(detectedLocation);
       loadWeather(detectedLocation);
-    } catch (error) {
-      console.error('Failed to detect location:', error);
+    } catch {
+      if (id === request.current) setForecastStatus('location');
     }
   };
 
   const loadWeather = async (place) => {
-    console.log(`load weather for ${place}`);
     if (!place) return;
-
-    setIsLoading(true);
+    const id = ++request.current;
+    requestedPlace.current = place;
+    setForecastStatus('loading');
+    setForecastData(null);
+    setCurrentWeather(null);
     try {
-      // Load current weather
-      const currentResponse = await fetch(`https://weather.velocorner.com/weather/current/${encodeURIComponent(place)}`);
+      const encodedPlace = encodeURIComponent(place);
+      const currentResponse = await fetch(`https://weather.velocorner.com/weather/current/${encodedPlace}`);
+      if (!currentResponse.ok) throw new Error('Current weather request failed');
       const currentData = await currentResponse.json();
+      if (id !== request.current) return;
       setCurrentWeather(currentData);
 
-      // Load forecast for meteogram
-      const forecastResponse = await fetch(`https://weather.velocorner.com/weather/forecast/${encodeURIComponent(place)}`);
+      const forecastResponse = await fetch(`https://weather.velocorner.com/weather/forecast/${encodedPlace}`);
+      if (!forecastResponse.ok) throw new Error('Forecast request failed');
       const forecastXml = await forecastResponse.text();
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(forecastXml, 'text/xml');
-      setForecastData(xmlDoc);
-
-      // Set cookie with the location after successful forecast retrieval
-      setCookie('weather_location', place);
-
-      // Create meteogram if we have forecast data
-      if (xmlDoc) {
-        createMeteogram(xmlDoc);
+      if (id !== request.current) return;
+      const xml = new DOMParser().parseFromString(forecastXml, 'text/xml');
+      if (xml.querySelector('parsererror')) throw new Error('Invalid forecast XML');
+      if (!xml.querySelector('forecast tabular time')) {
+        setForecastStatus('empty');
+        return;
       }
-    } catch (error) {
-      console.error('Failed to load weather data:', error);
-    } finally {
-      setIsLoading(false);
+      setCookie('weather_location', place);
+      setForecastData(xml);
+    } catch {
+      if (id === request.current) setForecastStatus('error');
     }
-  };
-
-  const createMeteogram = (xml) => {
-    const meteogram = new Meteogram(xml, chartRef.current);
   };
 
   const handleLocationSubmit = () => {
@@ -236,33 +250,29 @@ const Weather = ({ defaultLocation = '' }) => {
             </Box>
 
 
-            {/* Loading Progress */}
-            <Progress.Root
-              size='sm'
-              colorPalette="blue"
-              value={null}
-              opacity={isLoading ? 1 : 0}
-              // position="absolute"
-              width="100%"
-              transition="opacity 0.2s ease-in-out"
-            >
-              <Progress.Track>
-                <Progress.Range />
-              </Progress.Track>
-            </Progress.Root>
           </VStack>
 
         </Stack>
 
-        {/* Meteogram Chart */}
-        <Box
-          id="weather-container"
-          flex="1"
-          width="100%"
-          height="250px"
-          display={forecastData ? 'block' : 'none'}
-        >
-          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+        <Box id="weather-container" flex="1" width="100%" minH="250px">
+          <Box role="status">
+            {forecastStatus === 'loading' && <Text>Loading weather forecast…</Text>}
+            {forecastStatus === 'location' && <Text>Enter a location to see the forecast.</Text>}
+            {forecastStatus === 'empty' && <Text>No forecast available for {requestedPlace.current}.</Text>}
+            {forecastStatus === 'error' && <Text>Could not load the forecast for {requestedPlace.current}.</Text>}
+            {forecastStatus === 'ready' && <VisuallyHidden>Forecast loaded for {requestedPlace.current}.</VisuallyHidden>}
+          </Box>
+          {forecastStatus === 'error' && (
+            <Button size="sm" mt={2} aria-label="Retry loading the weather forecast" onClick={() => {
+              chartGroup.current.focus();
+              loadWeather(requestedPlace.current);
+            }}>
+              Retry
+            </Button>
+          )}
+          <Box ref={chartGroup} tabIndex={-1} role="group" aria-label="Weather forecast">
+            <div ref={chartRef} />
+          </Box>
         </Box>
 
       </Stack>
@@ -372,7 +382,8 @@ class Meteogram {
         }
       },
       accessibility: {
-        enabled: false
+        description: 'Temperature, precipitation, air pressure, and wind over time.',
+        point: { dateFormat: '%A %e %B at %H:%M' },
       },
       defs: {
         patterns: [{
@@ -492,6 +503,7 @@ class Meteogram {
       },
       series: [{
         name: 'Temperature',
+        accessibility: { point: { valueDescriptionFormat: '{xDescription}, {point.value} degrees Celsius.' } },
         data: this.temperatures,
         type: 'spline',
         marker: {
@@ -507,6 +519,7 @@ class Meteogram {
         negativeColor: '#48AFE8'
       }, {
         name: 'Precipitation',
+        accessibility: { point: { valueDescriptionFormat: '{xDescription}, {point.minvalue} to {point.maxvalue} millimetres.' } },
         data: this.precipitationsError,
         type: 'column',
         color: 'url(#precipitation-error)',
@@ -530,6 +543,7 @@ class Meteogram {
         }
       }, {
         name: 'Precipitation',
+        accessibility: { point: { valueDescriptionFormat: '{xDescription}, {point.y} millimetres.' } },
         data: this.precipitations,
         type: 'column',
         color: '#68CFE8',
@@ -549,6 +563,7 @@ class Meteogram {
         tooltip: { valueSuffix: ' mm' }
       }, {
         name: 'Air pressure',
+        accessibility: { point: { valueDescriptionFormat: '{xDescription}, {point.y} hectopascals.' } },
         color: Highcharts.getOptions().colors[2],
         data: this.pressures,
         marker: { enabled: false },
@@ -558,6 +573,7 @@ class Meteogram {
         yAxis: 2
       }, {
         name: 'Wind',
+        accessibility: { point: { descriptionFormat: '{x:%A %e %B at %H:%M}, wind {value} metres per second, direction {direction} degrees.' } },
         type: 'windbarb',
         id: 'windbarbs',
         color: Highcharts.getOptions().colors[1],

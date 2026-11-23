@@ -1,22 +1,31 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { Box, Heading } from '@chakra-ui/react';
+import 'highcharts/modules/accessibility';
+import ChartRequest, { useChartData } from './ChartRequest';
+
+const toLines = response => (response?.series ?? response ?? []).map(item => ({
+  name: item.name,
+  data: (item.series ?? []).flatMap(({ day, value }) => {
+    // Align series on the same leap year so February 29 keeps its position.
+    const x = Date.parse('2016-' + day?.slice(5));
+    return Number.isFinite(x) && Number.isFinite(value) ? [[x, value]] : [];
+  }),
+})).filter(item => item.data.length);
 
 const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 400 }) => {
-  const [series, setSeries] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { status, data, retry } = useChartData(fetchSeries, toLines);
 
   const options = useMemo(() => ({
     chart: {
       type: 'spline',
       zoomType: 'x',
-      // backgroundColor: '#FFFADE',
       borderRadius: 20,
       height: height
     },
     accessibility: {
-      enabled: false
+      series: { pointDescriptionEnabledThreshold: false },
+      point: { dateFormat: '%e %B', valueSuffix: unit ? ' ' + unit : '', valueDecimals: 0 }
     },
     title: {
       text: title
@@ -50,50 +59,13 @@ const LineSeriesChart = ({ title, unit, fetchSeries, seriesToShow = 2, height = 
       headerFormat: '<b>{series.name}</b><br>',
       pointFormat: '{point.x:%e. %b}: {point.y:.0f} ' + unit
     },
-    series: series
-  }), [title, unit, height, series]);
-
-  useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      setLoading(true);
-      try {
-        const resp = await fetchSeries();
-        // yearly endpoints return { status, series }, demo or other may return same
-        const seriesList = resp.series || resp;
-        const mapped = seriesList.map((s, ix) => ({
-          name: s.name,
-          data: (s.series || []).map(p => {
-            const d = p.day; // yyyy-MM-dd
-            const dateParts = d.split('-');
-            // use fixed year to overlap
-            const x = Date.UTC(2016, parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-            return [x, p.value];
-          }),
-          visible: ix >= seriesList.length - seriesToShow
-        }));
-        if (mounted) setSeries(mapped);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    load();
-    return () => { mounted = false };
-  }, [fetchSeries, seriesToShow]);
-
-  if (loading) {
-    return (
-      <Box borderRadius="28px" overflow="hidden">
-        <Heading size="md" mb={4}>{title}</Heading>
-        <div>Loading {title} Data...</div>
-      </Box>
-    );
-  }
+    series: data.map((item, index) => ({ ...item, visible: index >= data.length - seriesToShow }))
+  }), [data, height, seriesToShow, title, unit]);
 
   return (
-      <Box borderRadius="28px" overflow="hidden">
-        <HighchartsReact highcharts={Highcharts} options={options} />
-      </Box>
+    <ChartRequest title={title} height={height} status={status} retry={retry} borderRadius="28px" overflow="hidden">
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </ChartRequest>
   );
 };
 
