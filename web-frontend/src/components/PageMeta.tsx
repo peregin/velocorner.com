@@ -16,14 +16,7 @@ const PageMeta = ({ title, description, canonical }: PageMetaProps) => {
         metaDesc.setAttribute("content", description);
       }
     }
-
-    if (canonical) {
-      const linkCanonical = document.querySelector('link[rel="canonical"]');
-      if (linkCanonical) {
-        linkCanonical.setAttribute("href", canonical);
-      }
-    }
-  }, [title, description, canonical]);
+  }, [title, description]);
 
   return (
     <>
